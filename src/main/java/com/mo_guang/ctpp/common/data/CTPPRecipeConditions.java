@@ -5,9 +5,7 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.mo_guang.ctpp.common.condition.RPMCondition;
 
 public class CTPPRecipeConditions {
-    public static final RecipeConditionType<RPMCondition> RPM;
-    static {
-            RPM = GTRegistries.RECIPE_CONDITIONS.register("rpm",
-                    new RecipeConditionType<>(RPMCondition::new, RPMCondition.CODEC));
-    }
+    public static final RecipeConditionType<RPMCondition> RPM = GTRegistries.RECIPE_CONDITIONS.register("rpm",
+            new RecipeConditionType<>(RPMCondition::new, RPMCondition.CODEC));
+    public static void init() {}
 }

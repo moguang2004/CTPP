@@ -42,7 +42,7 @@ import java.util.function.Function;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.GTValues.ALL_TIERS;
-import static com.gregtechceu.gtceu.common.data.GTMachines.*;
+import static com.gregtechceu.gtceu.common.data.machines.GTMachineUtils.*;
 import static com.gregtechceu.gtceu.utils.FormattingUtil.toEnglishName;
 import static com.mo_guang.ctpp.CTPPRegistration.REGISTRATE;
 

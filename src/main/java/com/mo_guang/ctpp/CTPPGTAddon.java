@@ -1,5 +1,6 @@
 package com.mo_guang.ctpp;
 
+import com.gregtechceu.gtceu.api.addon.GTAddon;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.mo_guang.ctpp.common.data.CTPPRecipeCapabilities;
@@ -8,6 +9,7 @@ import net.minecraft.data.recipes.FinishedRecipe;
 
 import java.util.function.Consumer;
 
+@GTAddon
 public class CTPPGTAddon implements IGTAddon {
     @Override
     public GTRegistrate getRegistrate() {

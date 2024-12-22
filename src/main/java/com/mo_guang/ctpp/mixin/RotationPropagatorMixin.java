@@ -21,6 +21,7 @@ public abstract class RotationPropagatorMixin {
     @Inject(method = "getAxisModifier", at = @At(value = "RETURN"), remap = false, cancellable = true)
     private static void injectAxisModifier(KineticBlockEntity te, Direction direction,
                                            CallbackInfoReturnable<Float> cir) {
+        System.out.println("Mixin Successfully");
         if ((te.hasSource() || te.isSource()) && te instanceof KineticMachineBlockEntity kineticMachineBlockEntity) {
             if (kineticMachineBlockEntity.getMetaMachine() instanceof IKineticMachine kineticMachine) {
                 cir.setReturnValue(kineticMachine.getRotationSpeedModifier(direction));

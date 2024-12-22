@@ -2,6 +2,8 @@ package com.mo_guang.ctpp;
 
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
+import com.gregtechceu.gtceu.common.data.GTRecipeConditions;
 import com.mo_guang.ctpp.core.EventHandler;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -16,8 +18,8 @@ public class CTPP {
     public CTPP() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.addGenericListener(MachineDefinition.class, EventHandler::registerMachines);
+        modEventBus.addGenericListener(RecipeConditionType.class, EventHandler::registerRecipeConditions);
         modEventBus.addGenericListener(GTRecipeType.class, EventHandler::registerRecipeTypes);
-//        modEventBus.addGenericListener(DimensionMarker.class, EventHandler::registerDimensionMarkers);
         DistExecutor.unsafeRunForDist(() -> ClientProxy::new, () -> CommonProxy::new);
     }
 
