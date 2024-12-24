@@ -1,6 +1,6 @@
 package com.mo_guang.ctpp.common.data;
 
-import com.mo_guang.ctpp.recipe.SmashingFactoryRecipes;
+import com.mo_guang.ctpp.recipe.KineticGeneratorRecipes;
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.AllItems;
 import net.minecraft.data.recipes.FinishedRecipe;
@@ -27,6 +27,6 @@ public class CTPPRecipes {
                 AllBlocks.SHAFT, 'H', HULL);
         registerMachineRecipe(provider, false, CTPPMachines.KINETIC_OUTPUT_BOX, "   ", " H ", " S ", 'S',
                 AllBlocks.SHAFT, 'H', HULL);
-        SmashingFactoryRecipes.init(provider);
+        KineticGeneratorRecipes.init(provider);
     }
 }

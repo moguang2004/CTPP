@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.data.GTSoundEntries;
+import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 import com.mo_guang.ctpp.common.condition.RPMCondition;
 import com.mo_guang.ctpp.recipe.CTPPRecipeBuilder;
 import com.simibubi.create.AllBlocks;
@@ -38,12 +39,31 @@ public class CTPPRecipeTypes {
             .setSound(GTSoundEntries.MIXER)
             .setMaxTooltips(4)
             .setUiBuilder((recipe, group) -> {
-                if (!recipe.conditions.isEmpty() && recipe.conditions.get(0) instanceof RPMCondition) {
                     var handler = new CustomItemStackHandler(AllBlocks.SHAFT.asStack());
                     group.addWidget(new SlotWidget(handler, 0, group.getSize().width - 30,
                             group.getSize().height - 30, false, false));
-                }
             });
+    public static final GTRecipeType KINETIC_GENERATOR_RECIPES = GTRecipeTypes.register("kinetic_generator", KINETIC)
+            .setMaxIOSize(0, 0, 1, 0)
+            .setProgressBar(GuiTextures.PROGRESS_BAR_ARROW_MULTIPLE, LEFT_TO_RIGHT)
+            .setSound(GTSoundEntries.ARC)
+            .setUiBuilder((recipe, group) -> {
+                    var handler = new CustomItemStackHandler(AllBlocks.SHAFT.asStack());
+                    group.addWidget(new SlotWidget(handler, 0, group.getSize().width - 30,
+                            group.getSize().height - 30, false, false));
+            })
+            .addDataInfo(data -> LocalizationUtils.format("ctpp.stress_input",String.format("%.1f",data.getFloat("stress"))));
+    public static final GTRecipeType KINETIC_STEAM_TURBINE_RECIPES = GTRecipeTypes.register("kinetic_steam_turbine",KINETIC)
+            .setMaxIOSize(0, 0, 1, 1)
+            .setSlotOverlay(false, false, GuiTextures.SOLIDIFIER_OVERLAY)
+            .setProgressBar(GuiTextures.PROGRESS_BAR_GAS_COLLECTOR, LEFT_TO_RIGHT)
+            .setSound(GTSoundEntries.TURBINE)
+            .setUiBuilder((recipe, group) -> {
+                var handler = new CustomItemStackHandler(AllBlocks.SHAFT.asStack());
+                group.addWidget(new SlotWidget(handler, 0, group.getSize().width - 30,
+                        group.getSize().height - 30, false, false));
+            })
+            .addDataInfo(data -> LocalizationUtils.format("ctpp.stress_output",String.format("%.1f",data.getFloat("stress"))));
     public static void init(){
         MIXER_RECIPES.onRecipeBuild((builder, provider) -> {
                 assert KINETIC_MIXER_RECIPES != null;

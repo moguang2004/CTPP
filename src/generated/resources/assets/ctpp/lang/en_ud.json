@@ -15,6 +15,8 @@
   "block.ctpp.hv_kinetic_output_box": "ɹ§II xoᗺ ʇndʇnO ɔıʇǝuıʞ pǝɔuɐʌpⱯ9§",
   "block.ctpp.iv_kinetic_input_box": "ɹ§ xoᗺ ʇnduI ɔıʇǝuıʞ ǝʇıןƎ6§",
   "block.ctpp.iv_kinetic_output_box": "ɹ§ xoᗺ ʇndʇnO ɔıʇǝuıʞ ǝʇıןƎ6§",
+  "block.ctpp.kinetic_generator": "ɹoʇɐɹǝuǝ⅁ ɔıʇǝuıʞ",
+  "block.ctpp.kinetic_steam_turbine": "ǝuıqɹn⟘ ɯɐǝʇS ɔıʇǝuıʞ",
   "block.ctpp.luv_kinetic_input_box": "ɹ§II xoᗺ ʇnduI ɔıʇǝuıʞ ǝʇıןƎp§",
   "block.ctpp.luv_kinetic_output_box": "ɹ§II xoᗺ ʇndʇnO ɔıʇǝuıʞ ǝʇıןƎp§",
   "block.ctpp.lv_electric_gear_box_16a": "ɹ§ Ɐ9Ɩ xoqɹɐǝ⅁ ɔıɹʇɔǝןƎ ɔısɐᗺ",
@@ -50,7 +52,16 @@
   "block.ctpp.uxv_kinetic_output_box": "ɹ§ΛI xoᗺ ʇndʇnO ɔıʇǝuıʞ ɔıdƎǝ§",
   "block.ctpp.zpm_kinetic_input_box": "ɹ§III xoᗺ ʇnduI ɔıʇǝuıʞ ǝʇıןƎɔ§",
   "block.ctpp.zpm_kinetic_output_box": "ɹ§III xoᗺ ʇndʇnO ɔıʇǝuıʞ ǝʇıןƎɔ§",
+  "ctpp.stress_input": "n%ds：ʇnduI ssǝɹʇS",
+  "ctpp.stress_output": "n%ds：ʇndʇnO ssǝɹʇS",
   "itemGroup.ctpp.machine": "sǝuıɥɔɐW ԀԀ⟘Ɔ",
+  "kinetic_output": "ɔıʇǝuıʞ ʇndʇno uɐɔ ʇɐɥʇ ǝuıɥɔɐɯ Ɐ",
+  "multiblock.ctpp.kinetic_generator": "ʇ/∩Ǝ %d/%d：ǝʇɐᴚ ɹoʇɐɹǝuǝ⅁",
+  "multiblock.ctpp.kinetic_generator.efficiency": "%d%%：ʎɔuǝıɔıɟɟƎ ןıoƆ",
+  "multiblock.ctpp.kinetic_steam_turbine": "%d%%：ʎɔuǝıɔıɟɟƎ ǝuıqɹn⟘ ןɐʇo⟘",
+  "multiblock.ctpp.kinetic_steam_turbine_output": "n%ds：ʇndʇnO ɔıʇǝuıʞ",
   "recipe.capability.su.name": "ssǝɹʇS ǝʇɐǝɹƆ",
-  "recipe.condition.rpm.tooltip": "%d :WԀᴚ"
+  "recipe.condition.rpm.tooltip": "%d :WԀᴚ",
+  "rotor_holder_upgrade": "ɹ§%0Ɩ9§ ʎq ʎɔuǝıɔıɟɟǝ ǝuıqɹnʇ sǝsɐǝɹɔuı ǝpɐɹbdn ɹǝpןoɥ ɹoʇoɹ ǝɥʇ ɟo ןǝʌǝן ɥɔɐƎ",
+  "steam_up_hv_loss": "ɹ§ΛH9§ ǝʌoqɐ ɹǝıʇ ǝbɐʇןoʌ ɥɔɐǝ ɹoɟ ʎɔuǝıɔıɟɟǝ %0Ɩ ǝsoן sǝuıɥɔɐɯ ǝdʎʇ-ɯɐǝʇS"
 }

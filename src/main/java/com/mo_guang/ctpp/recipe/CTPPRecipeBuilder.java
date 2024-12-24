@@ -9,6 +9,8 @@ import com.mo_guang.ctpp.api.StressRecipeCapability;
 import com.mo_guang.ctpp.common.condition.RPMCondition;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.fluids.FluidStack;
+
 public class CTPPRecipeBuilder extends GTRecipeBuilder {
     public CTPPRecipeBuilder(ResourceLocation id, GTRecipeType recipeType) {
         super(id, recipeType);
@@ -58,6 +60,18 @@ public class CTPPRecipeBuilder extends GTRecipeBuilder {
     @SuppressWarnings("all")
     public CTPPRecipeBuilder outputItems(ItemStack output) {
         super.outputItems(output);
+        return this;
+    }
+
+    @Override
+    public CTPPRecipeBuilder inputFluids(FluidStack input) {
+        super.inputFluids(input);
+        return this;
+    }
+
+    @Override
+    public CTPPRecipeBuilder outputFluids(FluidStack output) {
+        super.outputFluids(output);
         return this;
     }
 

@@ -15,6 +15,8 @@
   "block.ctpp.hv_kinetic_output_box": "§6Advanced Kinetic Output Box II§r",
   "block.ctpp.iv_kinetic_input_box": "§9Elite Kinetic Input Box §r",
   "block.ctpp.iv_kinetic_output_box": "§9Elite Kinetic Output Box §r",
+  "block.ctpp.kinetic_generator": "Kinetic Generator",
+  "block.ctpp.kinetic_steam_turbine": "Kinetic Steam Turbine",
   "block.ctpp.luv_kinetic_input_box": "§dElite Kinetic Input Box II§r",
   "block.ctpp.luv_kinetic_output_box": "§dElite Kinetic Output Box II§r",
   "block.ctpp.lv_electric_gear_box_16a": "Basic Electric Gearbox 16A §r",
@@ -50,7 +52,16 @@
   "block.ctpp.uxv_kinetic_output_box": "§eEpic Kinetic Output Box IV§r",
   "block.ctpp.zpm_kinetic_input_box": "§cElite Kinetic Input Box III§r",
   "block.ctpp.zpm_kinetic_output_box": "§cElite Kinetic Output Box III§r",
+  "ctpp.stress_input": "Stress Input：%dsu",
+  "ctpp.stress_output": "Stress Output：%dsu",
   "itemGroup.ctpp.machine": "CTPP Machines",
+  "kinetic_output": "A machine that can output kinetic",
+  "multiblock.ctpp.kinetic_generator": "Generator Rate：%d/%d EU/t",
+  "multiblock.ctpp.kinetic_generator.efficiency": "Coil Efficiency：%d%%",
+  "multiblock.ctpp.kinetic_steam_turbine": "Total Turbine Efficiency：%d%%",
+  "multiblock.ctpp.kinetic_steam_turbine_output": "Kinetic Output：%dsu",
   "recipe.capability.su.name": "Create Stress",
-  "recipe.condition.rpm.tooltip": "RPM: %d"
+  "recipe.condition.rpm.tooltip": "RPM: %d",
+  "rotor_holder_upgrade": "Each level of the rotor holder upgrade increases turbine efficiency by §610%§r",
+  "steam_up_hv_loss": "Steam-type machines lose 10% efficiency for each voltage tier above §6HV§r"
 }
