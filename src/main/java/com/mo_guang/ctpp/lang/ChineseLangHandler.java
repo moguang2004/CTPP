@@ -26,6 +26,18 @@ public class ChineseLangHandler {
         provider.add("kinetic_output", "一个输出应力的机器");
         provider.add("rotor_holder_upgrade", "转子支架每升高一级,涡轮效率增加§610%§r");
         provider.add("steam_up_hv_loss", "蒸汽类型的机器在电压等级高于§6HV§r时,每一级发电效率会减少10%");
+        provider.add("multiblock.ctpp.windmill_control_center1", "控制的风车数量：%d");
+        provider.add("multiblock.ctpp.windmill_control_center2", "控制的风车总应力：%dsu");
+        provider.add("multiblock.ctpp.windmill_control_center.efficiency", "总产能效率：%d%%");
+        provider.add("multiblock.ctpp.windmill_control_center.output", "总应力输出：§a%dsu§r");
+        provider.add("windmill_control_center", "风力总控！越多越强！");
+        provider.add("ctpp.windmill_control_center.mechanism", "会检测多方块周围半径16格内的风车轴承，总输出的应力为：周围的风车轴承数x(周围风车总应力输出 + 512)。§4最多控制16个风车！§r");
+        provider.add("ctpp.windmill_control_center.output", "请确保应力输出仓大小足以输出全部应力，否则机器不会工作");
+        provider.add("boom_of_create", "艺术就是爆炸！");
+        provider.add("ctpp.boom_of_create.basic", "大型聚爆应力厂使用爆炸物以及一小部分电力运行，以此产生大量应力");
+        provider.add("ctpp.boom_of_create.coolant", "持续运行时会逐渐减少电力消耗，最低可为0");
+        provider.add("ctpp.boom_of_create.overclock", "与三峡大坝一样，必须有足够的应力输出口才会开始工作");
+        provider.add("ctpp.boom_of_create.safe", "§a应力飞升之路§r");
 
         for (var tier : GTMachineUtils.ALL_TIERS) {
             provider.add(CTPPMachines.KINETIC_INPUT_BOX[tier].getBlock(), GTValues.VNF[tier] + " 应力输入仓");
@@ -42,10 +54,16 @@ public class ChineseLangHandler {
 
         provider.add("gtceu.kinetic_generator", "应力发电");
         provider.add("gtceu.kinetic_steam_turbine", "蒸汽动力");
+        provider.add("gtceu.seaweed_farm", "海草养殖");
+        provider.add("gtceu.windmill_control_center", "风车控制中心");
+        provider.add("gtceu.boom_of_create", "聚爆应力厂");
 
 
         provider.add(CTPPMultiblockMachines.SMASHING_FACTORY.getBlock(), "粉碎工厂");
         provider.add(CTPPMultiblockMachines.KINETIC_GENERATOR.getBlock(), "应力发电机");
         provider.add(CTPPMultiblockMachines.KINETIC_STEAM_TURBINE.getBlock(), "机械蒸汽涡轮");
+        provider.add(CTPPMultiblockMachines.SEAWEED_FARM.getBlock(), "海草农场");
+        provider.add(CTPPMultiblockMachines.WINDMILL_CONTROL_CENTER.getBlock(), "风车控制中心");
+        provider.add(CTPPMultiblockMachines.BOOM_OF_CREATE.getBlock(), "大型聚爆应力厂");
     }
 }

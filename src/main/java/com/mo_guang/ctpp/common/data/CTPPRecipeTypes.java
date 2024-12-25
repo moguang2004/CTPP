@@ -1,18 +1,19 @@
 package com.mo_guang.ctpp.common.data;
 
+import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.data.GTSoundEntries;
+import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 import com.mo_guang.ctpp.common.condition.RPMCondition;
 import com.mo_guang.ctpp.recipe.CTPPRecipeBuilder;
 import com.simibubi.create.AllBlocks;
 
-import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.MACERATOR_RECIPES;
-import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.MIXER_RECIPES;
+import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 import static com.lowdragmc.lowdraglib.gui.texture.ProgressTexture.FillDirection.LEFT_TO_RIGHT;
 
 public class CTPPRecipeTypes {
@@ -64,6 +65,25 @@ public class CTPPRecipeTypes {
                         group.getSize().height - 30, false, false));
             })
             .addDataInfo(data -> LocalizationUtils.format("ctpp.stress_output",String.format("%.1f",data.getFloat("stress"))));
+    public static final GTRecipeType SEAWEED_FARM = GTRecipeTypes.register("seaweed_farm",ELECTRIC)
+            .setMaxIOSize(2, 4, 0, 1)
+            .setSlotOverlay(false, false, GuiTextures.SOLIDIFIER_OVERLAY)
+            .setProgressBar(GuiTextures.PROGRESS_BAR_ARROW, ProgressTexture.FillDirection.LEFT_TO_RIGHT)
+            .setSound(GTSoundEntries.BATH)
+            .addDataInfo(data -> LocalizationUtils.format("ctpp.stress_input", String.format("%.1f",data.getFloat("stress"))));
+    public static final GTRecipeType WINDMILL_CONTROL = GTRecipeTypes.register("windmill_control_center",ELECTRIC)
+            .setMaxIOSize(0, 0, 1, 0)
+            .setSlotOverlay(false, false, GuiTextures.SOLIDIFIER_OVERLAY)
+            .setProgressBar(GuiTextures.PROGRESS_BAR_GAS_COLLECTOR, ProgressTexture.FillDirection.LEFT_TO_RIGHT)
+            .setSound(GTSoundEntries.TURBINE)
+            .addDataInfo(data -> LocalizationUtils.format("ctpp.stress_output", String.format("%.1f",data.getFloat("stress"))));
+    public static final GTRecipeType BOOM_OF_CREATE = GTRecipeTypes.register("boom_of_create","ctnh")
+            .setMaxIOSize(1, 0, 1, 0)
+            .setEUIO(IO.IN)
+            .setSlotOverlay(false, false, GuiTextures.SOLIDIFIER_OVERLAY)
+            .setProgressBar(GuiTextures.PROGRESS_BAR_ARROW, ProgressTexture.FillDirection.LEFT_TO_RIGHT)
+            .setSound(GTSoundEntries.COOLING)
+            .addDataInfo(data -> LocalizationUtils.format("ctpp.stress_output", String.format("%.1f",data.getFloat("stress"))));
     public static void init(){
         MIXER_RECIPES.onRecipeBuild((builder, provider) -> {
                 assert KINETIC_MIXER_RECIPES != null;

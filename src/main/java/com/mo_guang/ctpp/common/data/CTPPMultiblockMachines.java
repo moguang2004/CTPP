@@ -15,14 +15,15 @@ import com.mo_guang.ctpp.api.CTPPPartAbility;
 import com.mo_guang.ctpp.common.machine.multiblock.KineticGeneratorMachine;
 import com.mo_guang.ctpp.common.machine.multiblock.KineticTurbineMachine;
 import com.mo_guang.ctpp.common.machine.multiblock.KineticWorkableMultiblockMachine;
+import com.mo_guang.ctpp.common.machine.multiblock.WindMillControlMachine;
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.Create;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.block.Blocks;
 
 import static com.gregtechceu.gtceu.api.pattern.Predicates.blocks;
-import static com.gregtechceu.gtceu.common.data.GTBlocks.CASING_STAINLESS_CLEAN;
-import static com.gregtechceu.gtceu.common.data.GTBlocks.CASING_STEEL_SOLID;
+import static com.gregtechceu.gtceu.common.data.GTBlocks.*;
 import static com.mo_guang.ctpp.CTPPRegistration.REGISTRATE;
 
 public class CTPPMultiblockMachines {
@@ -100,5 +101,96 @@ public class CTPPMultiblockMachines {
                 .where("G", Predicates.blocks(GTBlocks.CASING_BRONZE_GEARBOX.get()))
                 .build())
             .workableCasingRenderer(GTCEu.id("block/casings/solid/machine_casing_bronze_plated_bricks"), GTCEu.id("block/multiblock/generator/large_steam_turbine"), false)
+            .register();
+    public static MultiblockMachineDefinition SEAWEED_FARM = REGISTRATE.multiblock("seaweed_farm", KineticWorkableMultiblockMachine::new)
+            .rotationState(RotationState.NON_Y_AXIS)
+            .recipeType(CTPPRecipeTypes.SEAWEED_FARM)
+            .tooltips(Component.translatable("kinetic_overclock"),
+                    Component.translatable("subtick_overclock").withStyle(ChatFormatting.YELLOW))
+            .appearanceBlock(AllBlocks.ANDESITE_CASING)
+            .pattern(definition -> FactoryBlockPattern.start()
+            .aisle("CNNNNNC", "CGGGGGC", "CGGGGGC", "CGGGGGC", "CNNNNNC")
+            .aisle("DSSSSSD", "G#####G", "G#####G", "GFFFFFG", "DBBBBBD")
+            .aisle("DSSSSSD", "G#####G", "G#####G", "GLLLLLG", "EBBBBBE")
+            .aisle("DSSSSSD", "G#####G", "G#####G", "GFFFFFG", "DBBBBBD")
+            .aisle("CNNKNNC", "CGGGGGC", "CGGGGGC", "CGGGGGC", "CNNNNNC")
+            .where("C", Predicates.blocks(AllBlocks.ANDESITE_CASING.get()))
+            .where("N", Predicates.blocks(AllBlocks.ANDESITE_CASING.get())
+                .or(Predicates.autoAbilities(definition.getRecipeTypes()))
+            .or(Predicates.abilities(PartAbility.MAINTENANCE).setExactLimit(1)))
+            .where("K", Predicates.controller(Predicates.blocks(definition.get())))
+            .where("D", Predicates.blocks(AllBlocks.ANDESITE_CASING.get()))
+            .where("E", Predicates.abilities(CTPPPartAbility.INPUT_KINETIC).setExactLimit(1)
+                .or(Predicates.blocks(AllBlocks.ANDESITE_CASING.get())))
+            .where("F", Predicates.blocks(AllBlocks.MECHANICAL_HARVESTER.get()))
+            .where("L", Predicates.blocks(AllBlocks.ANDESITE_CASING.get()))
+            .where("B", Predicates.blocks(Blocks.OAK_PLANKS))
+            .where("S", Predicates.blocks(Blocks.SAND))
+            .where("G", Predicates.blocks(GTBlocks.CASING_TEMPERED_GLASS.get()))
+            .where("#", Predicates.blocks(Blocks.WATER))
+            .build())
+            .workableCasingRenderer(Create.asResource("block/andesite_casing"), GTCEu.id("block/multiblock/coke_oven"), false)
+            .register();
+    public static MultiblockMachineDefinition WINDMILL_CONTROL_CENTER = REGISTRATE.multiblock("windmill_control_center", WindMillControlMachine::new)
+            .rotationState(RotationState.NON_Y_AXIS)
+            .recipeType(CTPPRecipeTypes.WINDMILL_CONTROL)
+            .appearanceBlock(AllBlocks.BRASS_CASING)
+            .tooltips(Component.translatable("windmill_control_center").withStyle(ChatFormatting.GRAY),
+                    Component.translatable("ctpp.windmill_control_center.mechanism"),
+                    Component.translatable("ctpp.windmill_control_center.output").withStyle(ChatFormatting.RED))
+            .pattern(definition -> FactoryBlockPattern.start()
+                .aisle("BBBBB", "CBBBC", "CBBBC", "#CCC#")
+                .aisle("BBBBB", "BDBDB", "BDBDB", "#C#C#")
+                .aisle("BBBBB", "CB@BC", "CBBBC", "#CCC#")
+                .where("A", Predicates.blocks(Blocks.STONE))
+                .where("B", Predicates.blocks(AllBlocks.BRASS_CASING.get())
+                    .or(Predicates.abilities(CTPPPartAbility.OUTPUT_KINETIC))
+                .or(Predicates.autoAbilities(definition.getRecipeTypes())))
+                .where("C", Predicates.frames(GTMaterials.TreatedWood))
+                .where("#", Predicates.any())
+                .where("D", Predicates.blocks(CASING_STEEL_SOLID.get()))
+                .where("@", Predicates.controller(Predicates.blocks(definition.get())))
+                .build())
+            .workableCasingRenderer(Create.asResource("block/brass_casing"), GTCEu.id("block/machines/miner"), false)
+            .register();
+    public static MultiblockMachineDefinition BOOM_OF_CREATE = REGISTRATE.multiblock("boom_of_create", KineticWorkableMultiblockMachine::new)
+            .rotationState(RotationState.NON_Y_AXIS)
+            .recipeType(CTPPRecipeTypes.BOOM_OF_CREATE)
+            .appearanceBlock(CASING_STEEL_SOLID)
+            .tooltips(Component.translatable("boom_of_create").withStyle(ChatFormatting.GRAY),
+                    Component.translatable("ctpp.boom_of_create.basic"),
+                    Component.translatable("ctpp.boom_of_create.coolant"),
+                    Component.translatable("ctpp.boom_of_create.overclock"),
+                    Component.translatable("ctpp.boom_of_create.safe"))
+            .pattern(definition -> FactoryBlockPattern.start()
+                .aisle("######AAA######", "######AAA######", "######AAA######", "######AAA######", "######AAA######", "######AAA######", "######AAA######", "######AAA######", "######AAA######")
+                .aisle("#AAA##AAA##AAA#", "#AAA##AAA##AAA#", "#AAA##AAA##AAA#", "#AAA##AAA##AAA#", "#AAA##AAA##AAA#", "#AAA##AAA##AAA#", "#AAA##AAA##AAA#", "#AAA##AAA##AAA#", "#AAA##AAA##AAA#")
+                .aisle("#AAA##AAA##AAA#", "#AAABBBBBBBAAA#", "#AAABBCCCBBAAA#", "#AAABBCCCBBAAA#", "#AAABBCCCBBAAA#", "#AAABBCCCBBAAA#", "#AAABBCCCBBAAA#", "#AAABBBBBBBAAA#", "#AAA##AAA##AAA#")
+                .aisle("#AAA#######AAA#", "#AABBBBBBBBBAA#", "#AABCCCCCCCBAA#", "#AABCC   CCBAA#", "#AABCC   CCBAA#", "#AABCC   CCBAA#", "#AABCCCCCCCBAA#", "#AABBBBBBBBBAA#", "#AAA#######AAA#")
+                .aisle("###############", "##BBBBBBBBBBB##", "##BCCCCCCCCCB##", "##BC       CB##", "##BC   D   CB##", "##BC       CB##", "##BCCCCCCCCCB##", "##BBBBBBBBBBB##", "###############")
+                .aisle("###############", "##BBBEEEEEBBB##", "##BCCEEEEECCB##", "##BC       CB##", "##BC   D   CB##", "##BC       CB##", "##BCCEEEEECCB##", "##BBBEEEEEBBB##", "###############")
+                .aisle("AAA#########AAA", "AABBBEGGGEBBBAA", "AACCCEDDDECCCAA", "AAC         CAA", "AAC    D    CAA", "AAC         CAA", "AACCCEDDDECCCAA", "AABBBEGGGEBBBAA", "AAA#########AAA")
+                .aisle("AAA#########AAA", "AABBBEGGGEBBBAA", "AACCCEDFDECCCAA", "AAC    F    CAA", "AAC DDDFDDD CAA", "AAC    F    CAA", "AACCCEDFDECCCAA", "AABBBEGGGEBBBAA", "AAA#########AAA")
+                .aisle("AAA#########AAA", "AABBBEGGGEBBBAA", "AACCCEDDDECCCAA", "AAC         CAA", "AAC    D    CAA", "AAC         CAA", "AACCCEDDDECCCAA", "AABBBEGGGEBBBAA", "AAA#########AAA")
+                .aisle("###############", "##BBBEEEEEBBB##", "##BCCEEEEECCB##", "##BC       CB##", "##BC   D   CB##", "##BC       CB##", "##BCCEEEEECCB##", "##BBBEEEEEBBB##", "###############")
+                .aisle("###############", "##BBBBBBBBBBB##", "##BCCCCCCCCCB##", "##BC       CB##", "##BC   D   CB##", "##BC       CB##", "##BCCCCCCCCCB##", "##BBBBBBBBBBB##", "###############")
+                .aisle("#AAA#######AAA#", "#AABBBBBBBBBAA#", "#AABCCCCCCCBAA#", "#AABCC   CCBAA#", "#AABCC   CCBAA#", "#AABCC   CCBAA#", "#AABCCCCCCCBAA#", "#AABBBBBBBBBAA#", "#AAA#######AAA#")
+                .aisle("#AAA##AAA##AAA#", "#AAABBBBBBBAAA#", "#AAABBCCCBBAAA#", "#AAABBCCCBBAAA#", "#AAABBCCCBBAAA#", "#AAABBCCCBBAAA#", "#AAABBCCCBBAAA#", "#AAABBBBBBBAAA#", "#AAA##AAA##AAA#")
+                .aisle("#AAA##AAA##AAA#", "#AAA##AAA##AAA#", "#AAA##AAA##AAA#", "#AAA##AAA##AAA#", "#AAA##AAA##AAA#", "#AAA##AAA##AAA#", "#AAA##AAA##AAA#", "#AAA##AAA##AAA#", "#AAA##AAA##AAA#")
+                .aisle("######AAA######", "######A@A######", "######AAA######", "######AAA######", "######AAA######", "######AAA######", "######AAA######", "######AAA######", "######AAA######")
+                .where("A", Predicates.blocks(CASING_STEEL_SOLID.get())
+                    .or(Predicates.autoAbilities(definition.getRecipeTypes()))
+                .or(Predicates.abilities(PartAbility.MAINTENANCE)).setMinGlobalLimited(1))
+                .where("#", Predicates.any())
+                .where("@", Predicates.controller(Predicates.blocks(definition.get())))
+                .where("B", Predicates.blocks(CASING_STAINLESS_CLEAN.get()))
+                .where("C", Predicates.blocks(CASING_TITANIUM_STABLE.get()))
+                .where("D", Predicates.blocks(CASING_TUNGSTENSTEEL_ROBUST.get()))
+                .where("E", Predicates.blocks(CASING_LAMINATED_GLASS.get()))
+                .where("F", Predicates.blocks(CASING_TUNGSTENSTEEL_GEARBOX.get()))
+                .where("G", Predicates.abilities(CTPPPartAbility.OUTPUT_KINETIC)
+                    .or(Predicates.blocks(CASING_TUNGSTENSTEEL_ROBUST.get())))
+                .build())
+            .workableCasingRenderer(GTCEu.id("block/casings/solid/machine_casing_solid_steel"), GTCEu.id("block/multiblock/generator/large_steam_turbine"), false)
             .register();
 }

@@ -128,4 +128,29 @@ public class KineticWorkableMultiblockMachine extends WorkableMultiblockMachine 
         }
         return 0;
     }
+//    .recipeModifier((/**@type {$MetaMachine}*/ machine,/**@type {$GTRecipe}*/ recipe) -> {
+//            const kineticMachine = machine.getParts().find(part => part instanceof $IKineticMachine)
+//        if (kineticMachine === null) {
+//            return null;
+//        }
+//        let speed = kineticMachine.getKineticHolder().getSpeed()
+//        speed = Math.abs(speed)
+//        let torque = GTValues.V[kineticMachine.getTier()]
+//        if (torque * speed < 512) {
+//            return null;
+//        }
+//        let overclock_grade = kineticMachine.getTier() - 1
+//        let multiplerate = (speed * torque / 512) / Math.pow(2, overclock_grade)
+//        let newrecipe = recipe.copy()
+//        if (newrecipe.duration / multiplerate < 1) {
+//            newrecipe.duration = 1
+//            newrecipe.parallels = multiplerate / 200
+//            let GTrecipemodifier = GTRecipeModifiers.accurateParallel(machine, newrecipe, multiplerate / 200, false)
+//            return GTrecipemodifier.getFirst()
+//        }
+//        else {
+//            newrecipe.duration = newrecipe.duration / multiplerate
+//        }
+//        return newrecipe
+//    })
 }
