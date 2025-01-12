@@ -1,20 +1,32 @@
 package com.mo_guang.ctpp.common.machine.multiblock;
 
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.IParallelHatch;
+import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.FancyMachineUIWidget;
 import com.gregtechceu.gtceu.api.gui.fancy.IFancyUIProvider;
 import com.gregtechceu.gtceu.api.gui.fancy.TooltipsPanel;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
+import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDisplayUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockDisplayText;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
+import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
+import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
+import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.widget.*;
+import com.mo_guang.ctpp.api.CTPPModifierFunction;
+import com.mo_guang.ctpp.api.StressRecipeCapability;
+import com.mo_guang.ctpp.common.machine.IKineticMachine;
 import com.mo_guang.ctpp.common.machine.KineticPartMachine;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
+import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
 import it.unimi.dsi.fastutil.longs.LongSet;
 import it.unimi.dsi.fastutil.longs.LongSets;
 import lombok.Getter;
@@ -22,14 +34,16 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
-public class KineticWorkableMultiblockMachine extends WorkableMultiblockMachine implements IFancyUIMachine, IDisplayUIMachine {
+public class KineticWorkableMultiblockMachine extends KineticMultiblockMachine implements ITieredMachine {
+
     @Getter
-    public LongSet rotateBlocks;
+    public float maxTorque = 0;
+    public int parallels = 1;
+    public List<BlockPos> inputPartsMax = new ArrayList<>();
 
     public KineticWorkableMultiblockMachine(IMachineBlockEntity holder) {
         super(holder);
@@ -38,119 +52,89 @@ public class KineticWorkableMultiblockMachine extends WorkableMultiblockMachine 
     @Override
     public void onStructureFormed() {
         super.onStructureFormed();
-        rotateBlocks = getMultiblockState().getMatchContext().getOrDefault("roBlocks", LongSets.emptySet());
-        updateActiveBlocks(recipeLogic.isWorking());
+        for (IMultiPart part : getParts()) {
+            if(part instanceof KineticPartMachine kineticPart && kineticPart.getIO() == IO.IN){
+                if(kineticPart.getKineticDefinition().torque > maxTorque){
+                    maxTorque = kineticPart.getKineticDefinition().torque;
+                    inputPartsMax.clear();
+                    inputPartsMax.add(kineticPart.getKineticHolder().getBlockPos());
+                }
+                else if(kineticPart.getKineticDefinition().torque == maxTorque){{
+                    inputPartsMax.add(kineticPart.getKineticHolder().getBlockPos());
+                }}
+            }
+        }
     }
 
     @Override
-    public void updateActiveBlocks(boolean active) {
-        super.updateActiveBlocks(active);
-        if (rotateBlocks != null) {
-            for (Long pos : rotateBlocks) {
-                var blockPos = BlockPos.of(pos);
-                var blockEntity = Objects.requireNonNull(getLevel()).getBlockEntity(blockPos);
-                updateRotateBlocks(active,blockEntity);
+    public int getTier() {
+        return GTUtil.getTierByVoltage((long) (maxTorque/4)) + speed >= 128? 1 : 0;
+    }
+
+    public float getTotalInputStress(){
+        float input = 0;
+        for (IMultiPart part : getParts()) {
+            if(part instanceof KineticPartMachine kineticPart && kineticPart.getIO() == IO.IN){
+                input += Math.abs(kineticPart.getKineticHolder().getSpeed()) * kineticPart.getKineticDefinition().torque;
             }
         }
+        return input;
     }
-    public void updateRotateBlocks(boolean active, BlockEntity blockEntity) {
-        if (blockEntity instanceof KineticBlockEntity kineticBlockEntity) {
-            if (active) {
-                kineticBlockEntity.setSpeed(128);
-                kineticBlockEntity.onSpeedChanged(0);
-                kineticBlockEntity.sendData();
-            }
-            else {
-                kineticBlockEntity.setSpeed(0);
-                kineticBlockEntity.onSpeedChanged(128);
-                kineticBlockEntity.sendData();
+
+    @Override
+    public boolean beforeWorking(@Nullable GTRecipe recipe) {
+        boolean result = super.beforeWorking(recipe);
+        previousSpeed = speed;
+        speed = 256;
+        for (IMultiPart part : getParts()){
+            if(part instanceof IKineticMachine kineticPart && inputPartsMax.contains(kineticPart.getKineticHolder().getBlockPos())){
+                speed = Math.min(speed, Math.abs(kineticPart.getKineticHolder().getSpeed()));
             }
         }
+        if(speed != previousSpeed){
+            updateRotateBlocks(result);
+        }
+        return result;
     }
-    //////////////////////////////////////
-    // ********** GUI ***********//
-    //////////////////////////////////////
+
+    /**
+     * use to calculate modifierFunction through rotation speed
+     * 0 < rpm < 64: no change
+     * 64 <= rpm < 128: duration reduction(x0.75)
+     * 128 <= rpm < 256: non_perfect overclock(inputStress multiplied by 4 while duration divided by 2)
+     * 256 <= rpm < 512: perfect overclock(inputStress multiplied by 4 while duration divided by 4)
+     * */
+    public ModifierFunction calculateModifier() {
+        if(speed < 64){
+            return ModifierFunction.IDENTITY;
+        }
+        else if(speed < 128){
+            return ModifierFunction.builder().durationMultiplier(0.75).build();
+        }
+        else if(speed < 256){
+            return ModifierFunction.builder().durationMultiplier(0.5).build().andThen(CTPPModifierFunction.inputStressMultiplier(4));
+        }
+        else{
+            return ModifierFunction.builder().durationMultiplier(0.25).build().andThen(CTPPModifierFunction.inputStressMultiplier(4));
+        }
+    }
 
     @Override
     public void addDisplayText(List<Component> textList) {
-        int numParallels = 0;
-        Optional<IParallelHatch> optional = this.getParts().stream().filter(IParallelHatch.class::isInstance)
-                .map(IParallelHatch.class::cast).findAny();
-        if (optional.isPresent()) {
-            IParallelHatch parallelHatch = optional.get();
-            numParallels = parallelHatch.getCurrentParallel();
+        super.addDisplayText(textList);
+        textList.add(Component.translatable("ctpp.kinetic_workable_multiblock_machine.speed",speed));
+        textList.add(Component.translatable("ctpp.kinetic_workable_multiblock_machine.parallel",parallels));
+        if(speed < 64){
+            textList.add(Component.translatable("ctpp.kinetic_workable_multiblock_machine.null"));
         }
-        MultiblockDisplayText.builder(textList, isFormed())
-                .setWorkingStatus(recipeLogic.isWorkingEnabled(), recipeLogic.isActive())
-                .addMachineModeLine(getRecipeType(), getRecipeTypes().length > 1)
-                .addParallelsLine(numParallels)
-                .addWorkingStatusLine()
-                .addProgressLine(recipeLogic.getProgress(), recipeLogic.getMaxProgress(),
-                        recipeLogic.getProgressPercent())
-                .addOutputLines(recipeLogic.getLastRecipe());
-        getDefinition().getAdditionalDisplay().accept(this, textList);
-        IDisplayUIMachine.super.addDisplayText(textList);
-    }
-
-    @Override
-    public Widget createUIWidget() {
-        var group = new WidgetGroup(0, 0, 182 + 8, 117 + 8);
-        group.addWidget(new DraggableScrollableWidgetGroup(4, 4, 182, 117).setBackground(getScreenTexture())
-                .addWidget(new LabelWidget(4, 5, self().getBlockState().getBlock().getDescriptionId()))
-                .addWidget(new ComponentPanelWidget(4, 17, this::addDisplayText)
-                        .textSupplier(this.getLevel().isClientSide ? null : this::addDisplayText)
-                        .setMaxWidthLimit(200)
-                        .clickHandler(this::handleDisplayClick)));
-        group.setBackground(GuiTextures.BACKGROUND_INVERSE);
-        return group;
-    }
-
-    @Override
-    public ModularUI createUI(Player entityPlayer) {
-        return new ModularUI(198, 208, this, entityPlayer).widget(new FancyMachineUIWidget(this, 198, 208));
-    }
-
-    @Override
-    public List<IFancyUIProvider> getSubTabs() {
-        return getParts().stream().filter(Objects::nonNull).map(IFancyUIProvider.class::cast).toList();
-    }
-
-    @Override
-    public void attachTooltips(TooltipsPanel tooltipsPanel) {
-        for (IMultiPart part : getParts()) {
-            part.attachFancyTooltipsToController(this, tooltipsPanel);
+        else if(speed < 128){
+            textList.add(Component.translatable("ctpp.kinetic_workable_multiblock_machine.reduction"));
+        }
+        else if(speed < 256){
+            textList.add(Component.translatable("ctpp.kinetic_workable_multiblock_machine.overclock"));
+        }
+        else{
+            textList.add(Component.translatable("ctpp.kinetic_workable_multiblock_machine.perfect_overclock"));
         }
     }
-    public double getTotalInputStress() {
-        for (IMultiPart part : getParts()) {
-            if (part instanceof KineticPartMachine) {
-            }
-        }
-        return 0;
-    }
-//    .recipeModifier((/**@type {$MetaMachine}*/ machine,/**@type {$GTRecipe}*/ recipe) -> {
-//            const kineticMachine = machine.getParts().find(part => part instanceof $IKineticMachine)
-//        if (kineticMachine === null) {
-//            return null;
-//        }
-//        let speed = kineticMachine.getKineticHolder().getSpeed()
-//        speed = Math.abs(speed)
-//        let torque = GTValues.V[kineticMachine.getTier()]
-//        if (torque * speed < 512) {
-//            return null;
-//        }
-//        let overclock_grade = kineticMachine.getTier() - 1
-//        let multiplerate = (speed * torque / 512) / Math.pow(2, overclock_grade)
-//        let newrecipe = recipe.copy()
-//        if (newrecipe.duration / multiplerate < 1) {
-//            newrecipe.duration = 1
-//            newrecipe.parallels = multiplerate / 200
-//            let GTrecipemodifier = GTRecipeModifiers.accurateParallel(machine, newrecipe, multiplerate / 200, false)
-//            return GTrecipemodifier.getFirst()
-//        }
-//        else {
-//            newrecipe.duration = newrecipe.duration / multiplerate
-//        }
-//        return newrecipe
-//    })
 }

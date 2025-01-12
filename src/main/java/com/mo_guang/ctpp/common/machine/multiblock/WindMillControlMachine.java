@@ -12,7 +12,7 @@ import net.minecraft.network.chat.Component;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WindMillControlMachine extends WorkableElectricMultiblockMachine {
+public class WindMillControlMachine extends KineticOutputMachine {
     public int efficiency = 0;
     public float TotalOutput = 0;
     public WindMillControlMachine(IMachineBlockEntity holder) {
@@ -51,9 +51,9 @@ public class WindMillControlMachine extends WorkableElectricMultiblockMachine {
     public void addDisplayText(List<Component> textList) {
         super.addDisplayText(textList);
         if (isFormed()) {
-            textList.add(Component.translatable("multiblock.ctpp.windmill_control_center1", String.format("%.1f",efficiency)));
+            textList.add(Component.translatable("multiblock.ctpp.windmill_control_center1", String.format("%d",efficiency)));
             textList.add(Component.translatable("multiblock.ctpp.windmill_control_center2", String.format("%.1f",TotalOutput)));
-            textList.add(Component.translatable("multiblock.ctpp.windmill_control_center.efficiency", String.format("%.1f",efficiency*100)));
+            textList.add(Component.translatable("multiblock.ctpp.windmill_control_center.efficiency", String.format("%d",efficiency*100)));
             textList.add(Component.translatable("multiblock.ctpp.windmill_control_center.output",String.format("%.1f",(TotalOutput + 512) * efficiency)));
         }
     }

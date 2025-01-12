@@ -12,10 +12,7 @@ import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.mo_guang.ctpp.api.CTPPPartAbility;
-import com.mo_guang.ctpp.common.machine.multiblock.KineticGeneratorMachine;
-import com.mo_guang.ctpp.common.machine.multiblock.KineticTurbineMachine;
-import com.mo_guang.ctpp.common.machine.multiblock.KineticWorkableMultiblockMachine;
-import com.mo_guang.ctpp.common.machine.multiblock.WindMillControlMachine;
+import com.mo_guang.ctpp.common.machine.multiblock.*;
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.Create;
 import net.minecraft.ChatFormatting;
@@ -33,6 +30,7 @@ public class CTPPMultiblockMachines {
             .rotationState(RotationState.NON_Y_AXIS)
             .appearanceBlock(AllBlocks.ANDESITE_CASING)
             .recipeType(CTPPRecipeTypes.SMASHING_FACTORY_RECIPES)
+            .recipeModifier(CTPPRecipeModifiers.KINETIC_OVERCLOCK)
             .pattern(definition -> FactoryBlockPattern.start()
                     .aisle("AAAAA", "ABBBA", "ABBBA")
                     .aisle("AAAAA", "A   A", "AC CA")
@@ -85,7 +83,7 @@ public class CTPPMultiblockMachines {
             .tooltips(Component.translatable("kinetic_output"),
                     Component.translatable("rotor_holder_upgrade"),
                     Component.translatable("steam_up_hv_loss").withStyle(ChatFormatting.RED))
-            .recipeModifier(KineticTurbineMachine::recipeModifier)
+            .recipeModifiers(KineticTurbineMachine::recipeModifier,CTPPRecipeModifiers.KINETIC_ADJUST)
             .pattern(definition -> FactoryBlockPattern.start()
                 .aisle("CCCC", "CSSC", "CCCC")
                 .aisle("CSSC", "TGGT", "CSSC")
@@ -105,8 +103,9 @@ public class CTPPMultiblockMachines {
     public static MultiblockMachineDefinition SEAWEED_FARM = REGISTRATE.multiblock("seaweed_farm", KineticWorkableMultiblockMachine::new)
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeType(CTPPRecipeTypes.SEAWEED_FARM)
+            .recipeModifier(CTPPRecipeModifiers.KINETIC_OVERCLOCK)
             .tooltips(Component.translatable("kinetic_overclock"),
-                    Component.translatable("subtick_overclock").withStyle(ChatFormatting.YELLOW))
+                    Component.translatable("actual_speed").withStyle(ChatFormatting.YELLOW))
             .appearanceBlock(AllBlocks.ANDESITE_CASING)
             .pattern(definition -> FactoryBlockPattern.start()
             .aisle("CNNNNNC", "CGGGGGC", "CGGGGGC", "CGGGGGC", "CNNNNNC")
@@ -135,12 +134,13 @@ public class CTPPMultiblockMachines {
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeType(CTPPRecipeTypes.WINDMILL_CONTROL)
             .appearanceBlock(AllBlocks.BRASS_CASING)
+            .recipeModifiers(WindMillControlMachine::recipeModifier,CTPPRecipeModifiers.KINETIC_ADJUST)
             .tooltips(Component.translatable("windmill_control_center").withStyle(ChatFormatting.GRAY),
                     Component.translatable("ctpp.windmill_control_center.mechanism"),
                     Component.translatable("ctpp.windmill_control_center.output").withStyle(ChatFormatting.RED))
             .pattern(definition -> FactoryBlockPattern.start()
                 .aisle("BBBBB", "CBBBC", "CBBBC", "#CCC#")
-                .aisle("BBBBB", "BDBDB", "BDBDB", "#C#C#")
+                .aisle("BBBBB", "BDBDB", "BDBDB", "#CEC#")
                 .aisle("BBBBB", "CB@BC", "CBBBC", "#CCC#")
                 .where("A", Predicates.blocks(Blocks.STONE))
                 .where("B", Predicates.blocks(AllBlocks.BRASS_CASING.get())
@@ -149,18 +149,19 @@ public class CTPPMultiblockMachines {
                 .where("C", Predicates.frames(GTMaterials.TreatedWood))
                 .where("#", Predicates.any())
                 .where("D", Predicates.blocks(CASING_STEEL_SOLID.get()))
+                    .where("E", Predicates.blocks(AllBlocks.WATER_WHEEL.get()))
                 .where("@", Predicates.controller(Predicates.blocks(definition.get())))
                 .build())
             .workableCasingRenderer(Create.asResource("block/brass_casing"), GTCEu.id("block/machines/miner"), false)
             .register();
-    public static MultiblockMachineDefinition BOOM_OF_CREATE = REGISTRATE.multiblock("boom_of_create", KineticWorkableMultiblockMachine::new)
+    public static MultiblockMachineDefinition BOOM_OF_CREATE = REGISTRATE.multiblock("boom_of_create", KineticOutputMachine::new)
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeType(CTPPRecipeTypes.BOOM_OF_CREATE)
             .appearanceBlock(CASING_STEEL_SOLID)
+            .recipeModifier(CTPPRecipeModifiers.KINETIC_ADJUST)
             .tooltips(Component.translatable("boom_of_create").withStyle(ChatFormatting.GRAY),
                     Component.translatable("ctpp.boom_of_create.basic"),
                     Component.translatable("ctpp.boom_of_create.coolant"),
-                    Component.translatable("ctpp.boom_of_create.overclock"),
                     Component.translatable("ctpp.boom_of_create.safe"))
             .pattern(definition -> FactoryBlockPattern.start()
                 .aisle("######AAA######", "######AAA######", "######AAA######", "######AAA######", "######AAA######", "######AAA######", "######AAA######", "######AAA######", "######AAA######")

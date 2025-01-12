@@ -38,6 +38,14 @@ public class ChineseLangHandler {
         provider.add("ctpp.boom_of_create.coolant", "持续运行时会逐渐减少电力消耗，最低可为0");
         provider.add("ctpp.boom_of_create.overclock", "与三峡大坝一样，必须有足够的应力输出口才会开始工作");
         provider.add("ctpp.boom_of_create.safe", "§a应力飞升之路§r");
+        provider.add("kinetic_overclock", "拥有应力超频机制，根据输入的总应力大小获得并行数，根据输入的转速大小拥有不同的效果：\n转速 < 64:无效果\n转速 < 128:获得25%耗时减免\n转速 < 256:获得一次超频机会\n转速 < 512:获得一次无损超频机会");
+        provider.add("actual_speed", "输入转速以等级最高的应力仓的转速为准");
+        provider.add("ctpp.kinetic_workable_multiblock_machine.speed","输入转速：%drpm");
+        provider.add("ctpp.kinetic_workable_multiblock_machine.parallel","并行数： %d");
+        provider.add("ctpp.kinetic_workable_multiblock_machine.null","状态：无");
+        provider.add("ctpp.kinetic_workable_multiblock_machine.reduction","状态：配方耗时减免x0.75");
+        provider.add("ctpp.kinetic_workable_multiblock_machine.overclock","状态：超频");
+        provider.add("ctpp.kinetic_workable_multiblock_machine.perfect_overclock","状态：无损超频");
 
         for (var tier : GTMachineUtils.ALL_TIERS) {
             provider.add(CTPPMachines.KINETIC_INPUT_BOX[tier].getBlock(), GTValues.VNF[tier] + " 应力输入仓");
@@ -57,6 +65,8 @@ public class ChineseLangHandler {
         provider.add("gtceu.seaweed_farm", "海草养殖");
         provider.add("gtceu.windmill_control_center", "风车控制中心");
         provider.add("gtceu.boom_of_create", "聚爆应力厂");
+        provider.add("gtceu.smashing_factory_recipes", "粉碎工厂");
+        provider.add("gtceu.kinetic_mixer", "应力搅拌");
 
 
         provider.add(CTPPMultiblockMachines.SMASHING_FACTORY.getBlock(), "粉碎工厂");

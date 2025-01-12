@@ -31,6 +31,9 @@ public class KineticPartMachine extends TieredIOPartMachine implements IKineticM
         super(holder, tier, io);
         this.stressTrait = createStressTrait(args);
     }
+    public IO getIO(){
+        return this.io;
+    }
 
     //////////////////////////////////////
     // ***** Initialization *****//

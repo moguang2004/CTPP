@@ -27,6 +27,14 @@ public class EnglishLangHandler {
         provider.add("ctpp.boom_of_create.coolant", "Electricity consumption gradually decreases during continuous operation, with a minimum of 0.");
         provider.add("ctpp.boom_of_create.overclock", "Like the Three Gorges Dam, sufficient stress output capacity is required for it to start working.");
         provider.add("ctpp.boom_of_create.safe", "§aThe Path to Stress Ascension§r");
+        provider.add("kinetic_overclock", "Has a stress overclocking mechanism that determines parallelism based on the total input stress. The effects vary based on input speed:\nSpeed < 64: No effect\nSpeed < 128: 25% time reduction\nSpeed < 256: One overclocking opportunity\nSpeed < 512: One lossless overclocking opportunity");
+        provider.add("actual_speed", "The input speed is based on the highest-speed stress chamber.");
+        provider.add("ctpp.kinetic_workable_multiblock_machine.speed", "Input speed: %drpm");
+        provider.add("ctpp.kinetic_workable_multiblock_machine.parallel", "Parallelism: %d");
+        provider.add("ctpp.kinetic_workable_multiblock_machine.null", "Status: None");
+        provider.add("ctpp.kinetic_workable_multiblock_machine.reduction", "Status: Recipe time reduction x0.75");
+        provider.add("ctpp.kinetic_workable_multiblock_machine.overclock", "Status: Overclocked");
+        provider.add("ctpp.kinetic_workable_multiblock_machine.perfect_overclock", "Status: Lossless overclocked");
 
     }
 }

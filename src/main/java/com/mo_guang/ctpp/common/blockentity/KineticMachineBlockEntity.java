@@ -19,6 +19,7 @@ import com.simibubi.create.content.kinetics.base.IRotate;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import com.simibubi.create.content.kinetics.base.KineticEffectHandler;
 import com.simibubi.create.foundation.utility.Lang;
+import com.simibubi.create.infrastructure.config.AllConfigs;
 import com.tterrag.registrate.util.OneTimeEventReceiver;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
 import lombok.Getter;
@@ -154,7 +155,7 @@ public class KineticMachineBlockEntity extends KineticBlockEntity implements IMa
 
     public float scheduleWorking(float su, boolean simulate) {
         if (getDefinition().isSource()) {
-            float speed = Math.min(512f, su / getDefinition().getTorque());
+            float speed = Math.min(AllConfigs.server().kinetics.maxRotationSpeed.get(), su / getDefinition().getTorque());
             if (!simulate) {
                 workingSpeed = speed;
                 updateGeneratedRotation();

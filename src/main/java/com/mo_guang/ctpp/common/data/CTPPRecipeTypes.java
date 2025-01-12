@@ -91,8 +91,6 @@ public class CTPPRecipeTypes {
                         .duration(Math.max((builder.duration / 2), 1))
                         .buildRawRecipe();
                 new CTPPRecipeBuilder(newrecipe,KINETIC_MIXER_RECIPES).rpm(64)
-                        .noEUt()
-                        .inputStress(2048)
                         .save(provider);
         });
         MACERATOR_RECIPES.onRecipeBuild((builder, provider) ->{
