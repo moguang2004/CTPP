@@ -1,12 +1,16 @@
 package com.mo_guang.ctpp.common.data;
 
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.data.GTSoundEntries;
+import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 import com.mo_guang.ctpp.common.condition.RPMCondition;
@@ -95,13 +99,16 @@ public class CTPPRecipeTypes {
         });
         MACERATOR_RECIPES.onRecipeBuild((builder, provider) ->{
             assert SMASHING_FACTORY_RECIPES != null;
-            var newrecipe = SMASHING_FACTORY_RECIPES.copyFrom(builder)
-                    .duration(Math.max((builder.duration / 2), 1))
-                    .buildRawRecipe();
-            new CTPPRecipeBuilder(newrecipe,SMASHING_FACTORY_RECIPES).rpm(64)
-                    .noEUt()
-                    .inputStress(2048)
-                    .save(provider);
+            if(GTUtil.getTierByVoltage(builder.EUt()) <= GTValues.LV) {
+                var newrecipe = SMASHING_FACTORY_RECIPES.copyFrom(builder)
+                        .duration(Math.max((builder.duration / 2), 1))
+                        .buildRawRecipe();
+                new CTPPRecipeBuilder(newrecipe, SMASHING_FACTORY_RECIPES).rpm(64)
+                        .noEUt()
+                        .inputStress(builder.EUt() * 512)
+                        .chancedOutputLogic(ItemRecipeCapability.CAP, ChanceLogic.NONE)
+                        .save(provider);
+            }
         });
     }
 }

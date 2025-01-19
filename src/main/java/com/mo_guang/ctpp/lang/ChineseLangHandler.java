@@ -32,7 +32,7 @@ public class ChineseLangHandler {
         provider.add("multiblock.ctpp.windmill_control_center.output", "总应力输出：§a%dsu§r");
         provider.add("windmill_control_center", "风力总控！越多越强！");
         provider.add("ctpp.windmill_control_center.mechanism", "会检测多方块周围半径16格内的风车轴承，总输出的应力为：周围的风车轴承数x(周围风车总应力输出 + 512)。§4最多控制16个风车！§r");
-        provider.add("ctpp.windmill_control_center.output", "请确保应力输出仓大小足以输出全部应力，否则机器不会工作");
+        provider.add("ctpp.windmill_control_center.output", "输出应力越多，机器顶部的水车旋转会越快");
         provider.add("boom_of_create", "艺术就是爆炸！");
         provider.add("ctpp.boom_of_create.basic", "大型聚爆应力厂使用爆炸物以及一小部分电力运行，以此产生大量应力");
         provider.add("ctpp.boom_of_create.coolant", "持续运行时会逐渐减少电力消耗，最低可为0");

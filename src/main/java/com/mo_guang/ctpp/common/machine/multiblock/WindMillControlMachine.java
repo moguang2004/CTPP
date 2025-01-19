@@ -2,12 +2,16 @@ package com.mo_guang.ctpp.common.machine.multiblock;
 
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
+import com.mo_guang.ctpp.common.machine.IKineticMachine;
 import com.simibubi.create.content.contraptions.bearing.WindmillBearingBlockEntity;
+import com.simibubi.create.infrastructure.config.AllConfigs;
 import net.minecraft.network.chat.Component;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,32 +25,23 @@ public class WindMillControlMachine extends KineticOutputMachine {
 
     @Override
     public boolean onWorking() {
-        var level = getLevel();
-        var pos = getPos();
         if(getOffsetTimer() % 20 == 0) {
-            var WindMillAround = new ArrayList<>();
-            TotalOutput = 0;
-            for (int x = -10; x < 11; x++) {
-                for (int y = -10; y < 11; y++) {
-                    for (int z = -10; z < 11; z++) {
-                        if (x == 0 && y == 0 && z == 0) {
-                        } else {
-                            var kineticBlockEntity = level.getBlockEntity(pos.offset(x, y, z));
-                            if (kineticBlockEntity != null && kineticBlockEntity instanceof WindmillBearingBlockEntity windmillBearingBlockEntity) {
-                                var speed = windmillBearingBlockEntity.getGeneratedSpeed();
-                                if(speed != 0){
-                                    WindMillAround.add(speed);
-                                    TotalOutput += speed * 512;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            efficiency = Math.min(WindMillAround.size(),16);
+            calculateWindmillAround();
         }
         return super.onWorking();
     }
+
+    @Override
+    public boolean beforeWorking(@Nullable GTRecipe recipe) {
+        boolean result = super.beforeWorking(recipe);
+        previousSpeed = speed;
+        speed = getOutputSpeed();
+        if(speed != previousSpeed){
+            updateRotateBlocks(result);
+        }
+        return result;
+    }
+
     @Override
     public void addDisplayText(List<Component> textList) {
         super.addDisplayText(textList);
@@ -63,5 +58,31 @@ public class WindMillControlMachine extends KineticOutputMachine {
             return add.andThen(ModifierFunction.builder().outputModifier(ContentModifier.multiplier(wmachine.efficiency)).build());
         }
         return ModifierFunction.NULL;
+    }
+    public float getOutputSpeed() {
+        calculateWindmillAround();
+        return Math.min((512 + TotalOutput) * efficiency / 512, AllConfigs.server().kinetics.maxRotationSpeed.get());
+    }
+    public void calculateWindmillAround() {
+        var WindMillAround = new ArrayList<>();
+        TotalOutput = 0;
+        for (int x = -10; x < 11; x++) {
+            for (int y = -10; y < 11; y++) {
+                for (int z = -10; z < 11; z++) {
+                    if (x == 0 && y == 0 && z == 0) {
+                    } else {
+                        var kineticBlockEntity = getLevel().getBlockEntity(getPos().offset(x, y, z));
+                        if (kineticBlockEntity instanceof WindmillBearingBlockEntity windmillBearingBlockEntity) {
+                            var speed = windmillBearingBlockEntity.getGeneratedSpeed();
+                            if(speed != 0){
+                                WindMillAround.add(speed);
+                                TotalOutput += speed * 512;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        efficiency = Math.min(WindMillAround.size(),16);
     }
 }
