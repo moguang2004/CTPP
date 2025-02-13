@@ -1,0 +1,5 @@
+{
+    "ldlib": {
+        "connection": "ctpp:block/create/brass_casing_connected"
+    }
+}

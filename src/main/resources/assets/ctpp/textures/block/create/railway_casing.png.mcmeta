@@ -1,0 +1,5 @@
+{
+    "ldlib": {
+        "connection": "ctpp:block/create/railway_casing_connected"
+    }
+}

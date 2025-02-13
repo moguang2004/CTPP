@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.pattern.Predicates;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.mo_guang.ctpp.CTPP;
 import com.mo_guang.ctpp.api.CTPPPartAbility;
 import com.mo_guang.ctpp.common.machine.multiblock.*;
 import com.simibubi.create.AllBlocks;
@@ -45,7 +46,7 @@ public class CTPPMultiblockMachines {
                     .where("@",Predicates.controller(blocks(definition.getBlock())))
                     .where(" ",Predicates.any())
                     .build())
-            .workableCasingRenderer(Create.asResource("block/andesite_casing"),GTCEu.id("block/multiblock/large_chemical_reactor"))
+            .workableCasingRenderer(CTPP.id("block/create/andesite_casing"),GTCEu.id("block/multiblock/large_chemical_reactor"))
             .register();
     public static MultiblockMachineDefinition KINETIC_GENERATOR = REGISTRATE.multiblock("kinetic_generator", KineticGeneratorMachine::new)
             .rotationState(RotationState.NON_Y_AXIS)
@@ -128,7 +129,7 @@ public class CTPPMultiblockMachines {
             .where("G", Predicates.blocks(GTBlocks.CASING_TEMPERED_GLASS.get()))
             .where("#", Predicates.blocks(Blocks.WATER))
             .build())
-            .workableCasingRenderer(Create.asResource("block/andesite_casing"), GTCEu.id("block/multiblock/coke_oven"), false)
+            .workableCasingRenderer(CTPP.id("block/create/andesite_casing"), GTCEu.id("block/multiblock/coke_oven"), false)
             .register();
     public static MultiblockMachineDefinition WINDMILL_CONTROL_CENTER = REGISTRATE.multiblock("windmill_control_center", WindMillControlMachine::new)
             .rotationState(RotationState.NON_Y_AXIS)
@@ -152,7 +153,7 @@ public class CTPPMultiblockMachines {
                     .where("E", Predicates.blocks(AllBlocks.WATER_WHEEL.get()))
                 .where("@", Predicates.controller(Predicates.blocks(definition.get())))
                 .build())
-            .workableCasingRenderer(Create.asResource("block/brass_casing"), GTCEu.id("block/machines/miner"), false)
+            .workableCasingRenderer(CTPP.id("block/create/brass_casing"), GTCEu.id("block/machines/miner"), false)
             .register();
     public static MultiblockMachineDefinition BOOM_OF_CREATE = REGISTRATE.multiblock("boom_of_create", KineticOutputMachine::new)
             .rotationState(RotationState.NON_Y_AXIS)

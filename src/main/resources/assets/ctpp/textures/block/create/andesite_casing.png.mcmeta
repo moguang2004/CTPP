@@ -1,0 +1,5 @@
+{
+    "ldlib": {
+        "connection": "ctpp:block/create/andesite_casing_connected"
+    }
+}
