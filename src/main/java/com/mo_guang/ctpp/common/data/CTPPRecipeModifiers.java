@@ -19,7 +19,7 @@ public class CTPPRecipeModifiers {
     public static final RecipeModifier KINETIC_OVERCLOCK = ((machine, recipe) -> {
         if (machine instanceof KineticWorkableMultiblockMachine kmachine) {
             var modifier = kmachine.calculateModifier();
-            kmachine.parallels = ParallelLogic.getParallelAmount(kmachine,modifier.apply(recipe),2147483647);
+            kmachine.parallels = (int) Math.sqrt(ParallelLogic.getParallelAmount(kmachine,modifier.apply(recipe),2147483647));
             return CTPPModifierFunction.accurateParallel(kmachine,recipe,kmachine.parallels).compose(modifier);
         }
         return ModifierFunction.IDENTITY;

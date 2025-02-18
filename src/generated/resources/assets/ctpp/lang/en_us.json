@@ -65,7 +65,7 @@
   "ctpp.kinetic_workable_multiblock_machine.overclock": "Status: Overclocked",
   "ctpp.kinetic_workable_multiblock_machine.parallel": "Parallelism: %d",
   "ctpp.kinetic_workable_multiblock_machine.perfect_overclock": "Status: Lossless overclocked",
-  "ctpp.kinetic_workable_multiblock_machine.reduction": "Status: Recipe time reduction x0.75",
+  "ctpp.kinetic_workable_multiblock_machine.reduction": "Status: Recipe time reduction x0.8",
   "ctpp.kinetic_workable_multiblock_machine.speed": "Input speed: %drpm",
   "ctpp.stress_input": "Stress Input：%dsu",
   "ctpp.stress_output": "Stress Output：%dsu",

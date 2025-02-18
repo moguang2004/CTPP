@@ -100,7 +100,7 @@ public class KineticWorkableMultiblockMachine extends KineticMultiblockMachine i
     /**
      * use to calculate modifierFunction through rotation speed
      * 0 < rpm < 64: no change
-     * 64 <= rpm < 128: duration reduction(x0.75)
+     * 64 <= rpm < 128: duration reduction(x0.8)
      * 128 <= rpm < 256: non_perfect overclock(inputStress multiplied by 4 while duration divided by 2)
      * 256 <= rpm < 512: perfect overclock(inputStress multiplied by 4 while duration divided by 4)
      * */
@@ -109,7 +109,7 @@ public class KineticWorkableMultiblockMachine extends KineticMultiblockMachine i
             return ModifierFunction.IDENTITY;
         }
         else if(speed < 128){
-            return ModifierFunction.builder().durationMultiplier(0.75).build();
+            return ModifierFunction.builder().durationMultiplier(0.8).build();
         }
         else if(speed < 256){
             return ModifierFunction.builder().durationMultiplier(0.5).build().andThen(CTPPModifierFunction.inputStressMultiplier(4));

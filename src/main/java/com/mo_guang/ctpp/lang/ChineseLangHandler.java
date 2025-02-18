@@ -43,7 +43,7 @@ public class ChineseLangHandler {
         provider.add("ctpp.kinetic_workable_multiblock_machine.speed","输入转速：%drpm");
         provider.add("ctpp.kinetic_workable_multiblock_machine.parallel","并行数： %d");
         provider.add("ctpp.kinetic_workable_multiblock_machine.null","状态：无");
-        provider.add("ctpp.kinetic_workable_multiblock_machine.reduction","状态：配方耗时减免x0.75");
+        provider.add("ctpp.kinetic_workable_multiblock_machine.reduction","状态：配方耗时减免x0.8");
         provider.add("ctpp.kinetic_workable_multiblock_machine.overclock","状态：超频");
         provider.add("ctpp.kinetic_workable_multiblock_machine.perfect_overclock","状态：无损超频");
 
