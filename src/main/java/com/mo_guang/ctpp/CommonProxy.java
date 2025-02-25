@@ -1,6 +1,7 @@
 package com.mo_guang.ctpp;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.event.MaterialEvent;
+import com.mo_guang.ctpp.config.MainConfig;
 import com.mo_guang.ctpp.core.CTPPCreativeModeTabs;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -19,6 +20,7 @@ public class CommonProxy {
         CTPPCreativeModeTabs.init();
         CTPPRegistration.REGISTRATE.registerRegistrate();
         CTPPDatagen.init();
+        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, MainConfig.SERVER_SPEC);
     }
 
 }
