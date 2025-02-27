@@ -13,7 +13,7 @@ import static com.mo_guang.ctpp.CTPPRegistration.REGISTRATE;
 public class CTPPCreativeModeTabs {
     public static RegistryEntry<CreativeModeTab> MACHINE = REGISTRATE.defaultCreativeTab("machine",
                     builder -> builder.displayItems(new GTCreativeModeTabs.RegistrateDisplayItemsGenerator("machine", REGISTRATE))
-                            .icon(Items.GRASS_BLOCK::getDefaultInstance)
+                            .icon(() -> CTPPMachines.KINETIC_INPUT_BOX[1].asStack())
                             .title(REGISTRATE.addLang("itemGroup", CTPP.id("machine"), "CTPP Machines"))
                             .build())
             .register();

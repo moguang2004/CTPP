@@ -11,6 +11,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 public class CommonProxy {
     public CommonProxy() {
         init();
+        MainConfig.init();
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
     }
 
@@ -20,7 +21,6 @@ public class CommonProxy {
         CTPPCreativeModeTabs.init();
         CTPPRegistration.REGISTRATE.registerRegistrate();
         CTPPDatagen.init();
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, MainConfig.SERVER_SPEC);
     }
 
 }
