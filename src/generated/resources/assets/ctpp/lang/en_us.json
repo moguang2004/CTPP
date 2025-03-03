@@ -57,10 +57,14 @@
   "block.ctpp.zpm_kinetic_input_box": "§cElite Kinetic Input Box III§r",
   "block.ctpp.zpm_kinetic_output_box": "§cElite Kinetic Output Box III§r",
   "boom_of_create": "Art is an explosion!",
-  "ctpp.boom_of_create.basic": "The Large Explosion Stress Plant operates using explosives and a small amount of electricity to generate massive stress.",
+  "ctpp.boom_of_create.basic": "The Explosive Vortex Stress Induction System (EVSIS) using explosives and a small amount of electricity to generate massive stress.",
   "ctpp.boom_of_create.coolant": "Electricity consumption gradually decreases during continuous operation, with a minimum of 0.",
   "ctpp.boom_of_create.overclock": "Like the Three Gorges Dam, sufficient stress output capacity is required for it to start working.",
   "ctpp.boom_of_create.safe": "§aThe Path to Stress Ascension§r",
+  "ctpp.kinetic_generator.basic": "The base conversion efficiency from stress to EU is 160:1",
+  "ctpp.kinetic_generator.core": "Using a Block of Graphene as the core increases efficiency by §a10%§r",
+  "ctpp.kinetic_generator.extrict": "Requires at least 512 SU to activate the machine",
+  "ctpp.kinetic_generator.upgrade": "Each level of coil tier improves total efficiency by §a10%§r (initial value: 90%)",
   "ctpp.kinetic_workable_multiblock_machine.null": "Status: None",
   "ctpp.kinetic_workable_multiblock_machine.overclock": "Status: Overclocked",
   "ctpp.kinetic_workable_multiblock_machine.parallel": "Parallelism: %d",
@@ -86,5 +90,44 @@
   "recipe.condition.rpm.tooltip": "RPM: %d",
   "rotor_holder_upgrade": "Each level of the rotor holder upgrade increases turbine efficiency by §610%§r",
   "steam_up_hv_loss": "Steam-type machines lose 10% efficiency for each voltage tier above §6HV§r",
-  "windmill_control_center": "Windmill Master Control! The more, the stronger!"
+  "windmill_control_center": "Windmill Master Control! The more, the stronger!",
+  
+
+  "gtceu.boom_of_create": "Explosive Vortex Stress Induction (EVSI)",
+  "gtceu.kinetic_generator": "Kinetic Generation",
+  "gtceu.kinetic_mixer": "Kinetic Mixer",
+  "gtceu.kinetic_steam_turbine": "Steam Powered",
+  "gtceu.seaweed_farm": "Seaweed Farming",
+  "gtceu.smashing_factory_recipes": "Smashing",
+  "gtceu.windmill_control_center": "Windmill Control",
+
+  "config.screen.ctpp": "CTPP Configuration",
+
+  "config.ctpp.option.gtmConfig": "Classic GTM Linkage Machinery Configuration",
+  "config.ctpp.option.enableGTMKineticOutputBox": "Enable GTM Kinetic Output Box",
+  "config.ctpp.option.kineticInputBoxTorqueMultiplier": "Kinetic Input Box Torque Multiplier",
+  "config.ctpp.option.kineticOutputBoxTorqueMultiplier": "Kinetic Output Box Torque Multiplier",
+  "config.ctpp.option.enableGTMKineticCreateMixer": "Enable GTM Kinetic Mixer",
+  "config.ctpp.option.kineticCreateMixerSpeedMultiplier": "Kinetic Mixer Speed Multiplier Compared to Mixer",
+  "config.ctpp.option.kineticCreateMixerRPMRequirement": "Kinetic Mixer RPM Requirement",
+  "config.ctpp.option.enableGTMElectricGearBox": "Enable Electric Gearbox",
+
+  "config.ctpp.option.ctnhConfig": "CTNH Machinery Configuration",
+  "config.ctpp.option.enableSmashingFactory": "Enable Smashing Factory",
+  "config.ctpp.option.smashingFactoryMaximumProcessingCapacity": "Smashing Factory's Max Capacity (Integer for Voltage Tier)",
+  "config.ctpp.option.smashingFactorySpeedMultiplier": "Smashing Factory Speed Multiplier Compared to Maceration",
+  "config.ctpp.option.smashingFactoryRPMRequirement": "Smashing Factory RPM Requirement",
+  "config.ctpp.option.smashingFactoryStressRequirement": "Smashing Factory Stress Load Factor (Recipe's Voltage × This Value)",
+
+  "config.ctpp.option.enableKineticGenerator": "Enable Kinetic Generator",
+  "config.ctpp.option.kineticGeneratorGeneratingBoost": "Kinetic Generator's EU Generation Boost",
+  "config.ctpp.option.kineticGeneratorGeneratingRequireLubricant": "Kinetic Generation Require Lubricant",
+  "config.ctpp.option.kineticGeneratorGeneratingRequireLubricantAmount": "Kinetic Generation Require Lubricant Amount",
+ 
+  "config.ctpp.option.enableKineticSteamTurbine": "Enable Kinetic Steam Turbine",
+  "config.ctpp.option.steamPoweredKineticGeneratingBoost": "Steam Powered's Stress Output Boost",
+  "config.ctpp.option.enableSeaweedFarm": "Enable Seaweed Farm",
+  "config.ctpp.option.enableWindmillControlCenter": "Enable Windmill Control Center",
+  "config.ctpp.option.enableBoomOfCreate": "Enable Boom Of Create"
+ 
 }

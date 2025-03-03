@@ -11,10 +11,13 @@ import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @Mod(CTPP.MODID)
 public class CTPP {
     public static final String MODID = "ctpp";
-
+    public static final Logger LOGGER = LoggerFactory.getLogger(MODID);
     public CTPP() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.addGenericListener(MachineDefinition.class, EventHandler::registerMachines);

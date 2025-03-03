@@ -75,5 +75,34 @@ public class ChineseLangHandler {
         provider.add(CTPPMultiblockMachines.SEAWEED_FARM.getBlock(), "海草农场");
         provider.add(CTPPMultiblockMachines.WINDMILL_CONTROL_CENTER.getBlock(), "风车控制中心");
         provider.add(CTPPMultiblockMachines.BOOM_OF_CREATE.getBlock(), "大型聚爆应力厂");
+
+        provider.add("config.screen.ctpp", "CTPP设置");
+
+        provider.add("config.ctpp.option.gtmConfig", "GTM经典联动联动机器配置");
+        provider.add("config.ctpp.option.ctnhConfig", "CTNH机器配置");
+      
+        provider.add("config.ctpp.option.enableGTMKineticOutputBox", "是否启用GTM的应力输出仓");
+        provider.add("config.ctpp.option.kineticInputBoxTorqueMultiplier", "应力输入仓的扭矩乘数");
+        provider.add("config.ctpp.option.kineticOutputBoxTorqueMultiplier", "应力输出仓的扭矩乘数");
+        provider.add("config.ctpp.option.enableGTMKineticCreateMixer", "是否启用GTM的应力搅拌机");
+        provider.add("config.ctpp.option.kineticCreateMixerSpeedMultiplier", "比起同等级的电动搅拌机，应力搅拌机的处理速度倍率");
+        provider.add("config.ctpp.option.kineticCreateMixerRPMRequirement", "应力搅拌转速要求");
+        provider.add("config.ctpp.option.enableGTMElectricGearBox", "是否启用GTM的电动齿轮箱");
+      
+        provider.add("config.ctpp.option.enableSmashingFactory", "是否启用CTNH的粉碎工厂");
+        provider.add("config.ctpp.option.smashingFactoryMaximumProcessingCapacity", "粉碎工厂的最大处理能力（用整数来表示电压级）");
+        provider.add("config.ctpp.option.smashingFactorySpeedMultiplier", "比起同等级的粉碎机，粉碎工厂的处理速度倍率");
+        provider.add("config.ctpp.option.smashingFactoryRPMRequirement", "粉碎工厂的转速要求");
+        provider.add("config.ctpp.option.smashingFactoryStressRequirement", "粉碎工厂的应力要求（等于原配方的电压需求乘以该倍数）");
+        provider.add("config.ctpp.option.enableKineticGenerator", "是否启用CTNH的应力发电机");
+        provider.add("config.ctpp.option.kineticGeneratorGeneratingBoost", "应力发电机的电力产出加成");
+        provider.add("config.ctpp.option.kineticGeneratorGeneratingRequireLubricant", "应力发电是否消耗润滑油");
+        provider.add("config.ctpp.option.kineticGeneratorGeneratingRequireLubricantAmount", "应力发电的润滑油消耗量");
+        provider.add("config.ctpp.option.enableKineticSteamTurbine", "是否启用CTNH的机械蒸汽涡轮");
+        provider.add("config.ctpp.option.enableSteamTurbineGearBox", "是否启用CTNH的蒸汽涡轮齿轮箱");
+        provider.add("config.ctpp.option.steamPoweredKineticGeneratingBoost", "蒸汽动力的应力产出加成");
+        provider.add("config.ctpp.option.enableSeaweedFarm", "是否启用CTNH的海草农场");
+        provider.add("config.ctpp.option.enableWindmillControlCenter", "是否启用CTNH的风车控制中心");
+        provider.add("config.ctpp.option.enableBoomOfCreate", "是否启用CTNH的聚爆应力厂");
     }
 }

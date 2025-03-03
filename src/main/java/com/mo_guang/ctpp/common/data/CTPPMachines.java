@@ -3,17 +3,21 @@ package com.mo_guang.ctpp.common.data;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.IMachineBlock;
+import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
-import com.gregtechceu.gtceu.common.registry.GTRegistration;
+import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
+import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.jozufozu.flywheel.api.MaterialManager;
 import com.jozufozu.flywheel.backend.instancing.blockentity.BlockEntityInstance;
 import com.mo_guang.ctpp.CTPP;
@@ -27,7 +31,6 @@ import com.mo_guang.ctpp.common.machine.KineticPartMachine;
 import com.mo_guang.ctpp.common.machine.SimpleKineticElectricWorkableMachine;
 import com.mo_guang.ctpp.common.block.KineticMachineBlock;
 import com.mo_guang.ctpp.config.MainConfig;
-import com.mo_guang.ctpp.core.CTPPCreativeModeTabs;
 import com.mo_guang.ctpp.render.KineticWorkableTieredHullMachineRenderer;
 import com.mo_guang.ctpp.render.SplitShaftTieredHullMachineRenderer;
 import com.simibubi.create.content.kinetics.BlockStressValues;
@@ -36,6 +39,8 @@ import com.tterrag.registrate.util.nullness.NonNullSupplier;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.network.chat.Component;
+
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Locale;
@@ -48,6 +53,7 @@ import static com.gregtechceu.gtceu.common.data.machines.GTMachineUtils.*;
 import static com.gregtechceu.gtceu.utils.FormattingUtil.toEnglishName;
 import static com.mo_guang.ctpp.CTPPRegistration.REGISTRATE;
 import static com.mo_guang.ctpp.core.CTPPCreativeModeTabs.MACHINE;
+import static com.mo_guang.ctpp.config.ConfigUtils.*;
 
 public class CTPPMachines {
     static {
@@ -58,10 +64,11 @@ public class CTPPMachines {
     public static final KineticMachineDefinition[] ELECTRIC_GEAR_BOX_8A = registerElectricGearBox(8, LOW_TIERS);
     public static final KineticMachineDefinition[] ELECTRIC_GEAR_BOX_16A = registerElectricGearBox(16, LOW_TIERS);
     public static final KineticMachineDefinition[] ELECTRIC_GEAR_BOX_32A = registerElectricGearBox(32, LOW_TIERS);
-    public static final KineticMachineDefinition[] KINETIC_MIXER = registerSimpleKineticElectricMachine("kinetic_mixer",
-            CTPPRecipeTypes.KINETIC_MIXER_RECIPES, LOW_TIERS);
+    public static final KineticMachineDefinition[] KINETIC_MIXER = CTPPRegistration.conditionalRegistration(gtmEnabled("GTMKineticCreateMixer"),() -> 
+        registerSimpleKineticElectricMachine("kinetic_mixer",CTPPRecipeTypes.KINETIC_MIXER_RECIPES, LOW_TIERS));
+    
     public static final KineticMachineDefinition[] KINETIC_INPUT_BOX = registerTieredMachines("kinetic_input_box",
-            (tier, id) -> new KineticMachineDefinition(id, false, GTValues.V[tier]*4).setFrontRotation(true),
+            (tier, id) -> new KineticMachineDefinition(id, false, GTValues.V[tier]*MainConfig.INSTANCE.gtmConfig.kineticInputBoxTorqueMultiplier).setFrontRotation(true),
             (holder, tier) -> new KineticPartMachine(holder, tier, IO.IN), (tier, builder) -> builder
                     .langValue("%s %s %s".formatted(VLVH[tier], toEnglishName("kinetic_input_box"), VLVT[tier]))
                     .rotationState(RotationState.ALL)
@@ -72,9 +79,10 @@ public class CTPPMachines {
                             GTCEu.id("block/machine/part/kinetic_input_box")))
                     .register(),
             () -> SplitShaftInstance::new, false, ALL_TIERS);
-    public static final KineticMachineDefinition[] KINETIC_OUTPUT_BOX = registerTieredMachines("kinetic_output_box",
-            (tier, id) -> new KineticMachineDefinition(id, true, GTValues.V[tier]*4).setFrontRotation(true),
-            (holder, tier) -> new KineticPartMachine(holder, tier, IO.OUT), (tier, builder) -> builder
+    public static final KineticMachineDefinition[] KINETIC_OUTPUT_BOX = CTPPRegistration.conditionalRegistration(gtmEnabled("GTMKineticOutputBox"),() -> 
+            registerTieredMachines("kinetic_output_box",
+                (tier, id) -> new KineticMachineDefinition(id, true, GTValues.V[tier] * MainConfig.INSTANCE.gtmConfig.kineticOutputBoxTorqueMultiplier).setFrontRotation(true),
+                (holder, tier) -> new KineticPartMachine(holder, tier, IO.OUT), (tier, builder) -> builder
                     .langValue("%s %s %s".formatted(VLVH[tier], toEnglishName("kinetic_output_box"), VLVT[tier]))
                     .rotationState(RotationState.ALL)
                     .blockProp(BlockBehaviour.Properties::dynamicShape)
@@ -83,14 +91,12 @@ public class CTPPMachines {
                     .renderer(() -> new SplitShaftTieredHullMachineRenderer(tier,
                             GTCEu.id("block/machine/part/kinetic_output_box")))
                     .register(),
-            () -> SplitShaftInstance::new, false, ALL_TIERS);
+                () -> SplitShaftInstance::new, false, ALL_TIERS));
 
     @SuppressWarnings("unchecked")
     public static KineticMachineDefinition[] registerElectricGearBox(int maxAmps, int... tiers) {
-        if (!MainConfig.INSTANCE.gtmConfig.enableGTMElectricGearBox) {
-            CTPPRegistration.REGISTRATE.creativeModeTab(() -> null);
-        }
-        var gearbox = registerTieredMachines("electric_gear_box_%sa".formatted(maxAmps),
+        return CTPPRegistration.conditionalRegistration(gtmEnabled("GTMElectricGearBox"),() -> 
+                registerTieredMachines("electric_gear_box_%sa".formatted(maxAmps),
                 (tier, id) -> new KineticMachineDefinition(id, true, GTValues.V[tier]).setFrontRotation(true),
                 (holder, tier) -> new ElectricGearBoxMachine(holder, tier, maxAmps), (tier, builder) -> builder
                         .langValue(
@@ -102,11 +108,7 @@ public class CTPPMachines {
                                 GTCEu.id("block/machine/electric_gear_box_%sa".formatted(maxAmps))))
                         .tooltips(explosion())
                         .register(),
-                () -> SplitShaftInstance::new, false, tiers);
-        if (!MainConfig.INSTANCE.gtmConfig.enableGTMElectricGearBox) {
-            CTPPRegistration.REGISTRATE.creativeModeTab(() -> MACHINE);
-        }
-        return gearbox;
+                        () -> SplitShaftInstance::new, false, tiers));
     }
 
     public static KineticMachineDefinition[] registerSimpleKineticElectricMachine(String name, GTRecipeType recipeType,

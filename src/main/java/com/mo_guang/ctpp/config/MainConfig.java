@@ -17,6 +17,9 @@ public class MainConfig {
             }
         }
     }
+    public static String getConfigOptionKey(String fieldName) {
+        return "config.ctpp.option." + fieldName;
+    }
     @Configurable
     @Configurable.Comment("GTM's Origenal Configs")
     public GtmConfig gtmConfig = new GtmConfig();
@@ -76,7 +79,7 @@ public class MainConfig {
         @Configurable
         @Configurable.Comment("KineticGenerator's Generating Boost (0.5~8.0)")
         @Configurable.DecimalRange(min = 0.5, max = 8.0)
-        public float kineticGeneratorGeneratingBoost = 2;
+        public float kineticGeneratorGeneratingBoost = 1;
         @Configurable
         @Configurable.Comment("Does KineticGenerator require lubricant?")
         public boolean kineticGeneratorGeneratingRequireLubricant = true;
@@ -87,9 +90,9 @@ public class MainConfig {
         @Configurable.Comment("Is CTNH KineticSteamTurbine Enabled?")
         public boolean enableKineticSteamTurbine = true;
         @Configurable
-        @Configurable.Comment("KineticSteamTurbine's Generating Boost (0.5~8.0)")
+        @Configurable.Comment("Steam Powered's Kinetic Generating Boost (0.5~8.0)")
         @Configurable.DecimalRange(min = 0.5, max = 8.0)
-        public float kineticSteamTurbineGeneratingBoost = 1;
+        public float steamPoweredKineticGeneratingBoost = 1;
         @Configurable
         @Configurable.Comment("Is CTNH SeaweedFarm Enabled?")
         public boolean enableSeaweedFarm = true;
