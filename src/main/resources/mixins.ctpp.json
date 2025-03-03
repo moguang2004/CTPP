@@ -6,7 +6,9 @@
   "mixins": [
     "BlockPatternMixin",
     "RotationPropagatorMixin",
-    "WorkableCasingMachineRendererAccessor"
+    "WorkableCasingMachineRendererAccessor",
+    "fix.IRotorHolderMachineMixin",
+    "fix.RotorHolderPartMachineMixin"
   ],
   "client": [],
   "minVersion": "0.8"
