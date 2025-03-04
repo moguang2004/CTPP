@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(RotorHolderPartMachine.class)
 public class RotorHolderPartMachineMixin {
-    @Inject(method = "getTierDifference", at = @At(value = "RETURN",ordinal = 1), cancellable = true)
+    @Inject(method = "getTierDifference", at = @At(value = "RETURN",ordinal = 1), cancellable = true,remap = false)
     public void getTierDifference(CallbackInfoReturnable<Integer> cir)  {
         cir.setReturnValue(-20);
     }
