@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.api.addon.GTAddon;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.mo_guang.ctpp.common.data.CTPPRecipeCapabilities;
-import com.mo_guang.ctpp.common.data.CTPPRecipes;
+import com.mo_guang.ctpp.recipe.CTPPRecipes;
 import net.minecraft.data.recipes.FinishedRecipe;
 
 import java.util.function.Consumer;

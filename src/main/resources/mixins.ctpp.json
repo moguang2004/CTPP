@@ -5,6 +5,7 @@
   "refmap": "mixins.ctpp.refmap.json",
   "mixins": [
     "BlockPatternMixin",
+    "GTRecipeComponentsMixin",
     "RotationPropagatorMixin",
     "WorkableCasingMachineRendererAccessor",
     "fix.IRotorHolderMachineMixin",

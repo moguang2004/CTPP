@@ -1,9 +1,12 @@
-package com.mo_guang.ctpp.common.data;
+package com.mo_guang.ctpp.recipe;
 
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.data.recipe.misc.MetaTileEntityLoader;
 import com.mo_guang.ctpp.CTPP;
+import com.mo_guang.ctpp.common.data.CTPPMachines;
+import com.mo_guang.ctpp.common.data.CTPPRecipeTypes;
 import com.mo_guang.ctpp.recipe.CTPPRecipeBuilder;
 import com.mo_guang.ctpp.recipe.KineticGeneratorRecipes;
 import com.simibubi.create.AllBlocks;
@@ -19,7 +22,7 @@ import static com.gregtechceu.gtceu.data.recipe.misc.MetaTileEntityLoader.regist
 
 public class CTPPRecipes {
     public static void init(Consumer<FinishedRecipe> provider) {
-        registerMachineRecipe(provider, false, CTPPMachines.KINETIC_MIXER, "GRG", "GEG", "CMC", "M", HULL, "R",
+        MetaTileEntityLoader.registerMachineRecipe(provider, false, CTPPMachines.KINETIC_MIXER, "GRG", "GEG", "CMC", "M", HULL, "R",
                 ROTOR, "C", AllItems.PRECISION_MECHANISM, "G", GLASS, "E", AllBlocks.SHAFT);
         registerMachineRecipe(provider, false, CTPPMachines.ELECTRIC_GEAR_BOX_2A, "WMW", "RER", "CHC", "H", HULL,
                 "C", CIRCUIT, "E", AllBlocks.SHAFT.asStack(), "W", CABLE, "M", MOTOR, "R", ROTOR);
@@ -34,7 +37,7 @@ public class CTPPRecipes {
         registerMachineRecipe(provider, false, CTPPMachines.KINETIC_OUTPUT_BOX, "   ", " H ", " S ", "S",
                 AllBlocks.SHAFT, "H", HULL);
         KineticGeneratorRecipes.init(provider);
-        CTPPRecipeBuilder.of(CTPP.id("seaweed"),CTPPRecipeTypes.SEAWEED_FARM)
+        CTPPRecipeBuilder.of(CTPP.id("seaweed"), CTPPRecipeTypes.SEAWEED_FARM)
                 .inputStress(512)
                 .inputItems(GTItems.FERTILIZER.asStack())
                 .notConsumable(Items.KELP.getDefaultInstance())

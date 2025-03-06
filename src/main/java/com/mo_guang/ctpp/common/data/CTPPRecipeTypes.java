@@ -37,7 +37,7 @@ public class CTPPRecipeTypes {
         }
     });
     public static final GTRecipeType SMASHING_FACTORY_RECIPES = GTRecipeTypes.register("smashing_factory_recipes", KINETIC)
-            .setMaxIOSize(1,6,1,3)
+            .setMaxIOSize(1,6,0,0)
             .setSlotOverlay(false, false, GuiTextures.DUST_OVERLAY)
             .setSlotOverlay(true, false, GuiTextures.DUST_OVERLAY)
             .setProgressBar(GuiTextures.PROGRESS_BAR_MIXER, LEFT_TO_RIGHT)
