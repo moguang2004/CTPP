@@ -98,5 +98,34 @@
   "recipe.condition.rpm.tooltip": "转速: %d",
   "rotor_holder_upgrade": "转子支架每升高一级,涡轮效率增加§610%§r",
   "steam_up_hv_loss": "蒸汽类型的机器在电压等级高于§6HV§r时,每一级发电效率会减少10%",
-  "windmill_control_center": "风力总控！越多越强！"
+  "windmill_control_center": "风力总控！越多越强！",
+
+  "config.screen.ctpp": "CTPP设置",
+
+  "config.ctpp.option.gtmConfig": "GTM经典联动联动机器配置",
+  "config.ctpp.option.ctnhConfig": "CTNH机器配置",
+
+  "config.ctpp.option.enableGTMKineticOutputBox":"是否启用GTM的应力输出仓",
+  "config.ctpp.option.kineticInputBoxTorqueMultiplier":"应力输入仓的扭矩乘数",
+  "config.ctpp.option.kineticOutputBoxTorqueMultiplier":"应力输出仓的扭矩乘数",
+  "config.ctpp.option.enableGTMKineticCreateMixer":"是否启用GTM的应力搅拌机",
+  "config.ctpp.option.kineticCreateMixerSpeedMultiplier":"比起同等级的电动搅拌机，应力搅拌机的处理速度倍率",
+  "config.ctpp.option.kineticCreateMixerRPMRequirement":"应力搅拌转速要求",
+  "config.ctpp.option.enableGTMElectricGearBox":"是否启用GTM的电动齿轮箱",
+
+  "config.ctpp.option.enableSmashingFactory":"是否启用CTNH的粉碎工厂",
+  "config.ctpp.option.smashingFactoryMaximumProcessingCapacity":"粉碎工厂的最大处理能力（用整数来表示电压级）",
+  "config.ctpp.option.smashingFactorySpeedMultiplier":"比起同等级的粉碎机，粉碎工厂的处理速度倍率",
+  "config.ctpp.option.smashingFactoryRPMRequirement":"粉碎工厂的转速要求",
+  "config.ctpp.option.smashingFactoryStressRequirement":"粉碎工厂的应力要求（等于原配方的电压需求乘以该倍数）",
+  "config.ctpp.option.enableKineticGenerator":"是否启用CTNH的应力发电机",
+  "config.ctpp.option.kineticGeneratorGeneratingBoost":"应力发电机的电力产出加成",
+  "config.ctpp.option.kineticGeneratorGeneratingRequireLubricant":"应力发电是否消耗润滑油",
+  "config.ctpp.option.kineticGeneratorGeneratingRequireLubricantAmount":"应力发电的润滑油消耗量",
+  "config.ctpp.option.enableKineticSteamTurbine":"是否启用CTNH的蒸汽机械蒸汽涡轮",
+  "config.ctpp.option.enableSteamTurbineGearBox":"是否启用CTNH的蒸汽涡轮齿轮箱",
+  "config.ctpp.option.steamPoweredKineticGeneratingBoost":"蒸汽机械蒸汽涡轮的应力产出加成",
+  "config.ctpp.option.enableSeaweedFarm":"是否启用CTNH的海草农场",
+  "config.ctpp.option.enableWindmillControlCenter":"是否启用CTNH的风车控制中心",
+  "config.ctpp.option.enableBoomOfCreate":"是否启用CTNH的聚爆应力厂"
 }

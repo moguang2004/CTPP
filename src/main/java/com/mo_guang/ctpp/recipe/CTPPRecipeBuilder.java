@@ -80,6 +80,21 @@ public class CTPPRecipeBuilder extends GTRecipeBuilder {
         super.duration(duration);
         return this;
     }
+    @Override
+    public CTPPRecipeBuilder notConsumableFluid(FluidStack fluid) {
+        super.notConsumableFluid(fluid);
+        return this;
+    }
+    @Override
+    public CTPPRecipeBuilder notConsumable(ItemStack input) {
+        super.notConsumable(input);
+        return this;
+    }
+    @Override
+    public CTPPRecipeBuilder circuitMeta(int configuration) {
+        super.circuitMeta(configuration);
+        return this;
+    }
     public CTPPRecipeBuilder noEUt() {
         tickInput.remove(EURecipeCapability.CAP);
         tickOutput.remove(EURecipeCapability.CAP);

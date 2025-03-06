@@ -14,12 +14,15 @@ import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.mo_guang.ctpp.common.machine.IKineticMachine;
 import com.mo_guang.ctpp.common.machine.KineticPartMachine;
+import com.mo_guang.ctpp.config.MainConfig;
+
 import net.minecraft.network.chat.Component;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class KineticGeneratorMachine extends CoilWorkableElectricMultiblockMachine {
+    public static final float GENERATING_BOOST = MainConfig.INSTANCE.ctnhConfig.kineticGeneratorGeneratingBoost;
     public double efficiency;
     public double outputEnergy = 0;
     public KineticGeneratorMachine(IMachineBlockEntity holder) {
@@ -49,7 +52,7 @@ public class KineticGeneratorMachine extends CoilWorkableElectricMultiblockMachi
     public static ModifierFunction recipeModifier(MetaMachine machine, GTRecipe recipe) {
         if (machine instanceof KineticGeneratorMachine kmachine) {
             var kinetic = (KineticPartMachine) kmachine.getParts().stream().filter(part -> part instanceof KineticPartMachine).toList().get(0);
-            kmachine.outputEnergy = Math.abs(kinetic.getKineticHolder().getSpeed()) * kinetic.getKineticDefinition().torque * kmachine.efficiency / 160;
+            kmachine.outputEnergy = Math.abs(kinetic.getKineticHolder().getSpeed()) * kinetic.getKineticDefinition().torque * kmachine.efficiency*GENERATING_BOOST / 160;
             var modifiedRecipe = recipe.copy();
             RecipeHelper.setOutputEUt(modifiedRecipe, (long) kmachine.outputEnergy);
             return recipe1 -> modifiedRecipe;

@@ -14,6 +14,7 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 import com.mo_guang.ctpp.common.condition.RPMCondition;
+import com.mo_guang.ctpp.config.MainConfig;
 import com.mo_guang.ctpp.recipe.CTPPRecipeBuilder;
 import com.simibubi.create.AllBlocks;
 
@@ -37,7 +38,7 @@ public class CTPPRecipeTypes {
         }
     });
     public static final GTRecipeType SMASHING_FACTORY_RECIPES = GTRecipeTypes.register("smashing_factory_recipes", KINETIC)
-            .setMaxIOSize(1,6,0,0)
+            .setMaxIOSize(1,6,1,3)
             .setSlotOverlay(false, false, GuiTextures.DUST_OVERLAY)
             .setSlotOverlay(true, false, GuiTextures.DUST_OVERLAY)
             .setProgressBar(GuiTextures.PROGRESS_BAR_MIXER, LEFT_TO_RIGHT)
@@ -92,20 +93,20 @@ public class CTPPRecipeTypes {
         MIXER_RECIPES.onRecipeBuild((builder, provider) -> {
                 assert KINETIC_MIXER_RECIPES != null;
                 var newrecipe = KINETIC_MIXER_RECIPES.copyFrom(builder)
-                        .duration(Math.max((builder.duration / 2), 1))
+                        .duration(Math.max((int)(builder.duration / MainConfig.INSTANCE.gtmConfig.kineticCreateMixerSpeedMultiplier), 1))
                         .buildRawRecipe();
-                new CTPPRecipeBuilder(newrecipe,KINETIC_MIXER_RECIPES).rpm(64)
+                new CTPPRecipeBuilder(newrecipe,KINETIC_MIXER_RECIPES).rpm(MainConfig.INSTANCE.gtmConfig.kineticCreateMixerRPMRequirement)
                         .save(provider);
         });
         MACERATOR_RECIPES.onRecipeBuild((builder, provider) ->{
             assert SMASHING_FACTORY_RECIPES != null;
-            if(GTUtil.getTierByVoltage(builder.EUt()) <= GTValues.LV) {
+            if(GTUtil.getTierByVoltage(builder.EUt()) <= MainConfig.INSTANCE.ctnhConfig.smashingFactoryMaximumProcessingCapacity) {
                 var newrecipe = SMASHING_FACTORY_RECIPES.copyFrom(builder)
-                        .duration(Math.max((builder.duration / 2), 1))
+                .duration(Math.max((int)(builder.duration / MainConfig.INSTANCE.ctnhConfig.smashingFactorySpeedMultiplier), 1))
                         .buildRawRecipe();
-                new CTPPRecipeBuilder(newrecipe, SMASHING_FACTORY_RECIPES).rpm(64)
+                new CTPPRecipeBuilder(newrecipe, SMASHING_FACTORY_RECIPES).rpm(MainConfig.INSTANCE.ctnhConfig.smashingFactoryRPMRequirement)
                         .noEUt()
-                        .inputStress(builder.EUt() * 512)
+                        .inputStress(builder.EUt() * MainConfig.INSTANCE.ctnhConfig.smashingFactoryStressRequirement)
                         .chancedOutputLogic(ItemRecipeCapability.CAP, ChanceLogic.NONE)
                         .save(provider);
             }
