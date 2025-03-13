@@ -50,7 +50,7 @@ public class CTPPMultiblockMachines {
                     .where("@",Predicates.controller(blocks(definition.getBlock())))
                     .where(" ",Predicates.any())
                     .build())
-            .workableCasingRenderer(CTPP.id("block/create_casings/andesite_casing"),GTCEu.id("block/multiblock/large_chemical_reactor"))
+            .workableCasingRenderer(CTPP.id("block/create/andesite_casing"),GTCEu.id("block/multiblock/large_chemical_reactor"))
             .register());
     public static MultiblockMachineDefinition KINETIC_GENERATOR = CTPPRegistration.conditionalRegistration(
         ctnhEnabled("KineticGenerator"),
@@ -58,12 +58,13 @@ public class CTPPMultiblockMachines {
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeType(CTPPRecipeTypes.KINETIC_GENERATOR_RECIPES)
             .appearanceBlock(CASING_STEEL_SOLID)
+                .generator(true)
             .tooltips(Component.translatable("kinetic_generator").withStyle(ChatFormatting.GRAY),
                     Component.translatable("ctpp.kinetic_generator.basic"),
                     Component.translatable("ctpp.kinetic_generator.extrict"),
                     Component.translatable("ctpp.kinetic_generator.upgrade"),
                     Component.translatable("ctpp.kinetic_generator.core"))
-            .recipeModifier(KineticGeneratorMachine::recipeModifier)
+            .recipeModifier(KineticGeneratorMachine::recipeModifier,true)
             .pattern(definition -> FactoryBlockPattern.start()
                 .aisle("CCTP", "CCTP", "  TP")
                 .aisle("CCTP", "EAGK", "CCTP")
@@ -139,7 +140,7 @@ public class CTPPMultiblockMachines {
             .where("G", Predicates.blocks(GTBlocks.CASING_TEMPERED_GLASS.get()))
             .where("#", Predicates.blocks(Blocks.WATER))
             .build())
-            .workableCasingRenderer(CTPP.id("block/create_casings/andesite_casing"), GTCEu.id("block/multiblock/coke_oven"), false)
+            .workableCasingRenderer(CTPP.id("block/create/andesite_casing"), GTCEu.id("block/multiblock/coke_oven"), false)
             .register());
     public static MultiblockMachineDefinition WINDMILL_CONTROL_CENTER = CTPPRegistration.conditionalRegistration(
         ctnhEnabled("WindmillControlCenter"),
@@ -165,7 +166,7 @@ public class CTPPMultiblockMachines {
                     .where("E", Predicates.blocks(AllBlocks.WATER_WHEEL.get()))
                 .where("@", Predicates.controller(Predicates.blocks(definition.get())))
                 .build())
-            .workableCasingRenderer(CTPP.id("block/create_casings/brass_casing"), GTCEu.id("block/machines/miner"), false)
+            .workableCasingRenderer(CTPP.id("block/create/brass_casing"), GTCEu.id("block/machines/miner"), false)
             .register());
     public static MultiblockMachineDefinition BOOM_OF_CREATE = CTPPRegistration.conditionalRegistration(
         ctnhEnabled("BoomOfCreate"),

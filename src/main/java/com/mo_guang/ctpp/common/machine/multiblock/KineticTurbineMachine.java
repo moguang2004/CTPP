@@ -24,7 +24,7 @@ import java.util.List;
 
 import static com.gregtechceu.gtceu.common.machine.multiblock.generator.LargeTurbineMachine.MIN_DURABILITY_TO_WARN;
 
-public class KineticTurbineMachine extends KineticWorkableMultiblockMachine implements ITieredMachine {
+public class KineticTurbineMachine extends KineticOutputMachine implements ITieredMachine {
     public double lossrate = 1;
     public KineticTurbineMachine(IMachineBlockEntity holder) {
         super(holder);

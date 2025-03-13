@@ -59,4 +59,8 @@ public class KineticGeneratorMachine extends CoilWorkableElectricMultiblockMachi
         }
         return ModifierFunction.NULL;
     }
+    @Override
+    public boolean dampingWhenWaiting() {
+        return false;
+    }
 }
