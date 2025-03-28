@@ -14,6 +14,8 @@ import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.widget.*;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
+import com.simibubi.create.content.processing.burner.BlazeBurnerBlock;
+import com.simibubi.create.content.processing.burner.BlazeBurnerBlockEntity;
 import it.unimi.dsi.fastutil.longs.LongSet;
 import it.unimi.dsi.fastutil.longs.LongSets;
 import lombok.Getter;
@@ -22,6 +24,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -29,6 +33,8 @@ import java.util.Optional;
 public class KineticMultiblockMachine extends WorkableMultiblockMachine implements IFancyUIMachine, IDisplayUIMachine {
     @Getter
     public LongSet rotateBlocks;
+    @Getter
+    public LongSet blazeBlocks;
 
     @Getter
     public float speed = 64;
@@ -41,12 +47,18 @@ public class KineticMultiblockMachine extends WorkableMultiblockMachine implemen
     public void onStructureFormed() {
         super.onStructureFormed();
         rotateBlocks = getMultiblockState().getMatchContext().getOrDefault("roBlocks", LongSets.emptySet());
+        blazeBlocks = getMultiblockState().getMatchContext().getOrDefault("bbBlocks", LongSets.emptySet());
         updateActiveBlocks(recipeLogic.isWorking());
     }
     @Override
     public void updateActiveBlocks(boolean active) {
         super.updateActiveBlocks(active);
         updateRotateBlocks(active);
+        try {
+            updateBlazeBlocks(active);
+        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
     public void updateRotateBlocks(boolean active){
         if (rotateBlocks != null) {
@@ -68,6 +80,31 @@ public class KineticMultiblockMachine extends WorkableMultiblockMachine implemen
                 kineticBlockEntity.setSpeed(0);
                 kineticBlockEntity.onSpeedChanged(speed);
                 kineticBlockEntity.sendData();
+            }
+        }
+    }
+    public void updateBlazeBlocks(boolean active) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        if(blazeBlocks != null){
+            for(Long pos : blazeBlocks) {
+                var blockPos = BlockPos.of(pos);
+                if (getLevel().getBlockEntity(blockPos) != null) {
+                    var blockEntity = Objects.requireNonNull(getLevel()).getBlockEntity(blockPos);
+                    BlazeBurnerBlock.HeatLevel heat = BlazeBurnerBlock.HeatLevel.SMOULDERING;
+                    if (active) {
+                        if (speed >= 256) {
+                            heat = BlazeBurnerBlock.HeatLevel.SEETHING;
+                        } else if (speed >= 128) {
+                            heat = BlazeBurnerBlock.HeatLevel.KINDLED;
+                        } else {
+                            heat = BlazeBurnerBlock.HeatLevel.FADING;
+                        }
+                    }
+                    if (blockEntity instanceof BlazeBurnerBlockEntity blazeBurnerBlockEntity) {
+                            Method method = BlazeBurnerBlockEntity.class.getDeclaredMethod("setBlockHeat", BlazeBurnerBlock.HeatLevel.class);
+                            method.setAccessible(true);
+                            method.invoke(blazeBurnerBlockEntity, heat);
+                    }
+                }
             }
         }
     }

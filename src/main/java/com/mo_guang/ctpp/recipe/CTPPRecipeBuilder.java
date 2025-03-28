@@ -103,11 +103,13 @@ public class CTPPRecipeBuilder extends GTRecipeBuilder {
 
     public CTPPRecipeBuilder inputStress(float stress) {
         input(StressRecipeCapability.CAP, stress);
+        this.data.putFloat("input_stress",stress);
         return this;
     }
 
     public CTPPRecipeBuilder outputStress(float stress) {
         output(StressRecipeCapability.CAP, stress);
+        this.data.putFloat("output_stress",stress);
         return this;
     }
 

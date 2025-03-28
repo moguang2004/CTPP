@@ -3,6 +3,7 @@ package com.mo_guang.ctpp.mixin;
 import com.gregtechceu.gtceu.api.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.pattern.MultiblockState;
 import com.simibubi.create.content.kinetics.base.KineticBlock;
+import com.simibubi.create.content.processing.burner.BlazeBurnerBlock;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -17,6 +18,10 @@ public class BlockPatternMixin {
     private void injectCode(MultiblockState worldState, BlockPos centerPos, Direction frontFacing, Direction upwardsFacing, boolean isFlipped, boolean savePredicate, CallbackInfoReturnable<Boolean> cir) {
         if (worldState.getBlockState().getBlock() instanceof KineticBlock) {
             worldState.getMatchContext().getOrCreate("roBlocks", LongOpenHashSet::new)
+                    .add(worldState.getPos().asLong());
+        }
+        if (worldState.getBlockState().getBlock() instanceof BlazeBurnerBlock) {
+            worldState.getMatchContext().getOrCreate("bbBlocks", LongOpenHashSet::new)
                     .add(worldState.getPos().asLong());
         }
     }
