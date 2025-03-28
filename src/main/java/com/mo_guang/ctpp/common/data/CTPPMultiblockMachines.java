@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.pattern.Predicates;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.mo_guang.ctpp.CTPP;
 import com.mo_guang.ctpp.api.CTPPPartAbility;
 import com.mo_guang.ctpp.common.machine.multiblock.*;
@@ -33,6 +34,8 @@ public class CTPPMultiblockMachines {
         ctnhEnabled("SmashingFactory"),
         () -> REGISTRATE.multiblock("smashing_factory", KineticWorkableMultiblockMachine::new)
             .rotationState(RotationState.NON_Y_AXIS)
+                .tooltips(Component.translatable("kinetic_overclock"),
+                        Component.translatable("actual_speed").withStyle(ChatFormatting.YELLOW))
             .appearanceBlock(AllBlocks.ANDESITE_CASING)
             .recipeType(CTPPRecipeTypes.SMASHING_FACTORY_RECIPES)
             .recipeModifier(CTPPRecipeModifiers.KINETIC_OVERCLOCK)
@@ -210,4 +213,19 @@ public class CTPPMultiblockMachines {
                 .build())
             .workableCasingRenderer(GTCEu.id("block/casings/solid/machine_casing_solid_steel"), GTCEu.id("block/multiblock/generator/large_steam_turbine"), false)
             .register());
+    public static MultiblockMachineDefinition TEST = REGISTRATE.multiblock("test", KineticWorkableMultiblockMachine::new)
+            .rotationState(RotationState.NON_Y_AXIS)
+            .recipeType(GTRecipeTypes.MIXER_RECIPES)
+            .appearanceBlock(AllBlocks.ANDESITE_CASING::get)
+            .pattern(definition -> FactoryBlockPattern.start()
+                    .aisle("AA","BB","BB")
+                    .aisle("AA","KB","BB")
+                    .where("A", Predicates.blocks(AllBlocks.BLAZE_BURNER.get()))
+                    .where("K", Predicates.controller(Predicates.blocks(definition.get())))
+                    .where("B", Predicates.blocks(AllBlocks.ANDESITE_CASING.get())
+                            .or(Predicates.autoAbilities(definition.getRecipeTypes())))
+                    .build()
+            )
+            .workableCasingRenderer(GTCEu.id("block/casings/solid/machine_casing_solid_steel"), GTCEu.id("block/multiblock/generator/large_steam_turbine"), false)
+            .register();
 }
