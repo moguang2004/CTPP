@@ -37,6 +37,7 @@ public class KineticGeneratorMachine extends CoilWorkableElectricMultiblockMachi
         if (getLevel().getBlockState(pos).getBlock().equals(GTMaterialBlocks.MATERIAL_BLOCKS.get(TagPrefix.block, GTMaterials.Graphene).get())) {
             efficiency = getCoilTier() * 0.1 + 1;
         }
+        else efficiency = getCoilTier() * 0.1 + 0.9;
     }
 
     @Override
