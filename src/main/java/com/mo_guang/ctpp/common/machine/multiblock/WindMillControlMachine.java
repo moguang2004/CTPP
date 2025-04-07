@@ -74,7 +74,7 @@ public class WindMillControlMachine extends KineticOutputMachine {
                         var kineticBlockEntity = getLevel().getBlockEntity(getPos().offset(x, y, z));
                         if (kineticBlockEntity instanceof WindmillBearingBlockEntity windmillBearingBlockEntity) {
                             var speed = windmillBearingBlockEntity.getGeneratedSpeed();
-                            if(speed != 0){
+                            if(speed != 0 && WindMillAround.size() <= 16){
                                 WindMillAround.add(speed);
                                 TotalOutput += speed * 512;
                             }
