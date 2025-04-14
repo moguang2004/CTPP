@@ -24,11 +24,9 @@ public class WindMillControlMachine extends KineticOutputMachine {
     }
 
     @Override
-    public boolean onWorking() {
-        if(getOffsetTimer() % 20 == 0) {
-            calculateWindmillAround();
-        }
-        return super.onWorking();
+    public void onStructureFormed() {
+        calculateWindmillAround();
+        super.onStructureFormed();
     }
 
     @Override
@@ -60,7 +58,6 @@ public class WindMillControlMachine extends KineticOutputMachine {
         return ModifierFunction.NULL;
     }
     public float getOutputSpeed() {
-        calculateWindmillAround();
         return Math.min((512 + TotalOutput) * efficiency / 512, AllConfigs.server().kinetics.maxRotationSpeed.get());
     }
     public void calculateWindmillAround() {
