@@ -19,6 +19,8 @@ import java.util.List;
 public class WindMillControlMachine extends KineticOutputMachine {
     public int efficiency = 0;
     public float TotalOutput = 0;
+
+    public boolean willTick = false;
     public WindMillControlMachine(IMachineBlockEntity holder) {
         super(holder);
     }
@@ -27,6 +29,14 @@ public class WindMillControlMachine extends KineticOutputMachine {
     public void onStructureFormed() {
         calculateWindmillAround();
         super.onStructureFormed();
+    }
+
+    @Override
+    public boolean onWorking() {
+        if (willTick) {
+            calculateWindmillAround();
+        }
+        return super.onWorking();
     }
 
     @Override
