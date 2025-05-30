@@ -4,6 +4,8 @@ import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
 import com.gregtechceu.gtceu.common.data.GTRecipeConditions;
+import com.mo_guang.ctpp.common.data.CTPPFanProcessingTypes;
+import com.mo_guang.ctpp.common.data.CTPPRecipeTypeInfo;
 import com.mo_guang.ctpp.core.EventHandler;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -24,6 +26,8 @@ public class CTPP {
         modEventBus.addGenericListener(RecipeConditionType.class, EventHandler::registerRecipeConditions);
         modEventBus.addGenericListener(GTRecipeType.class, EventHandler::registerRecipeTypes);
         DistExecutor.unsafeRunForDist(() -> ClientProxy::new, () -> CommonProxy::new);
+        CTPPRecipeTypeInfo.register(modEventBus);
+        CTPPFanProcessingTypes.init();
     }
 
     public static ResourceLocation id(String name) {

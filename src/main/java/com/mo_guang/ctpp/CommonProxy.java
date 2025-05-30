@@ -13,6 +13,7 @@ public class CommonProxy {
         init();
         MainConfig.init();
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+        modEventBus.addListener(this::addMaterialFlag);
     }
 
     public static void init() {
@@ -21,6 +22,9 @@ public class CommonProxy {
         CTPPCreativeModeTabs.init();
         CTPPRegistration.REGISTRATE.registerRegistrate();
         CTPPDatagen.init();
+    }
+    public void addMaterialFlag(MaterialEvent event) {
+        GTMaterialAddon.init();
     }
 
 }

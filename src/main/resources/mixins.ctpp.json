@@ -8,6 +8,7 @@
     "GTRecipeComponentsMixin",
     "RotationPropagatorMixin",
     "WorkableCasingMachineRendererAccessor",
+    "create.AllFanProcessingTypesMixin",
     "create.WindmillBearingBlockMixin",
     "fix.IRotorHolderMachineMixin",
     "fix.RotorHolderPartMachineMixin"
