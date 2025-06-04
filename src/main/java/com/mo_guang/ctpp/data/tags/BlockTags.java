@@ -12,6 +12,7 @@ import java.util.Objects;
 public class BlockTags {
     public static void init(RegistrateTagsProvider<Block> provider) {
         create(provider, AllTags.AllBlockTags.FAN_TRANSPARENT.tag, Blocks.DRAGON_HEAD, Blocks.DRAGON_WALL_HEAD);
+        create(provider, CustomTags.CATALYST_BREATHING, Blocks.DRAGON_HEAD, Blocks.DRAGON_WALL_HEAD);
     }
     public static void create(RegistrateTagsProvider<Block> provider, TagKey<Block> tagKey, Block... rls) {
         var builder = provider.addTag(tagKey);

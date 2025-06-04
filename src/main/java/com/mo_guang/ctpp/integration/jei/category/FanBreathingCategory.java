@@ -3,11 +3,9 @@ package com.mo_guang.ctpp.integration.jei.category;
 import com.mo_guang.ctpp.common.kinetic.fan.breathing.BreathingRecipe;
 import com.simibubi.create.compat.jei.category.ProcessingViaFanCategory;
 import com.simibubi.create.compat.jei.category.animations.AnimatedKinetics;
-import com.simibubi.create.foundation.gui.element.GuiGameElement;
+import net.createmod.catnip.gui.element.GuiGameElement;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.level.block.Blocks;
-
-import static com.mo_guang.ctpp.common.data.CTPPRecipeTypeInfo.BREATHING;
 
 public class FanBreathingCategory extends ProcessingViaFanCategory.MultiOutput<BreathingRecipe> {
     public FanBreathingCategory(Info<BreathingRecipe> info) {

@@ -27,7 +27,7 @@ public class CTPP {
         modEventBus.addGenericListener(GTRecipeType.class, EventHandler::registerRecipeTypes);
         DistExecutor.unsafeRunForDist(() -> ClientProxy::new, () -> CommonProxy::new);
         CTPPRecipeTypeInfo.register(modEventBus);
-        CTPPFanProcessingTypes.init();
+        CTPPFanProcessingTypes.register(modEventBus);
     }
 
     public static ResourceLocation id(String name) {

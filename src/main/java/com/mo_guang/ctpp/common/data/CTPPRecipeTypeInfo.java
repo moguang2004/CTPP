@@ -32,20 +32,16 @@ public enum CTPPRecipeTypeInfo implements IRecipeTypeInfo {
     private final @Nullable RegistryObject<RecipeType<?>> typeObject;
     private final Supplier<RecipeType<?>> type;
 
-    private CTPPRecipeTypeInfo(Supplier serializerSupplier) {
+    private CTPPRecipeTypeInfo(Supplier<RecipeSerializer<?>> serializerSupplier) {
         String name = this.name().toLowerCase();
         this.id = CTPP.id(name);
         this.serializerObject = CTPPRecipeTypeInfo.Registers.SERIALIZER_REGISTER.register(name, serializerSupplier);
-        this.typeObject = CTPPRecipeTypeInfo.Registers.TYPE_REGISTER.register(name, () -> {
-            return RecipeType.simple(this.id);
-        });
+        this.typeObject = CTPPRecipeTypeInfo.Registers.TYPE_REGISTER.register(name, () -> RecipeType.simple(this.id));
         this.type = this.typeObject;
     }
 
-    private CTPPRecipeTypeInfo(ProcessingRecipeBuilder.ProcessingRecipeFactory processingFactory) {
-        this(() -> {
-            return new ProcessingRecipeSerializer(processingFactory);
-        });
+    private CTPPRecipeTypeInfo(ProcessingRecipeBuilder.ProcessingRecipeFactory<?> processingFactory) {
+        this(() -> new ProcessingRecipeSerializer<>(processingFactory));
     }
 
     public static void register(IEventBus modEventBus) {

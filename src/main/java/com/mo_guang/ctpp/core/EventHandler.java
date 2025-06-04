@@ -39,7 +39,7 @@ public class EventHandler {
         DataGenerator generator = event.getGenerator();
         PackOutput output = generator.getPackOutput();
         if (event.includeServer()) {
-            BreathingRecipeGen.register(output);
+//            BreathingRecipeGen.register(output);
         }
     }
 }
