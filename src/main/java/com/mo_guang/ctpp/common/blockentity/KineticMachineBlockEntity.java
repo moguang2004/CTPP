@@ -6,9 +6,6 @@ import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.common.registry.GTRegistration;
-import com.jozufozu.flywheel.api.MaterialManager;
-import com.jozufozu.flywheel.backend.instancing.InstancedRenderRegistry;
-import com.jozufozu.flywheel.backend.instancing.blockentity.BlockEntityInstance;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
@@ -18,10 +15,11 @@ import com.simibubi.create.content.kinetics.KineticNetwork;
 import com.simibubi.create.content.kinetics.base.IRotate;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import com.simibubi.create.content.kinetics.base.KineticEffectHandler;
-import com.simibubi.create.foundation.utility.Lang;
+import com.simibubi.create.foundation.utility.CreateLang;
 import com.simibubi.create.infrastructure.config.AllConfigs;
 import com.tterrag.registrate.util.OneTimeEventReceiver;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
+import dev.engine_room.flywheel.lib.visualization.SimpleBlockEntityVisualizer;
 import lombok.Getter;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -77,15 +75,15 @@ public class KineticMachineBlockEntity extends KineticBlockEntity implements IMa
     }
 
     public static void onBlockEntityRegister(BlockEntityType blockEntityType,
-                                             NonNullSupplier<BiFunction<MaterialManager, KineticMachineBlockEntity, BlockEntityInstance<? super KineticMachineBlockEntity>>> instanceFactory,
+                                             NonNullSupplier<SimpleBlockEntityVisualizer.Factory<? extends KineticBlockEntity>> visualFactory,
                                              boolean renderNormally) {
-        if (instanceFactory != null && LDLib.isClient()) {
+        if (visualFactory != null && LDLib.isClient()) {
             DistExecutor.unsafeRunWhenOn(Dist.CLIENT,
                     () -> () -> OneTimeEventReceiver.addModListener(GTRegistration.REGISTRATE,
                             FMLClientSetupEvent.class,
-                            ($) -> InstancedRenderRegistry.configure(blockEntityType)
-                                    .factory(instanceFactory.get())
-                                    .skipRender((be) -> !renderNormally)
+                            ($) -> SimpleBlockEntityVisualizer.builder(blockEntityType)
+                                    .factory(visualFactory.get())
+                                    .skipVanillaRender((be) -> !renderNormally)
                                     .apply()));
         }
     }
@@ -215,8 +213,8 @@ public class KineticMachineBlockEntity extends KineticBlockEntity implements IMa
         boolean added = super.addToGoggleTooltip(tooltip, isPlayerSneaking);
         float stressBase = this.calculateAddedStressCapacity();
         if (stressBase != 0.0F && IRotate.StressImpact.isEnabled()) {
-            Lang.translate("gui.goggles.generator_stats").forGoggles(tooltip);
-            Lang.translate("tooltip.capacityProvided").style(ChatFormatting.GRAY).forGoggles(tooltip);
+            CreateLang.translate("gui.goggles.generator_stats").forGoggles(tooltip);
+            CreateLang.translate("tooltip.capacityProvided").style(ChatFormatting.GRAY).forGoggles(tooltip);
             float speed = this.getTheoreticalSpeed();
             if (speed != this.getGeneratedSpeed() && speed != 0.0F) {
                 stressBase *= this.getGeneratedSpeed() / speed;
@@ -224,8 +222,8 @@ public class KineticMachineBlockEntity extends KineticBlockEntity implements IMa
 
             speed = Math.abs(speed);
             float stressTotal = stressBase * speed;
-            Lang.number(stressTotal).translate("generic.unit.stress").style(ChatFormatting.AQUA).space()
-                    .add(Lang.translate("gui.goggles.at_current_speed").style(ChatFormatting.DARK_GRAY))
+            CreateLang.number(stressTotal).translate("generic.unit.stress").style(ChatFormatting.AQUA).space()
+                    .add(CreateLang.translate("gui.goggles.at_current_speed").style(ChatFormatting.DARK_GRAY))
                     .forGoggles(tooltip, 1);
             added = true;
         }
