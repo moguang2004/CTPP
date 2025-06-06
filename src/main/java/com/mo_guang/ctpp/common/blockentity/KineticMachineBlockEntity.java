@@ -10,7 +10,9 @@ import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.managed.MultiManagedStorage;
+import com.mo_guang.ctpp.api.IBlockStressValues;
 import com.mo_guang.ctpp.common.machine.KineticMachineDefinition;
+import com.simibubi.create.api.stress.BlockStressValues;
 import com.simibubi.create.content.kinetics.KineticNetwork;
 import com.simibubi.create.content.kinetics.base.IRotate;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
@@ -147,6 +149,12 @@ public class KineticMachineBlockEntity extends KineticBlockEntity implements IMa
     // ********* Create *********//
     //////////////////////////////////////
 
+
+    @Override
+    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap) {
+        return super.getCapability(cap);
+    }
+
     public KineticEffectHandler getEffects() {
         return effects;
     }
@@ -213,8 +221,8 @@ public class KineticMachineBlockEntity extends KineticBlockEntity implements IMa
         boolean added = super.addToGoggleTooltip(tooltip, isPlayerSneaking);
         float stressBase = this.calculateAddedStressCapacity();
         if (stressBase != 0.0F && IRotate.StressImpact.isEnabled()) {
-            CreateLang.translate("gui.goggles.generator_stats").forGoggles(tooltip);
-            CreateLang.translate("tooltip.capacityProvided").style(ChatFormatting.GRAY).forGoggles(tooltip);
+            CreateLang.translate("gui.goggles.kinetic_stats").forGoggles(tooltip);
+            CreateLang.translate("tooltip.stressImpact").style(ChatFormatting.GRAY).forGoggles(tooltip);
             float speed = this.getTheoreticalSpeed();
             if (speed != this.getGeneratedSpeed() && speed != 0.0F) {
                 stressBase *= this.getGeneratedSpeed() / speed;
@@ -258,6 +266,18 @@ public class KineticMachineBlockEntity extends KineticBlockEntity implements IMa
             this.onSpeedChanged(prevSpeed);
             this.sendData();
         }
+    }
+    @Override
+    public float calculateStressApplied() {
+        float impact = (float) IBlockStressValues.getImpact(this.getStressConfigKey());
+        this.lastStressApplied = impact;
+        return impact;
+    }
+    @Override
+    public float calculateAddedStressCapacity() {
+        float capacity = (float)IBlockStressValues.getCapacity(this.getStressConfigKey());
+        this.lastCapacityProvided = capacity;
+        return capacity;
     }
 
     public void applyNewSpeed(float prevSpeed, float speed) {

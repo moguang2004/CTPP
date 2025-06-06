@@ -164,53 +164,5 @@ public class CTPPMachines {
     }
 
     public static void init() {
-//        BlockStressValues.IMPACTS.registerProvider(CTPP.MODID, new BlockStressValues.IStressValueProvider() {
-//
-//            @Override
-//            public double getImpact(Block block) {
-//                if (block instanceof IMachineBlock machineBlock &&
-//                        machineBlock.getDefinition() instanceof KineticMachineDefinition definition) {
-//                    if (!definition.isSource()) {
-//                        return definition.getTorque();
-//                    }
-//                }
-//                return 0;
-//            }
-//
-//            @Override
-//            public double getCapacity(Block block) {
-//                if (block instanceof IMachineBlock machineBlock &&
-//                        machineBlock.getDefinition() instanceof KineticMachineDefinition definition) {
-//                    if (definition.isSource()) {
-//                        return definition.getTorque();
-//                    }
-//                }
-//                return 0;
-//            }
-//
-//            @Override
-//            public boolean hasImpact(Block block) {
-//                if (block instanceof IMachineBlock machineBlock &&
-//                        machineBlock.getDefinition() instanceof KineticMachineDefinition definition) {
-//                    return !definition.isSource();
-//                }
-//                return false;
-//            }
-//
-//            @Override
-//            public boolean hasCapacity(Block block) {
-//                if (block instanceof IMachineBlock machineBlock &&
-//                        machineBlock.getDefinition() instanceof KineticMachineDefinition definition) {
-//                    return definition.isSource();
-//                }
-//                return false;
-//            }
-//
-//            @Nullable
-//            @Override
-//            public Couple<Integer> getGeneratedRPM(Block block) {
-//                return null;
-//            }
-//        });
     }
 }
