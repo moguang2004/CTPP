@@ -1,0 +1,13 @@
+{
+  "type": "ctpp:breathing",
+  "ingredients": [
+    {
+      "item": "minecraft:glass_bottle"
+    }
+  ],
+  "results": [
+    {
+      "item": "minecraft:dragon_breath"
+    }
+  ]
+}
