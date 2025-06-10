@@ -4,13 +4,8 @@ import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
-import com.gregtechceu.gtceu.common.data.GTRecipeConditions;
 import com.mo_guang.ctpp.CTPP;
-import com.mo_guang.ctpp.common.data.CTPPMachines;
-import com.mo_guang.ctpp.common.data.CTPPMultiblockMachines;
-import com.mo_guang.ctpp.common.data.CTPPRecipeConditions;
-import com.mo_guang.ctpp.common.data.CTPPRecipeTypes;
-import com.mo_guang.ctpp.recipe.BreathingRecipeGen;
+import com.mo_guang.ctpp.common.data.*;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
@@ -39,7 +34,7 @@ public class EventHandler {
         DataGenerator generator = event.getGenerator();
         PackOutput output = generator.getPackOutput();
         if (event.includeServer()) {
-//            BreathingRecipeGen.register(output);
+            CTPPRecipeProvider.registerAllProcessing(generator, output);
         }
     }
 }

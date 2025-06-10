@@ -46,6 +46,8 @@ public class ChineseLangHandler {
         provider.add("ctpp.kinetic_workable_multiblock_machine.reduction","状态：配方耗时减免x0.8");
         provider.add("ctpp.kinetic_workable_multiblock_machine.overclock","状态：超频");
         provider.add("ctpp.kinetic_workable_multiblock_machine.perfect_overclock","状态：无损超频");
+        provider.add("ctpp.recipe.fan_breathing", "批量龙吟");
+        provider.add("ctpp.recipe.breathing.fan", "在龙首后放置鼓风机");
 
         for (var tier : GTMachineUtils.ALL_TIERS) {
             provider.add(CTPPMachines.KINETIC_INPUT_BOX[tier].getBlock(), GTValues.VNF[tier] + " 应力输入仓");

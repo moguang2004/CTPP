@@ -96,6 +96,8 @@
   "ctpp.kinetic_workable_multiblock_machine.perfect_overclock": "状态：无损超频",
   "ctpp.kinetic_workable_multiblock_machine.reduction": "状态：配方耗时减免x0.8",
   "ctpp.kinetic_workable_multiblock_machine.speed": "输入转速：%drpm",
+  "ctpp.recipe.breathing.fan": "在龙首后放置鼓风机",
+  "ctpp.recipe.fan_breathing": "批量龙吟",
   "ctpp.stress_input": "应力输入：%dsu",
   "ctpp.stress_output": "应力输出：%dsu",
   "ctpp.windmill_control_center.mechanism": "会检测多方块周围半径16格内的风车轴承，总输出的应力为：周围的风车轴承数x(周围风车总应力输出 + 512)。§4最多控制16个风车！§r",

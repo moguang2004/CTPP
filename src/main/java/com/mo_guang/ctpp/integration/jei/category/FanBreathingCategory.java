@@ -5,7 +5,9 @@ import com.simibubi.create.compat.jei.category.ProcessingViaFanCategory;
 import com.simibubi.create.compat.jei.category.animations.AnimatedKinetics;
 import net.createmod.catnip.gui.element.GuiGameElement;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.SkullBlockEntity;
 
 public class FanBreathingCategory extends ProcessingViaFanCategory.MultiOutput<BreathingRecipe> {
     public FanBreathingCategory(Info<BreathingRecipe> info) {
@@ -14,7 +16,8 @@ public class FanBreathingCategory extends ProcessingViaFanCategory.MultiOutput<B
 
     @Override
     protected void renderAttachedBlock(GuiGraphics guiGraphics) {
-        GuiGameElement.of(Blocks.DRAGON_HEAD)
+        GuiGameElement.of(new SkullBlockEntity(BlockPos.ZERO, Blocks.DRAGON_HEAD.defaultBlockState()))
+                .rotateBlock(0, 180, 0)
                 .scale(SCALE)
                 .atLocal(0, 0, 2)
                 .lighting(AnimatedKinetics.DEFAULT_LIGHTING)

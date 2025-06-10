@@ -26,7 +26,7 @@ public class BreathingRecipeGen extends ProcessingRecipeGen {
     }
 
     public GeneratedRecipe convert(Supplier<Ingredient> input, Supplier<ItemLike> result) {
-        return create(Create.asResource(CatnipServices.REGISTRIES.getKeyOrThrow(result.get()
+        return create(CTPP.id(CatnipServices.REGISTRIES.getKeyOrThrow(result.get()
                                 .asItem())
                         .getPath()),
                 p -> p.withItemIngredients(input.get())

@@ -60,7 +60,6 @@ public class CTPPJeiPlugin implements IModPlugin {
                 .doubleItemIcon(AllItems.PROPELLER.get(), Items.DRAGON_BREATH)
                 .emptyBackground(178, 72)
                 .build("fan_breathing", FanBreathingCategory::new);
-        categories.add(breathing);
     }
     @Override
     public void registerCategories(IRecipeCategoryRegistration registration) {
@@ -226,7 +225,7 @@ public class CTPPJeiPlugin implements IModPlugin {
 
             CreateRecipeCategory.Info<T> info = new CreateRecipeCategory.Info<>(
                     new mezz.jei.api.recipe.RecipeType<>(CTPP.id(name), recipeClass),
-                    CreateLang.translateDirect("recipe." + name), background, icon, recipesSupplier, catalysts);
+                    Component.translatable("ctpp.recipe." + name), background, icon, recipesSupplier, catalysts);
             CreateRecipeCategory<T> category = factory.create(info);
             categories.add(category);
             return category;
