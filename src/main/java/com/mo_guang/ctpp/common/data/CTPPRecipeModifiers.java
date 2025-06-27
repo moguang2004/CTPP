@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.mo_guang.ctpp.api.CTPPModifierFunction;
+import com.mo_guang.ctpp.api.CTPPParallelLogic;
 import com.mo_guang.ctpp.common.machine.IKineticMachine;
 import com.mo_guang.ctpp.common.machine.multiblock.KineticOutputMachine;
 import com.mo_guang.ctpp.common.machine.multiblock.KineticWorkableMultiblockMachine;
@@ -19,7 +20,7 @@ public class CTPPRecipeModifiers {
     public static final RecipeModifier KINETIC_OVERCLOCK = ((machine, recipe) -> {
         if (machine instanceof KineticWorkableMultiblockMachine kmachine) {
             var modifier = kmachine.calculateModifier();
-            kmachine.parallels = (int) Math.sqrt(ParallelLogic.getParallelAmount(kmachine,modifier.apply(recipe),2147483647));
+            kmachine.parallels = CTPPParallelLogic.getKineticParallelAmount(kmachine,modifier.apply(recipe),2147483647);
             return CTPPModifierFunction.accurateParallel(kmachine,recipe,kmachine.parallels).compose(modifier);
         }
         return ModifierFunction.IDENTITY;

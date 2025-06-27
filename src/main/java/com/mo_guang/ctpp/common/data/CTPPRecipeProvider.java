@@ -1,5 +1,6 @@
 package com.mo_guang.ctpp.common.data;
 
+import com.mo_guang.ctpp.recipe.AcidWashingRecipeGen;
 import com.mo_guang.ctpp.recipe.BreathingRecipeGen;
 import com.simibubi.create.api.data.recipe.ProcessingRecipeGen;
 import com.tterrag.registrate.AbstractRegistrate;
@@ -28,6 +29,7 @@ public class CTPPRecipeProvider extends RecipeProvider {
     }
     public static void registerAllProcessing(DataGenerator gen, PackOutput output) {
         GENERATORS.add(new BreathingRecipeGen(output));
+        GENERATORS.add(new AcidWashingRecipeGen(output));
         gen.addProvider(true, new DataProvider() {
 
             @Override

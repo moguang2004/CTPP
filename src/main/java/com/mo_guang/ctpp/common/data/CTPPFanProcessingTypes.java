@@ -1,6 +1,7 @@
 package com.mo_guang.ctpp.common.data;
 
 import com.mo_guang.ctpp.CTPP;
+import com.mo_guang.ctpp.common.kinetic.fan.acidwashing.AcidWashingProcessingType;
 import com.mo_guang.ctpp.common.kinetic.fan.breathing.BreathingFanProcessingType;
 import com.simibubi.create.api.registry.CreateRegistries;
 import com.simibubi.create.content.kinetics.fan.processing.FanProcessingType;
@@ -14,6 +15,7 @@ public class CTPPFanProcessingTypes {
             .create(CreateRegistries.FAN_PROCESSING_TYPE, CTPP.MODID);
     public static RegistryObject<BreathingFanProcessingType> BREATHING = FAN_TYPES
             .register("breathing", BreathingFanProcessingType::new);
+    public static RegistryObject<AcidWashingProcessingType> ACID_WASHING = FAN_TYPES.register("acid_washing", AcidWashingProcessingType::new);
     public static void register(IEventBus modBus) {
         FAN_TYPES.register(modBus);
     }
