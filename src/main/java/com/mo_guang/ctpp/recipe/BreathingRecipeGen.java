@@ -10,6 +10,7 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Blocks;
 
 import java.util.function.Supplier;
 
@@ -18,6 +19,12 @@ public class BreathingRecipeGen extends ProcessingRecipeGen {
         super(generator, CTPP.MODID);
     }
     GeneratedRecipe BOTTLE = convert(Items.GLASS_BOTTLE, Items.DRAGON_BREATH);
+    GeneratedRecipe STONE = convert(Blocks.STONE, Blocks.END_STONE);
+    GeneratedRecipe APPLE = convert(Items.APPLE, Items.CHORUS_FRUIT);
+    GeneratedRecipe EYES = convert(Items.SPIDER_EYE, Items.ENDER_PEARL);
+    GeneratedRecipe LEATHER = convert(Items.LEATHER, Items.PHANTOM_MEMBRANE);
+    GeneratedRecipe NAUTILUS = convert(Items.NAUTILUS_SHELL, Items.SHULKER_SHELL);
+    GeneratedRecipe BONE = convert(Blocks.BONE_BLOCK, Items.CHORUS_FLOWER);
 //    public static void register(PackOutput generator) {
 //        GENERATORS.add(new BreathingRecipeGen(generator));
 //    }

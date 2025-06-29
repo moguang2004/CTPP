@@ -14,7 +14,7 @@ public class AcidwashingRecipe extends ProcessingRecipe<AcidwashingRecipe.Acidwa
 
     @Override
     protected int getMaxInputCount() {
-        return 1;
+        return 4;
     }
 
     @Override
@@ -24,7 +24,10 @@ public class AcidwashingRecipe extends ProcessingRecipe<AcidwashingRecipe.Acidwa
 
     @Override
     public boolean matches(AcidwashingWrapper acidwashingWrapper, Level level) {
-        return false;
+        if (acidwashingWrapper.isEmpty())
+            return false;
+        return ingredients.get(0)
+                .test(acidwashingWrapper.getItem(0));
     }
 
     public static class AcidwashingWrapper extends RecipeWrapper {

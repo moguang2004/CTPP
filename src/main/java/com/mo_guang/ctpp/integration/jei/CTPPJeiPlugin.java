@@ -1,8 +1,11 @@
 package com.mo_guang.ctpp.integration.jei;
 
+import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.mo_guang.ctpp.CTPP;
 import com.mo_guang.ctpp.common.data.CTPPRecipeTypeInfo;
+import com.mo_guang.ctpp.common.kinetic.fan.acidwashing.AcidwashingRecipe;
 import com.mo_guang.ctpp.common.kinetic.fan.breathing.BreathingRecipe;
+import com.mo_guang.ctpp.integration.jei.category.FanAcidWashingCategory;
 import com.mo_guang.ctpp.integration.jei.category.FanBreathingCategory;
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.AllItems;
@@ -60,6 +63,13 @@ public class CTPPJeiPlugin implements IModPlugin {
                 .doubleItemIcon(AllItems.PROPELLER.get(), Items.DRAGON_BREATH)
                 .emptyBackground(178, 72)
                 .build("fan_breathing", FanBreathingCategory::new);
+        CreateRecipeCategory<?>
+                acidwashing = builder(AcidwashingRecipe.class)
+                .addTypedRecipes(CTPPRecipeTypeInfo.ACIDWASHING)
+                .catalystStack(() -> AllBlocks.ENCASED_FAN.asStack().setHoverName(Component.translatable("ctpp.recipe.acid_washing.fan").withStyle(style -> style.withItalic(false))))
+                .doubleItemIcon(AllItems.PROPELLER.get(), GTMaterials.SulfuricAcid.getBucket())
+                .emptyBackground(178, 72)
+                .build("fan_acid_washing", FanAcidWashingCategory::new);
     }
     @Override
     public void registerCategories(IRecipeCategoryRegistration registration) {

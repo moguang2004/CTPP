@@ -5,10 +5,10 @@
   "refmap": "mixins.ctpp.refmap.json",
   "mixins": [
     "BlockPatternMixin",
+    "GTBucketItemMixin",
     "GTRecipeComponentsMixin",
     "RotationPropagatorMixin",
     "WorkableCasingMachineRendererAccessor",
-    "create.AllFanProcessingTypesMixin",
     "create.WindmillBearingBlockMixin",
     "fix.IRotorHolderMachineMixin",
     "fix.RotorHolderPartMachineMixin"

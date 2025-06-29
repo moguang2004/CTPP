@@ -38,7 +38,7 @@ public class ChineseLangHandler {
         provider.add("ctpp.boom_of_create.coolant", "持续运行时会逐渐减少电力消耗，最低可为0");
         provider.add("ctpp.boom_of_create.overclock", "与三峡大坝一样，必须有足够的应力输出口才会开始工作");
         provider.add("ctpp.boom_of_create.safe", "§a应力飞升之路§r");
-        provider.add("kinetic_overclock", "拥有应力超频机制，根据输入的总应力大小获得并行数，根据输入的转速大小拥有不同的效果：\n转速 < 64:无效果\n转速 < 128:获得25%耗时减免\n转速 < 256:获得一次超频机会\n转速 < 512:获得一次无损超频机会");
+        provider.add("kinetic_overclock", "拥有应力超频机制，根据输入的总应力大小获得并行数(非线性)，根据输入的转速大小拥有不同的效果：\n转速 < 64:无效果\n转速 < 128:获得20%耗时减免\n转速 < 256:获得一次超频机会\n转速 < 512:获得一次无损超频机会");
         provider.add("actual_speed", "输入转速以等级最高的应力仓的转速为准");
         provider.add("ctpp.kinetic_workable_multiblock_machine.speed","输入转速：%drpm");
         provider.add("ctpp.kinetic_workable_multiblock_machine.parallel","并行数： %d");
@@ -48,6 +48,8 @@ public class ChineseLangHandler {
         provider.add("ctpp.kinetic_workable_multiblock_machine.perfect_overclock","状态：无损超频");
         provider.add("ctpp.recipe.fan_breathing", "批量龙吟");
         provider.add("ctpp.recipe.breathing.fan", "在龙首后放置鼓风机");
+        provider.add("ctpp.recipe.fan_acid_washing", "批量酸洗");
+        provider.add("ctpp.recipe.acid_washing.fan", "在硫酸后放置鼓风机");
 
         for (var tier : GTMachineUtils.ALL_TIERS) {
             provider.add(CTPPMachines.KINETIC_INPUT_BOX[tier].getBlock(), GTValues.VNF[tier] + " 应力输入箱");
