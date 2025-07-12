@@ -122,19 +122,19 @@ public class KineticWorkableMultiblockMachine extends KineticMultiblockMachine i
     @Override
     public void addDisplayText(List<Component> textList) {
         super.addDisplayText(textList);
-        textList.add(Component.translatable("ctpp.kinetic_workable_multiblock_machine.speed",speed));
-        textList.add(Component.translatable("ctpp.kinetic_workable_multiblock_machine.parallel",parallels));
+        textList.add(Component.translatable("ctpp.multiblock.kinetic_workable_multiblock_machine.speed",speed));
+        textList.add(Component.translatable("ctpp.multiblock.kinetic_workable_multiblock_machine.parallel",parallels));
         if(speed < 64){
-            textList.add(Component.translatable("ctpp.kinetic_workable_multiblock_machine.null"));
+            textList.add(Component.translatable("ctpp.multiblock.kinetic_workable_multiblock_machine.null"));
         }
         else if(speed < 128){
-            textList.add(Component.translatable("ctpp.kinetic_workable_multiblock_machine.reduction"));
+            textList.add(Component.translatable("ctpp.multiblock.kinetic_workable_multiblock_machine.reduction"));
         }
         else if(speed < 256){
-            textList.add(Component.translatable("ctpp.kinetic_workable_multiblock_machine.overclock"));
+            textList.add(Component.translatable("ctpp.multiblock.kinetic_workable_multiblock_machine.overclock"));
         }
         else{
-            textList.add(Component.translatable("ctpp.kinetic_workable_multiblock_machine.perfect_overclock"));
+            textList.add(Component.translatable("ctpp.multiblock.kinetic_workable_multiblock_machine.perfect_overclock"));
         }
     }
 }

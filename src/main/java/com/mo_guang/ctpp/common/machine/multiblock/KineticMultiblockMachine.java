@@ -13,6 +13,8 @@ import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockDisplayText;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.widget.*;
+import com.mo_guang.ctpp.common.machine.multiblock.part.MechanicalUpgradePartMachine;
+import com.mo_guang.ctpp.util.CTPPValues;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import com.simibubi.create.content.processing.burner.BlazeBurnerBlock;
 import com.simibubi.create.content.processing.burner.BlazeBurnerBlockEntity;
@@ -40,12 +42,14 @@ public class KineticMultiblockMachine extends WorkableMultiblockMachine implemen
     public float speed = 64;
     @Getter
     public float previousSpeed = 0;
+    public int tier = 0;
     public KineticMultiblockMachine(IMachineBlockEntity holder){
         super(holder);
     }
     @Override
     public void onStructureFormed() {
         super.onStructureFormed();
+        checkTier();
         rotateBlocks = getMultiblockState().getMatchContext().getOrDefault("roBlocks", LongSets.emptySet());
         blazeBlocks = getMultiblockState().getMatchContext().getOrDefault("bbBlocks", LongSets.emptySet());
         updateActiveBlocks(recipeLogic.isWorking());
@@ -58,6 +62,13 @@ public class KineticMultiblockMachine extends WorkableMultiblockMachine implemen
             updateBlazeBlocks(active);
         } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
             throw new RuntimeException(e);
+        }
+    }
+    public void checkTier() {
+        for (IMultiPart multiPart : getParts()) {
+            if (multiPart instanceof MechanicalUpgradePartMachine upgradePartMachine) {
+                tier = upgradePartMachine.tier;
+            }
         }
     }
     public void updateRotateBlocks(boolean active){
@@ -131,6 +142,7 @@ public class KineticMultiblockMachine extends WorkableMultiblockMachine implemen
                 .addOutputLines(recipeLogic.getLastRecipe());
         getDefinition().getAdditionalDisplay().accept(this, textList);
         IDisplayUIMachine.super.addDisplayText(textList);
+        textList.add(textList.size(), Component.translatable("ctpp.multiblock.mechanical_tier", tier, CTPPValues.MT[tier]));
     }
 
     @Override

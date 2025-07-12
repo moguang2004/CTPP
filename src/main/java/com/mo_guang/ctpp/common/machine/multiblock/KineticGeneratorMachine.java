@@ -45,8 +45,8 @@ public class KineticGeneratorMachine extends CoilWorkableElectricMultiblockMachi
         super.addDisplayText(textList);
         if (isFormed()) {
             var voltageName = GTValues.VNF[GTUtil.getTierByVoltage((long) outputEnergy)];
-            textList.add(textList.size(), Component.translatable("multiblock.ctpp.kinetic_generator", FormattingUtil.formatNumbers(outputEnergy), voltageName));
-            textList.add(textList.size(), Component.translatable("multiblock.ctpp.kinetic_generator.efficiency", String.format("%.1f",efficiency*100)));
+            textList.add(textList.size(), Component.translatable("ctpp.multiblock.kinetic_generator.info.0", FormattingUtil.formatNumbers(outputEnergy), voltageName));
+            textList.add(textList.size(), Component.translatable("ctpp.multiblock.kinetic_generator.info.1", String.format("%.1f",efficiency*100)));
         }
     }
 
