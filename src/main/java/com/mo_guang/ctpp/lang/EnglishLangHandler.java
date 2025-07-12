@@ -5,9 +5,9 @@ import com.mo_guang.ctpp.config.MainConfig;
 
 public class EnglishLangHandler {
     public static void init(RegistrateLangProvider provider){
-        provider.add("ctpp.common_tooltip.kinetic_overclock", "- Has a stress overclocking mechanism that determines parallelism based on the total input stress. The effects vary based on input speed:\nSpeed < 64: No effect\nSpeed < 128: 25% time reduction\nSpeed < 256: One overclocking opportunity\nSpeed < 512: One lossless overclocking opportunity");
-        provider.add("ctpp.common_tooltip.input_speed", "* The input speed is based on the highest-speed stress chamber.");
-        provider.add("ctpp.common_tooltip.mechanical_tier", "* Mechanical Tier is determined by items in the Mechanical Upgrade Bus: None (0), Basic Components (1), Precision Components (2),\nSteel Structures or Basic Electronic Circuits (3), Advanced Electronic Circuits (4), Integrated Circuits (5)");
+        provider.add("ctpp.common_tooltip.kinetic_overclock", "-Has a stress overclocking mechanism that determines parallelism based on the total input stress. The effects vary based on input speed:\nSpeed < 64: No effect\nSpeed < 128: 25% time reduction\nSpeed < 256: One overclocking opportunity\nSpeed < 512: One lossless overclocking opportunity");
+        provider.add("ctpp.common_tooltip.input_speed", "*The input speed is based on the highest-speed stress chamber.");
+        provider.add("ctpp.common_tooltip.mechanical_tier", "*Mechanical Tier is determined by items in the Mechanical Upgrade Bus: None (0), Basic Components (1), Precision Components (2),\nSteel Structures or Basic Electronic Circuits (3), Advanced Electronic Circuits (4), Integrated Circuits (5)");
 
         provider.add("ctpp.stress_input","Stress Input：%dsu");
         provider.add("ctpp.stress_output","Stress Output：%dsu");
@@ -55,7 +55,7 @@ public class EnglishLangHandler {
         provider.add("ctpp.multiblock.kinetic_steam_turbine.tooltip.3", "Running efficiency will gain an addition of (1 + tier/(tier + 1))");
 
         provider.add("ctpp.multiblock.windmill_control_center.tooltip.0", "Windmill Master Control! The more, the stronger!");
-        provider.add("ctpp.multiblock.windmill_control_center.tooltip.1", "- Detects windmill bearings within a radius of (5 + tier) blocks around the multiblock. \n- The total stress output is calculated as: Number of windmill bearings × (Total stress output of surrounding windmills + 512). \n- §4Can control up to (4 + 2 * tier) windmills!§r");
+        provider.add("ctpp.multiblock.windmill_control_center.tooltip.1", "-Detects windmill bearings within a radius of (5 + tier) blocks around the multiblock. \n-The total stress output is calculated as: Number of windmill bearings × (Total stress output of surrounding windmills + 512). \n-§4Can control up to (4 + 2 * tier) windmills!§r");
         provider.add("ctpp.multiblock.windmill_control_center.tooltip.2", "Ensure that the stress output container is large enough to handle all the stress, otherwise the machine will not work.");
 
         provider.add("ctpp.multiblock.boom_of_create.tooltip.0", "Art is an explosion!");
