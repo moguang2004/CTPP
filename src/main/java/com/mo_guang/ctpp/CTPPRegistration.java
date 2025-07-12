@@ -8,7 +8,7 @@ import java.util.function.Supplier;
 import net.minecraft.world.item.CreativeModeTab;
 
 public class CTPPRegistration {
-    public static final GTRegistrate REGISTRATE = GTRegistrate.create(CTPP.MODID);
+    public static final CTPPRegistrate REGISTRATE = CTPPRegistrate.create(CTPP.MODID);
     public static <T> T conditionalRegistration(boolean enable, RegistryEntry<CreativeModeTab> originalTab, Supplier<T> registration) {
         if (!enable) {
             REGISTRATE.creativeModeTab(() -> null);

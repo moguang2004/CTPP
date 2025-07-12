@@ -27,9 +27,10 @@ public class WindMillControlMachine extends KineticOutputMachine {
 
     @Override
     public void onStructureFormed() {
-        calculateWindmillAround();
         super.onStructureFormed();
+        calculateWindmillAround();
     }
+
 
     @Override
     public boolean onWorking() {
@@ -54,10 +55,10 @@ public class WindMillControlMachine extends KineticOutputMachine {
     public void addDisplayText(List<Component> textList) {
         super.addDisplayText(textList);
         if (isFormed()) {
-            textList.add(Component.translatable("multiblock.ctpp.windmill_control_center1", String.format("%d",efficiency)));
-            textList.add(Component.translatable("multiblock.ctpp.windmill_control_center2", String.format("%.1f",TotalOutput)));
-            textList.add(Component.translatable("multiblock.ctpp.windmill_control_center.efficiency", String.format("%d",efficiency*100)));
-            textList.add(Component.translatable("multiblock.ctpp.windmill_control_center.output",String.format("%.1f",(TotalOutput + 512) * efficiency)));
+            textList.add(Component.translatable("ctpp.multiblock.windmill_control_center.info.0", String.format("%d",efficiency, 4 + 2 * tier)));
+            textList.add(Component.translatable("ctpp.multiblock.windmill_control_center.info.1", String.format("%.1f",TotalOutput)));
+            textList.add(Component.translatable("ctpp.multiblock.windmill_control_center.info.2", String.format("%d",efficiency*100)));
+            textList.add(Component.translatable("ctpp.multiblock.windmill_control_center.info.3",String.format("%.1f",(TotalOutput + 512) * efficiency)));
         }
     }
     public static ModifierFunction recipeModifier(MetaMachine machine, GTRecipe recipe) {
@@ -73,9 +74,9 @@ public class WindMillControlMachine extends KineticOutputMachine {
     public void calculateWindmillAround() {
         var WindMillAround = new ArrayList<>();
         TotalOutput = 0;
-        for (int x = -10; x < 11; x++) {
-            for (int y = -10; y < 11; y++) {
-                for (int z = -10; z < 11; z++) {
+        for (int x = -5 - tier; x < 5 + tier; x++) {
+            for (int y = -5 - tier; y < 5 + tier; y++) {
+                for (int z = -5 - tier; z < 5 + tier; z++) {
                     if (x == 0 && y == 0 && z == 0) {
                     } else {
                         var kineticBlockEntity = getLevel().getBlockEntity(getPos().offset(x, y, z));
@@ -90,6 +91,6 @@ public class WindMillControlMachine extends KineticOutputMachine {
                 }
             }
         }
-        efficiency = Math.min(WindMillAround.size(),16);
+        efficiency = Math.min(WindMillAround.size(),6 + tier * 2);
     }
 }

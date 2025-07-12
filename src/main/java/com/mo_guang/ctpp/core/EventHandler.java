@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
 import com.mo_guang.ctpp.CTPP;
+import com.mo_guang.ctpp.CTPPItems;
 import com.mo_guang.ctpp.common.data.*;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
@@ -18,6 +19,7 @@ public class EventHandler {
     @SubscribeEvent
     public static void registerMachines(GTCEuAPI.RegisterEvent<ResourceLocation, MachineDefinition> event) {
         CTPPMachines.init();
+        CTPPItems.init();
         CTPPMultiblockMachines.init();
     }
 

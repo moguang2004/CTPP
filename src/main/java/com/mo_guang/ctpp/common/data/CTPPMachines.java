@@ -8,12 +8,16 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
+import com.gregtechceu.gtceu.client.renderer.machine.OverlayTieredActiveMachineRenderer;
+import com.gregtechceu.gtceu.client.renderer.machine.OverlayTieredMachineRenderer;
 import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
+import com.gregtechceu.gtceu.common.registry.GTRegistration;
 import com.mo_guang.ctpp.CTPPRegistration;
 import com.mo_guang.ctpp.api.CTPPPartAbility;
 import com.mo_guang.ctpp.client.SplitShaftVisual;
@@ -23,6 +27,7 @@ import com.mo_guang.ctpp.common.machine.KineticMachineDefinition;
 import com.mo_guang.ctpp.common.machine.KineticPartMachine;
 import com.mo_guang.ctpp.common.machine.SimpleKineticElectricWorkableMachine;
 import com.mo_guang.ctpp.common.block.KineticMachineBlock;
+import com.mo_guang.ctpp.common.machine.multiblock.part.MechanicalUpgradePartMachine;
 import com.mo_guang.ctpp.config.MainConfig;
 import com.mo_guang.ctpp.render.KineticWorkableTieredHullMachineRenderer;
 import com.mo_guang.ctpp.render.SplitShaftTieredHullMachineRenderer;
@@ -52,6 +57,13 @@ public class CTPPMachines {
     static {
         REGISTRATE.creativeModeTab(() -> MACHINE);
     }
+    public static final MachineDefinition MECHANICAL_UPGRADE_BUS = REGISTRATE.machine("mechanical_upgrade_bus", MechanicalUpgradePartMachine::new)
+            .langValue("Mechanical Upgrade Bus")
+            .tier(ULV)
+            .rotationState(RotationState.ALL)
+            .abilities(CTPPPartAbility.MECHANICAL_UPGRADE)
+            .renderer(() -> new OverlayTieredMachineRenderer(ULV, GTCEu.id("block/machine/part/item_bus.import")))
+            .register();
 
     public static final KineticMachineDefinition[] ELECTRIC_GEAR_BOX_2A = registerElectricGearBox(2, LOW_TIERS);
     public static final KineticMachineDefinition[] ELECTRIC_GEAR_BOX_8A = registerElectricGearBox(8, LOW_TIERS);

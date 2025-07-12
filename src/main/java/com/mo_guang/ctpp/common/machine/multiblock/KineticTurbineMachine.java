@@ -63,14 +63,14 @@ public class KineticTurbineMachine extends KineticOutputMachine implements ITier
                         FormattingUtil.formatNumbers(rotorHolder.getMaxRotorHolderSpeed())));
                 textList.add(Component.translatable("gtceu.multiblock.turbine.efficiency",
                         rotorHolder.getTotalEfficiency()));
-                textList.add(Component.translatable("multiblock.ctpp.kinetic_steam_turbine",
+                textList.add(Component.translatable("ctpp.multiblock.kinetic_steam_turbine.info.0",
                         FormattingUtil.formatNumbers(getRotorHolder().getTotalEfficiency() * lossrate * 100)));
                 if (isActive()) {
                     double output = 0;
                     if(recipeLogic.getLastRecipe() != null){
                         output = recipeLogic.getLastRecipe().outputs.get(StressRecipeCapability.CAP).stream().map(Content::getContent).mapToDouble(StressRecipeCapability.CAP::of).sum();
                     }
-                    textList.add(Component.translatable("multiblock.ctpp.kinetic_steam_turbine_output",FormattingUtil.formatNumbers(output)));
+                    textList.add(Component.translatable("ctpp.multiblock.kinetic_steam_turbine.info.0",FormattingUtil.formatNumbers(output)));
                 }
 
                 int rotorDurability = rotorHolder.getRotorDurabilityPercent();
@@ -82,6 +82,9 @@ public class KineticTurbineMachine extends KineticOutputMachine implements ITier
                 }
             }
         }
+    }
+    public double getMechanicalEfficiency() {
+        return 1 + (double) tier / (1 + tier);
     }
     public static ModifierFunction recipeModifier(MetaMachine machine, GTRecipe recipe) {
         if(machine instanceof KineticTurbineMachine kmachine) {
@@ -98,7 +101,7 @@ public class KineticTurbineMachine extends KineticOutputMachine implements ITier
                 if (tier > GTValues.HV) {
                     kmachine.lossrate = Math.max(0.5, 1 - (tier - GTValues.HV) * 0.1);
                 }
-                var contentModifier = ContentModifier.multiplier(holderEfficiency * boostRate * boostRate * kmachine.lossrate);
+                var contentModifier = ContentModifier.multiplier(holderEfficiency * boostRate * boostRate * kmachine.lossrate * kmachine.getMechanicalEfficiency());
             ModifierFunction modifiedByRotor = ModifierFunction.builder().outputModifier(contentModifier).build();
             return modifiedByRotor.compose(modifiedByKinetic);
         }

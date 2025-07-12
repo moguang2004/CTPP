@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
 import com.mo_guang.ctpp.common.data.CTPPRecipeConditions;
 import com.mo_guang.ctpp.common.machine.IKineticMachine;
+import com.mo_guang.ctpp.common.machine.multiblock.KineticWorkableMultiblockMachine;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.NoArgsConstructor;
@@ -17,11 +18,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.GsonHelper;
 import org.jetbrains.annotations.NotNull;
 
-/**
- * @author KilaBash
- * @date 2022/05/27
- * @implNote WhetherCondition, specific whether
- */
 @NoArgsConstructor
 public class RPMCondition extends RecipeCondition {
 
@@ -62,13 +58,8 @@ public class RPMCondition extends RecipeCondition {
                 Math.abs(kineticMachine.getKineticHolder().getSpeed()) >= rpm) {
             return true;
         }
-        if (recipeLogic.machine instanceof IMultiController controller) {
-            for (IMultiPart part : controller.getParts()) {
-                if (part instanceof IKineticMachine kineticMachine &&
-                        Math.abs(kineticMachine.getKineticHolder().getSpeed()) >= rpm) {
-                    return true;
-                }
-            }
+        if (recipeLogic.machine instanceof KineticWorkableMultiblockMachine controller) {
+            return controller.speed >= rpm;
         }
         return false;
     }

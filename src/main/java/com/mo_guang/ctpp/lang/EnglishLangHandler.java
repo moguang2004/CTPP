@@ -5,41 +5,71 @@ import com.mo_guang.ctpp.config.MainConfig;
 
 public class EnglishLangHandler {
     public static void init(RegistrateLangProvider provider){
-        provider.add("recipe.capability.su.name", "Create Stress");
-        provider.add("recipe.condition.rpm.tooltip", "RPM: %d");
+        provider.add("ctpp.common_tooltip.kinetic_overclock", "- Has a stress overclocking mechanism that determines parallelism based on the total input stress. The effects vary based on input speed:\nSpeed < 64: No effect\nSpeed < 128: 25% time reduction\nSpeed < 256: One overclocking opportunity\nSpeed < 512: One lossless overclocking opportunity");
+        provider.add("ctpp.common_tooltip.input_speed", "* The input speed is based on the highest-speed stress chamber.");
+        provider.add("ctpp.common_tooltip.mechanical_tier", "* Mechanical Tier is determined by items in the Mechanical Upgrade Bus: None (0), Basic Components (1), Precision Components (2),\nSteel Structures or Basic Electronic Circuits (3), Advanced Electronic Circuits (4), Integrated Circuits (5)");
+
         provider.add("ctpp.stress_input","Stress Input：%dsu");
         provider.add("ctpp.stress_output","Stress Output：%dsu");
-        provider.add("multiblock.ctpp.kinetic_generator", "Generator Rate：%d/%d EU/t");
-        provider.add("multiblock.ctpp.kinetic_generator.efficiency", "Coil Efficiency：%d%%");
-        provider.add("multiblock.ctpp.kinetic_steam_turbine", "Total Turbine Efficiency：%d%%");
-        provider.add("multiblock.ctpp.kinetic_steam_turbine_output", "Kinetic Output：%dsu");
-        provider.add("kinetic_output", "A machine that can output kinetic");
-        provider.add("rotor_holder_upgrade", "Each level of the rotor holder upgrade increases turbine efficiency by §610%§r");
-        provider.add("steam_up_hv_loss", "Steam-type machines lose 10% efficiency for each voltage tier above §6HV§r");
-        provider.add("multiblock.ctpp.windmill_control_center1", "Number of controlled windmills: %d");
-        provider.add("multiblock.ctpp.windmill_control_center2", "Total stress of controlled windmills: %dsu");
-        provider.add("multiblock.ctpp.windmill_control_center.efficiency", "Total energy efficiency: %d%%");
-        provider.add("multiblock.ctpp.windmill_control_center.output", "Total stress output: §a%dsu§r");
-        provider.add("windmill_control_center", "Windmill Master Control! The more, the stronger!");
-        provider.add("ctpp.windmill_control_center.mechanism", "Detects windmill bearings within a radius of 16 blocks around the multiblock. The total stress output is calculated as: Number of windmill bearings × (Total stress output of surrounding windmills + 512). §4Can control up to 16 windmills!§r");
-        provider.add("ctpp.windmill_control_center.output", "Ensure that the stress output container is large enough to handle all the stress, otherwise the machine will not work.");
-        provider.add("boom_of_create", "Art is an explosion!");
-        provider.add("ctpp.boom_of_create.basic", "The Explosive Vortex Stress Induction System (EVSIS) using explosives and a small amount of electricity to generate massive stress.");
-        provider.add("ctpp.boom_of_create.coolant", "Electricity consumption gradually decreases during continuous operation, with a minimum of 0.");
-        provider.add("ctpp.boom_of_create.overclock", "Like the Three Gorges Dam, sufficient stress output capacity is required for it to start working.");
-        provider.add("ctpp.boom_of_create.safe", "§aThe Path to Stress Ascension§r");
-        provider.add("ctpp.kinetic_generator.basic", "The base conversion efficiency from stress to EU is 160:1");
-        provider.add("ctpp.kinetic_generator.core", "Using a Block of Graphene as the core increases efficiency by §a10%§r");
-        provider.add("ctpp.kinetic_generator.extrict", "Requires at least 512 SU to activate the machine");
-        provider.add("ctpp.kinetic_generator.upgrade", "Each level of coil tier improves total efficiency by §a10%§r (initial value: 90%)");
-        provider.add("kinetic_overclock", "Has a stress overclocking mechanism that determines parallelism based on the total input stress. The effects vary based on input speed:\nSpeed < 64: No effect\nSpeed < 128: 25% time reduction\nSpeed < 256: One overclocking opportunity\nSpeed < 512: One lossless overclocking opportunity");
-        provider.add("actual_speed", "The input speed is based on the highest-speed stress chamber.");
-        provider.add("ctpp.kinetic_workable_multiblock_machine.speed", "Input speed: %drpm");
-        provider.add("ctpp.kinetic_workable_multiblock_machine.parallel", "Parallelism: %d");
-        provider.add("ctpp.kinetic_workable_multiblock_machine.null", "Status: None");
-        provider.add("ctpp.kinetic_workable_multiblock_machine.reduction", "Status: Recipe time reduction x0.75");
-        provider.add("ctpp.kinetic_workable_multiblock_machine.overclock", "Status: Overclocked");
-        provider.add("ctpp.kinetic_workable_multiblock_machine.perfect_overclock", "Status: Lossless overclocked");
+        provider.add("recipe.capability.su.name", "Create Stress");
+        provider.add("recipe.condition.rpm.tooltip", "RPM: %d");
+        provider.add("recipe.condition.mechanical_tier.tooltip", "Mechanical Tier: %s");
+
+        // Multiblock UI info
+        provider.add("ctpp.multiblock.kinetic_generator.info.0", "Generator Rate：%d/%d EU/t");
+        provider.add("ctpp.multiblock.kinetic_generator.info.1", "Coil Efficiency：%d%%");
+
+        provider.add("ctpp.multiblock.kinetic_steam_turbine.info.0", "Total Turbine Efficiency：%d%%");
+        provider.add("ctpp.multiblock.kinetic_steam_turbine.info.1", "Kinetic Output：%dsu");
+
+        provider.add("ctpp.multiblock.windmill_control_center.info.0", "Number of controlled windmills: %d(Max: %d)");
+        provider.add("ctpp.multiblock.windmill_control_center.info.1", "Total stress of controlled windmills: %dsu");
+        provider.add("ctpp.multiblock.windmill_control_center.info.2", "Total energy efficiency: %d%%");
+        provider.add("ctpp.multiblock.windmill_control_center.info.3", "Total stress output: §a%dsu§r");
+
+        provider.add("ctpp.multiblock.kinetic_workable_multiblock_machine.speed", "Input speed: %drpm");
+        provider.add("ctpp.multiblock.kinetic_workable_multiblock_machine.parallel", "Parallelism: %d");
+        provider.add("ctpp.multiblock.kinetic_workable_multiblock_machine.null", "Status: None");
+        provider.add("ctpp.multiblock.kinetic_workable_multiblock_machine.reduction", "Status: Recipe time reduction x0.75");
+        provider.add("ctpp.multiblock.kinetic_workable_multiblock_machine.overclock", "Status: Overclocked");
+        provider.add("ctpp.multiblock.kinetic_workable_multiblock_machine.perfect_overclock", "Status: Lossless overclocked");
+
+        provider.add("ctpp.multiblock.mechanical_tier", "Current Mechanical Tier：%s(%s)");
+        provider.add("ctpp.mechanical_tier.0", "None");
+        provider.add("ctpp.mechanical_tier.1", "Basic");
+        provider.add("ctpp.mechanical_tier.2", "Bronze");
+        provider.add("ctpp.mechanical_tier.3", "Steel");
+        provider.add("ctpp.mechanical_tier.4", "Electricity");
+        provider.add("ctpp.mechanical_tier.5", "Calculation");
+
+        // Multiblock Tooltip info
+        provider.add("ctpp.multiblock.kinetic_generator.tooltip.0", "Energy Conversation");
+        provider.add("ctpp.multiblock.kinetic_generator.tooltip.1", "The base conversion efficiency from stress to EU is 160:1");
+        provider.add("ctpp.multiblock.kinetic_generator.tooltip.2", "Using a Block of Graphene as the core increases efficiency by §a10%§r");
+        provider.add("ctpp.multiblock.kinetic_generator.tooltip.3", "Requires at least 512 SU to activate the machine");
+        provider.add("ctpp.multiblock.kinetic_generator.tooltip.4", "Each level of coil tier improves total efficiency by §a10%§r (initial value: 90%)");
+
+        provider.add("ctpp.multiblock.kinetic_steam_turbine.tooltip.0", "A machine that can output kinetic");
+        provider.add("ctpp.multiblock.kinetic_steam_turbine.tooltip.1", "Each level of the rotor holder upgrade increases turbine efficiency by §610%§r");
+        provider.add("ctpp.multiblock.kinetic_steam_turbine.tooltip.2", "Steam-type machines lose 10% efficiency for each voltage tier above §6HV§r");
+        provider.add("ctpp.multiblock.kinetic_steam_turbine.tooltip.3", "Running efficiency will gain an addition of (1 + tier/(tier + 1))");
+
+        provider.add("ctpp.multiblock.windmill_control_center.tooltip.0", "Windmill Master Control! The more, the stronger!");
+        provider.add("ctpp.multiblock.windmill_control_center.tooltip.1", "- Detects windmill bearings within a radius of (5 + tier) blocks around the multiblock. \n- The total stress output is calculated as: Number of windmill bearings × (Total stress output of surrounding windmills + 512). \n- §4Can control up to (4 + 2 * tier) windmills!§r");
+        provider.add("ctpp.multiblock.windmill_control_center.tooltip.2", "Ensure that the stress output container is large enough to handle all the stress, otherwise the machine will not work.");
+
+        provider.add("ctpp.multiblock.boom_of_create.tooltip.0", "Art is an explosion!");
+        provider.add("ctpp.multiblock.boom_of_create.tooltip.1", "The Explosive Vortex Stress Induction System (EVSIS) using explosives and a small amount of electricity to generate massive stress.");
+        provider.add("ctpp.multiblock.boom_of_create.tooltip.2", "Electricity consumption gradually decreases during continuous operation, with a minimum of 0.");
+        provider.add("ctpp.multiblock.boom_of_create.tooltip.3", "§aThe Path to Stress Ascension§r");
+
+
+        provider.add("ctpp.recipe.fan_breathing", "Dragon Fan Processing");
+        provider.add("ctpp.recipe.breathing.fan", "Place the fan behind the Dragon head");
+        provider.add("ctpp.recipe.fan_acid_washing", "AcidWashing Fan Processing");
+        provider.add("ctpp.recipe.acid_washing.fan", "Place the fan behind the Sulfuric acid");
+
+        provider.add("ctpp.copyright.info", "This machine is added by §6CT++§r");
 
         provider.add("config.screen.ctpp", "CTPP Configuration");
 

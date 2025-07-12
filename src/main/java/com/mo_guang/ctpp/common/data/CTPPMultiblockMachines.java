@@ -15,6 +15,7 @@ import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.mo_guang.ctpp.CTPP;
 import com.mo_guang.ctpp.api.CTPPPartAbility;
 import com.mo_guang.ctpp.common.machine.multiblock.*;
+import com.mo_guang.ctpp.util.CommonTooltips;
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.Create;
 import net.minecraft.ChatFormatting;
@@ -34,8 +35,7 @@ public class CTPPMultiblockMachines {
         ctnhEnabled("SmashingFactory"),
         () -> REGISTRATE.multiblock("smashing_factory", KineticWorkableMultiblockMachine::new)
             .rotationState(RotationState.NON_Y_AXIS)
-                .tooltips(Component.translatable("kinetic_overclock"),
-                        Component.translatable("actual_speed").withStyle(ChatFormatting.YELLOW))
+                .tooltips(CommonTooltips.KINETIC_OVERCLOCK)
             .appearanceBlock(AllBlocks.ANDESITE_CASING)
             .recipeType(CTPPRecipeTypes.SMASHING_FACTORY_RECIPES)
             .recipeModifier(CTPPRecipeModifiers.KINETIC_OVERCLOCK)
@@ -48,7 +48,8 @@ public class CTPPMultiblockMachines {
                     .where("A",Predicates.blocks(AllBlocks.ANDESITE_CASING.get()))
                     .where("B",Predicates.blocks(AllBlocks.ANDESITE_CASING.get())
                             .or(Predicates.autoAbilities(definition.getRecipeTypes()))
-                            .or(Predicates.abilities(CTPPPartAbility.INPUT_KINETIC)))
+                            .or(Predicates.abilities(CTPPPartAbility.INPUT_KINETIC))
+                            .or(Predicates.abilities(CTPPPartAbility.MECHANICAL_UPGRADE).setMaxGlobalLimited(1)))
                     .where("C",Predicates.blocks(AllBlocks.CRUSHING_WHEEL.get()))
                     .where("@",Predicates.controller(blocks(definition.getBlock())))
                     .where(" ",Predicates.any())
@@ -62,11 +63,11 @@ public class CTPPMultiblockMachines {
             .recipeType(CTPPRecipeTypes.KINETIC_GENERATOR_RECIPES)
             .appearanceBlock(CASING_STEEL_SOLID)
                 .generator(true)
-            .tooltips(Component.translatable("kinetic_generator").withStyle(ChatFormatting.GRAY),
-                    Component.translatable("ctpp.kinetic_generator.basic"),
-                    Component.translatable("ctpp.kinetic_generator.extrict"),
-                    Component.translatable("ctpp.kinetic_generator.upgrade"),
-                    Component.translatable("ctpp.kinetic_generator.core"))
+            .tooltips(Component.translatable("ctpp.multiblock.kinetic_generator.tooltip.0").withStyle(ChatFormatting.GRAY),
+                    Component.translatable("ctpp.multiblock.kinetic_generator.tooltip.1"),
+                    Component.translatable("ctpp.multiblock.kinetic_generator.tooltip.2"),
+                    Component.translatable("ctpp.multiblock.kinetic_generator.tooltip.3"),
+                    Component.translatable("ctpp.multiblock.kinetic_generator.tooltip.4"))
             .recipeModifier(KineticGeneratorMachine::recipeModifier,true)
             .pattern(definition -> FactoryBlockPattern.start()
                 .aisle("CCTP", "CCTP", "  TP")
@@ -77,7 +78,8 @@ public class CTPPMultiblockMachines {
                 .where("A", Predicates.blocks(GTMaterialBlocks.MATERIAL_BLOCKS.get(TagPrefix.block,GTMaterials.Coke).get())
                                 .or(Predicates.blocks(GTMaterialBlocks.MATERIAL_BLOCKS.get(TagPrefix.block,GTMaterials.Graphene).get())))
                 .where("C", Predicates.blocks(CASING_STEEL_SOLID.get())
-                        .or(Predicates.abilities(PartAbility.MAINTENANCE).setExactLimit(1)))
+                        .or(Predicates.abilities(PartAbility.MAINTENANCE).setExactLimit(1))
+                        .or(Predicates.abilities(CTPPPartAbility.MECHANICAL_UPGRADE).setMaxGlobalLimited(1)))
                 .where("P", Predicates.blocks(CASING_STEEL_SOLID.get())
                         .or(Predicates.abilities(PartAbility.IMPORT_FLUIDS).setExactLimit(1)))
                 .where("K", Predicates.abilities(CTPPPartAbility.INPUT_KINETIC).setExactLimit(1))
@@ -93,9 +95,11 @@ public class CTPPMultiblockMachines {
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeType(CTPPRecipeTypes.KINETIC_STEAM_TURBINE_RECIPES)
             .appearanceBlock(GTBlocks.CASING_BRONZE_BRICKS)
-            .tooltips(Component.translatable("kinetic_output"),
-                    Component.translatable("rotor_holder_upgrade"),
-                    Component.translatable("steam_up_hv_loss").withStyle(ChatFormatting.RED))
+            .tooltips(Component.translatable("ctpp.multiblock.kinetic_steam_turbine.tooltip.0"),
+                    Component.translatable("ctpp.multiblock.kinetic_steam_turbine.tooltip.1"),
+                    Component.translatable("ctpp.multiblock.kinetic_steam_turbine.tooltip.2").withStyle(ChatFormatting.RED),
+                    Component.translatable("ctpp.multiblock.kinetic_steam_turbine.tooltip.3"),
+                    CommonTooltips.MECHANICAL_TIER)
             .recipeModifiers(KineticTurbineMachine::recipeModifier,CTPPRecipeModifiers.KINETIC_ADJUST)
             .pattern(definition -> FactoryBlockPattern.start()
                 .aisle("CCCC", "CSSC", "CCCC")
@@ -105,7 +109,8 @@ public class CTPPMultiblockMachines {
                 .where("S", Predicates.blocks(GTBlocks.CASING_BRONZE_BRICKS.get())
                     .or(Predicates.autoAbilities(definition.getRecipeTypes()))
                 .or(Predicates.abilities(PartAbility.MAINTENANCE).setExactLimit(1))
-                .or(Predicates.abilities(PartAbility.MUFFLER).setExactLimit(1)))
+                .or(Predicates.abilities(PartAbility.MUFFLER).setExactLimit(1))
+                        .or(Predicates.abilities(CTPPPartAbility.MECHANICAL_UPGRADE).setMaxGlobalLimited(1)))
                 .where("K", Predicates.controller(Predicates.blocks(definition.get())))
                 .where("T", Predicates.abilities(CTPPPartAbility.OUTPUT_KINETIC).setExactLimit(1)
                     .or(Predicates.abilities(PartAbility.ROTOR_HOLDER).setExactLimit(1)))
@@ -119,8 +124,7 @@ public class CTPPMultiblockMachines {
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeType(CTPPRecipeTypes.SEAWEED_FARM)
             .recipeModifier(CTPPRecipeModifiers.KINETIC_OVERCLOCK)
-            .tooltips(Component.translatable("kinetic_overclock"),
-                    Component.translatable("actual_speed").withStyle(ChatFormatting.YELLOW))
+            .tooltips(CommonTooltips.KINETIC_OVERCLOCK)
             .appearanceBlock(AllBlocks.ANDESITE_CASING)
             .pattern(definition -> FactoryBlockPattern.start()
             .aisle("CNNNNNC", "CGGGGGC", "CGGGGGC", "CGGGGGC", "CNNNNNC")
@@ -131,7 +135,8 @@ public class CTPPMultiblockMachines {
             .where("C", Predicates.blocks(AllBlocks.ANDESITE_CASING.get()))
             .where("N", Predicates.blocks(AllBlocks.ANDESITE_CASING.get())
                 .or(Predicates.autoAbilities(definition.getRecipeTypes()))
-            .or(Predicates.abilities(PartAbility.MAINTENANCE).setExactLimit(1)))
+                .or(Predicates.abilities(PartAbility.MAINTENANCE).setExactLimit(1))
+                    .or(Predicates.abilities(CTPPPartAbility.MECHANICAL_UPGRADE).setMaxGlobalLimited(1)))
             .where("K", Predicates.controller(Predicates.blocks(definition.get())))
             .where("D", Predicates.blocks(AllBlocks.ANDESITE_CASING.get()))
             .where("E", Predicates.abilities(CTPPPartAbility.INPUT_KINETIC).setExactLimit(1)
@@ -152,16 +157,18 @@ public class CTPPMultiblockMachines {
             .recipeType(CTPPRecipeTypes.WINDMILL_CONTROL)
             .appearanceBlock(AllBlocks.BRASS_CASING)
             .recipeModifiers(WindMillControlMachine::recipeModifier,CTPPRecipeModifiers.KINETIC_ADJUST)
-            .tooltips(Component.translatable("windmill_control_center").withStyle(ChatFormatting.GRAY),
-                    Component.translatable("ctpp.windmill_control_center.mechanism"),
-                    Component.translatable("ctpp.windmill_control_center.output").withStyle(ChatFormatting.RED))
+            .tooltips(Component.translatable("ctpp.multiblock.windmill_control_center.tooltip.0").withStyle(ChatFormatting.GRAY),
+                    Component.translatable("ctpp.multiblock.windmill_control_center.tooltip.1"),
+                    CommonTooltips.MECHANICAL_TIER,
+                    Component.translatable("ctpp.multiblock.windmill_control_center.tooltip.2").withStyle(ChatFormatting.RED))
             .pattern(definition -> FactoryBlockPattern.start()
                 .aisle("BBBBB", "CBBBC", "CBBBC", "#CCC#")
                 .aisle("BBBBB", "BDBDB", "BDBDB", "#CEC#")
                 .aisle("BBBBB", "CB@BC", "CBBBC", "#CCC#")
                 .where("A", Predicates.blocks(Blocks.STONE))
                 .where("B", Predicates.blocks(AllBlocks.BRASS_CASING.get())
-                    .or(Predicates.abilities(CTPPPartAbility.OUTPUT_KINETIC))
+                    .or(Predicates.abilities(CTPPPartAbility.OUTPUT_KINETIC)
+                            .or(Predicates.abilities(CTPPPartAbility.MECHANICAL_UPGRADE).setMaxGlobalLimited(1)))
                 .or(Predicates.autoAbilities(definition.getRecipeTypes())))
                 .where("C", Predicates.frames(GTMaterials.TreatedWood))
                 .where("#", Predicates.any())
@@ -178,10 +185,10 @@ public class CTPPMultiblockMachines {
             .recipeType(CTPPRecipeTypes.BOOM_OF_CREATE)
             .appearanceBlock(CASING_STEEL_SOLID)
             .recipeModifier(CTPPRecipeModifiers.KINETIC_ADJUST)
-            .tooltips(Component.translatable("boom_of_create").withStyle(ChatFormatting.GRAY),
-                    Component.translatable("ctpp.boom_of_create.basic"),
-                    Component.translatable("ctpp.boom_of_create.coolant"),
-                    Component.translatable("ctpp.boom_of_create.safe"))
+            .tooltips(Component.translatable("ctpp.multiblock.boom_of_create.tooltip.0").withStyle(ChatFormatting.GRAY),
+                    Component.translatable("ctpp.multiblock.boom_of_create.tooltip.1"),
+                    Component.translatable("ctpp.multiblock.boom_of_create.tooltip.2"),
+                    Component.translatable("ctpp.multiblock.boom_of_create.tooltip.3"))
             .pattern(definition -> FactoryBlockPattern.start()
                 .aisle("######AAA######", "######AAA######", "######AAA######", "######AAA######", "######AAA######", "######AAA######", "######AAA######", "######AAA######", "######AAA######")
                 .aisle("#AAA##AAA##AAA#", "#AAA##AAA##AAA#", "#AAA##AAA##AAA#", "#AAA##AAA##AAA#", "#AAA##AAA##AAA#", "#AAA##AAA##AAA#", "#AAA##AAA##AAA#", "#AAA##AAA##AAA#", "#AAA##AAA##AAA#")
@@ -200,7 +207,8 @@ public class CTPPMultiblockMachines {
                 .aisle("######AAA######", "######A@A######", "######AAA######", "######AAA######", "######AAA######", "######AAA######", "######AAA######", "######AAA######", "######AAA######")
                 .where("A", Predicates.blocks(CASING_STEEL_SOLID.get())
                     .or(Predicates.autoAbilities(definition.getRecipeTypes()))
-                .or(Predicates.abilities(PartAbility.MAINTENANCE)).setMinGlobalLimited(1))
+                    .or(Predicates.abilities(PartAbility.MAINTENANCE)).setMinGlobalLimited(1)
+                        .or(Predicates.abilities(CTPPPartAbility.MECHANICAL_UPGRADE).setMaxGlobalLimited(1)))
                 .where("#", Predicates.any())
                 .where("@", Predicates.controller(Predicates.blocks(definition.get())))
                 .where("B", Predicates.blocks(CASING_STAINLESS_CLEAN.get()))
