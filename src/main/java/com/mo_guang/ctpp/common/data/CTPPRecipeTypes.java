@@ -16,6 +16,7 @@ import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 import com.mo_guang.ctpp.common.condition.RPMCondition;
 import com.mo_guang.ctpp.config.MainConfig;
 import com.mo_guang.ctpp.recipe.CTPPRecipeBuilder;
+import com.mo_guang.ctpp.util.CTPPValues;
 import com.simibubi.create.AllBlocks;
 
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
@@ -49,7 +50,11 @@ public class CTPPRecipeTypes {
                     group.addWidget(new SlotWidget(handler, 0, group.getSize().width - 30,
                             group.getSize().height - 30, false, false));
             })
-            .addDataInfo(data -> LocalizationUtils.format("ctpp.stress_input", String.format("%.1f",data.getFloat("stress"))));
+            .addDataInfo(data -> LocalizationUtils.format("ctpp.stress_input", String.format("%.1f",data.getFloat("input_stress"))))
+            .addDataInfo(data -> {
+                int tier = data.getInt("mechanical_tier");
+                return LocalizationUtils.format("ctpp.mechanical_tier", tier, CTPPValues.MT[tier]);
+            });
     public static final GTRecipeType KINETIC_GENERATOR_RECIPES = GTRecipeTypes.register("kinetic_generator", KINETIC)
             .setMaxIOSize(0, 0, 1, 0)
             .setProgressBar(GuiTextures.PROGRESS_BAR_ARROW_MULTIPLE, LEFT_TO_RIGHT)
@@ -59,7 +64,7 @@ public class CTPPRecipeTypes {
                     group.addWidget(new SlotWidget(handler, 0, group.getSize().width - 30,
                             group.getSize().height - 30, false, false));
             })
-            .addDataInfo(data -> LocalizationUtils.format("ctpp.stress_input",String.format("%.1f",data.getFloat("stress"))));
+            .addDataInfo(data -> LocalizationUtils.format("ctpp.stress_input",String.format("%.1f",data.getFloat("input_stress"))));
     public static final GTRecipeType KINETIC_STEAM_TURBINE_RECIPES = GTRecipeTypes.register("kinetic_steam_turbine",KINETIC)
             .setMaxIOSize(0, 0, 1, 1)
             .setSlotOverlay(false, false, GuiTextures.SOLIDIFIER_OVERLAY)
@@ -70,26 +75,26 @@ public class CTPPRecipeTypes {
                 group.addWidget(new SlotWidget(handler, 0, group.getSize().width - 30,
                         group.getSize().height - 30, false, false));
             })
-            .addDataInfo(data -> LocalizationUtils.format("ctpp.stress_output",String.format("%.1f",data.getFloat("stress"))));
+            .addDataInfo(data -> LocalizationUtils.format("ctpp.stress_output",String.format("%.1f",data.getFloat("output_stress"))));
     public static final GTRecipeType SEAWEED_FARM = GTRecipeTypes.register("seaweed_farm",ELECTRIC)
             .setMaxIOSize(2, 4, 0, 1)
             .setSlotOverlay(false, false, GuiTextures.SOLIDIFIER_OVERLAY)
             .setProgressBar(GuiTextures.PROGRESS_BAR_ARROW, ProgressTexture.FillDirection.LEFT_TO_RIGHT)
             .setSound(GTSoundEntries.BATH)
-            .addDataInfo(data -> LocalizationUtils.format("ctpp.stress_input", String.format("%.1f",data.getFloat("stress"))));
+            .addDataInfo(data -> LocalizationUtils.format("ctpp.stress_input", String.format("%.1f",data.getFloat("input_stress"))));
     public static final GTRecipeType WINDMILL_CONTROL = GTRecipeTypes.register("windmill_control_center",ELECTRIC)
             .setMaxIOSize(0, 0, 1, 0)
             .setSlotOverlay(false, false, GuiTextures.SOLIDIFIER_OVERLAY)
             .setProgressBar(GuiTextures.PROGRESS_BAR_GAS_COLLECTOR, ProgressTexture.FillDirection.LEFT_TO_RIGHT)
             .setSound(GTSoundEntries.TURBINE)
-            .addDataInfo(data -> LocalizationUtils.format("ctpp.stress_output", String.format("%.1f",data.getFloat("stress"))));
+            .addDataInfo(data -> LocalizationUtils.format("ctpp.stress_output", String.format("%.1f",data.getFloat("output_stress"))));
     public static final GTRecipeType BOOM_OF_CREATE = GTRecipeTypes.register("boom_of_create","ctnh")
             .setMaxIOSize(1, 0, 1, 0)
             .setEUIO(IO.IN)
             .setSlotOverlay(false, false, GuiTextures.SOLIDIFIER_OVERLAY)
             .setProgressBar(GuiTextures.PROGRESS_BAR_ARROW, ProgressTexture.FillDirection.LEFT_TO_RIGHT)
             .setSound(GTSoundEntries.COOLING)
-            .addDataInfo(data -> LocalizationUtils.format("ctpp.stress_output", String.format("%.1f",data.getFloat("stress"))));
+            .addDataInfo(data -> LocalizationUtils.format("ctpp.stress_output", String.format("%.1f",data.getFloat("output_stress"))));
     public static void init(){
         MIXER_RECIPES.onRecipeBuild((builder, provider) -> {
                 assert KINETIC_MIXER_RECIPES != null;
@@ -107,6 +112,7 @@ public class CTPPRecipeTypes {
                         .buildRawRecipe();
                 new CTPPRecipeBuilder(newrecipe, SMASHING_FACTORY_RECIPES).rpm(MainConfig.INSTANCE.ctnhConfig.smashingFactoryRPMRequirement)
                         .noEUt()
+                        .tier(Math.min(GTUtil.getTierByVoltage(builder.EUt()) * 2, 5))
                         .inputStress(builder.EUt() * MainConfig.INSTANCE.ctnhConfig.smashingFactoryStressRequirement)
                         .chancedOutputLogic(ItemRecipeCapability.CAP, ChanceLogic.NONE)
                         .save(provider);

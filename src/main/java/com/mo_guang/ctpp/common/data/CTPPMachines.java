@@ -31,6 +31,7 @@ import com.mo_guang.ctpp.common.machine.multiblock.part.MechanicalUpgradePartMac
 import com.mo_guang.ctpp.config.MainConfig;
 import com.mo_guang.ctpp.render.KineticWorkableTieredHullMachineRenderer;
 import com.mo_guang.ctpp.render.SplitShaftTieredHullMachineRenderer;
+import com.mo_guang.ctpp.util.CommonTooltips;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
 import dev.engine_room.flywheel.api.visualization.VisualizationContext;
@@ -59,6 +60,7 @@ public class CTPPMachines {
     }
     public static final MachineDefinition MECHANICAL_UPGRADE_BUS = REGISTRATE.machine("mechanical_upgrade_bus", MechanicalUpgradePartMachine::new)
             .langValue("Mechanical Upgrade Bus")
+            .tooltips(CommonTooltips.MECHANICAL_TIER)
             .tier(ULV)
             .rotationState(RotationState.ALL)
             .abilities(CTPPPartAbility.MECHANICAL_UPGRADE)

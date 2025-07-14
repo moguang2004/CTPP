@@ -99,7 +99,7 @@ public class CTPPMultiblockMachines {
                     Component.translatable("ctpp.multiblock.kinetic_steam_turbine.tooltip.1"),
                     Component.translatable("ctpp.multiblock.kinetic_steam_turbine.tooltip.2").withStyle(ChatFormatting.RED),
                     Component.translatable("ctpp.multiblock.kinetic_steam_turbine.tooltip.3"),
-                    CommonTooltips.MECHANICAL_TIER)
+                    CommonTooltips.MECHANICAL_TIER_MACHINE)
             .recipeModifiers(KineticTurbineMachine::recipeModifier,CTPPRecipeModifiers.KINETIC_ADJUST)
             .pattern(definition -> FactoryBlockPattern.start()
                 .aisle("CCCC", "CSSC", "CCCC")
@@ -159,7 +159,7 @@ public class CTPPMultiblockMachines {
             .recipeModifiers(WindMillControlMachine::recipeModifier,CTPPRecipeModifiers.KINETIC_ADJUST)
             .tooltips(Component.translatable("ctpp.multiblock.windmill_control_center.tooltip.0").withStyle(ChatFormatting.GRAY),
                     Component.translatable("ctpp.multiblock.windmill_control_center.tooltip.1"),
-                    CommonTooltips.MECHANICAL_TIER,
+                    CommonTooltips.MECHANICAL_TIER_MACHINE,
                     Component.translatable("ctpp.multiblock.windmill_control_center.tooltip.2").withStyle(ChatFormatting.RED))
             .pattern(definition -> FactoryBlockPattern.start()
                 .aisle("BBBBB", "CBBBC", "CBBBC", "#CCC#")

@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.mo_guang.ctpp.api.StressRecipeCapability;
+import com.mo_guang.ctpp.common.condition.MechanicalTierCondition;
 import com.mo_guang.ctpp.common.condition.RPMCondition;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -120,5 +121,10 @@ public class CTPPRecipeBuilder extends GTRecipeBuilder {
 
     public CTPPRecipeBuilder rpm(float rpm) {
         return rpm(rpm, false);
+    }
+    public CTPPRecipeBuilder tier(int tier) {
+        addCondition(new MechanicalTierCondition(tier));
+        this.data.putInt("mechanical_tier", tier);
+        return this;
     }
 }

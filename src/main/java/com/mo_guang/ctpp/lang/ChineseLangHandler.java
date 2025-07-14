@@ -13,13 +13,15 @@ public class ChineseLangHandler {
     public static void init(RegistrateCNLangProvider provider){
         provider.add("ctpp.common_tooltip.kinetic_overclock", "-拥有应力超频机制，根据输入的总应力大小获得并行数(非线性)，根据输入的转速大小拥有不同的效果：\n转速 < 64:无效果\n转速 < 128:获得20%耗时减免\n转速 < 256:获得一次超频机会\n转速 < 512:获得一次无损超频机会\n输入速度由所有应力仓中速度最低者决定");
         provider.add("ctpp.common_tooltip.input_speed", "*输入转速以等级最高的应力仓的转速为准");
-        provider.add("ctpp.common_tooltip.mechanical_tier", "*机械等级由机械升级仓中的物品决定：无(0)，基础构件(1)，精密构件(2)，\n钢铁构建或基础电子电路(3)，高级电子电路(4)，集成电路(5)");
+        provider.add("ctpp.common_tooltip.mechanical_tier", "*§n机械等级§r由§l机械升级仓§r中的物品决定：无(0)，§7基础构件(1)§r，§e精密构件(2)§r，\n§8钢铁构建或基础电子电路(3)§r，§b高级电子电路(4)§r，§6集成电路(5)§r");
+        provider.add("ctpp.common_tooltip.mechanical_tier_machine", "§n机械等级§r请详见§l机械升级仓§r的物品信息");
 
         provider.add("recipe.capability.su.name", "应力");
         provider.add("recipe.condition.rpm.tooltip", "转速: %d");
         provider.add("recipe.condition.mechanical_tier.tooltip", "机械等级: %s");
         provider.add("ctpp.stress_input","应力输入：%dsu");
         provider.add("ctpp.stress_output","应力输出：%dsu");
+        provider.add("ctpp.mechanical_tier", "机械等级：%d(%s)");
 
         // Multiblock UI info
         provider.add("ctpp.multiblock.kinetic_generator.info.0", "产能功率：%d/%d EU/t");
@@ -88,6 +90,7 @@ public class ChineseLangHandler {
             provider.add(CTPPMachines.ELECTRIC_GEAR_BOX_32A[tier].getBlock(), "32A" + GTValues.VNF[tier] + " 电力齿轮箱");
             provider.add(CTPPMachines.KINETIC_MIXER[tier].getBlock(), GTValues.VNF[tier] + " 应力搅拌机");
         }
+        provider.add(CTPPMachines.MECHANICAL_UPGRADE_BUS.getBlock(), "机械升级仓");
         provider.add(CTPPCreativeModeTabs.MACHINE.get(), "CTPP机器");
 
         provider.add(CTPPItems.BASIC_MECHANISM.get(), "基础构件");

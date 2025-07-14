@@ -60,7 +60,7 @@ public class MainConfig {
         public boolean enableSmashingFactory = true;
         @Configurable
         @Configurable.Comment("SmashingFactory's Maximum Processing Capacity (0~9 for the voltage level)")
-        public int smashingFactoryMaximumProcessingCapacity = 1;
+        public int smashingFactoryMaximumProcessingCapacity = 3;
         @Configurable
         @Configurable.Comment("SmashingFactory's Speed Multiplier relative to its voltage level (0.5~4.0)")
         @Configurable.DecimalRange(min = 0.5, max = 4.0)

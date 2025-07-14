@@ -1,8 +1,9 @@
 package com.mo_guang.ctpp.recipe;
 
-import com.gregtechceu.gtceu.common.data.GTBlocks;
-import com.gregtechceu.gtceu.common.data.GTItems;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.common.data.*;
+import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.data.recipe.misc.MetaTileEntityLoader;
 import com.mo_guang.ctpp.CTPP;
 import com.mo_guang.ctpp.common.data.CTPPMachines;
@@ -37,6 +38,15 @@ public class CTPPRecipes {
         registerMachineRecipe(provider, false, CTPPMachines.KINETIC_OUTPUT_BOX, "   ", " H ", " S ", "S",
                 AllBlocks.SHAFT, "H", HULL);
         KineticGeneratorRecipes.init(provider);
+        VanillaRecipeHelper.addShapedRecipe(provider, "mechanical_upgrade_bus", CTPPMachines.MECHANICAL_UPGRADE_BUS.asStack(),
+                "ABA",
+                "DCD",
+                "ABA",
+                'A', GTMaterialItems.MATERIAL_ITEMS.get(TagPrefix.screw, GTMaterials.WroughtIron).asStack(),
+                'B', GTMaterialItems.MATERIAL_ITEMS.get(TagPrefix.plate, GTMaterials.Iron).asStack(),
+                'C', GTMachines.ITEM_IMPORT_BUS[GTValues.ULV].asStack(),
+                'D', Items.GLASS_PANE.getDefaultInstance()
+                );
         CTPPRecipeBuilder.of(CTPP.id("seaweed"), CTPPRecipeTypes.SEAWEED_FARM)
                 .inputStress(512)
                 .inputItems(GTItems.FERTILIZER.asStack())

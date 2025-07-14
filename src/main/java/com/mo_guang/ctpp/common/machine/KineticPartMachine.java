@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IWorkableMultiContro
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import com.mo_guang.ctpp.common.machine.multiblock.KineticMultiblockMachine;
 import lombok.Getter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
@@ -78,6 +79,14 @@ public class KineticPartMachine extends TieredIOPartMachine implements IKineticM
     public void removedFromController(IMultiController controller) {
         super.removedFromController(controller);
         getKineticHolder().stopWorking();
+    }
+
+    @Override
+    public void onChanged() {
+        super.onChanged();
+        if (!getControllers().isEmpty() && getControllers().first() instanceof KineticMultiblockMachine kineticMultiblockMachine) {
+            kineticMultiblockMachine.onChanged();
+        }
     }
 
     @Override

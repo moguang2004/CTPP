@@ -12,6 +12,7 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.managed.MultiManagedStorage;
 import com.mo_guang.ctpp.api.IBlockStressValues;
 import com.mo_guang.ctpp.common.machine.KineticMachineDefinition;
+import com.mo_guang.ctpp.common.machine.KineticPartMachine;
 import com.simibubi.create.api.stress.BlockStressValues;
 import com.simibubi.create.content.kinetics.KineticNetwork;
 import com.simibubi.create.content.kinetics.base.IRotate;
@@ -109,6 +110,14 @@ public class KineticMachineBlockEntity extends KineticBlockEntity implements IMa
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void onSpeedChanged(float previousSpeed) {
+        super.onSpeedChanged(previousSpeed);
+        if (metaMachine instanceof KineticPartMachine kineticPartMachine) {
+            kineticPartMachine.onChanged();
+        }
     }
 
     @Override

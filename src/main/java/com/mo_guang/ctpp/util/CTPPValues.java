@@ -6,10 +6,10 @@ import net.minecraft.network.chat.Component;
 public class CTPPValues {
     public static String[] MT = {
             Component.translatable("ctpp.mechanical_tier.0").getString(),
-            Component.translatable("ctpp.mechanical_tier.1").withStyle(ChatFormatting.GRAY).getString(),
-            Component.translatable("ctpp.mechanical_tier.2").withStyle(ChatFormatting.YELLOW).getString(),
-            Component.translatable("ctpp.mechanical_tier.3").withStyle(ChatFormatting.DARK_GRAY).getString(),
-            Component.translatable("ctpp.mechanical_tier.4").withStyle(ChatFormatting.AQUA).getString(),
-            Component.translatable("ctpp.mechanical_tier.5").withStyle(ChatFormatting.BLUE).getString(),
+            ChatFormatting.GRAY + Component.translatable("ctpp.mechanical_tier.1").getString() + ChatFormatting.RESET,
+            ChatFormatting.YELLOW + Component.translatable("ctpp.mechanical_tier.2").getString() + ChatFormatting.RESET,
+            ChatFormatting.DARK_GRAY+ Component.translatable("ctpp.mechanical_tier.3").getString() + ChatFormatting.RESET,
+            ChatFormatting.AQUA + Component.translatable("ctpp.mechanical_tier.4").getString() + ChatFormatting.RESET,
+            ChatFormatting.GOLD + Component.translatable("ctpp.mechanical_tier.5").getString() + ChatFormatting.RESET,
     };
 }

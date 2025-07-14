@@ -26,6 +26,7 @@ import com.mo_guang.ctpp.api.StressRecipeCapability;
 import com.mo_guang.ctpp.common.machine.IKineticMachine;
 import com.mo_guang.ctpp.common.machine.KineticPartMachine;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
+import com.simibubi.create.infrastructure.config.AllConfigs;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
 import it.unimi.dsi.fastutil.longs.LongSet;
 import it.unimi.dsi.fastutil.longs.LongSets;
@@ -81,20 +82,30 @@ public class KineticWorkableMultiblockMachine extends KineticMultiblockMachine i
         return input;
     }
 
+
     @Override
     public boolean beforeWorking(@Nullable GTRecipe recipe) {
         boolean result = super.beforeWorking(recipe);
         previousSpeed = speed;
-        speed = 256;
+        if(speed != previousSpeed){
+            updateRotateBlocks(result);
+        }
+        return result;
+    }
+
+    @Override
+    public void onChanged() {
+        super.onChanged();
+        updateMachineSpeed();
+    }
+
+    public void updateMachineSpeed() {
+        speed = AllConfigs.server().kinetics.maxRotationSpeed.get();
         for (IMultiPart part : getParts()){
             if(part instanceof IKineticMachine kineticPart && inputPartsMax.contains(kineticPart.getKineticHolder().getBlockPos())){
                 speed = Math.min(speed, Math.abs(kineticPart.getKineticHolder().getSpeed()));
             }
         }
-        if(speed != previousSpeed){
-            updateRotateBlocks(result);
-        }
-        return result;
     }
 
     /**

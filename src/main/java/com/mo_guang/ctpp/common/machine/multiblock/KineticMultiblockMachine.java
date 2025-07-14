@@ -49,6 +49,7 @@ public class KineticMultiblockMachine extends WorkableMultiblockMachine implemen
     @Override
     public void onStructureFormed() {
         super.onStructureFormed();
+        previousSpeed = 0;
         checkTier();
         rotateBlocks = getMultiblockState().getMatchContext().getOrDefault("roBlocks", LongSets.emptySet());
         blazeBlocks = getMultiblockState().getMatchContext().getOrDefault("bbBlocks", LongSets.emptySet());
@@ -142,7 +143,6 @@ public class KineticMultiblockMachine extends WorkableMultiblockMachine implemen
                 .addOutputLines(recipeLogic.getLastRecipe());
         getDefinition().getAdditionalDisplay().accept(this, textList);
         IDisplayUIMachine.super.addDisplayText(textList);
-        textList.add(textList.size(), Component.translatable("ctpp.multiblock.mechanical_tier", tier, CTPPValues.MT[tier]));
     }
 
     @Override

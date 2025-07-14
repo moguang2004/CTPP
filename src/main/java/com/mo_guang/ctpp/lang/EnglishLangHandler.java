@@ -7,13 +7,15 @@ public class EnglishLangHandler {
     public static void init(RegistrateLangProvider provider){
         provider.add("ctpp.common_tooltip.kinetic_overclock", "-Has a stress overclocking mechanism that determines parallelism based on the total input stress. The effects vary based on input speed:\nSpeed < 64: No effect\nSpeed < 128: 25% time reduction\nSpeed < 256: One overclocking opportunity\nSpeed < 512: One lossless overclocking opportunity");
         provider.add("ctpp.common_tooltip.input_speed", "*The input speed is based on the highest-speed stress chamber.");
-        provider.add("ctpp.common_tooltip.mechanical_tier", "*Mechanical Tier is determined by items in the Mechanical Upgrade Bus: None (0), Basic Components (1), Precision Components (2),\nSteel Structures or Basic Electronic Circuits (3), Advanced Electronic Circuits (4), Integrated Circuits (5)");
+        provider.add("ctpp.common_tooltip.mechanical_tier", "*§nMechanical Tier§r is determined by items in the Mechanical Upgrade Bus: None (0), §7Basic Components (1)§r, §ePrecision Components (2)§r,\n§8Steel Structures or Basic Electronic Circuits (3)§r, §bAdvanced Electronic Circuits (4)§r, §6Integrated Circuits (5)§r");
+        provider.add("ctpp.common_tooltip.mechanical_tier_machine", "§nMechanical Tier§r please be seen in the Tooltip of §lMechanical upgrade bus§r");
 
-        provider.add("ctpp.stress_input","Stress Input：%dsu");
-        provider.add("ctpp.stress_output","Stress Output：%dsu");
         provider.add("recipe.capability.su.name", "Create Stress");
         provider.add("recipe.condition.rpm.tooltip", "RPM: %d");
         provider.add("recipe.condition.mechanical_tier.tooltip", "Mechanical Tier: %s");
+        provider.add("ctpp.stress_input","Stress Input：%dsu");
+        provider.add("ctpp.stress_output","Stress Output：%dsu");
+        provider.add("ctpp.mechanical_tier", "Mechanical Tier：%d(%s)");
 
         // Multiblock UI info
         provider.add("ctpp.multiblock.kinetic_generator.info.0", "Generator Rate：%d/%d EU/t");
@@ -56,7 +58,7 @@ public class EnglishLangHandler {
 
         provider.add("ctpp.multiblock.windmill_control_center.tooltip.0", "Windmill Master Control! The more, the stronger!");
         provider.add("ctpp.multiblock.windmill_control_center.tooltip.1", "-Detects windmill bearings within a radius of (5 + tier) blocks around the multiblock. \n-The total stress output is calculated as: Number of windmill bearings × (Total stress output of surrounding windmills + 512). \n-§4Can control up to (4 + 2 * tier) windmills!§r");
-        provider.add("ctpp.multiblock.windmill_control_center.tooltip.2", "Ensure that the stress output container is large enough to handle all the stress, otherwise the machine will not work.");
+        provider.add("ctpp.multiblock.windmill_control_center.tooltip.2", "The more stress it outputs, the faster the water wheel will rotate.");
 
         provider.add("ctpp.multiblock.boom_of_create.tooltip.0", "Art is an explosion!");
         provider.add("ctpp.multiblock.boom_of_create.tooltip.1", "The Explosive Vortex Stress Induction System (EVSIS) using explosives and a small amount of electricity to generate massive stress.");

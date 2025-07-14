@@ -61,16 +61,14 @@ public class KineticTurbineMachine extends KineticOutputMachine implements ITier
                 textList.add(Component.translatable("gtceu.multiblock.turbine.rotor_speed",
                         FormattingUtil.formatNumbers(rotorHolder.getRotorSpeed()),
                         FormattingUtil.formatNumbers(rotorHolder.getMaxRotorHolderSpeed())));
-                textList.add(Component.translatable("gtceu.multiblock.turbine.efficiency",
-                        rotorHolder.getTotalEfficiency()));
                 textList.add(Component.translatable("ctpp.multiblock.kinetic_steam_turbine.info.0",
-                        FormattingUtil.formatNumbers(getRotorHolder().getTotalEfficiency() * lossrate * 100)));
+                        FormattingUtil.formatNumbers(rotorHolder.getTotalEfficiency() * lossrate)));
                 if (isActive()) {
                     double output = 0;
                     if(recipeLogic.getLastRecipe() != null){
                         output = recipeLogic.getLastRecipe().outputs.get(StressRecipeCapability.CAP).stream().map(Content::getContent).mapToDouble(StressRecipeCapability.CAP::of).sum();
                     }
-                    textList.add(Component.translatable("ctpp.multiblock.kinetic_steam_turbine.info.0",FormattingUtil.formatNumbers(output)));
+                    textList.add(Component.translatable("ctpp.multiblock.kinetic_steam_turbine.info.1",FormattingUtil.formatNumbers(output)));
                 }
 
                 int rotorDurability = rotorHolder.getRotorDurabilityPercent();

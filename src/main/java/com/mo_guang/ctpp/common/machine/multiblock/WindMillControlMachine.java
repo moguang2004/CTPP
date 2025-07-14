@@ -55,7 +55,7 @@ public class WindMillControlMachine extends KineticOutputMachine {
     public void addDisplayText(List<Component> textList) {
         super.addDisplayText(textList);
         if (isFormed()) {
-            textList.add(Component.translatable("ctpp.multiblock.windmill_control_center.info.0", String.format("%d",efficiency, 4 + 2 * tier)));
+            textList.add(Component.translatable("ctpp.multiblock.windmill_control_center.info.0", efficiency, 4 + 2 * tier));
             textList.add(Component.translatable("ctpp.multiblock.windmill_control_center.info.1", String.format("%.1f",TotalOutput)));
             textList.add(Component.translatable("ctpp.multiblock.windmill_control_center.info.2", String.format("%d",efficiency*100)));
             textList.add(Component.translatable("ctpp.multiblock.windmill_control_center.info.3",String.format("%.1f",(TotalOutput + 512) * efficiency)));
