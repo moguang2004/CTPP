@@ -1,6 +1,5 @@
 package com.mo_guang.ctpp.common.block;
 
-import com.gregtechceu.gtceu.api.block.BlockProperties;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
@@ -71,8 +70,8 @@ public class KineticMachineBlock extends MetaMachineBlock implements IRotate {
 
     @Override
     public BlockState rotate(BlockState pState, Rotation pRotation) {
-        return pState.setValue(this.rotationState.property,
-                pRotation.rotate(pState.getValue(this.rotationState.property)));
+        return pState.setValue(this.getRotationState().property,
+                pRotation.rotate(pState.getValue(this.getRotationState().property)));
     }
 
     public boolean areStatesKineticallyEquivalent(BlockState oldState, BlockState newState) {
@@ -106,8 +105,7 @@ public class KineticMachineBlock extends MetaMachineBlock implements IRotate {
         if (blockEntityType == getDefinition().getBlockEntityType()) {
             if (!level.isClientSide) {
                 return (pLevel, pPos, pState, pTile) -> {
-                    if (pState.getValue(BlockProperties.SERVER_TICK) &&
-                            pTile instanceof IMachineBlockEntity metaMachine) {
+                    if (pTile instanceof IMachineBlockEntity metaMachine) {
                         metaMachine.getMetaMachine().serverTick();
                     }
                     if (pTile instanceof KineticMachineBlockEntity kineticMachineBlockEntity) {

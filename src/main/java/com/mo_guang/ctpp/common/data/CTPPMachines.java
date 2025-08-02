@@ -64,7 +64,7 @@ public class CTPPMachines {
             .tier(ULV)
             .rotationState(RotationState.ALL)
             .abilities(CTPPPartAbility.MECHANICAL_UPGRADE)
-            .renderer(() -> new OverlayTieredMachineRenderer(ULV, GTCEu.id("block/machine/part/item_bus.import")))
+            .workableTieredHullModel(GTCEu.id("block/machine/part/item_bus.import"))
             .register();
 
     public static final KineticMachineDefinition[] ELECTRIC_GEAR_BOX_2A = registerElectricGearBox(2, LOW_TIERS);
@@ -82,6 +82,7 @@ public class CTPPMachines {
                     .blockProp(BlockBehaviour.Properties::dynamicShape)
                     .blockProp(BlockBehaviour.Properties::noOcclusion)
                     .abilities(CTPPPartAbility.INPUT_KINETIC)
+                    .model()
                     .renderer(() -> new SplitShaftTieredHullMachineRenderer(tier,
                             GTCEu.id("block/machine/part/kinetic_input_box")))
                     .register(),
