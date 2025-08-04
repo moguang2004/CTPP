@@ -160,6 +160,13 @@ repositories  {
     maven {
         url = "https://maven.theillusivec4.top/"
     }
+    maven {
+        url "https://maven.latvian.dev/releases"
+        content {
+            includeGroup "dev.latvian.mods"
+            includeGroup "dev.latvian.apps"
+        }
+    }
     maven { // Flywheel
         url = "https://maven.tterrag.com/"
         content {

@@ -16,7 +16,7 @@ public class CTPPParallelLogic {
         } else if (machine instanceof IRecipeLogicMachine) {
             IRecipeLogicMachine rlm = (IRecipeLogicMachine)machine;
             int maxInputMultiplier = getMaxByInput(rlm, recipe, parallelLimit, List.of());
-            int maxParallelKinetic = (int) Math.sqrt(StressRecipeCapability.CAP.getMaxParallelRatio(rlm, recipe, parallelLimit));
+            int maxParallelKinetic = (int) Math.sqrt(StressRecipeCapability.CAP.limitMaxParallelByOutput(rlm, recipe, parallelLimit, false));
             maxInputMultiplier = Math.min(maxParallelKinetic, maxInputMultiplier);
             if (maxInputMultiplier == 0) {
                 return 0;

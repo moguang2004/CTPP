@@ -1,12 +1,14 @@
 package com.mo_guang.ctpp.common.machine.multiblock;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.CoilWorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
+import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
 import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
@@ -55,13 +57,13 @@ public class KineticGeneratorMachine extends CoilWorkableElectricMultiblockMachi
             var kinetic = (KineticPartMachine) kmachine.getParts().stream().filter(part -> part instanceof KineticPartMachine).toList().get(0);
             kmachine.outputEnergy = Math.abs(kinetic.getKineticHolder().getSpeed()) * kinetic.getKineticDefinition().torque * kmachine.efficiency*GENERATING_BOOST / 160;
             var modifiedRecipe = recipe.copy();
-            RecipeHelper.setOutputEUt(modifiedRecipe, (long) kmachine.outputEnergy);
+            modifiedRecipe.tickOutputs.put(EURecipeCapability.CAP, EURecipeCapability.makeEUContent(new EnergyStack((long) kmachine.outputEnergy)));
             return recipe1 -> modifiedRecipe;
         }
         return ModifierFunction.NULL;
     }
     @Override
-    public boolean dampingWhenWaiting() {
+    public boolean regressWhenWaiting() {
         return false;
     }
 }

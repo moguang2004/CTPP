@@ -17,8 +17,8 @@ import net.minecraft.world.item.Items;
 
 import java.util.function.Consumer;
 
-import static com.gregtechceu.gtceu.data.recipe.CraftingComponent.*;
-import static com.gregtechceu.gtceu.data.recipe.CraftingComponent.HULL;
+import static com.gregtechceu.gtceu.data.recipe.GTCraftingComponents.*;
+import static com.gregtechceu.gtceu.data.recipe.GTCraftingComponents.HULL;
 import static com.gregtechceu.gtceu.data.recipe.misc.MetaTileEntityLoader.registerMachineRecipe;
 
 public class CTPPRecipes {

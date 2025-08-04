@@ -29,12 +29,22 @@ public class StressRecipeCapability extends RecipeCapability<Float> {
         return List.of(ingredients.stream().map(Float.class::cast).reduce(0f, Float::sum));
     }
     @Override
-    public int getMaxParallelRatio(IRecipeCapabilityHolder holder, GTRecipe recipe, int parallelAmount) {
+    public int getMaxParallelByInput(IRecipeCapabilityHolder holder, GTRecipe recipe, int parallelAmount, boolean tick) {
         if(holder instanceof KineticWorkableMultiblockMachine){
             float inputStress = Math.abs(((KineticWorkableMultiblockMachine) holder).getTotalInputStress());
             float recipeStress = (float) CTPPRecipeHelper.getInputStress(recipe);
             return (int) (inputStress/recipeStress);
         }
-        return super.getMaxParallelRatio(holder, recipe, parallelAmount);
+        return super.getMaxParallelByInput(holder, recipe, parallelAmount, tick);
+    }
+
+    @Override
+    public int limitMaxParallelByOutput(IRecipeCapabilityHolder holder, GTRecipe recipe, int maxMultiplier, boolean tick) {
+        if (holder instanceof KineticWorkableMultiblockMachine){
+            float outputStress = Math.abs(((KineticWorkableMultiblockMachine) holder).getMaxOutputStress());
+            float recipeStress = (float) CTPPRecipeHelper.getOutputStress(recipe);
+            return (int) (outputStress/recipeStress);
+        }
+        return super.limitMaxParallelByOutput(holder, recipe, maxMultiplier, tick);
     }
 }

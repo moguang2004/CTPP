@@ -26,12 +26,6 @@ public class CTPPRecipeBuilder extends GTRecipeBuilder {
     }
     @Override
     @SuppressWarnings("all")
-    public <T> CTPPRecipeBuilder inputs(RecipeCapability<T> capability, Object... obj) {
-        super.inputs(capability, obj);
-        return this;
-    }
-    @Override
-    @SuppressWarnings("all")
     public final <T> CTPPRecipeBuilder input(RecipeCapability<T> capability, T... obj) {
         super.input(capability, obj);
         return this;
@@ -44,12 +38,6 @@ public class CTPPRecipeBuilder extends GTRecipeBuilder {
         return this;
     }
 
-    @Override
-    @SuppressWarnings("all")
-    public <T> CTPPRecipeBuilder outputs(RecipeCapability<T> capability, Object... obj) {
-        super.outputs(capability, obj);
-        return this;
-    }
     @Override
     @SuppressWarnings("all")
     public CTPPRecipeBuilder inputItems(ItemStack input) {

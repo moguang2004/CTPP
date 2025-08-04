@@ -5,10 +5,13 @@ import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.common.registry.GTRegistration;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
+import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
+import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.lowdragmc.lowdraglib.syncdata.managed.MultiManagedStorage;
 import com.mo_guang.ctpp.api.IBlockStressValues;
 import com.mo_guang.ctpp.common.machine.KineticMachineDefinition;
@@ -52,6 +55,11 @@ public class KineticMachineBlockEntity extends KineticBlockEntity implements IMa
     public final MultiManagedStorage managedStorage = new MultiManagedStorage();
     @Getter
     public final MetaMachine metaMachine;
+    @Getter
+    @Persisted
+    @DescSynced
+    @RequireRerender
+    private MachineRenderState renderState;
     private final long offset = GTValues.RNG.nextInt(20);
     public float workingSpeed;
     public boolean reActivateSource;
@@ -65,6 +73,7 @@ public class KineticMachineBlockEntity extends KineticBlockEntity implements IMa
     protected KineticMachineBlockEntity(BlockEntityType<?> typeIn, BlockPos pos, BlockState state) {
         super(typeIn, pos, state);
         this.metaMachine = getDefinition().createMetaMachine(this);
+        this.renderState = getDefinition().defaultRenderState();
     }
 
     public static KineticMachineBlockEntity create(BlockEntityType<?> typeIn, BlockPos pos, BlockState state) {
@@ -94,6 +103,11 @@ public class KineticMachineBlockEntity extends KineticBlockEntity implements IMa
     @Override
     public KineticMachineDefinition getDefinition() {
         return (KineticMachineDefinition) IMachineBlockEntity.super.getDefinition();
+    }
+    @Override
+    public void setRenderState(MachineRenderState state) {
+        this.renderState = state;
+        scheduleRenderUpdate();
     }
 
     @Override

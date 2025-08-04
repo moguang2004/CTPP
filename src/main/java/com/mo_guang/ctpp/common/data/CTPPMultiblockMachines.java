@@ -54,7 +54,7 @@ public class CTPPMultiblockMachines {
                     .where("@",Predicates.controller(blocks(definition.getBlock())))
                     .where(" ",Predicates.any())
                     .build())
-            .workableCasingRenderer(CTPP.id("block/create/andesite_casing"),GTCEu.id("block/multiblock/large_chemical_reactor"))
+            .workableCasingModel(CTPP.id("block/create/andesite_casing"),GTCEu.id("block/multiblock/large_chemical_reactor"))
             .register());
     public static MultiblockMachineDefinition KINETIC_GENERATOR = CTPPRegistration.conditionalRegistration(
         ctnhEnabled("KineticGenerator"),
@@ -87,7 +87,7 @@ public class CTPPMultiblockMachines {
                 .where("T", Predicates.heatingCoils())
                 .build())
 
-            .workableCasingRenderer(GTCEu.id("block/casings/solid/machine_casing_solid_steel"),GTCEu.id("block/multiblock/generator/large_steam_turbine"), false)
+            .workableCasingModel(GTCEu.id("block/casings/solid/machine_casing_solid_steel"),GTCEu.id("block/multiblock/generator/large_steam_turbine"))
             .register());
     public static MultiblockMachineDefinition KINETIC_STEAM_TURBINE = CTPPRegistration.conditionalRegistration(
         ctnhEnabled("KineticSteamTurbine"),
@@ -116,7 +116,7 @@ public class CTPPMultiblockMachines {
                     .or(Predicates.abilities(PartAbility.ROTOR_HOLDER).setExactLimit(1)))
                 .where("G", Predicates.blocks(GTBlocks.CASING_BRONZE_GEARBOX.get()))
                 .build())
-            .workableCasingRenderer(GTCEu.id("block/casings/solid/machine_casing_bronze_plated_bricks"), GTCEu.id("block/multiblock/generator/large_steam_turbine"), false)
+            .workableCasingModel(GTCEu.id("block/casings/solid/machine_casing_bronze_plated_bricks"), GTCEu.id("block/multiblock/generator/large_steam_turbine"))
             .register());
     public static MultiblockMachineDefinition SEAWEED_FARM = CTPPRegistration.conditionalRegistration(
         ctnhEnabled("SeaweedFarm"),
@@ -148,7 +148,7 @@ public class CTPPMultiblockMachines {
             .where("G", Predicates.blocks(GTBlocks.CASING_TEMPERED_GLASS.get()))
             .where("#", Predicates.blocks(Blocks.WATER))
             .build())
-            .workableCasingRenderer(CTPP.id("block/create/andesite_casing"), GTCEu.id("block/multiblock/coke_oven"), false)
+            .workableCasingModel(CTPP.id("block/create/andesite_casing"), GTCEu.id("block/multiblock/coke_oven"))
             .register());
     public static MultiblockMachineDefinition WINDMILL_CONTROL_CENTER = CTPPRegistration.conditionalRegistration(
         ctnhEnabled("WindmillControlCenter"),
@@ -176,7 +176,7 @@ public class CTPPMultiblockMachines {
                     .where("E", Predicates.blocks(AllBlocks.WATER_WHEEL.get()))
                 .where("@", Predicates.controller(Predicates.blocks(definition.get())))
                 .build())
-            .workableCasingRenderer(CTPP.id("block/create/brass_casing"), GTCEu.id("block/machines/miner"), false)
+            .workableCasingModel(CTPP.id("block/create/brass_casing"), GTCEu.id("block/machines/miner"))
             .register());
     public static MultiblockMachineDefinition BOOM_OF_CREATE = CTPPRegistration.conditionalRegistration(
         ctnhEnabled("BoomOfCreate"),
@@ -219,7 +219,7 @@ public class CTPPMultiblockMachines {
                 .where("G", Predicates.abilities(CTPPPartAbility.OUTPUT_KINETIC)
                     .or(Predicates.blocks(CASING_TUNGSTENSTEEL_ROBUST.get())))
                 .build())
-            .workableCasingRenderer(GTCEu.id("block/casings/solid/machine_casing_solid_steel"), GTCEu.id("block/multiblock/generator/large_steam_turbine"), false)
+            .workableCasingModel(GTCEu.id("block/casings/solid/machine_casing_solid_steel"), GTCEu.id("block/multiblock/generator/large_steam_turbine"))
             .register());
     public static MultiblockMachineDefinition TEST = REGISTRATE.multiblock("test", KineticWorkableMultiblockMachine::new)
             .rotationState(RotationState.NON_Y_AXIS)
@@ -234,6 +234,6 @@ public class CTPPMultiblockMachines {
                             .or(Predicates.autoAbilities(definition.getRecipeTypes())))
                     .build()
             )
-            .workableCasingRenderer(GTCEu.id("block/casings/solid/machine_casing_solid_steel"), GTCEu.id("block/multiblock/generator/large_steam_turbine"), false)
+            .workableCasingModel(GTCEu.id("block/casings/solid/machine_casing_solid_steel"), GTCEu.id("block/multiblock/generator/large_steam_turbine"))
             .register();
 }
