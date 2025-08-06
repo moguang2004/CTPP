@@ -2,7 +2,7 @@
 	"credit": "Made with Blockbench",
 	"parent": "block/block",
 	"textures": {
-		"overlay": "gtceu:block/overlay/machine/overlay_pipe_out",
+		"overlay": "gtceu:block/overlay/machine/overlay_pipe_out_emissive",
 		"gearbox": "gtceu:block/machines/gearbox",
 		"bottom": "gtceu:block/casings/voltage/lv/bottom",
 		"top": "gtceu:block/casings/voltage/lv/top",
