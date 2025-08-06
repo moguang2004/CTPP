@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
+import com.mo_guang.ctpp.CTPP;
 import com.mo_guang.ctpp.CTPPRegistration;
 import com.mo_guang.ctpp.api.CTPPPartAbility;
 import com.mo_guang.ctpp.client.SplitShaftVisual;
@@ -57,8 +58,7 @@ public class CTPPMachines {
             .tier(LV)
             .rotationState(RotationState.ALL)
             .abilities(CTPPPartAbility.MECHANICAL_UPGRADE)
-            .colorOverlayTieredHullModel("overlay_pipe_in_emissive", null, OVERLAY_ITEM_HATCH)
-//            .workableTieredHullModel(GTCEu.id("block/machine/part/item_bus.import"))
+            .colorOverlayTieredHullModel(GTCEu.id("block/overlay/machine/overlay_pipe_in"), null, GTCEu.id("block/overlay/machine/" + OVERLAY_ITEM_HATCH))
             .register();
 
     public static final KineticMachineDefinition[] ELECTRIC_GEAR_BOX_2A = registerElectricGearBox(2, LOW_TIERS);
@@ -76,7 +76,7 @@ public class CTPPMachines {
                     .blockProp(BlockBehaviour.Properties::dynamicShape)
                     .blockProp(BlockBehaviour.Properties::noOcclusion)
                     .abilities(CTPPPartAbility.INPUT_KINETIC)
-                    .model(createWorkableTieredHullMachineModel(GTCEu.id("block/machine/part/kinetic_input_box")))
+                    .model(createWorkableTieredHullMachineModel(CTPP.id("block/machine/part/kinetic_input_box")))
 //                    .renderer(() -> new SplitShaftTieredHullMachineRenderer(tier,
 //                            GTCEu.id("block/machine/part/kinetic_input_box")))
                     .register(),
@@ -90,7 +90,7 @@ public class CTPPMachines {
                     .blockProp(BlockBehaviour.Properties::dynamicShape)
                     .blockProp(BlockBehaviour.Properties::noOcclusion)
                     .abilities(CTPPPartAbility.OUTPUT_KINETIC)
-                            .model(createWorkableTieredHullMachineModel(GTCEu.id("block/machine/part/kinetic_output_box")))
+                            .model(createWorkableTieredHullMachineModel(CTPP.id("block/machine/part/kinetic_output_box")))
 //                    .renderer(() -> new SplitShaftTieredHullMachineRenderer(tier,
 //                            GTCEu.id("block/machine/part/kinetic_output_box")))
                     .register(),
@@ -107,7 +107,7 @@ public class CTPPMachines {
                         .rotationState(RotationState.ALL)
                         .blockProp(BlockBehaviour.Properties::dynamicShape)
                         .blockProp(BlockBehaviour.Properties::noOcclusion)
-                                .model(createWorkableTieredHullMachineModel(GTCEu.id("block/machine/electric_gear_box_%sa".formatted(maxAmps))))
+                                .model(createWorkableTieredHullMachineModel(CTPP.id("block/machine/electric_gear_box_%sa".formatted(maxAmps))))
 //                        .renderer(() -> new SplitShaftTieredHullMachineRenderer(tier,
 //                                GTCEu.id("block/machine/electric_gear_box_%sa".formatted(maxAmps))))
                         .tooltips(explosion())

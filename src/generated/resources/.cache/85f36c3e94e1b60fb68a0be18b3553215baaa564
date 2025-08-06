@@ -1,0 +1,9 @@
+// 1.20.1	2025-07-14T14:20:27.8436611	Registrate Provider for ctpp [Recipes, Advancements, Loot Tables, Tags (blocks), Tags (items), Tags (fluids), Tags (entity_types), generic_server_provider, Blockstates, Item models, Lang (en_us/en_ud), generic_client_provider, Lang (zh_cn)]
+1fe08123f9dfbe086c4df68b896ed28373138494 assets/ctpp/lang/en_ud.json
+269d1c63e02127a6a696bc6c5362219103c648e3 assets/ctpp/lang/en_us.json
+8018daf41697425b2981344dcf0b977bd3b77d10 assets/ctpp/lang/zh_cn.json
+c26206e892c91e66aa78accfd9868a09fe788c36 assets/ctpp/models/item/basic_mechanism.json
+1ee7017aae3529f48832bb7b8975e641b04305d9 assets/ctpp/models/item/steel_mechanism.json
+d15c892fdb179dc359c026a2ee2f4c519b9f46d6 data/create/tags/blocks/fan_transparent.json
+d15c892fdb179dc359c026a2ee2f4c519b9f46d6 data/forge/tags/blocks/fan_catalyst/breathing.json
+b1bf291081a2d39800c87ed12da586af52f95291 data/forge/tags/fluids/fan_catalyst/acid_washing.json

@@ -1,0 +1,14 @@
+{
+  "type": "ctpp:acidwashing",
+  "ingredients": [
+    {
+      "item": "gtceu:polyvinyl_chloride_plate"
+    }
+  ],
+  "results": [
+    {
+      "count": 2,
+      "item": "gtceu:plastic_circuit_board"
+    }
+  ]
+}

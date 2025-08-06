@@ -1,0 +1,13 @@
+{
+  "type": "ctpp:breathing",
+  "ingredients": [
+    {
+      "item": "minecraft:bone_block"
+    }
+  ],
+  "results": [
+    {
+      "item": "minecraft:chorus_flower"
+    }
+  ]
+}

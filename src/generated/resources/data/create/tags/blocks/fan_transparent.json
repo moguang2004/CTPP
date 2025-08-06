@@ -1,0 +1,12 @@
+{
+  "values": [
+    {
+      "id": "minecraft:dragon_head",
+      "required": false
+    },
+    {
+      "id": "minecraft:dragon_wall_head",
+      "required": false
+    }
+  ]
+}
