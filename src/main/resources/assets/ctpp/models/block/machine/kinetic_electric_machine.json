@@ -6,7 +6,19 @@
 		"bottom": "gtceu:block/casings/voltage/lv/bottom",
 		"top": "gtceu:block/casings/voltage/lv/top",
 		"particle": "gtceu:block/casings/voltage/lv/side",
-		"side": "gtceu:block/casings/voltage/lv/side"
+		"side": "gtceu:block/casings/voltage/lv/side",
+
+		"overlay_front": "gtceu:block/void",
+		"overlay_back": "gtceu:block/void",
+		"overlay_top": "gtceu:block/void",
+		"overlay_bottom": "gtceu:block/void",
+		"overlay_side": "gtceu:block/void",
+
+		"overlay_front_emissive": "gtceu:block/void",
+		"overlay_back_emissive": "gtceu:block/void",
+		"overlay_top_emissive": "gtceu:block/void",
+		"overlay_bottom_emissive": "gtceu:block/void",
+		"overlay_side_emissive": "gtceu:block/void"
 	},
 	"elements": [
 		{
@@ -111,6 +123,32 @@
 			"faces": {
 				"north": {"uv": [0, 2, 16, 14], "texture": "#side", "tintindex": 1}
 			}
+		},
+		{
+			"from": [ -0.01, -0.01, -0.01 ],
+			"to":   [ 16.01, 16.01, 16.01 ],
+			"faces": {
+				"north": { "uv": [0, 0, 16, 16], "texture": "#overlay_front",  "cullface": "north" },
+				"south": { "uv": [0, 0, 16, 16], "texture": "#overlay_back",   "cullface": "south" },
+				"up":    { "uv": [0, 0, 16, 16], "texture": "#overlay_top",    "cullface": "up"    },
+				"down":  { "uv": [0, 0, 16, 16], "texture": "#overlay_bottom", "cullface": "down"  },
+				"west":  { "uv": [0, 0, 16, 16], "texture": "#overlay_side",   "cullface": "west"  },
+				"east":  { "uv": [0, 0, 16, 16], "texture": "#overlay_side",   "cullface": "east"  }
+			}
+		},
+		{
+			"from": [ -0.02, -0.02, -0.02 ],
+			"to":   [ 16.02, 16.02, 16.02 ],
+			"forge_data": { "block_light": 15, "sky_light": 15 },
+			"shade": false,
+			"faces": {
+				"north": { "uv": [0, 0, 16, 16], "texture": "#overlay_front_emissive",  "cullface": "north", "tintindex": -101 },
+				"south": { "uv": [0, 0, 16, 16], "texture": "#overlay_back_emissive",   "cullface": "south", "tintindex": -101 },
+				"up":    { "uv": [0, 0, 16, 16], "texture": "#overlay_top_emissive",    "cullface": "up",    "tintindex": -101 },
+				"down":  { "uv": [0, 0, 16, 16], "texture": "#overlay_bottom_emissive", "cullface": "down",  "tintindex": -101 },
+				"west":  { "uv": [0, 0, 16, 16], "texture": "#overlay_side_emissive",   "cullface": "west",  "tintindex": -101 },
+				"east":  { "uv": [0, 0, 16, 16], "texture": "#overlay_side_emissive",   "cullface": "east",  "tintindex": -101 }
+			}
 		}
 	],
 	"groups": [
@@ -133,6 +171,12 @@
 			"origin": [0, 0, 0],
 			"color": 0,
 			"children": [10, 11, 12, 13]
+		},
+		{
+			"name": "overlay",
+			"origin": [0, 0, 0],
+			"color": 0,
+			"children": [14,15]
 		}
 	]
 }

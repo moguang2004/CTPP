@@ -48,6 +48,8 @@ import static com.gregtechceu.gtceu.api.GTValues.ALL_TIERS;
 import static com.gregtechceu.gtceu.common.data.machines.GTMachineUtils.*;
 import static com.gregtechceu.gtceu.utils.FormattingUtil.toEnglishName;
 import static com.mo_guang.ctpp.CTPPRegistration.REGISTRATE;
+import static com.mo_guang.ctpp.common.data.model.CTPPMachineModels.createTieredCustomModel;
+import static com.mo_guang.ctpp.common.data.model.CTPPMachineModels.createWorkableTieredCustomMachineModel;
 import static com.mo_guang.ctpp.core.CTPPCreativeModeTabs.MACHINE;
 import static com.mo_guang.ctpp.config.ConfigUtils.*;
 
@@ -58,10 +60,10 @@ public class CTPPMachines {
     public static final MachineDefinition MECHANICAL_UPGRADE_BUS = REGISTRATE.machine("mechanical_upgrade_bus", MechanicalUpgradePartMachine::new)
             .langValue("Mechanical Upgrade Bus")
             .tooltips(CommonTooltips.MECHANICAL_TIER)
-            .tier(ULV)
+            .tier(LV)
             .rotationState(RotationState.ALL)
             .abilities(CTPPPartAbility.MECHANICAL_UPGRADE)
-            .workableTieredHullModel(GTCEu.id("block/machine/part/item_bus.import"))
+            .overlayTieredHullModel(GTCEu.id("block/machine/part/item_passthrough_hatch"))
             .register();
 
     public static final KineticMachineDefinition[] ELECTRIC_GEAR_BOX_2A = registerElectricGearBox(2, LOW_TIERS);
@@ -79,7 +81,7 @@ public class CTPPMachines {
                     .blockProp(BlockBehaviour.Properties::dynamicShape)
                     .blockProp(BlockBehaviour.Properties::noOcclusion)
                     .abilities(CTPPPartAbility.INPUT_KINETIC)
-                    .simpleModel(CTPP.id("block/machine/part/kinetic_input_box"))
+                    .model(createTieredCustomModel(CTPP.id("block/machine/part/kinetic_input_box")))
                     .tier(tier)
                     .register(),
             () -> (VisualizationContext var1, KineticMachineBlockEntity var2, float var3) -> new SplitShaftVisual(var1, var2, var3), false, ALL_TIERS);
@@ -92,7 +94,7 @@ public class CTPPMachines {
                     .blockProp(BlockBehaviour.Properties::dynamicShape)
                     .blockProp(BlockBehaviour.Properties::noOcclusion)
                     .abilities(CTPPPartAbility.OUTPUT_KINETIC)
-                    .simpleModel(CTPP.id("block/machine/part/kinetic_output_box"))
+                    .model(createTieredCustomModel(CTPP.id("block/machine/part/kinetic_output_box")))
                     .tier(tier)
                     .register(),
                     () -> (VisualizationContext var1, KineticMachineBlockEntity var2, float var3) -> new SplitShaftVisual(var1, var2, var3), false, ALL_TIERS));
@@ -108,8 +110,8 @@ public class CTPPMachines {
                         .rotationState(RotationState.ALL)
                         .blockProp(BlockBehaviour.Properties::dynamicShape)
                         .blockProp(BlockBehaviour.Properties::noOcclusion)
-                        .simpleModel(
-                                CTPP.id("block/machine/electric_gear_box_%sa".formatted(maxAmps)))
+                        .model(createTieredCustomModel(
+                                CTPP.id("block/machine/electric_gear_box")))
                         .tier(tier)
                         .tooltips(explosion())
                         .register(),
@@ -129,7 +131,7 @@ public class CTPPMachines {
                         .recipeType(recipeType)
                         .recipeModifier(
                                 GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
-                        .workableTieredHullModel(CTPP.id("block/machine/kinetic_electric_machine"))
+                        .model(createWorkableTieredCustomMachineModel(CTPP.id("block/machine/kinetic_electric_machine"),GTCEu.id("block/machines/"+name)))
                         .tier(tier)
                         .tooltips(explosion())
                         .tooltips(workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64, recipeType,
