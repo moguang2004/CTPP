@@ -1,0 +1,13 @@
+{
+  "type": "ctpp:acidwashing",
+  "ingredients": [
+    {
+      "item": "gtceu:epoxy_plate"
+    }
+  ],
+  "results": [
+    {
+      "item": "gtceu:epoxy_circuit_board"
+    }
+  ]
+}
