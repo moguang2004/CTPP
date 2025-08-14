@@ -84,25 +84,22 @@ public class NotifiableStressTrait extends NotifiableRecipeHandlerTrait<Float> i
         return available;
     }
 
-//    @Override
-//    public void preWorking(IRecipeCapabilityHolder holder, IO io, GTRecipe recipe) {
-//        if (machine instanceof IKineticMachine kineticMachine) {
-//            var kineticDefinition = kineticMachine.getKineticDefinition();
-//            if (available > 0 && kineticDefinition.isSource() && io == IO.OUT) {
-//                kineticMachine.getKineticHolder().scheduleWorking(available, false);
-//            }
-//        }
-//    }
-//
-//    @Override
-//    public void postWorking(IRecipeCapabilityHolder holder, IO io, GTRecipe recipe) {
-//        if (machine instanceof IKineticMachine kineticMachine) {
-//            var kineticDefinition = kineticMachine.getKineticDefinition();
-//            if (kineticDefinition.isSource() && io == IO.OUT) {
-//                kineticMachine.getKineticHolder().stopWorking();
-//            }
-//        }
-//    }
+    public void preWorking() {
+        if (machine instanceof IKineticMachine kineticMachine) {
+            var kineticDefinition = kineticMachine.getKineticDefinition();
+            if (available > 0 && kineticDefinition.isSource()) {
+                kineticMachine.getKineticHolder().scheduleWorking(available, false);
+            }
+        }
+    }
+    public void postWorking() {
+        if (machine instanceof IKineticMachine kineticMachine) {
+            var kineticDefinition = kineticMachine.getKineticDefinition();
+            if (kineticDefinition.isSource()) {
+                kineticMachine.getKineticHolder().stopWorking();
+            }
+        }
+    }
 
     @Override
     public RecipeCapability<Float> getCapability() {

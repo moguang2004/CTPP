@@ -1,6 +1,7 @@
 package com.mo_guang.ctpp.common.machine.multiblock;
 
 import com.gregtechceu.gtceu.api.capability.IParallelHatch;
+import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.FancyMachineUIWidget;
 import com.gregtechceu.gtceu.api.gui.fancy.IFancyUIProvider;
@@ -11,8 +12,11 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDisplayUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockDisplayText;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
+import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.widget.*;
+import com.mo_guang.ctpp.api.StressRecipeCapability;
+import com.mo_guang.ctpp.common.machine.NotifiableStressTrait;
 import com.mo_guang.ctpp.common.machine.multiblock.part.MechanicalUpgradePartMachine;
 import com.mo_guang.ctpp.util.CTPPValues;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
@@ -25,6 +29,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -55,6 +60,37 @@ public class KineticMultiblockMachine extends WorkableMultiblockMachine implemen
         blazeBlocks = getMultiblockState().getMatchContext().getOrDefault("bbBlocks", LongSets.emptySet());
         updateActiveBlocks(recipeLogic.isWorking());
     }
+
+    @Override
+    public void onStructureInvalid() {
+        super.onStructureInvalid();
+        getCapabilitiesFlat(IO.OUT, StressRecipeCapability.CAP).forEach(iRecipeHandler -> {
+            if (iRecipeHandler instanceof NotifiableStressTrait notifiableStressTrait) {
+                notifiableStressTrait.postWorking();
+            }
+        });
+    }
+
+    @Override
+    public boolean beforeWorking(@Nullable GTRecipe recipe) {
+        getCapabilitiesFlat(IO.OUT, StressRecipeCapability.CAP).forEach(iRecipeHandler -> {
+            if (iRecipeHandler instanceof NotifiableStressTrait notifiableStressTrait) {
+                notifiableStressTrait.preWorking();
+            }
+        });
+        return super.beforeWorking(recipe);
+    }
+
+    @Override
+    public void afterWorking() {
+        super.afterWorking();
+        getCapabilitiesFlat(IO.OUT, StressRecipeCapability.CAP).forEach(iRecipeHandler -> {
+            if (iRecipeHandler instanceof NotifiableStressTrait notifiableStressTrait) {
+                notifiableStressTrait.postWorking();
+            }
+        });
+    }
+
     @Override
     public void updateActiveBlocks(boolean active) {
         super.updateActiveBlocks(active);
