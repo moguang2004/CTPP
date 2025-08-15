@@ -18,6 +18,8 @@ public class EnglishLangHandler {
         provider.add("ctpp.mechanical_tier", "Mechanical Tier：%d(%s)");
 
         // Multiblock UI info
+        provider.add("ctpp.multiblock.kinetic_multiblock.info.waiting", "Waiting：");
+
         provider.add("ctpp.multiblock.kinetic_generator.info.0", "Generator Rate：%d/%d EU/t");
         provider.add("ctpp.multiblock.kinetic_generator.info.1", "Coil Efficiency：%d%%");
 

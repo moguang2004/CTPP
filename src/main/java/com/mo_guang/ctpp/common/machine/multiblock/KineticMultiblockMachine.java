@@ -27,6 +27,7 @@ import com.simibubi.create.content.processing.burner.BlazeBurnerBlockEntity;
 import it.unimi.dsi.fastutil.longs.LongSet;
 import it.unimi.dsi.fastutil.longs.LongSets;
 import lombok.Getter;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
@@ -65,9 +66,15 @@ public class KineticMultiblockMachine extends WorkableMultiblockMachine implemen
     //////////////////////////////////////
     // ********* Recipe Logic **********//
     //////////////////////////////////////
+
+    @Override
+    protected RecipeLogic createRecipeLogic(Object... args) {
+        return new KineticRecipeLogic(this);
+    }
+
     @Override
     public KineticRecipeLogic getRecipeLogic() {
-        return new KineticRecipeLogic(this);
+        return (KineticRecipeLogic) super.getRecipeLogic();
     }
 
     @Override
@@ -172,6 +179,12 @@ public class KineticMultiblockMachine extends WorkableMultiblockMachine implemen
             IParallelHatch parallelHatch = optional.get();
             numParallels = parallelHatch.getCurrentParallel();
         }
+        if (recipeLogic.isWaiting()) {
+            textList.add(Component.translatable("ctpp.multiblock.kinetic_multiblock.info.waiting").withStyle(ChatFormatting.RED));
+            for (var reason : recipeLogic.getFancyTooltip()) {
+                textList.add(Component.literal(" - " + reason.getString()));
+            }
+        }
         MultiblockDisplayText.builder(textList, isFormed())
                 .setWorkingStatus(recipeLogic.isWorkingEnabled(), recipeLogic.isActive())
                 .addMachineModeLine(getRecipeType(), getRecipeTypes().length > 1)
@@ -235,19 +248,13 @@ public class KineticMultiblockMachine extends WorkableMultiblockMachine implemen
             }
         }
 
-//        @Override
-//        protected void onStatusSynced(Status newValue, Status oldValue) {
-//            if (oldValue.equals(Status.WORKING) && !newValue.equals(Status.WORKING)) {
-//                if (machine instanceof KineticMultiblockMachine kineticMultiblockMachine) {
-//                    kineticMultiblockMachine.postWorking();
-//                }
-//            }
-//            if (!oldValue.equals(Status.WORKING) && newValue.equals(Status.WORKING)) {
-//                if (machine instanceof KineticMultiblockMachine kineticMultiblockMachine) {
-//                    kineticMultiblockMachine.preWorking();;
-//                }
-//            }
-//            super.onStatusSynced(newValue, oldValue);
-//        }
+        @Override
+        public void inValid() {
+            if (lastRecipe != null && machine.onWorking()) {
+                if (machine instanceof KineticMultiblockMachine kineticMultiblockMachine) {
+                    kineticMultiblockMachine.postWorking();
+                }
+            }
+        }
     }
 }

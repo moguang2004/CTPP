@@ -5,19 +5,30 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.mo_guang.ctpp.common.machine.KineticPartMachine;
 import com.simibubi.create.infrastructure.config.AllConfigs;
+import lombok.Getter;
 
 public class KineticOutputMachine extends KineticMultiblockMachine{
+    @Getter
+    public float maxOutputStress = 0;
     public KineticOutputMachine(IMachineBlockEntity holder){
         super(holder);
         this.speed = 64;
     }
-    public float getMaxOutputStress(){
-        float output = 0;
+
+    @Override
+    public void onStructureFormed() {
+        super.onStructureFormed();
+        maxOutputStress = 0;
         for (IMultiPart part : getParts()) {
-            if(part instanceof KineticPartMachine kineticPart && kineticPart.getIO() == IO.OUT){
-                output += AllConfigs.server().kinetics.maxRotationSpeed.get() * kineticPart.getKineticDefinition().torque;
+            if (part instanceof KineticPartMachine kineticPart && kineticPart.getIO() == IO.OUT) {
+                maxOutputStress += AllConfigs.server().kinetics.maxRotationSpeed.get() * kineticPart.getKineticDefinition().torque;
             }
         }
-        return output;
+    }
+
+    @Override
+    public void onStructureInvalid() {
+        super.onStructureInvalid();
+        maxOutputStress = 0;
     }
 }

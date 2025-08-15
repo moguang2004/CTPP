@@ -1,4 +1,4 @@
-// 1.20.1	2025-08-06T22:57:11.2746816	Registrate Provider for ctpp [Recipes, Advancements, Loot Tables, Tags (blocks), Tags (items), Tags (fluids), Tags (entity_types), generic_server_provider, Blockstates, Item models, Lang (en_us/en_ud), generic_client_provider, Lang (zh_cn)]
+// 1.20.1	2025-08-15T19:03:36.9411449	Registrate Provider for ctpp [Recipes, Advancements, Loot Tables, Tags (blocks), Tags (items), Tags (fluids), Tags (entity_types), generic_server_provider, Blockstates, Item models, Lang (en_us/en_ud), generic_client_provider, Lang (zh_cn)]
 c1c56101361d7e9aef554722f9cf6d74a732cbd1 assets/ctpp/blockstates/boom_of_create.json
 2e108c461399792c21a8a0a6aca90bb7db1c151a assets/ctpp/blockstates/ev_electric_gear_box_16a.json
 99535bd2f3bf405e860e525400c82e38652eeff7 assets/ctpp/blockstates/ev_electric_gear_box_2a.json
@@ -57,9 +57,9 @@ f0a9745895f6203a8fb1dce3bb07881d754a9ff4 assets/ctpp/blockstates/ulv_kinetic_out
 a2b2ea75b52acac7cd0b6170e66f93b0fb9c2c62 assets/ctpp/blockstates/windmill_control_center.json
 f63e3f95f7aad5f9c779aa425ce28fae8b30f7d8 assets/ctpp/blockstates/zpm_kinetic_input_box.json
 255ae9920f8f8c8538276b4aa9042034db6205b6 assets/ctpp/blockstates/zpm_kinetic_output_box.json
-1fe08123f9dfbe086c4df68b896ed28373138494 assets/ctpp/lang/en_ud.json
-269d1c63e02127a6a696bc6c5362219103c648e3 assets/ctpp/lang/en_us.json
-8018daf41697425b2981344dcf0b977bd3b77d10 assets/ctpp/lang/zh_cn.json
+5e942854da288614cf5b782b94288f6310db7c78 assets/ctpp/lang/en_ud.json
+806529b45b041ced3d05372af6305a2d2f7ccfcf assets/ctpp/lang/en_us.json
+e94360d9314aaa638569a91a4b4ee5bab78df3b6 assets/ctpp/lang/zh_cn.json
 22367f833bde9b6e4df73f3dc650b5cca0e55907 assets/ctpp/models/block/machine/boom_of_create.json
 b2b06286e6a397bddb68b1509ec551b7adbe3f56 assets/ctpp/models/block/machine/ev_electric_gear_box_16a.json
 70511b2f88bed50a87a510bda6be2200db230301 assets/ctpp/models/block/machine/ev_electric_gear_box_2a.json

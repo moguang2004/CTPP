@@ -24,8 +24,7 @@ public class KineticWorkableMultiblockMachine extends KineticMultiblockMachine i
     @Getter
     public float maxTorque = 0;
     public int parallels = 1;
-    @Getter
-    public float maxOutputStress = 0;
+
     public List<BlockPos> inputPartsMax = new ArrayList<>();
 
     public KineticWorkableMultiblockMachine(IMachineBlockEntity holder) {
@@ -35,7 +34,6 @@ public class KineticWorkableMultiblockMachine extends KineticMultiblockMachine i
     @Override
     public void onStructureFormed() {
         super.onStructureFormed();
-        maxOutputStress = 0;
         for (IMultiPart part : getParts()) {
             if(part instanceof KineticPartMachine kineticPart){
                 if (kineticPart.getIO() == IO.IN) {
@@ -48,9 +46,6 @@ public class KineticWorkableMultiblockMachine extends KineticMultiblockMachine i
                             inputPartsMax.add(kineticPart.getKineticHolder().getBlockPos());
                         }
                     }
-                }
-                else if (kineticPart.getIO() == IO.OUT) {
-                    maxOutputStress += AllConfigs.server().kinetics.maxRotationSpeed.get() * kineticPart.getKineticDefinition().torque;
                 }
             }
         }
