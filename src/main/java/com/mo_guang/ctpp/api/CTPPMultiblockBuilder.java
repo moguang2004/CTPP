@@ -18,6 +18,7 @@ import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
+import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.api.registry.registrate.MultiblockMachineBuilder;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import com.tterrag.registrate.Registrate;
@@ -48,10 +49,10 @@ import java.util.List;
 import java.util.function.*;
 
 public class CTPPMultiblockBuilder extends MultiblockMachineBuilder {
-    protected CTPPMultiblockBuilder(Registrate registrate, String name, Function<IMachineBlockEntity, ? extends MultiblockControllerMachine> metaMachine, BiFunction<BlockBehaviour.Properties, MultiblockMachineDefinition, IMachineBlock> blockFactory, BiFunction<IMachineBlock, Item.Properties, MetaMachineItem> itemFactory, TriFunction<BlockEntityType<?>, BlockPos, BlockState, IMachineBlockEntity> blockEntityFactory) {
+    protected CTPPMultiblockBuilder(GTRegistrate registrate, String name, Function<IMachineBlockEntity, ? extends MultiblockControllerMachine> metaMachine, BiFunction<BlockBehaviour.Properties, MultiblockMachineDefinition, IMachineBlock> blockFactory, BiFunction<IMachineBlock, Item.Properties, MetaMachineItem> itemFactory, TriFunction<BlockEntityType<?>, BlockPos, BlockState, IMachineBlockEntity> blockEntityFactory) {
         super(registrate, name, metaMachine, blockFactory, itemFactory, blockEntityFactory);
     }
-    public static CTPPMultiblockBuilder createMulti(Registrate registrate, String name, Function<IMachineBlockEntity, ? extends MultiblockControllerMachine> metaMachine, BiFunction<BlockBehaviour.Properties, MultiblockMachineDefinition, IMachineBlock> blockFactory, BiFunction<IMachineBlock, Item.Properties, MetaMachineItem> itemFactory, TriFunction<BlockEntityType<?>, BlockPos, BlockState, IMachineBlockEntity> blockEntityFactory) {
+    public static CTPPMultiblockBuilder createMulti(GTRegistrate registrate, String name, Function<IMachineBlockEntity, ? extends MultiblockControllerMachine> metaMachine, BiFunction<BlockBehaviour.Properties, MultiblockMachineDefinition, IMachineBlock> blockFactory, BiFunction<IMachineBlock, Item.Properties, MetaMachineItem> itemFactory, TriFunction<BlockEntityType<?>, BlockPos, BlockState, IMachineBlockEntity> blockEntityFactory) {
         return new CTPPMultiblockBuilder(registrate, name, metaMachine, blockFactory, itemFactory, blockEntityFactory);
     }
 
@@ -75,16 +76,8 @@ public class CTPPMultiblockBuilder extends MultiblockMachineBuilder {
         return this;
     }
 
-    public CTPPMultiblockBuilder definition(Function<ResourceLocation, MultiblockMachineDefinition> definition) {
-        return (CTPPMultiblockBuilder)super.definition(definition);
-    }
-
     public CTPPMultiblockBuilder machine(Function<IMachineBlockEntity, MetaMachine> machine) {
         return (CTPPMultiblockBuilder)super.machine(machine);
-    }
-
-    public CTPPMultiblockBuilder renderer(@Nullable Supplier<IRenderer> renderer) {
-        return (CTPPMultiblockBuilder)super.renderer(renderer);
     }
 
     public CTPPMultiblockBuilder shape(VoxelShape shape) {
@@ -97,10 +90,6 @@ public class CTPPMultiblockBuilder extends MultiblockMachineBuilder {
 
     public CTPPMultiblockBuilder rotationState(RotationState rotationState) {
         return (CTPPMultiblockBuilder)super.rotationState(rotationState);
-    }
-
-    public CTPPMultiblockBuilder hasTESR(boolean hasTESR) {
-        return (CTPPMultiblockBuilder)super.hasTESR(hasTESR);
     }
 
     public CTPPMultiblockBuilder blockProp(NonNullUnaryOperator<BlockBehaviour.Properties> blockProp) {
@@ -143,40 +132,60 @@ public class CTPPMultiblockBuilder extends MultiblockMachineBuilder {
         return (CTPPMultiblockBuilder)super.itemColor(itemColor);
     }
 
-    public CTPPMultiblockBuilder modelRenderer(Supplier<ResourceLocation> model) {
-        return (CTPPMultiblockBuilder)super.modelRenderer(model);
+    public MultiblockMachineBuilder simpleModel(ResourceLocation model) {
+        return (MultiblockMachineBuilder)super.simpleModel(model);
     }
 
-    public CTPPMultiblockBuilder defaultModelRenderer() {
-        return (CTPPMultiblockBuilder)super.defaultModelRenderer();
+    public MultiblockMachineBuilder defaultModel() {
+        return (MultiblockMachineBuilder)super.defaultModel();
     }
 
-    public CTPPMultiblockBuilder tieredHullRenderer(ResourceLocation model) {
-        return (CTPPMultiblockBuilder)super.tieredHullRenderer(model);
+    public MultiblockMachineBuilder tieredHullModel(ResourceLocation model) {
+        return (MultiblockMachineBuilder)super.tieredHullModel(model);
     }
 
-    public CTPPMultiblockBuilder overlayTieredHullRenderer(String name) {
-        return (CTPPMultiblockBuilder)super.overlayTieredHullRenderer(name);
+    public MultiblockMachineBuilder overlayTieredHullModel(String name) {
+        return (MultiblockMachineBuilder)super.overlayTieredHullModel(name);
     }
 
-    public CTPPMultiblockBuilder workableTieredHullRenderer(ResourceLocation workableModel) {
-        return (CTPPMultiblockBuilder)super.workableTieredHullRenderer(workableModel);
+    public MultiblockMachineBuilder overlayTieredHullModel(ResourceLocation overlayModel) {
+        return (MultiblockMachineBuilder)super.overlayTieredHullModel(overlayModel);
     }
 
-    public CTPPMultiblockBuilder workableCasingRenderer(ResourceLocation baseCasing, ResourceLocation overlayModel) {
-        return (CTPPMultiblockBuilder)super.workableCasingRenderer(baseCasing, overlayModel);
+    public MultiblockMachineBuilder colorOverlayTieredHullModel(String overlay) {
+        return (MultiblockMachineBuilder)super.colorOverlayTieredHullModel(overlay);
     }
 
-    public CTPPMultiblockBuilder workableCasingRenderer(ResourceLocation baseCasing, ResourceLocation overlayModel, boolean tint) {
-        return (CTPPMultiblockBuilder)super.workableCasingRenderer(baseCasing, overlayModel, tint);
+    public MultiblockMachineBuilder colorOverlayTieredHullModel(String overlay, @Nullable String pipeOverlay, @Nullable String emissiveOverlay) {
+        return (MultiblockMachineBuilder)super.colorOverlayTieredHullModel(overlay, pipeOverlay, emissiveOverlay);
     }
 
-    public CTPPMultiblockBuilder sidedWorkableCasingRenderer(String basePath, ResourceLocation overlayModel, boolean tint) {
-        return (CTPPMultiblockBuilder)super.sidedWorkableCasingRenderer(basePath, overlayModel, tint);
+    public MultiblockMachineBuilder colorOverlayTieredHullModel(ResourceLocation overlay) {
+        return (MultiblockMachineBuilder)super.colorOverlayTieredHullModel(overlay);
     }
 
-    public CTPPMultiblockBuilder sidedWorkableCasingRenderer(String basePath, ResourceLocation overlayModel) {
-        return (CTPPMultiblockBuilder)super.sidedWorkableCasingRenderer(basePath, overlayModel);
+    public MultiblockMachineBuilder colorOverlayTieredHullModel(ResourceLocation overlay, @Nullable ResourceLocation pipeOverlay, @Nullable ResourceLocation emissiveOverlay) {
+        return (MultiblockMachineBuilder)super.colorOverlayTieredHullModel(overlay, pipeOverlay, emissiveOverlay);
+    }
+
+    public MultiblockMachineBuilder workableTieredHullModel(ResourceLocation workableModel) {
+        return (MultiblockMachineBuilder)super.workableTieredHullModel(workableModel);
+    }
+
+    public MultiblockMachineBuilder simpleGeneratorModel(ResourceLocation workableModel) {
+        return (MultiblockMachineBuilder)super.simpleGeneratorModel(workableModel);
+    }
+
+    public MultiblockMachineBuilder workableCasingModel(ResourceLocation baseCasing, ResourceLocation overlayModel) {
+        return (MultiblockMachineBuilder)super.workableCasingModel(baseCasing, overlayModel);
+    }
+
+    public MultiblockMachineBuilder sidedOverlayCasingModel(ResourceLocation baseCasing, ResourceLocation workableModel) {
+        return (MultiblockMachineBuilder)super.sidedOverlayCasingModel(baseCasing, workableModel);
+    }
+
+    public MultiblockMachineBuilder sidedWorkableCasingModel(ResourceLocation baseCasing, ResourceLocation workableModel) {
+        return (MultiblockMachineBuilder)super.sidedWorkableCasingModel(baseCasing, workableModel);
     }
 
     public CTPPMultiblockBuilder tooltipBuilder(BiConsumer<ItemStack, List<Component>> tooltipBuilder) {
@@ -193,14 +202,6 @@ public class CTPPMultiblockBuilder extends MultiblockMachineBuilder {
 
     public CTPPMultiblockBuilder langValue(String langValue) {
         return (CTPPMultiblockBuilder)super.langValue(langValue);
-    }
-
-    public CTPPMultiblockBuilder overlaySteamHullRenderer(String name) {
-        return (CTPPMultiblockBuilder)super.overlaySteamHullRenderer(name);
-    }
-
-    public CTPPMultiblockBuilder workableSteamHullRenderer(boolean isHighPressure, ResourceLocation workableModel) {
-        return (CTPPMultiblockBuilder)super.workableSteamHullRenderer(isHighPressure, workableModel);
     }
 
     public CTPPMultiblockBuilder tooltips(Component... components) {

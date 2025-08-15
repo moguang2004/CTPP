@@ -1,0 +1,14 @@
+{
+  "type": "ctpp:acidwashing",
+  "ingredients": [
+    {
+      "item": "gtceu:polytetrafluoroethylene_plate"
+    }
+  ],
+  "results": [
+    {
+      "count": 4,
+      "item": "gtceu:plastic_circuit_board"
+    }
+  ]
+}

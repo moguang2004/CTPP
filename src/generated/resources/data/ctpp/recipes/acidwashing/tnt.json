@@ -1,0 +1,13 @@
+{
+  "type": "ctpp:acidwashing",
+  "ingredients": [
+    {
+      "item": "gtceu:gelled_toluene"
+    }
+  ],
+  "results": [
+    {
+      "item": "minecraft:tnt"
+    }
+  ]
+}

@@ -105,6 +105,7 @@
   "ctpp.multiblock.kinetic_generator.tooltip.2": "Using a Block of Graphene as the core increases efficiency by §a10%§r",
   "ctpp.multiblock.kinetic_generator.tooltip.3": "Requires at least 512 SU to activate the machine",
   "ctpp.multiblock.kinetic_generator.tooltip.4": "Each level of coil tier improves total efficiency by §a10%§r (initial value: 90%)",
+  "ctpp.multiblock.kinetic_multiblock.info.waiting": "Waiting：",
   "ctpp.multiblock.kinetic_steam_turbine.info.0": "Total Turbine Efficiency：%d%%",
   "ctpp.multiblock.kinetic_steam_turbine.info.1": "Kinetic Output：%dsu",
   "ctpp.multiblock.kinetic_steam_turbine.tooltip.0": "A machine that can output kinetic",

@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.content.SerializerFloat;
 import com.mo_guang.ctpp.common.data.CTPPRecipeHelper;
+import com.mo_guang.ctpp.common.machine.multiblock.KineticOutputMachine;
 import com.mo_guang.ctpp.common.machine.multiblock.KineticWorkableMultiblockMachine;
 
 import java.util.Collection;
@@ -29,12 +30,24 @@ public class StressRecipeCapability extends RecipeCapability<Float> {
         return List.of(ingredients.stream().map(Float.class::cast).reduce(0f, Float::sum));
     }
     @Override
-    public int getMaxParallelRatio(IRecipeCapabilityHolder holder, GTRecipe recipe, int parallelAmount) {
+    public int getMaxParallelByInput(IRecipeCapabilityHolder holder, GTRecipe recipe, int parallelAmount, boolean tick) {
         if(holder instanceof KineticWorkableMultiblockMachine){
             float inputStress = Math.abs(((KineticWorkableMultiblockMachine) holder).getTotalInputStress());
             float recipeStress = (float) CTPPRecipeHelper.getInputStress(recipe);
-            return (int) (inputStress/recipeStress);
+            if (recipeStress == 0) return parallelAmount;
+            return (int) Math.min(inputStress/recipeStress, parallelAmount);
         }
-        return super.getMaxParallelRatio(holder, recipe, parallelAmount);
+        return super.getMaxParallelByInput(holder, recipe, parallelAmount, tick);
+    }
+
+    @Override
+    public int limitMaxParallelByOutput(IRecipeCapabilityHolder holder, GTRecipe recipe, int maxMultiplier, boolean tick) {
+        if (holder instanceof KineticOutputMachine kineticOutputMachine){
+            float outputStress = Math.abs(kineticOutputMachine.getMaxOutputStress());
+            float recipeStress = (float) CTPPRecipeHelper.getOutputStress(recipe);
+            if (recipeStress == 0) return maxMultiplier;
+            return (int) Math.min(outputStress/recipeStress, maxMultiplier);
+        }
+        return super.limitMaxParallelByOutput(holder, recipe, maxMultiplier, tick);
     }
 }

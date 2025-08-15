@@ -1,5 +1,6 @@
 package com.mo_guang.ctpp.common.condition;
 
+import com.google.gson.JsonObject;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
@@ -11,7 +12,9 @@ import com.mo_guang.ctpp.common.machine.multiblock.part.MechanicalUpgradePartMac
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.NoArgsConstructor;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.GsonHelper;
 import org.jetbrains.annotations.NotNull;
 
 @NoArgsConstructor
@@ -40,7 +43,7 @@ public class MechanicalTierCondition extends RecipeCondition {
     }
 
     @Override
-    public boolean test(@NotNull GTRecipe gtRecipe, @NotNull RecipeLogic recipeLogic) {
+    public boolean testCondition(@NotNull GTRecipe gtRecipe, @NotNull RecipeLogic recipeLogic) {
         if (recipeLogic.machine instanceof KineticMultiblockMachine kineticMultiblockMachine) {
             for (IMultiPart multiPart: kineticMultiblockMachine.getParts()) {
                 if (multiPart instanceof MechanicalUpgradePartMachine upgradePartMachine) {
@@ -54,5 +57,32 @@ public class MechanicalTierCondition extends RecipeCondition {
     @Override
     public RecipeCondition createTemplate() {
         return new MechanicalTierCondition();
+    }
+    @NotNull
+    @Override
+    public JsonObject serialize() {
+        JsonObject config = super.serialize();
+        config.addProperty("mechanical_tier", tier);
+        return config;
+    }
+
+    @Override
+    public RecipeCondition deserialize(@NotNull JsonObject config) {
+        super.deserialize(config);
+        tier = GsonHelper.getAsInt(config, "mechanical_tier", 0);
+        return this;
+    }
+
+    @Override
+    public RecipeCondition fromNetwork(FriendlyByteBuf buf) {
+        super.fromNetwork(buf);
+        tier = buf.readInt();
+        return this;
+    }
+
+    @Override
+    public void toNetwork(FriendlyByteBuf buf) {
+        super.toNetwork(buf);
+        buf.writeInt(tier);
     }
 }

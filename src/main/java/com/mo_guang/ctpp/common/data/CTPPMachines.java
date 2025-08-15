@@ -14,10 +14,10 @@ import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
-import com.gregtechceu.gtceu.client.renderer.machine.OverlayTieredActiveMachineRenderer;
-import com.gregtechceu.gtceu.client.renderer.machine.OverlayTieredMachineRenderer;
 import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
 import com.gregtechceu.gtceu.common.registry.GTRegistration;
+
+import com.mo_guang.ctpp.CTPP;
 import com.mo_guang.ctpp.CTPPRegistration;
 import com.mo_guang.ctpp.api.CTPPPartAbility;
 import com.mo_guang.ctpp.client.SplitShaftVisual;
@@ -29,8 +29,6 @@ import com.mo_guang.ctpp.common.machine.SimpleKineticElectricWorkableMachine;
 import com.mo_guang.ctpp.common.block.KineticMachineBlock;
 import com.mo_guang.ctpp.common.machine.multiblock.part.MechanicalUpgradePartMachine;
 import com.mo_guang.ctpp.config.MainConfig;
-import com.mo_guang.ctpp.render.KineticWorkableTieredHullMachineRenderer;
-import com.mo_guang.ctpp.render.SplitShaftTieredHullMachineRenderer;
 import com.mo_guang.ctpp.util.CommonTooltips;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
@@ -51,6 +49,8 @@ import static com.gregtechceu.gtceu.api.GTValues.ALL_TIERS;
 import static com.gregtechceu.gtceu.common.data.machines.GTMachineUtils.*;
 import static com.gregtechceu.gtceu.utils.FormattingUtil.toEnglishName;
 import static com.mo_guang.ctpp.CTPPRegistration.REGISTRATE;
+import static com.mo_guang.ctpp.common.data.model.CTPPMachineModels.createTieredCustomModel;
+import static com.mo_guang.ctpp.common.data.model.CTPPMachineModels.createWorkableTieredCustomMachineModel;
 import static com.mo_guang.ctpp.core.CTPPCreativeModeTabs.MACHINE;
 import static com.mo_guang.ctpp.config.ConfigUtils.*;
 
@@ -61,10 +61,10 @@ public class CTPPMachines {
     public static final MachineDefinition MECHANICAL_UPGRADE_BUS = REGISTRATE.machine("mechanical_upgrade_bus", MechanicalUpgradePartMachine::new)
             .langValue("Mechanical Upgrade Bus")
             .tooltips(CommonTooltips.MECHANICAL_TIER)
-            .tier(ULV)
+            .tier(LV)
             .rotationState(RotationState.ALL)
             .abilities(CTPPPartAbility.MECHANICAL_UPGRADE)
-            .renderer(() -> new OverlayTieredMachineRenderer(ULV, GTCEu.id("block/machine/part/item_bus.import")))
+            .overlayTieredHullModel(GTCEu.id("block/machine/part/item_passthrough_hatch"))
             .register();
 
     public static final KineticMachineDefinition[] ELECTRIC_GEAR_BOX_2A = registerElectricGearBox(2, LOW_TIERS);
@@ -82,8 +82,8 @@ public class CTPPMachines {
                     .blockProp(BlockBehaviour.Properties::dynamicShape)
                     .blockProp(BlockBehaviour.Properties::noOcclusion)
                     .abilities(CTPPPartAbility.INPUT_KINETIC)
-                    .renderer(() -> new SplitShaftTieredHullMachineRenderer(tier,
-                            GTCEu.id("block/machine/part/kinetic_input_box")))
+                    .model(createTieredCustomModel(CTPP.id("block/machine/part/kinetic_input_box")))
+                    .tier(tier)
                     .register(),
             () -> (VisualizationContext var1, KineticMachineBlockEntity var2, float var3) -> new SplitShaftVisual(var1, var2, var3), false, ALL_TIERS);
     public static final KineticMachineDefinition[] KINETIC_OUTPUT_BOX = CTPPRegistration.conditionalRegistration(gtmEnabled("GTMKineticOutputBox"),() ->
@@ -95,8 +95,8 @@ public class CTPPMachines {
                     .blockProp(BlockBehaviour.Properties::dynamicShape)
                     .blockProp(BlockBehaviour.Properties::noOcclusion)
                     .abilities(CTPPPartAbility.OUTPUT_KINETIC)
-                    .renderer(() -> new SplitShaftTieredHullMachineRenderer(tier,
-                            GTCEu.id("block/machine/part/kinetic_output_box")))
+                    .model(createTieredCustomModel(CTPP.id("block/machine/part/kinetic_output_box")))
+                    .tier(tier)
                     .register(),
                     () -> (VisualizationContext var1, KineticMachineBlockEntity var2, float var3) -> new SplitShaftVisual(var1, var2, var3), false, ALL_TIERS));
 
@@ -111,8 +111,9 @@ public class CTPPMachines {
                         .rotationState(RotationState.ALL)
                         .blockProp(BlockBehaviour.Properties::dynamicShape)
                         .blockProp(BlockBehaviour.Properties::noOcclusion)
-                        .renderer(() -> new SplitShaftTieredHullMachineRenderer(tier,
-                                GTCEu.id("block/machine/electric_gear_box_%sa".formatted(maxAmps))))
+                        .model(createTieredCustomModel(
+                                CTPP.id("block/machine/electric_gear_box")))
+                        .tier(tier)
                         .tooltips(explosion())
                         .register(),
                         () -> (VisualizationContext var1, KineticMachineBlockEntity var2, float var3) -> new SplitShaftVisual(var1, var2, var3), false, tiers));
@@ -131,8 +132,8 @@ public class CTPPMachines {
                         .recipeType(recipeType)
                         .recipeModifier(
                                 GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
-                        .renderer(() -> new KineticWorkableTieredHullMachineRenderer(tier,
-                                GTCEu.id("block/machine/kinetic_electric_machine"), GTCEu.id("block/machines/" + name)))
+                        .model(createWorkableTieredCustomMachineModel(CTPP.id("block/machine/kinetic_electric_machine"),GTCEu.id("block/machines/"+name)))
+                        .tier(tier)
                         .tooltips(explosion())
                         .tooltips(workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64, recipeType,
                                 defaultTankSizeFunction.apply(tier), true))
@@ -148,7 +149,7 @@ public class CTPPMachines {
         return REGISTRATE
                 .machine(name, definitionFactory, factory, KineticMachineBlock::new, MetaMachineItem::new,
                         KineticMachineBlockEntity::create)
-                .hasTESR(visualFactory != null)
+                .hasBER(visualFactory != null)
                 .onBlockEntityRegister(
                         type -> KineticMachineBlockEntity.onBlockEntityRegister(type, visualFactory, renderNormally));
     }
@@ -169,7 +170,7 @@ public class CTPPMachines {
                             MetaMachineItem::new,
                             KineticMachineBlockEntity::create)
                     .tier(tier)
-                    .hasTESR(visualFactory != null)
+                    .hasBER(visualFactory != null)
                     .onBlockEntityRegister(type -> KineticMachineBlockEntity.onBlockEntityRegister(type,
                             visualFactory, renderNormally));
             definitions[tier] = builder.apply(tier, register);

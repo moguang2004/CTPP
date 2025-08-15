@@ -106,14 +106,14 @@ public class CTPPRecipeTypes {
         });
         MACERATOR_RECIPES.onRecipeBuild((builder, provider) ->{
             assert SMASHING_FACTORY_RECIPES != null;
-            if(GTUtil.getTierByVoltage(builder.EUt()) <= MainConfig.INSTANCE.ctnhConfig.smashingFactoryMaximumProcessingCapacity) {
+            if(GTUtil.getTierByVoltage(builder.EUt().voltage()) <= MainConfig.INSTANCE.ctnhConfig.smashingFactoryMaximumProcessingCapacity) {
                 var newrecipe = SMASHING_FACTORY_RECIPES.copyFrom(builder)
                 .duration(Math.max((int)(builder.duration / MainConfig.INSTANCE.ctnhConfig.smashingFactorySpeedMultiplier), 1))
                         .buildRawRecipe();
                 new CTPPRecipeBuilder(newrecipe, SMASHING_FACTORY_RECIPES).rpm(MainConfig.INSTANCE.ctnhConfig.smashingFactoryRPMRequirement)
                         .noEUt()
-                        .tier(Math.min(GTUtil.getTierByVoltage(builder.EUt()) * 2, 5))
-                        .inputStress(builder.EUt() * MainConfig.INSTANCE.ctnhConfig.smashingFactoryStressRequirement)
+                        .tier(Math.min(GTUtil.getTierByVoltage(builder.EUt().voltage()) * 2, 5))
+                        .inputStress(builder.EUt().voltage() * MainConfig.INSTANCE.ctnhConfig.smashingFactoryStressRequirement)
                         .chancedOutputLogic(ItemRecipeCapability.CAP, ChanceLogic.NONE)
                         .save(provider);
             }

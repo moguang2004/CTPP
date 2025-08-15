@@ -1,0 +1,13 @@
+{
+  "type": "ctpp:acidwashing",
+  "ingredients": [
+    {
+      "item": "gtceu:polyethylene_plate"
+    }
+  ],
+  "results": [
+    {
+      "item": "gtceu:plastic_circuit_board"
+    }
+  ]
+}

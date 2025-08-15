@@ -104,6 +104,7 @@
   "ctpp.multiblock.kinetic_generator.tooltip.2": "需要至少512su以启动机器",
   "ctpp.multiblock.kinetic_generator.tooltip.3": "线圈等级每升高一级，总效率提高§a10%§r（初始为90%）",
   "ctpp.multiblock.kinetic_generator.tooltip.4": "若使用石墨烯块作为核心,则效率会再提高§a10%§r",
+  "ctpp.multiblock.kinetic_multiblock.info.waiting": "暂停中：",
   "ctpp.multiblock.kinetic_steam_turbine.info.0": "涡轮总效率：%d%%",
   "ctpp.multiblock.kinetic_steam_turbine.info.1": "应力输出：%dsu",
   "ctpp.multiblock.kinetic_steam_turbine.tooltip.0": "一个输出应力的机器",

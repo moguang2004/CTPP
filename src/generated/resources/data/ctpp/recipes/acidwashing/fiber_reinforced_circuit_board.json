@@ -1,0 +1,13 @@
+{
+  "type": "ctpp:acidwashing",
+  "ingredients": [
+    {
+      "item": "gtceu:reinforced_epoxy_resin_plate"
+    }
+  ],
+  "results": [
+    {
+      "item": "gtceu:fiber_reinforced_circuit_board"
+    }
+  ]
+}

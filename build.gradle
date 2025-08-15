@@ -107,7 +107,7 @@ minecraft {
             workingDirectory project.file('run-data')
 
             // Specify the modid for data generation, where to output the resulting resource, and where to look for existing resources.
-            args '--mod', mod_id, '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+            args '--mod', mod_id, '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/'), '--existing-mod', 'gtceu'
         }
     }
 }
@@ -160,6 +160,13 @@ repositories  {
     maven {
         url = "https://maven.theillusivec4.top/"
     }
+    maven {
+        url "https://maven.latvian.dev/releases"
+        content {
+            includeGroup "dev.latvian.mods"
+            includeGroup "dev.latvian.apps"
+        }
+    }
     maven { // Flywheel
         url = "https://maven.tterrag.com/"
         content {
@@ -172,6 +179,13 @@ repositories  {
     }
     maven { url = "https://raw.githubusercontent.com/Fuzss/modresources/main/maven/" }
     maven { url = "https://maven.createmod.net" }
+    maven { //KubeJS
+        url "https://maven.latvian.dev/releases"
+        content {
+            includeGroup "dev.latvian.mods"
+            includeGroup "dev.latvian.apps"
+        }
+    }
 }
 
 dependencies {

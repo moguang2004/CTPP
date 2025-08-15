@@ -1,0 +1,14 @@
+{
+  "type": "ctpp:acidwashing",
+  "ingredients": [
+    {
+      "item": "gtceu:polybenzimidazole_plate"
+    }
+  ],
+  "results": [
+    {
+      "count": 8,
+      "item": "gtceu:plastic_circuit_board"
+    }
+  ]
+}

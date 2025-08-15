@@ -1,0 +1,13 @@
+{
+  "type": "ctpp:breathing",
+  "ingredients": [
+    {
+      "item": "minecraft:leather"
+    }
+  ],
+  "results": [
+    {
+      "item": "minecraft:phantom_membrane"
+    }
+  ]
+}

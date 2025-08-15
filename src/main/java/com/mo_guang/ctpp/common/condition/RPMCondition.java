@@ -53,7 +53,7 @@ public class RPMCondition extends RecipeCondition {
     }
 
     @Override
-    public boolean test(@NotNull GTRecipe recipe, @NotNull RecipeLogic recipeLogic) {
+    public boolean testCondition(@NotNull GTRecipe recipe, @NotNull RecipeLogic recipeLogic) {
         if (recipeLogic.machine instanceof IKineticMachine kineticMachine &&
                 Math.abs(kineticMachine.getKineticHolder().getSpeed()) >= rpm) {
             return true;

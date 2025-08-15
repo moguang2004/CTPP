@@ -18,10 +18,7 @@ import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.IdentityHashMap;
-import java.util.List;
+import java.util.*;
 
 public class KineticWorkableTieredMachine extends TieredMachine implements IRecipeLogicMachine,
         IMachineLife, IMufflableMachine{
@@ -57,7 +54,9 @@ public class KineticWorkableTieredMachine extends TieredMachine implements IReci
     @Persisted
     public final NotifiableComputationContainer exportComputation;
     @Getter
-    protected final Table<IO, RecipeCapability<?>, List<IRecipeHandler<?>>> capabilitiesProxy;
+    protected final Map<IO, List<RecipeHandlerList>> capabilitiesProxy;
+    @Getter
+    protected final Map<IO, Map<RecipeCapability<?>, List<IRecipeHandler<?>>>> capabilitiesFlat;
     protected final List<ISubscription> traitSubscriptions;
     @Persisted
     @DescSynced
@@ -70,7 +69,8 @@ public class KineticWorkableTieredMachine extends TieredMachine implements IReci
         this.recipeTypes = getDefinition().getRecipeTypes();
         this.activeRecipeType = 0;
         this.tankScalingFunction = tankScalingFunction;
-        this.capabilitiesProxy = Tables.newCustomTable(new EnumMap<>(IO.class), IdentityHashMap::new);
+        this.capabilitiesProxy = new EnumMap<>(IO.class);
+        this.capabilitiesFlat = new EnumMap<>(IO.class);
         this.traitSubscriptions = new ArrayList<>();
         this.recipeLogic = createRecipeLogic(args);
         this.importItems = createImportItemHandler(args);
@@ -125,14 +125,18 @@ public class KineticWorkableTieredMachine extends TieredMachine implements IReci
     @Override
     public void onLoad() {
         super.onLoad();
+        Map<IO, List<IRecipeHandler<?>>> ioTraits = new EnumMap<>(IO.class);
+
         for (MachineTrait trait : getTraits()) {
             if (trait instanceof IRecipeHandlerTrait<?> handlerTrait) {
-                if (!capabilitiesProxy.contains(handlerTrait.getHandlerIO(), handlerTrait.getCapability())) {
-                    capabilitiesProxy.put(handlerTrait.getHandlerIO(), handlerTrait.getCapability(), new ArrayList<>());
-                }
-                capabilitiesProxy.get(handlerTrait.getHandlerIO(), handlerTrait.getCapability()).add(handlerTrait);
-                traitSubscriptions.add(handlerTrait.addChangedListener(recipeLogic::updateTickSubscription));
+                ioTraits.computeIfAbsent(handlerTrait.getHandlerIO(), i -> new ArrayList<>()).add(handlerTrait);
             }
+        }
+
+        for (var entry : ioTraits.entrySet()) {
+            var handlerList = RecipeHandlerList.of(entry.getKey(), entry.getValue());
+            this.addHandlerList(handlerList);
+            traitSubscriptions.add(handlerList.subscribe(recipeLogic::updateTickSubscription));
         }
     }
 
@@ -141,6 +145,8 @@ public class KineticWorkableTieredMachine extends TieredMachine implements IReci
         super.onUnload();
         traitSubscriptions.forEach(ISubscription::unsubscribe);
         traitSubscriptions.clear();
+        capabilitiesProxy.clear();
+        capabilitiesFlat.clear();
         recipeLogic.inValid();
     }
 

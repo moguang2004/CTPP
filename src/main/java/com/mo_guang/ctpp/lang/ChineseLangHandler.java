@@ -24,6 +24,8 @@ public class ChineseLangHandler {
         provider.add("ctpp.mechanical_tier", "机械等级：%d(%s)");
 
         // Multiblock UI info
+        provider.add("ctpp.multiblock.kinetic_multiblock.info.waiting", "暂停中：");
+
         provider.add("ctpp.multiblock.kinetic_generator.info.0", "产能功率：%d/%d EU/t");
         provider.add("ctpp.multiblock.kinetic_generator.info.1", "线圈效率：%d%%");
 

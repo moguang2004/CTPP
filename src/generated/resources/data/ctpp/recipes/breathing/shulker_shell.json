@@ -1,0 +1,13 @@
+{
+  "type": "ctpp:breathing",
+  "ingredients": [
+    {
+      "item": "minecraft:nautilus_shell"
+    }
+  ],
+  "results": [
+    {
+      "item": "minecraft:shulker_shell"
+    }
+  ]
+}
