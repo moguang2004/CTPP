@@ -8,10 +8,12 @@ import com.gregtechceu.gtceu.api.gui.fancy.IFancyUIProvider;
 import com.gregtechceu.gtceu.api.gui.fancy.TooltipsPanel;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
+import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDisplayUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockDisplayText;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
+import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.widget.*;
@@ -60,15 +62,12 @@ public class KineticMultiblockMachine extends WorkableMultiblockMachine implemen
         blazeBlocks = getMultiblockState().getMatchContext().getOrDefault("bbBlocks", LongSets.emptySet());
         updateActiveBlocks(recipeLogic.isWorking());
     }
-
+    //////////////////////////////////////
+    // ********* Recipe Logic **********//
+    //////////////////////////////////////
     @Override
-    public void onStructureInvalid() {
-        super.onStructureInvalid();
-        getCapabilitiesFlat(IO.OUT, StressRecipeCapability.CAP).forEach(iRecipeHandler -> {
-            if (iRecipeHandler instanceof NotifiableStressTrait notifiableStressTrait) {
-                notifiableStressTrait.postWorking();
-            }
-        });
+    public KineticRecipeLogic getRecipeLogic() {
+        return new KineticRecipeLogic(this);
     }
 
     @Override
@@ -81,16 +80,20 @@ public class KineticMultiblockMachine extends WorkableMultiblockMachine implemen
         return super.beforeWorking(recipe);
     }
 
-    @Override
-    public void afterWorking() {
-        super.afterWorking();
+    public void postWorking() {
         getCapabilitiesFlat(IO.OUT, StressRecipeCapability.CAP).forEach(iRecipeHandler -> {
             if (iRecipeHandler instanceof NotifiableStressTrait notifiableStressTrait) {
                 notifiableStressTrait.postWorking();
             }
         });
     }
-
+    public void preWorking() {
+        getCapabilitiesFlat(IO.OUT, StressRecipeCapability.CAP).forEach(iRecipeHandler -> {
+            if (iRecipeHandler instanceof NotifiableStressTrait notifiableStressTrait) {
+                notifiableStressTrait.preWorking();
+            }
+        });
+    }
     @Override
     public void updateActiveBlocks(boolean active) {
         super.updateActiveBlocks(active);
@@ -209,5 +212,42 @@ public class KineticMultiblockMachine extends WorkableMultiblockMachine implemen
         for (IMultiPart part : getParts()) {
             part.attachFancyTooltipsToController(this, tooltipsPanel);
         }
+    }
+    public class KineticRecipeLogic extends RecipeLogic {
+
+        public KineticRecipeLogic(IRecipeLogicMachine machine) {
+            super(machine);
+        }
+
+        @Override
+        public void handleRecipeWorking() {
+            Status last = this.getStatus();
+            super.handleRecipeWorking();
+            if (last == Status.WORKING && getStatus() != Status.WORKING) {
+                if (machine instanceof KineticMultiblockMachine kineticMultiblockMachine) {
+                    kineticMultiblockMachine.postWorking();
+                }
+            }
+            if (last != Status.WORKING && getStatus() == Status.WORKING) {
+                if (machine instanceof KineticMultiblockMachine kineticMultiblockMachine) {
+                    kineticMultiblockMachine.preWorking();;
+                }
+            }
+        }
+
+//        @Override
+//        protected void onStatusSynced(Status newValue, Status oldValue) {
+//            if (oldValue.equals(Status.WORKING) && !newValue.equals(Status.WORKING)) {
+//                if (machine instanceof KineticMultiblockMachine kineticMultiblockMachine) {
+//                    kineticMultiblockMachine.postWorking();
+//                }
+//            }
+//            if (!oldValue.equals(Status.WORKING) && newValue.equals(Status.WORKING)) {
+//                if (machine instanceof KineticMultiblockMachine kineticMultiblockMachine) {
+//                    kineticMultiblockMachine.preWorking();;
+//                }
+//            }
+//            super.onStatusSynced(newValue, oldValue);
+//        }
     }
 }
