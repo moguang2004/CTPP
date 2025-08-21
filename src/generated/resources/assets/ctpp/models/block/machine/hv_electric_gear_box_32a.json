@@ -1,0 +1,17 @@
+{
+  "parent": "minecraft:block/block",
+  "loader": "gtceu:machine",
+  "machine": "ctpp:hv_electric_gear_box_32a",
+  "variants": {
+    "": {
+      "model": {
+        "parent": "ctpp:block/machine/electric_gear_box",
+        "textures": {
+          "bottom": "gtceu:block/casings/voltage/hv/bottom",
+          "side": "gtceu:block/casings/voltage/hv/side",
+          "top": "gtceu:block/casings/voltage/hv/top"
+        }
+      }
+    }
+  }
+}

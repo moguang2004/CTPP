@@ -1,0 +1,17 @@
+{
+  "parent": "minecraft:block/block",
+  "loader": "gtceu:machine",
+  "machine": "ctpp:uev_kinetic_input_box",
+  "variants": {
+    "": {
+      "model": {
+        "parent": "ctpp:block/machine/part/kinetic_input_box",
+        "textures": {
+          "bottom": "gtceu:block/casings/voltage/uev/bottom",
+          "side": "gtceu:block/casings/voltage/uev/side",
+          "top": "gtceu:block/casings/voltage/uev/top"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "variants": {
+    "facing=down": {
+      "model": "ctpp:block/machine/uv_kinetic_output_box",
+      "x": 90
+    },
+    "facing=east": {
+      "model": "ctpp:block/machine/uv_kinetic_output_box",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "ctpp:block/machine/uv_kinetic_output_box"
+    },
+    "facing=south": {
+      "model": "ctpp:block/machine/uv_kinetic_output_box",
+      "y": 180
+    },
+    "facing=up": {
+      "gtceu:z": 180,
+      "model": "ctpp:block/machine/uv_kinetic_output_box",
+      "x": 270
+    },
+    "facing=west": {
+      "model": "ctpp:block/machine/uv_kinetic_output_box",
+      "y": 270
+    }
+  }
+}

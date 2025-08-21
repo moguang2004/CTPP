@@ -1,0 +1,17 @@
+{
+  "parent": "minecraft:block/block",
+  "loader": "gtceu:machine",
+  "machine": "ctpp:uiv_kinetic_output_box",
+  "variants": {
+    "": {
+      "model": {
+        "parent": "ctpp:block/machine/part/kinetic_output_box",
+        "textures": {
+          "bottom": "gtceu:block/casings/voltage/uiv/bottom",
+          "side": "gtceu:block/casings/voltage/uiv/side",
+          "top": "gtceu:block/casings/voltage/uiv/top"
+        }
+      }
+    }
+  }
+}
