@@ -32,7 +32,8 @@ public class KineticTurbineMachine extends KineticOutputMachine implements ITier
 
     @Override
     public int getTier() {
-        return getKineticPart().self().getDefinition().getTier();
+        if (getKineticPart() != null) return getKineticPart().self().getDefinition().getTier();
+        return 1;
     }
     private IKineticMachine getKineticPart() {
         for (IMultiPart part : getParts()) {
