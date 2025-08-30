@@ -8,5 +8,6 @@ import static com.mo_guang.ctpp.CTPPRegistration.REGISTRATE;
 public class CTPPItems {
     public static void init() {}
     public static ItemEntry<Item> BASIC_MECHANISM = REGISTRATE.item("basic_mechanism", Item::new).register();
+    public static ItemEntry<Item> INCOMPLETE_BASIC_MECHANISM = REGISTRATE.item("incomplete_basic_mechanism", Item::new).register();
     public static ItemEntry<Item> STEEL_MECHANISM = REGISTRATE.item("steel_mechanism", Item::new).register();
 }

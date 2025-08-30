@@ -1,4 +1,4 @@
-// 1.20.1	2025-08-20T23:08:54.1049888	Registrate Provider for ctpp [Recipes, Advancements, Loot Tables, Tags (blocks), Tags (items), Tags (fluids), Tags (entity_types), generic_server_provider, Blockstates, Item models, Lang (en_us/en_ud), generic_client_provider, Lang (zh_cn)]
+// 1.20.1	2025-08-30T18:27:04.4044195	Registrate Provider for ctpp [Recipes, Advancements, Loot Tables, Tags (blocks), Tags (items), Tags (fluids), Tags (entity_types), generic_server_provider, Blockstates, Item models, Lang (en_us/en_ud), generic_client_provider, Lang (zh_cn)]
 4b4238f9ce7ac368e0a65b0f41afbe4a901a083d assets/ctpp/blockstates/boom_of_create.json
 2e108c461399792c21a8a0a6aca90bb7db1c151a assets/ctpp/blockstates/ev_electric_gear_box_16a.json
 99535bd2f3bf405e860e525400c82e38652eeff7 assets/ctpp/blockstates/ev_electric_gear_box_2a.json
@@ -57,9 +57,9 @@ f0a9745895f6203a8fb1dce3bb07881d754a9ff4 assets/ctpp/blockstates/ulv_kinetic_out
 29580f4eea9dac9b14678576927402b1905a0228 assets/ctpp/blockstates/windmill_control_center.json
 f63e3f95f7aad5f9c779aa425ce28fae8b30f7d8 assets/ctpp/blockstates/zpm_kinetic_input_box.json
 255ae9920f8f8c8538276b4aa9042034db6205b6 assets/ctpp/blockstates/zpm_kinetic_output_box.json
-5e942854da288614cf5b782b94288f6310db7c78 assets/ctpp/lang/en_ud.json
-806529b45b041ced3d05372af6305a2d2f7ccfcf assets/ctpp/lang/en_us.json
-e94360d9314aaa638569a91a4b4ee5bab78df3b6 assets/ctpp/lang/zh_cn.json
+9715d3be4fc907d6d1c80a9fd90096c6322b7962 assets/ctpp/lang/en_ud.json
+9c1e6e2e2f038865d7b08c1f971c31e34c7c0260 assets/ctpp/lang/en_us.json
+1f2b372c25934401963a4850881e2c1fb5b43749 assets/ctpp/lang/zh_cn.json
 22367f833bde9b6e4df73f3dc650b5cca0e55907 assets/ctpp/models/block/machine/boom_of_create.json
 b2b06286e6a397bddb68b1509ec551b7adbe3f56 assets/ctpp/models/block/machine/ev_electric_gear_box_16a.json
 70511b2f88bed50a87a510bda6be2200db230301 assets/ctpp/models/block/machine/ev_electric_gear_box_2a.json
@@ -134,6 +134,7 @@ f8005e62b6976c7fa33432fe32ef06d84fe700c8 assets/ctpp/models/item/hv_electric_gea
 46545f1b4ff6cb4130a51a5efa2b8d1f7ce74904 assets/ctpp/models/item/hv_kinetic_input_box.json
 0d777a9207a1f6356a7d48802f8e56bbaa112060 assets/ctpp/models/item/hv_kinetic_mixer.json
 009f2f9efb5e56ea5f7d26eb2ab3443dd242af8d assets/ctpp/models/item/hv_kinetic_output_box.json
+41be9c4ecf064fa6bd807b08b82318678177d370 assets/ctpp/models/item/incomplete_basic_mechanism.json
 50d13c512eb6dd842b0ebd8eac1a4e7ccfa889be assets/ctpp/models/item/iv_kinetic_input_box.json
 9f5394993b3613fc8eff1edd887038eddd14d9e8 assets/ctpp/models/item/iv_kinetic_output_box.json
 e9534852eaae7d47612ada61c978e98956a01a57 assets/ctpp/models/item/kinetic_generator.json

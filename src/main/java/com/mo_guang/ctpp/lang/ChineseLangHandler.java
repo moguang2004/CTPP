@@ -96,6 +96,7 @@ public class ChineseLangHandler {
         provider.add(CTPPCreativeModeTabs.MACHINE.get(), "CTPP机器");
 
         provider.add(CTPPItems.BASIC_MECHANISM.get(), "基础构件");
+        provider.add(CTPPItems.INCOMPLETE_BASIC_MECHANISM.get(), "未完成的基础构件");
         provider.add(CTPPItems.STEEL_MECHANISM.get(), "钢铁构件");
 
         provider.add("gtceu.kinetic_generator", "应力发电");

@@ -139,6 +139,7 @@
   "gtceu.smashing_factory_recipes": "粉碎工厂",
   "gtceu.windmill_control_center": "风车控制中心",
   "item.ctpp.basic_mechanism": "基础构件",
+  "item.ctpp.incomplete_basic_mechanism": "未完成的基础构件",
   "item.ctpp.steel_mechanism": "钢铁构件",
   "itemGroup.ctpp.machine": "CTPP机器",
   "recipe.capability.su.name": "应力",
