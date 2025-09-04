@@ -114,7 +114,7 @@ public class KineticMultiblockMachine extends WorkableMultiblockMachine implemen
     public void checkTier() {
         for (IMultiPart multiPart : getParts()) {
             if (multiPart instanceof MechanicalUpgradePartMachine upgradePartMachine) {
-                tier = upgradePartMachine.tier;
+                tier = Math.max(upgradePartMachine.tier, tier);
             }
         }
     }

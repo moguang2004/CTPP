@@ -45,11 +45,7 @@ public class MechanicalTierCondition extends RecipeCondition {
     @Override
     public boolean testCondition(@NotNull GTRecipe gtRecipe, @NotNull RecipeLogic recipeLogic) {
         if (recipeLogic.machine instanceof KineticMultiblockMachine kineticMultiblockMachine) {
-            for (IMultiPart multiPart: kineticMultiblockMachine.getParts()) {
-                if (multiPart instanceof MechanicalUpgradePartMachine upgradePartMachine) {
-                    return upgradePartMachine.tier >= tier;
-                }
-            }
+            return kineticMultiblockMachine.tier >= tier;
         }
         return false;
     }
