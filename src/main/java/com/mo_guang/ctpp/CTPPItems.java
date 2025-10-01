@@ -1,6 +1,11 @@
 package com.mo_guang.ctpp;
 
+import com.mo_guang.ctpp.rotate.SimpleRotatingContraptionEntity;
+import com.mo_guang.ctpp.rotate.RotationWandItem;
+import com.simibubi.create.content.contraptions.render.ContraptionEntityRenderer;
+import com.tterrag.registrate.util.entry.EntityEntry;
 import com.tterrag.registrate.util.entry.ItemEntry;
+import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.item.Item;
 
 import static com.mo_guang.ctpp.CTPPRegistration.REGISTRATE;
@@ -10,4 +15,16 @@ public class CTPPItems {
     public static ItemEntry<Item> BASIC_MECHANISM = REGISTRATE.item("basic_mechanism", Item::new).register();
     public static ItemEntry<Item> INCOMPLETE_BASIC_MECHANISM = REGISTRATE.item("incomplete_basic_mechanism", Item::new).register();
     public static ItemEntry<Item> STEEL_MECHANISM = REGISTRATE.item("steel_mechanism", Item::new).register();
+    public static ItemEntry<RotationWandItem> ROTATION_WAND = REGISTRATE.item("rotation_wand", p -> new RotationWandItem(p)).register();
+    public static final EntityEntry<SimpleRotatingContraptionEntity> ROTATING_CONTRAPTION =
+            REGISTRATE.entity("rotating_contraption", SimpleRotatingContraptionEntity::new, MobCategory.MISC)
+                    .properties(builder -> builder
+                            .sized(1.0f, 1.0f) // 实体大小
+                            .setTrackingRange(256)
+                            .setUpdateInterval(1)
+                            .fireImmune() // 可选
+                    )
+                    .renderer(() -> ContraptionEntityRenderer<SimpleRotatingContraptionEntity>::new)
+                    .register();
+
 }
