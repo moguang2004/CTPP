@@ -28,30 +28,42 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemp
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.joml.Vector3f;
 
 public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity{
 
-    @Setter
-    private float rotationSpeed = 0;
-    protected BlockPos controllerPos;
+    /** 服务端 authoritative 角度 **/
+    private float prevXRot, prevYRot, prevZRot;
+    private float xRot, yRot, zRot;
 
-    @Getter
-    @Setter
-    protected Direction.Axis rotationAxis = Direction.Axis.Y;
-    protected float prevAngle;
+    /** 旋转速度（deg/tick） **/
+    private static final EntityDataAccessor<Float> DATA_X_SPEED =
+            SynchedEntityData.defineId(SimpleRotatingContraptionEntity.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Float> DATA_Y_SPEED =
+            SynchedEntityData.defineId(SimpleRotatingContraptionEntity.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Float> DATA_Z_SPEED =
+            SynchedEntityData.defineId(SimpleRotatingContraptionEntity.class, EntityDataSerializers.FLOAT);
 
-    protected float angle;
-    protected float angleDelta;
+    private static final EntityDataAccessor<Vector3f> DATA_PIVOT =
+            SynchedEntityData.defineId(SimpleRotatingContraptionEntity.class, EntityDataSerializers.VECTOR3);
+
+
+
+    /** 本地速度缓存 **/
+    private float xSpeed, ySpeed, zSpeed;
+
+    /** 旋转基点 **/
+    private Vec3 pivot = Vec3.ZERO;
 
     public SimpleRotatingContraptionEntity(EntityType<?> type, Level world) {
         super(type, world);
     }
 
-    public static SimpleRotatingContraptionEntity create(Level world, Contraption contraption) {
+    public static SimpleRotatingContraptionEntity create(Level world, Contraption contraption, Vec3 pivot) {
         SimpleRotatingContraptionEntity entity =
                 new SimpleRotatingContraptionEntity(CTPPEntityTypes.SIMPLE_CONTRAPTION.get(), world);
-        entity.controllerPos = contraption.anchor;
         entity.setContraption(contraption);
+        entity.setPivot(pivot);
         return entity;
     }
 
@@ -60,8 +72,54 @@ public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity{
         super.setPos(x, y, z);
         if (!level().isClientSide())
             return;
-        for (Entity entity : getPassengers())
-            positionRider(entity);
+    }
+
+    public void setRotationSpeed(float x, float y, float z) {
+        this.xSpeed = x;
+        this.ySpeed = y;
+        this.zSpeed = z;
+        if (!level().isClientSide) {
+            entityData.set(DATA_X_SPEED, x);
+            entityData.set(DATA_Y_SPEED, y);
+            entityData.set(DATA_Z_SPEED, z);
+        }
+    }
+
+    public void setPivot(Vec3 pivot) {
+        this.pivot = pivot;
+        if (!level().isClientSide) {
+            entityData.set(DATA_PIVOT, new Vector3f((float)pivot.x, (float)pivot.y, (float)pivot.z));
+        }
+    }
+
+
+    @Override
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        entityData.define(DATA_X_SPEED, 0f);
+        entityData.define(DATA_Y_SPEED, 0f);
+        entityData.define(DATA_Z_SPEED, 0f);
+        entityData.define(DATA_PIVOT, new Vector3f(0,0,0));
+
+    }
+
+    @Override
+    public void onSyncedDataUpdated(EntityDataAccessor<?> key) {
+        super.onSyncedDataUpdated(key);
+        if (DATA_X_SPEED.equals(key)) {
+            this.xSpeed = entityData.get(DATA_X_SPEED);
+        }
+        if (DATA_Y_SPEED.equals(key)) {
+            this.ySpeed = entityData.get(DATA_Y_SPEED);
+        }
+        if (DATA_Z_SPEED.equals(key)) {
+            this.zSpeed = entityData.get(DATA_Z_SPEED);
+        }
+        if (DATA_PIVOT.equals(key)) {
+            Vector3f vec = entityData.get(DATA_PIVOT);
+            this.pivot = new Vec3(vec.x(), vec.y(), vec.z());
+        }
+
     }
 
     @Override
@@ -74,46 +132,46 @@ public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity{
     @Override
     protected void setContraption(Contraption contraption) {
         super.setContraption(contraption);
-        if (contraption instanceof BearingContraption)
-            rotationAxis = ((BearingContraption) contraption).getFacing()
-                    .getAxis();
     }
 
     @Override
     public ContraptionRotationState getRotationState() {
         ContraptionRotationState crs = new ContraptionRotationState();
-        if (rotationAxis == Direction.Axis.X)
-            crs.xRotation = angle;
-        if (rotationAxis == Direction.Axis.Y)
-            crs.yRotation = angle;
-        if (rotationAxis == Direction.Axis.Z)
-            crs.zRotation = angle;
+        crs.xRotation = xRot;
+        crs.yRotation = yRot;
+        crs.zRotation = zRot;
         return crs;
     }
 
     @Override
     public Vec3 applyRotation(Vec3 localPos, float partialTicks) {
-        localPos = VecHelper.rotate(localPos, getAngle(partialTicks), rotationAxis);
+        float x = getXRot(partialTicks);
+        float y = getYRot(partialTicks);
+        float z = getZRot(partialTicks);
+
+        // 旋转顺序: X -> Y -> Z (可根据需要调整)
+        localPos = VecHelper.rotate(localPos, x, Direction.Axis.X);
+        localPos = VecHelper.rotate(localPos, y, Direction.Axis.Y);
+        localPos = VecHelper.rotate(localPos, z, Direction.Axis.Z);
+
         return localPos;
     }
 
     @Override
     public Vec3 reverseRotation(Vec3 localPos, float partialTicks) {
-        localPos = VecHelper.rotate(localPos, -getAngle(partialTicks), rotationAxis);
+        float x = getXRot(partialTicks);
+        float y = getYRot(partialTicks);
+        float z = getZRot(partialTicks);
+
+        // 逆向旋转: Z -> Y -> X
+        localPos = VecHelper.rotate(localPos, -z, Direction.Axis.Z);
+        localPos = VecHelper.rotate(localPos, -y, Direction.Axis.Y);
+        localPos = VecHelper.rotate(localPos, -x, Direction.Axis.X);
+
         return localPos;
     }
 
-    public void setAngle(float angle) {
-        this.angle = angle;
 
-        if(tickCount%10 == 0 && !level().isClientSide)
-            entityData.set(DATA_ANGLE, angle);
-
-    }
-
-    public float getAngle(float partialTicks) {
-        return AngleHelper.angleLerp(partialTicks, prevAngle, angle);
-    }
 
     @Override
     public void teleportTo(double p_70634_1_, double p_70634_3_, double p_70634_5_) {
@@ -128,136 +186,102 @@ public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity{
     public void tick() {
         super.tick();
 
-        prevAngle = angle;
-        if (level().isClientSide) {
-            // 客户端只做插值，不更新逻辑角度
-            return;
-        }
+        prevXRot = xRot;
+        prevYRot = yRot;
+        prevZRot = zRot;
 
-        float newAngle = angle + rotationSpeed;
-        newAngle %= 360;
-        setAngle(newAngle);
+        // 服务端 / 客户端都根据 speed 自行推进角度
+//        xRot = (xRot + 5) % 360f;
+//        yRot = (yRot + ySpeed) % 360f;
+        zRot = (zRot + 5) % 360f;
+        xRot = 00f;
+        yRot = 0f;
+//        zRot = 0f;
+        Vec3 start = contraption.anchor.getCenter();
+        Vec3 rotated = start.subtract(pivot);
+
+        rotated = VecHelper.rotate(rotated, xRot, Direction.Axis.X);
+        rotated = VecHelper.rotate(rotated, yRot, Direction.Axis.Y);
+        rotated = VecHelper.rotate(rotated, zRot, Direction.Axis.Z);
+
+        Vec3 worldPos = pivot.add(rotated);
+
+        setPos(worldPos.x-0.5, worldPos.y-0.5, worldPos.z-0.5);
+
+        //setPos(contraption.anchor.getX(), contraption.anchor.getY(), contraption.anchor.getZ());
+
 
         if (tickCount % 20 == 0) {
-            System.out.println("[RotatingContraptionEntity.tick] Server tick pos=" + getX() + "," + getY() + "," + getZ()
-                    + " angle=" + newAngle + " speed=" + rotationSpeed);
+            if(!level().isClientSide){
+                System.out.printf("[RotatingContraptionEntity.tick] Server tick (%.1f, %.1f, %.1f) speed=(%.2f, %.2f, %.2f)%n",
+                        xRot, yRot, zRot, xSpeed, ySpeed, zSpeed);
+            }
+            else {
+                System.out.printf("[RotatingContraptionEntity.tick] Client tick (%.1f, %.1f, %.1f) speed=(%.2f, %.2f, %.2f)%n",
+                        xRot, yRot, zRot, xSpeed, ySpeed, zSpeed);
+            }
         }
     }
 
     protected void tickContraption() {
-        if (level().isClientSide)
-            setPos(getX(), getY(), getZ());
 
-        //markDirty();
-
-        angleDelta = angle - prevAngle;
-        if(angleDelta > 0)
-
-        prevAngle = angle;
         tickActors();
 
     }
 
-    @Override
-    protected boolean shouldActorTrigger(MovementContext context, StructureTemplate.StructureBlockInfo blockInfo, MovementBehaviour actor,
-                                         Vec3 actorPosition, BlockPos gridPosition) {
-        if (super.shouldActorTrigger(context, blockInfo, actor, actorPosition, gridPosition))
-            return true;
-
-        // Special activation timer for actors in the center of a bearing contraption
-        if (!(contraption instanceof BearingContraption bc))
-            return false;
-        Direction facing = bc.getFacing();
-        Vec3 activeAreaOffset = actor.getActiveAreaOffset(context);
-        if (!activeAreaOffset.multiply(VecHelper.axisAlingedPlaneOf(Vec3.atLowerCornerOf(facing.getNormal())))
-                .equals(Vec3.ZERO))
-            return false;
-        if (!VecHelper.onSameAxis(blockInfo.pos(), net.minecraft.core.BlockPos.ZERO, facing.getAxis()))
-            return false;
-        context.motion = Vec3.atLowerCornerOf(facing.getNormal())
-                .scale(angleDelta / 360.0);
-        context.relativeMotion = context.motion;
-        int timer = context.data.getInt("StationaryTimer");
-        if (timer > 0) {
-            context.data.putInt("StationaryTimer", timer - 1);
-            return false;
-        }
-
-        context.data.putInt("StationaryTimer", 20);
-        return true;
-    }
-
-    protected IControlContraption getController() {
-        if (controllerPos == null)
-            return null;
-        if (!level().isLoaded(controllerPos))
-            return null;
-        BlockEntity be = level().getBlockEntity(controllerPos);
-        if (!(be instanceof IControlContraption))
-            return null;
-        return (IControlContraption) be;
-    }
 
     @Override
     protected StructureTransform makeStructureTransform() {
-        BlockPos offset = net.minecraft.core.BlockPos.containing(getAnchorVec());
-        float xRot = rotationAxis == Direction.Axis.X ? angle : 0;
-        float yRot = rotationAxis == Direction.Axis.Y ? angle : 0;
-        float zRot = rotationAxis == Direction.Axis.Z ? angle : 0;
+        BlockPos offset = net.minecraft.core.BlockPos.containing(pivot);
         return new StructureTransform(offset, xRot, yRot, zRot);
     }
 
     @Override
     protected void onContraptionStalled() {
-        IControlContraption controller = getController();
-        if (controller != null)
-            controller.onStall();
         super.onContraptionStalled();
     }
 
     @Override
     protected float getStalledAngle() {
-        return angle;
+        return xRot;
     }
 
     @Override
     protected void handleStallInformation(double x, double y, double z, float angle) {
         setPosRaw(x, y, z);
-        this.angle = this.prevAngle = angle;
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
     public void applyLocalTransforms(PoseStack matrixStack, float partialTicks) {
-        float angle = getAngle(partialTicks);
-        Direction.Axis axis = getRotationAxis();
+        float ix = getXRot(partialTicks);
+        float iy = getYRot(partialTicks);
+        float iz = getZRot(partialTicks);
 
-        if (axis != null) {
-            TransformStack.of(matrixStack)
-                    .nudge(getId())
-                    .center()
-                    .rotateDegrees(angle, axis)
-                    .uncenter();
-        }
+        Vec3 rotated = contraption.anchor.getCenter().subtract(pivot);
+
+        TransformStack.of(matrixStack)
+                .nudge(getId())
+                //.translate(0.5, 0.5, 0.5)
+                //.translate(rotated)
+                .center()
+                .rotateDegrees(ix, Direction.Axis.X)
+                .rotateDegrees(iy, Direction.Axis.Y)
+                .rotateDegrees(iz, Direction.Axis.Z)
+                .uncenter()
+                //.translate(rotated.scale(-1))
+                //.translate(-0.5, -0.5, -0.5)
+        ;
     }
 
-
-    private static final EntityDataAccessor<Float> DATA_ANGLE =
-            SynchedEntityData.defineId(SimpleRotatingContraptionEntity.class, EntityDataSerializers.FLOAT);
-
-    @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        entityData.define(DATA_ANGLE, 0f);
+    public float getXRot(float partialTicks) {
+        return AngleHelper.angleLerp(partialTicks, prevXRot, xRot);
+    }
+    public float getYRot(float partialTicks) {
+        return AngleHelper.angleLerp(partialTicks, prevYRot, yRot);
+    }
+    public float getZRot(float partialTicks) {
+        return AngleHelper.angleLerp(partialTicks, prevZRot, zRot);
     }
 
-    @Override
-    public void onSyncedDataUpdated(EntityDataAccessor<?> key) {
-        super.onSyncedDataUpdated(key);
-        if (DATA_ANGLE.equals(key)) {
-            // 客户端接收到的更新
-            this.prevAngle = this.angle;
-            this.angle = this.entityData.get(DATA_ANGLE);
-        }
-    }
 }
