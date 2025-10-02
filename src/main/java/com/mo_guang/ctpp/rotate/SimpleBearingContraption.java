@@ -35,7 +35,7 @@ public class SimpleBearingContraption extends Contraption {
 
         Set<BlockPos> visited = new HashSet<>();
         dfsCollect(world, pos, visited);
-
+        bounds.setMinY(bounds.minY-10);
         if (blocks.isEmpty())
             return false;
 

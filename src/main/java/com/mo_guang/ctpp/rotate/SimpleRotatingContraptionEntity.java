@@ -7,6 +7,7 @@ import com.simibubi.create.api.behaviour.movement.MovementBehaviour;
 import com.simibubi.create.content.contraptions.*;
 import com.simibubi.create.content.contraptions.bearing.BearingContraption;
 import com.simibubi.create.content.contraptions.behaviour.MovementContext;
+import com.simibubi.create.foundation.collision.Matrix3d;
 import dev.engine_room.flywheel.lib.transform.TransformStack;
 import lombok.Getter;
 import lombok.Setter;
@@ -28,13 +29,17 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemp
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.joml.Matrix4fc;
+import org.joml.Quaternionf;
 import org.joml.Vector3f;
+
+import java.lang.reflect.Field;
 
 public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity{
 
     /** 服务端 authoritative 角度 **/
     private float prevXRot, prevYRot, prevZRot;
-    private float xRot, yRot, zRot;
+    private float xRot=45f, yRot=0f, zRot;
 
     /** 旋转速度（deg/tick） **/
     private static final EntityDataAccessor<Float> DATA_X_SPEED =
@@ -137,9 +142,31 @@ public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity{
     @Override
     public ContraptionRotationState getRotationState() {
         ContraptionRotationState crs = new ContraptionRotationState();
-        crs.xRotation = xRot;
-        crs.yRotation = yRot;
-        crs.zRotation = zRot;
+
+        // 直接构造一个 Matrix3d，使其与渲染/位置计算使用的旋转顺序和角度一致
+        // 这里我们用 X -> Y -> Z 顺序（与你在渲染中使用的 rotateXYZ 保持一致）
+        Matrix3d mat = new Matrix3d().asIdentity();
+        mat.multiply(new Matrix3d().asZRotation(AngleHelper.rad(-zRot)));
+        mat.multiply(new Matrix3d().asYRotation(AngleHelper.rad(-yRot)));
+        mat.multiply(new Matrix3d().asXRotation(AngleHelper.rad(-xRot)));
+
+
+
+        // 直接设置 matrix 字段（asMatrix 会优先返回该 matrix）
+        try {
+            Field f = ContraptionRotationState.class.getDeclaredField("matrix");
+            f.setAccessible(true);
+            f.set(crs, mat);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // 保持其它字段为默认（避免混淆）
+        crs.xRotation = 0;
+        crs.yRotation = 0;
+        crs.zRotation = 0;
+        crs.secondYRotation = 0;
+
         return crs;
     }
 
@@ -191,20 +218,24 @@ public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity{
         prevZRot = zRot;
 
         // 服务端 / 客户端都根据 speed 自行推进角度
-//        xRot = (xRot + 5) % 360f;
-//        yRot = (yRot + ySpeed) % 360f;
-        zRot = (zRot + 5) % 360f;
-        xRot = 00f;
-        yRot = 0f;
+//        xRot = 45f;
+//        yRot = 0f;
 //        zRot = 0f;
-        Vec3 start = contraption.anchor.getCenter();
-        Vec3 rotated = start.subtract(pivot);
+        xRot = (xRot + xSpeed) % 360f;
+        yRot = (yRot + ySpeed) % 360f;
+        zRot = (zRot + 5f) % 360f;
 
-        rotated = VecHelper.rotate(rotated, xRot, Direction.Axis.X);
-        rotated = VecHelper.rotate(rotated, yRot, Direction.Axis.Y);
-        rotated = VecHelper.rotate(rotated, zRot, Direction.Axis.Z);
+        Vec3 offset = contraption.anchor.getCenter().subtract(pivot);
 
-        Vec3 worldPos = pivot.add(rotated);
+        Quaternionf q = new Quaternionf()
+                .rotateXYZ((float) Math.toRadians(xRot),
+                        (float) Math.toRadians(yRot),
+                        (float) Math.toRadians(zRot));
+        Vector3f rotated = new Vector3f((float) offset.x, (float) offset.y, (float) offset.z);
+
+       rotated.rotate(q);
+
+        Vec3 worldPos = pivot.add(rotated.x, rotated.y, rotated.z);
 
         setPos(worldPos.x-0.5, worldPos.y-0.5, worldPos.z-0.5);
 
@@ -258,20 +289,20 @@ public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity{
         float iy = getYRot(partialTicks);
         float iz = getZRot(partialTicks);
 
-        Vec3 rotated = contraption.anchor.getCenter().subtract(pivot);
+        // 构造四元数（保持和 tick 完全一致）
+        Quaternionf q = new Quaternionf()
+                .rotateXYZ((float) Math.toRadians(ix),
+                        (float) Math.toRadians(iy),
+                        (float) Math.toRadians(iz));
 
-        TransformStack.of(matrixStack)
-                .nudge(getId())
-                //.translate(0.5, 0.5, 0.5)
-                //.translate(rotated)
-                .center()
-                .rotateDegrees(ix, Direction.Axis.X)
-                .rotateDegrees(iy, Direction.Axis.Y)
-                .rotateDegrees(iz, Direction.Axis.Z)
-                .uncenter()
-                //.translate(rotated.scale(-1))
-                //.translate(-0.5, -0.5, -0.5)
-        ;
+//        var dx = pivot.x - getX();
+//        var dy = pivot.y - getY();
+//        var dz = pivot.z - getZ();
+        //TransformStack.of(matrixStack).center()
+        matrixStack.translate(0.5f, 0.5f, 0.5f);
+        matrixStack.mulPose(q);
+        matrixStack.translate(-0.5f, -0.5f, -0.5f);
+
     }
 
     public float getXRot(float partialTicks) {

@@ -55,8 +55,9 @@ public class RotationWandItem extends Item {
                         SimpleRotatingContraptionEntity.create(level, contraption, pivot.getCenter());
 
                 // 实体的初始位置 = 组装点附近
-                entity.setPos(pos.getX()-0.5, pos.getY()-0.5, pos.getZ()-0.5);
-                entity.setRotationSpeed(0.5f, 3f, -0.5f);
+                //entity.setPos(pos.getX()-0.5, pos.getY()-0.5, pos.getZ()-0.5);
+
+                entity.setRotationSpeed(0f, 3f, 0f);
 
                 level.addFreshEntity(entity);
                 System.out.println("[RotationWandItem] 实体加入世界完成, 旋转点=" + pivot);
