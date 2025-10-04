@@ -26,21 +26,28 @@ public class SimpleBearingContraption extends Contraption {
         this.facing = facing;
     }
 
+    public boolean assemble(Level world, BlockPos pos, BlockPos pivot) {
+        System.out.println("[SimpleBearingContraption] anchor=" + pivot);
+        this.anchor = pivot;
+        this.bounds = null;
+        return assemble(world, pos);
+    }
+
     @Override
     public boolean assemble(Level world, BlockPos pos) {
         // anchor 就是点击位置
-        System.out.println("[SimpleBearingContraption] anchor=" + pos);
-        this.anchor = pos;
-        this.bounds = null;
+
 
         Set<BlockPos> visited = new HashSet<>();
         dfsCollect(world, pos, visited);
-        bounds.setMinY(bounds.minY-10);
+        //bounds.setMinY(bounds.minY-10);
         if (blocks.isEmpty())
             return false;
 
         startMoving(world);
-        expandBoundsAroundAxis(Direction.Axis.Y); // 默认绕 Y 轴旋转
+        expandBoundsAroundAxis(Direction.Axis.X);
+        expandBoundsAroundAxis(Direction.Axis.Y);
+        expandBoundsAroundAxis(Direction.Axis.Z);
         return true;
     }
 
@@ -58,7 +65,7 @@ public class SimpleBearingContraption extends Contraption {
         if (state.isAir())
             return;
         if (this.bounds == null) {
-            this.bounds = new net.minecraft.world.phys.AABB(pos);
+            this.bounds = new AABB(pos.subtract(anchor));
         }
         // 捕获方块和 BE
         BlockEntity be = world.getBlockEntity(pos);

@@ -22,7 +22,7 @@ public class CTPPEntityTypes {
 
     public static final EntityEntry<SimpleRotatingContraptionEntity> SIMPLE_CONTRAPTION = contraption("simple_contraption",
             SimpleRotatingContraptionEntity::new, () -> (SimpleContraptionEntityRenderer::new)
-            , 5, 3, true)
+            , 10, 3, true)
             .visual(() -> ContraptionVisual::new)
             .register();
 

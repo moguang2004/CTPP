@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 
 
 @Mod(CTPP.MODID)
+@SuppressWarnings("removal")
 public class CTPP {
     public static final String MODID = "ctpp";
     public static final Logger LOGGER = LoggerFactory.getLogger(MODID);

@@ -42,7 +42,7 @@ public class RotationWandItem extends Item {
                 Direction direction = Direction.UP; // 固定 Y 轴旋转
                 var contraption = new SimpleBearingContraption(direction);
 
-                if (!contraption.assemble(level, pos)) {
+                if (!contraption.assemble(level, pos, pivot)) {
                     System.out.println("[RotationWandItem] 组装失败");
                     return InteractionResult.FAIL;
                 }
@@ -57,7 +57,7 @@ public class RotationWandItem extends Item {
                 // 实体的初始位置 = 组装点附近
                 //entity.setPos(pos.getX()-0.5, pos.getY()-0.5, pos.getZ()-0.5);
 
-                entity.setRotationSpeed(0f, 3f, 0f);
+                entity.setRotationSpeed(5f, 0f, 0f);
 
                 level.addFreshEntity(entity);
                 System.out.println("[RotationWandItem] 实体加入世界完成, 旋转点=" + pivot);

@@ -39,7 +39,7 @@ public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity{
 
     /** 服务端 authoritative 角度 **/
     private float prevXRot, prevYRot, prevZRot;
-    private float xRot=45f, yRot=0f, zRot;
+    private float xRot=0f, yRot=0f, zRot;
 
     /** 旋转速度（deg/tick） **/
     private static final EntityDataAccessor<Float> DATA_X_SPEED =
@@ -198,7 +198,10 @@ public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity{
         return localPos;
     }
 
-
+    @Override
+    public boolean shouldRenderAtSqrDistance(double pDistance) {
+        return pDistance < (16*16)*(16*16);
+    }
 
     @Override
     public void teleportTo(double p_70634_1_, double p_70634_3_, double p_70634_5_) {
@@ -223,23 +226,23 @@ public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity{
 //        zRot = 0f;
         xRot = (xRot + xSpeed) % 360f;
         yRot = (yRot + ySpeed) % 360f;
-        zRot = (zRot + 5f) % 360f;
+        zRot = (zRot + zSpeed) % 360f;
 
-        Vec3 offset = contraption.anchor.getCenter().subtract(pivot);
+//        Vec3 offset = contraption.anchor.getCenter().subtract(pivot);
+//
+//        Quaternionf q = new Quaternionf()
+//                .rotateXYZ((float) Math.toRadians(xRot),
+//                        (float) Math.toRadians(yRot),
+//                        (float) Math.toRadians(zRot));
+//        Vector3f rotated = new Vector3f((float) offset.x, (float) offset.y, (float) offset.z);
+//
+//       rotated.rotate(q);
+//
+//        Vec3 worldPos = pivot.add(rotated.x, rotated.y, rotated.z);
+//
+//        setPos(worldPos.x-0.5, worldPos.y-0.5, worldPos.z-0.5);
 
-        Quaternionf q = new Quaternionf()
-                .rotateXYZ((float) Math.toRadians(xRot),
-                        (float) Math.toRadians(yRot),
-                        (float) Math.toRadians(zRot));
-        Vector3f rotated = new Vector3f((float) offset.x, (float) offset.y, (float) offset.z);
-
-       rotated.rotate(q);
-
-        Vec3 worldPos = pivot.add(rotated.x, rotated.y, rotated.z);
-
-        setPos(worldPos.x-0.5, worldPos.y-0.5, worldPos.z-0.5);
-
-        //setPos(contraption.anchor.getX(), contraption.anchor.getY(), contraption.anchor.getZ());
+        setPos(contraption.anchor.getX(), contraption.anchor.getY(), contraption.anchor.getZ());
 
 
         if (tickCount % 20 == 0) {
