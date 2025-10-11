@@ -245,16 +245,16 @@ public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity{
         setPos(contraption.anchor.getX(), contraption.anchor.getY(), contraption.anchor.getZ());
 
 
-        if (tickCount % 20 == 0) {
-            if(!level().isClientSide){
-                System.out.printf("[RotatingContraptionEntity.tick] Server tick (%.1f, %.1f, %.1f) speed=(%.2f, %.2f, %.2f)%n",
-                        xRot, yRot, zRot, xSpeed, ySpeed, zSpeed);
-            }
-            else {
-                System.out.printf("[RotatingContraptionEntity.tick] Client tick (%.1f, %.1f, %.1f) speed=(%.2f, %.2f, %.2f)%n",
-                        xRot, yRot, zRot, xSpeed, ySpeed, zSpeed);
-            }
-        }
+//        if (tickCount % 20 == 0) {
+//            if(!level().isClientSide){
+//                System.out.printf("[RotatingContraptionEntity.tick] Server tick (%.1f, %.1f, %.1f) speed=(%.2f, %.2f, %.2f)%n",
+//                        xRot, yRot, zRot, xSpeed, ySpeed, zSpeed);
+//            }
+//            else {
+//                System.out.printf("[RotatingContraptionEntity.tick] Client tick (%.1f, %.1f, %.1f) speed=(%.2f, %.2f, %.2f)%n",
+//                        xRot, yRot, zRot, xSpeed, ySpeed, zSpeed);
+//            }
+//        }
     }
 
     protected void tickContraption() {
