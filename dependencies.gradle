@@ -1,0 +1,37 @@
+dependencies {
+    compileOnly("org.jetbrains:annotations:26.0.1")
+
+    // Mixin
+    annotationProcessor('org.spongepowered:mixin:0.8.5:processor')
+
+    // JEI, EMI, Jade
+    modImplementation("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")
+    //modCompileOnly("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
+    //modRuntimeOnly("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")
+    //modRuntimeOnly("dev.emi:emi-forge:${emi_version}+${minecraft_version}")
+    modImplementation("curse.maven:jade-324717:6855440")
+
+    // GregTech and dependencies
+    modImplementation("com.gregtechceu.gtceu:gtceu-${minecraft_version}:${gtceu_version}:slim") { transitive = false }
+    modImplementation("com.lowdragmc.ldlib:ldlib-forge-${minecraft_version}:${ldlib_version}") { transitive = false }
+    modImplementation("com.tterrag.registrate:Registrate:${registrate_version}")
+    modImplementation("dev.toma.configuration:configuration-forge-${minecraft_version}:${configuration_version}")
+
+    //Create
+    modImplementation("com.simibubi.create:create-${minecraft_version}:${create_version}:slim") { transitive = false }
+    modImplementation("dev.engine-room.flywheel:flywheel-forge-${minecraft_version}:${flywheel_version}")
+    modImplementation("net.createmod.ponder:Ponder-Forge-${minecraft_version}:${ponder_version}")
+
+
+    modRuntimeOnly("curse.maven:modernfix-790626:6719008")
+
+    // KubeJS
+    modImplementation("dev.latvian.mods:kubejs-forge:${kubejs_version}")
+    modImplementation("dev.latvian.mods:rhino-forge:${rhino_version}")
+    modImplementation("dev.architectury:architectury-forge:${architectury_version}")
+
+    modRuntimeOnly("curse.maven:constructionwand-399558:4684054")
+
+    modRuntimeOnly("top.theillusivec4.curios:curios-forge:${curios_version}")
+    modCompileOnly("top.theillusivec4.curios:curios-forge:${curios_version}:api")
+}

@@ -35,8 +35,8 @@ public enum CTPPRecipeTypeInfo implements IRecipeTypeInfo {
     private CTPPRecipeTypeInfo(Supplier<RecipeSerializer<?>> serializerSupplier) {
         String name = this.name().toLowerCase();
         this.id = CTPP.id(name);
-        this.serializerObject = CTPPRecipeTypeInfo.Registers.SERIALIZER_REGISTER.register(name, serializerSupplier);
-        this.typeObject = CTPPRecipeTypeInfo.Registers.TYPE_REGISTER.register(name, () -> RecipeType.simple(this.id));
+        this.serializerObject = Registers.SERIALIZER_REGISTER.register(name, serializerSupplier);
+        this.typeObject = Registers.TYPE_REGISTER.register(name, () -> RecipeType.simple(this.id));
         this.type = this.typeObject;
     }
 
@@ -45,8 +45,8 @@ public enum CTPPRecipeTypeInfo implements IRecipeTypeInfo {
     }
 
     public static void register(IEventBus modEventBus) {
-        CTPPRecipeTypeInfo.Registers.SERIALIZER_REGISTER.register(modEventBus);
-        CTPPRecipeTypeInfo.Registers.TYPE_REGISTER.register(modEventBus);
+        Registers.SERIALIZER_REGISTER.register(modEventBus);
+        Registers.TYPE_REGISTER.register(modEventBus);
     }
     public <C extends Container, T extends Recipe<C>> Optional<T> find(C inv, Level world) {
         return world.getRecipeManager()

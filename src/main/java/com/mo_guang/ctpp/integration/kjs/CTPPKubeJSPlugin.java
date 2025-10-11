@@ -1,4 +1,4 @@
-//package com.mo_guang.ctpp.integration.kjs;
+package com.mo_guang.ctpp.integration.kjs;//package com.mo_guang.ctpp.integration.kjs;
 //
 //import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
 //import dev.latvian.mods.kubejs.KubeJSPlugin;
