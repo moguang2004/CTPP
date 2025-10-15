@@ -69,31 +69,31 @@ public class RPMCondition extends RecipeCondition {
         return new RPMCondition();
     }
 
-    @NotNull
-    @Override
-    public JsonObject serialize() {
-        JsonObject config = super.serialize();
-        config.addProperty("rpm", rpm);
-        return config;
-    }
-
-    @Override
-    public RecipeCondition deserialize(@NotNull JsonObject config) {
-        super.deserialize(config);
-        rpm = GsonHelper.getAsFloat(config, "rpm", 0);
-        return this;
-    }
-
-    @Override
-    public RecipeCondition fromNetwork(FriendlyByteBuf buf) {
-        super.fromNetwork(buf);
-        rpm = buf.readFloat();
-        return this;
-    }
-
-    @Override
-    public void toNetwork(FriendlyByteBuf buf) {
-        super.toNetwork(buf);
-        buf.writeFloat(rpm);
-    }
+//    @NotNull
+//    @Override
+//    public JsonObject serialize() {
+//        JsonObject config = super.serialize();
+//        config.addProperty("rpm", rpm);
+//        return config;
+//    }
+//
+//    @Override
+//    public RecipeCondition deserialize(@NotNull JsonObject config) {
+//        super.deserialize(config);
+//        rpm = GsonHelper.getAsFloat(config, "rpm", 0);
+//        return this;
+//    }
+//
+//    @Override
+//    public RecipeCondition fromNetwork(FriendlyByteBuf buf) {
+//        super.fromNetwork(buf);
+//        rpm = buf.readFloat();
+//        return this;
+//    }
+//
+//    @Override
+//    public void toNetwork(FriendlyByteBuf buf) {
+//        super.toNetwork(buf);
+//        buf.writeFloat(rpm);
+//    }
 }

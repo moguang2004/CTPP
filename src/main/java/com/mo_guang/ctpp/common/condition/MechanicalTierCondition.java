@@ -54,31 +54,31 @@ public class MechanicalTierCondition extends RecipeCondition {
     public RecipeCondition createTemplate() {
         return new MechanicalTierCondition();
     }
-    @NotNull
-    @Override
-    public JsonObject serialize() {
-        JsonObject config = super.serialize();
-        config.addProperty("mechanical_tier", tier);
-        return config;
-    }
-
-    @Override
-    public RecipeCondition deserialize(@NotNull JsonObject config) {
-        super.deserialize(config);
-        tier = GsonHelper.getAsInt(config, "mechanical_tier", 0);
-        return this;
-    }
-
-    @Override
-    public RecipeCondition fromNetwork(FriendlyByteBuf buf) {
-        super.fromNetwork(buf);
-        tier = buf.readInt();
-        return this;
-    }
-
-    @Override
-    public void toNetwork(FriendlyByteBuf buf) {
-        super.toNetwork(buf);
-        buf.writeInt(tier);
-    }
+//    @NotNull
+//    @Override
+//    public JsonObject serialize() {
+//        JsonObject config = super.serialize();
+//        config.addProperty("mechanical_tier", tier);
+//        return config;
+//    }
+//
+//    @Override
+//    public RecipeCondition deserialize(@NotNull JsonObject config) {
+//        super.deserialize(config);
+//        tier = GsonHelper.getAsInt(config, "mechanical_tier", 0);
+//        return this;
+//    }
+//
+//    @Override
+//    public RecipeCondition fromNetwork(FriendlyByteBuf buf) {
+//        super.fromNetwork(buf);
+//        tier = buf.readInt();
+//        return this;
+//    }
+//
+//    @Override
+//    public void toNetwork(FriendlyByteBuf buf) {
+//        super.toNetwork(buf);
+//        buf.writeInt(tier);
+//    }
 }
