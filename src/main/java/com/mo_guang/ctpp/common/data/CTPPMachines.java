@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
+import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
@@ -64,6 +65,7 @@ public class CTPPMachines {
             .tier(LV)
             .rotationState(RotationState.ALL)
             .abilities(CTPPPartAbility.MECHANICAL_UPGRADE)
+            .modelProperty(GTMachineModelProperties.IS_FORMED, false)
             .overlayTieredHullModel(GTCEu.id("block/machine/part/item_passthrough_hatch"))
             .register();
 
@@ -82,7 +84,10 @@ public class CTPPMachines {
                     .blockProp(BlockBehaviour.Properties::dynamicShape)
                     .blockProp(BlockBehaviour.Properties::noOcclusion)
                     .abilities(CTPPPartAbility.INPUT_KINETIC)
-                    .model(createTieredCustomModel(CTPP.id("block/machine/part/kinetic_input_box")))
+                    .modelProperty(GTMachineModelProperties.IS_FORMED, false)
+                    .model(createTieredCustomModel(CTPP.id("block/machine/part/kinetic_input_box"))
+                            .andThen((ctx, prov, model) ->
+                                model.addReplaceableTextures("bottom", "top", "side")))
                     .tier(tier)
                     .register(),
             () -> (VisualizationContext var1, KineticMachineBlockEntity var2, float var3) -> new SplitShaftVisual(var1, var2, var3), false, ALL_TIERS);
@@ -95,7 +100,11 @@ public class CTPPMachines {
                     .blockProp(BlockBehaviour.Properties::dynamicShape)
                     .blockProp(BlockBehaviour.Properties::noOcclusion)
                     .abilities(CTPPPartAbility.OUTPUT_KINETIC)
-                    .model(createTieredCustomModel(CTPP.id("block/machine/part/kinetic_output_box")))
+                    .modelProperty(GTMachineModelProperties.IS_FORMED, false)
+                    .model(createTieredCustomModel(CTPP.id("block/machine/part/kinetic_output_box"))
+                            .andThen((ctx, prov, model) ->
+                                    model.addReplaceableTextures("bottom", "top", "side"))
+                    )
                     .tier(tier)
                     .register(),
                     () -> (VisualizationContext var1, KineticMachineBlockEntity var2, float var3) -> new SplitShaftVisual(var1, var2, var3), false, ALL_TIERS));

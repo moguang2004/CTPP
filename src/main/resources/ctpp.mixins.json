@@ -8,6 +8,7 @@
     "GTBucketItemMixin",
     "GTRecipeComponentsMixin",
     "RotationPropagatorMixin",
+    "SmartBlockEntityMixin",
     "create.WindmillBearingBlockMixin",
     "fix.IRotorHolderMachineMixin",
     "fix.RotorHolderPartMachineMixin"

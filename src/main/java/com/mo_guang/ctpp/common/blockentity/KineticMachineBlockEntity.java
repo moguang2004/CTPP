@@ -9,9 +9,13 @@ import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.common.registry.GTRegistration;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
+import com.lowdragmc.lowdraglib.syncdata.IManaged;
+import com.lowdragmc.lowdraglib.syncdata.IManagedStorage;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
+import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
+import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.syncdata.managed.MultiManagedStorage;
 import com.mo_guang.ctpp.api.IBlockStressValues;
 import com.mo_guang.ctpp.common.machine.KineticMachineDefinition;
@@ -50,9 +54,17 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.function.BiFunction;
 
-public class KineticMachineBlockEntity extends KineticBlockEntity implements IMachineBlockEntity {
+public class KineticMachineBlockEntity extends KineticBlockEntity implements IMachineBlockEntity, IManaged {
 
+
+    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(KineticMachineBlockEntity.class);
     public final MultiManagedStorage managedStorage = new MultiManagedStorage();
+
+    @Getter
+    private final FieldManagedStorage syncStorage = new FieldManagedStorage(this);
+
+
+
     @Getter
     public final MetaMachine metaMachine;
     @Getter
@@ -63,17 +75,14 @@ public class KineticMachineBlockEntity extends KineticBlockEntity implements IMa
     private final long offset = GTValues.RNG.nextInt(20);
     public float workingSpeed;
     public boolean reActivateSource;
-    @DescSynced
-    private UUID owner;
-    @Getter
-    @DescSynced
-    private String ownerName;
-    private Class<?> ownerType;
+
 
     protected KineticMachineBlockEntity(BlockEntityType<?> typeIn, BlockPos pos, BlockState state) {
         super(typeIn, pos, state);
         this.metaMachine = getDefinition().createMetaMachine(this);
         this.renderState = getDefinition().defaultRenderState();
+
+        this.getRootStorage().attach(getSyncStorage());
     }
 
     public static KineticMachineBlockEntity create(BlockEntityType<?> typeIn, BlockPos pos, BlockState state) {
@@ -99,6 +108,8 @@ public class KineticMachineBlockEntity extends KineticBlockEntity implements IMa
                                     .apply()));
         }
     }
+
+
 
     @Override
     public KineticMachineDefinition getDefinition() {
@@ -138,6 +149,13 @@ public class KineticMachineBlockEntity extends KineticBlockEntity implements IMa
     public long getOffset() {
         return offset;
     }
+
+    @Override
+    public void onLoad() {
+        super.onLoad();
+        metaMachine.onLoad();
+    }
+
 
     @Override
     public MultiManagedStorage getRootStorage() {
@@ -350,5 +368,25 @@ public class KineticMachineBlockEntity extends KineticBlockEntity implements IMa
     protected void read(CompoundTag compound, boolean clientPacket) {
         super.read(compound, clientPacket);
         workingSpeed = compound.contains("workingSpeed") ? compound.getFloat("workingSpeed") : 0;
+    }
+
+    @Override
+    public ManagedFieldHolder getFieldHolder() {
+        return MANAGED_FIELD_HOLDER;
+    }
+
+    @Override
+    public void setChanged() {
+        if (getLevel() != null) {
+            getLevel().blockEntityChanged(getBlockPos());
+        }
+    }
+
+    @Override
+    public void onChanged() {
+        var level = getLevel();
+        if (level != null && !level.isClientSide && level.getServer() != null) {
+            level.getServer().execute(this::setChanged);
+        }
     }
 }
