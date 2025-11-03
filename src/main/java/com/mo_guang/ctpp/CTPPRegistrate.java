@@ -7,10 +7,11 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.mo_guang.ctpp.api.CTPPMultiblockBuilder;
+import tech.vixhentx.mcmod.ctnhlib.registrate.CNRegistrate;
 
 import java.util.function.Function;
 
-public class CTPPRegistrate extends GTRegistrate {
+public class CTPPRegistrate extends CNRegistrate {
     protected CTPPRegistrate(String modId) {
         super(modId);
     }

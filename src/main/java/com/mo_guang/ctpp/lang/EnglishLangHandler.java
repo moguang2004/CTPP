@@ -105,5 +105,7 @@ public class EnglishLangHandler {
         provider.add(MainConfig.getConfigOptionKey("enableWindmillControlCenter"), "Enable Windmill Control Center");
         provider.add(MainConfig.getConfigOptionKey("enableBoomOfCreate"), "Enable Boom Of Create");
 
+        provider.add("ctpp.machine.kinetic_input_box.tooltip", "Kinetic Effect：%s su");
+        provider.add("ctpp.machine.kinetic_output_box.tooltip", "Kinetic Effect：%s su");
     }
 }

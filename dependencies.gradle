@@ -1,6 +1,7 @@
 dependencies {
     compileOnly("org.jetbrains:annotations:26.0.1")
 
+    modImplementation(project(":modules:CTNH-Lib")){transitive = false}
     // Mixin
     annotationProcessor('org.spongepowered:mixin:0.8.5:processor')
 

@@ -17,6 +17,7 @@ import com.mo_guang.ctpp.common.machine.multiblock.*;
 import com.mo_guang.ctpp.util.CommonTooltips;
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.Create;
+import com.simibubi.create.foundation.data.BlockStateGen;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
