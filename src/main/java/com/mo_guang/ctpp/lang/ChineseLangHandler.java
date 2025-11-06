@@ -18,7 +18,6 @@ public class ChineseLangHandler {
 
         provider.add("recipe.capability.su.name", "应力");
         provider.add("recipe.condition.rpm.tooltip", "转速: %d");
-        provider.add("recipe.condition.mechanical_tier.tooltip", "机械等级: %s");
         provider.add("ctpp.stress_input","应力输入：%dsu");
         provider.add("ctpp.stress_output","应力输出：%dsu");
         provider.add("ctpp.mechanical_tier", "机械等级：%d(%s)");
@@ -143,5 +142,8 @@ public class ChineseLangHandler {
         provider.add("config.ctpp.option.enableSeaweedFarm", "是否启用CTNH的海草农场");
         provider.add("config.ctpp.option.enableWindmillControlCenter", "是否启用CTNH的风车控制中心");
         provider.add("config.ctpp.option.enableBoomOfCreate", "是否启用CTNH的聚爆应力厂");
+
+        provider.add("ctpp.machine.kinetic_input_box.tooltip", "应力影响：%s su");
+        provider.add("ctpp.machine.kinetic_output_box.tooltip", "应力影响：%s su");
     }
 }

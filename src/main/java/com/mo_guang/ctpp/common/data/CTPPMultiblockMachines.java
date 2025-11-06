@@ -1,27 +1,29 @@
 package com.mo_guang.ctpp.common.data;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.CoilWorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
+import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.pattern.Predicates;
-import com.gregtechceu.gtceu.common.data.GTBlocks;
-import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
-import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
+import com.gregtechceu.gtceu.common.data.*;
 import com.mo_guang.ctpp.CTPP;
 import com.mo_guang.ctpp.api.CTPPPartAbility;
 import com.mo_guang.ctpp.common.machine.multiblock.*;
 import com.mo_guang.ctpp.util.CommonTooltips;
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.Create;
+import com.simibubi.create.foundation.data.BlockStateGen;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.Blocks;
 import com.mo_guang.ctpp.CTPPRegistration;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
 import static com.gregtechceu.gtceu.api.pattern.Predicates.blocks;
 import static com.gregtechceu.gtceu.common.data.GTBlocks.*;
@@ -45,14 +47,28 @@ public class CTPPMultiblockMachines {
                     .aisle("AAAAA", "A   A", "AC CA")
                     .aisle("AAAAA", "A   A", "AC CA")
                     .aisle("AAAAA", "AB@BA", "ABBBA")
-                    .where("A",Predicates.blocks(AllBlocks.ANDESITE_CASING.get()))
-                    .where("B",Predicates.blocks(AllBlocks.ANDESITE_CASING.get())
+                    .where("A", blocks(AllBlocks.ANDESITE_CASING.get()))
+                    .where("B", blocks(AllBlocks.ANDESITE_CASING.get())
                             .or(Predicates.autoAbilities(definition.getRecipeTypes()))
                             .or(Predicates.abilities(CTPPPartAbility.INPUT_KINETIC))
                             .or(Predicates.abilities(CTPPPartAbility.MECHANICAL_UPGRADE).setMaxGlobalLimited(1)))
-                    .where("C",Predicates.blocks(AllBlocks.CRUSHING_WHEEL.get()))
+                    .where("C", blocks(AllBlocks.CRUSHING_WHEEL.get()))
                     .where("@",Predicates.controller(blocks(definition.getBlock())))
                     .where(" ",Predicates.any())
+                    .build())
+            .shapeInfo(definition -> MultiblockShapeInfo.builder()
+                    .aisle("AAAAA", "AE@FA", "AAGAA")
+                    .aisle("AAAAA", "A   A", "AC CA")
+                    .aisle("AAAAA", "A   A", "AC CA")
+                    .aisle("AAAAA", "A   A", "AC CA")
+                    .aisle("AAAAA", "AADAA", "AAAAA")
+                    .where('A', AllBlocks.ANDESITE_CASING.get())
+                    .where('C', AllBlocks.CRUSHING_WHEEL.get().defaultBlockState().setValue(BlockStateProperties.AXIS, Direction.Axis.Z))
+                    .where('D', CTPPMachines.KINETIC_INPUT_BOX[GTValues.LV], Direction.SOUTH)
+                    .where('E', GTMachines.ITEM_IMPORT_BUS[GTValues.LV], Direction.NORTH)
+                    .where('F', GTMachines.ITEM_EXPORT_BUS[GTValues.LV], Direction.NORTH)
+                    .where('G', CTPPMachines.MECHANICAL_UPGRADE_BUS, Direction.NORTH)
+                    .where('@', CTPPMultiblockMachines.SMASHING_FACTORY, Direction.NORTH)
                     .build())
             .workableCasingModel(CTPP.id("block/create/andesite_casing"),GTCEu.id("block/multiblock/large_chemical_reactor"))
             .register());

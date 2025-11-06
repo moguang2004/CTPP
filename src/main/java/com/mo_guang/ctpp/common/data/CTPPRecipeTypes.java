@@ -50,11 +50,7 @@ public class CTPPRecipeTypes {
                     group.addWidget(new SlotWidget(handler, 0, group.getSize().width - 30,
                             group.getSize().height - 30, false, false));
             })
-            .addDataInfo(data -> LocalizationUtils.format("ctpp.stress_input", String.format("%.1f",data.getFloat("input_stress"))))
-            .addDataInfo(data -> {
-                int tier = data.getInt("mechanical_tier");
-                return LocalizationUtils.format("ctpp.mechanical_tier", tier, CTPPValues.MT[tier]);
-            });
+            .addDataInfo(data -> LocalizationUtils.format("ctpp.stress_input", String.format("%.1f",data.getFloat("input_stress"))));
     public static final GTRecipeType KINETIC_GENERATOR_RECIPES = GTRecipeTypes.register("kinetic_generator", KINETIC)
             .setMaxIOSize(0, 0, 1, 0)
             .setProgressBar(GuiTextures.PROGRESS_BAR_ARROW_MULTIPLE, LEFT_TO_RIGHT)

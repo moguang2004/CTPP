@@ -87,6 +87,8 @@
   "ctpp.common_tooltip.mechanical_tier": "*§nMechanical Tier§r is determined by items in the Mechanical Upgrade Bus: None (0), §7Basic Components (1)§r, §ePrecision Components (2)§r,\n§8Steel Structures or Basic Electronic Circuits (3)§r, §bAdvanced Electronic Circuits (4)§r, §6Integrated Circuits (5)§r",
   "ctpp.common_tooltip.mechanical_tier_machine": "§nMechanical Tier§r please be seen in the Tooltip of §lMechanical upgrade bus§r",
   "ctpp.copyright.info": "This machine is added by §6CT++§r",
+  "ctpp.machine.kinetic_input_box.tooltip": "Kinetic Effect：%s su",
+  "ctpp.machine.kinetic_output_box.tooltip": "Kinetic Effect：%s su",
   "ctpp.mechanical_tier": "Mechanical Tier：%d(%s)",
   "ctpp.mechanical_tier.0": "None",
   "ctpp.mechanical_tier.1": "Basic",

@@ -1,4 +1,4 @@
-//package com.mo_guang.ctpp.integration.kjs;
+package com.mo_guang.ctpp.integration.kjs;//package com.mo_guang.ctpp.integration.kjs;
 //
 //import com.gregtechceu.gtceu.GTCEu;
 //import com.gregtechceu.gtceu.api.GTValues;

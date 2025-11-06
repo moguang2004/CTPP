@@ -85,7 +85,7 @@ public class CTPPJeiPlugin implements IModPlugin {
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
         categories.forEach(category -> category.registerCatalysts(registration));
     }
-    private <T extends Recipe<?>> CTPPJeiPlugin.CategoryBuilder<T> builder(Class<? extends T> recipeClass) {
+    private <T extends Recipe<?>> CategoryBuilder<T> builder(Class<? extends T> recipeClass) {
         return new CategoryBuilder<>(recipeClass);
     }
 
@@ -103,26 +103,26 @@ public class CTPPJeiPlugin implements IModPlugin {
             this.recipeClass = recipeClass;
         }
 
-        public CTPPJeiPlugin.CategoryBuilder<T> enableIf(Predicate<CRecipes> predicate) {
+        public CategoryBuilder<T> enableIf(Predicate<CRecipes> predicate) {
             this.predicate = predicate;
             return this;
         }
 
-        public CTPPJeiPlugin.CategoryBuilder<T> enableWhen(Function<CRecipes, ConfigBase.ConfigBool> configValue) {
+        public CategoryBuilder<T> enableWhen(Function<CRecipes, ConfigBase.ConfigBool> configValue) {
             predicate = c -> configValue.apply(c).get();
             return this;
         }
 
-        public CTPPJeiPlugin.CategoryBuilder<T> addRecipeListConsumer(Consumer<List<T>> consumer) {
+        public CategoryBuilder<T> addRecipeListConsumer(Consumer<List<T>> consumer) {
             recipeListConsumers.add(consumer);
             return this;
         }
 
-        public CTPPJeiPlugin.CategoryBuilder<T> addRecipes(Supplier<Collection<? extends T>> collection) {
+        public CategoryBuilder<T> addRecipes(Supplier<Collection<? extends T>> collection) {
             return addRecipeListConsumer(recipes -> recipes.addAll(collection.get()));
         }
 
-        public CTPPJeiPlugin.CategoryBuilder<T> addAllRecipesIf(Predicate<Recipe<?>> pred) {
+        public CategoryBuilder<T> addAllRecipesIf(Predicate<Recipe<?>> pred) {
             return addRecipeListConsumer(recipes -> consumeAllRecipes(recipe -> {
                 if (pred.test(recipe)) {
                     recipes.add((T) recipe);
@@ -130,7 +130,7 @@ public class CTPPJeiPlugin implements IModPlugin {
             }));
         }
 
-        public CTPPJeiPlugin.CategoryBuilder<T> addAllRecipesIf(Predicate<Recipe<?>> pred, Function<Recipe<?>, T> converter) {
+        public CategoryBuilder<T> addAllRecipesIf(Predicate<Recipe<?>> pred, Function<Recipe<?>, T> converter) {
             return addRecipeListConsumer(recipes -> consumeAllRecipes(recipe -> {
                 if (pred.test(recipe)) {
                     recipes.add(converter.apply(recipe));
@@ -138,19 +138,19 @@ public class CTPPJeiPlugin implements IModPlugin {
             }));
         }
 
-        public CTPPJeiPlugin.CategoryBuilder<T> addTypedRecipes(IRecipeTypeInfo recipeTypeEntry) {
+        public CategoryBuilder<T> addTypedRecipes(IRecipeTypeInfo recipeTypeEntry) {
             return addTypedRecipes(recipeTypeEntry::getType);
         }
 
-        public CTPPJeiPlugin.CategoryBuilder<T> addTypedRecipes(Supplier<RecipeType<? extends T>> recipeType) {
+        public CategoryBuilder<T> addTypedRecipes(Supplier<RecipeType<? extends T>> recipeType) {
             return addRecipeListConsumer(recipes -> CreateJEI.<T>consumeTypedRecipes(recipes::add, recipeType.get()));
         }
 
-        public CTPPJeiPlugin.CategoryBuilder<T> addTypedRecipes(Supplier<RecipeType<? extends T>> recipeType, Function<Recipe<?>, T> converter) {
+        public CategoryBuilder<T> addTypedRecipes(Supplier<RecipeType<? extends T>> recipeType, Function<Recipe<?>, T> converter) {
             return addRecipeListConsumer(recipes -> CreateJEI.<T>consumeTypedRecipes(recipe -> recipes.add(converter.apply(recipe)), recipeType.get()));
         }
 
-        public CTPPJeiPlugin.CategoryBuilder<T> addTypedRecipesIf(Supplier<RecipeType<? extends T>> recipeType, Predicate<Recipe<?>> pred) {
+        public CategoryBuilder<T> addTypedRecipesIf(Supplier<RecipeType<? extends T>> recipeType, Predicate<Recipe<?>> pred) {
             return addRecipeListConsumer(recipes -> CreateJEI.<T>consumeTypedRecipes(recipe -> {
                 if (pred.test(recipe)) {
                     recipes.add(recipe);
@@ -158,7 +158,7 @@ public class CTPPJeiPlugin implements IModPlugin {
             }, recipeType.get()));
         }
 
-        public CTPPJeiPlugin.CategoryBuilder<T> addTypedRecipesExcluding(Supplier<RecipeType<? extends T>> recipeType,
+        public CategoryBuilder<T> addTypedRecipesExcluding(Supplier<RecipeType<? extends T>> recipeType,
                                                                      Supplier<RecipeType<? extends T>> excluded) {
             return addRecipeListConsumer(recipes -> {
                 List<Recipe<?>> excludedRecipes = getTypedRecipes(excluded.get());
@@ -173,7 +173,7 @@ public class CTPPJeiPlugin implements IModPlugin {
             });
         }
 
-        public CTPPJeiPlugin.CategoryBuilder<T> removeRecipes(Supplier<RecipeType<? extends T>> recipeType) {
+        public CategoryBuilder<T> removeRecipes(Supplier<RecipeType<? extends T>> recipeType) {
             return addRecipeListConsumer(recipes -> {
                 List<Recipe<?>> excludedRecipes = getTypedRecipes(recipeType.get());
                 recipes.removeIf(recipe -> {
@@ -185,37 +185,37 @@ public class CTPPJeiPlugin implements IModPlugin {
             });
         }
 
-        public CTPPJeiPlugin.CategoryBuilder<T> catalystStack(Supplier<ItemStack> supplier) {
+        public CategoryBuilder<T> catalystStack(Supplier<ItemStack> supplier) {
             catalysts.add(supplier);
             return this;
         }
 
-        public CTPPJeiPlugin.CategoryBuilder<T> catalyst(Supplier<ItemLike> supplier) {
+        public CategoryBuilder<T> catalyst(Supplier<ItemLike> supplier) {
             return catalystStack(() -> new ItemStack(supplier.get()
                     .asItem()));
         }
 
-        public CTPPJeiPlugin.CategoryBuilder<T> icon(IDrawable icon) {
+        public CategoryBuilder<T> icon(IDrawable icon) {
             this.icon = icon;
             return this;
         }
 
-        public CTPPJeiPlugin.CategoryBuilder<T> itemIcon(ItemLike item) {
+        public CategoryBuilder<T> itemIcon(ItemLike item) {
             icon(new ItemIcon(() -> new ItemStack(item)));
             return this;
         }
 
-        public CTPPJeiPlugin.CategoryBuilder<T> doubleItemIcon(ItemLike item1, ItemLike item2) {
+        public CategoryBuilder<T> doubleItemIcon(ItemLike item1, ItemLike item2) {
             icon(new DoubleItemIcon(() -> new ItemStack(item1), () -> new ItemStack(item2)));
             return this;
         }
 
-        public CTPPJeiPlugin.CategoryBuilder<T> background(IDrawable background) {
+        public CategoryBuilder<T> background(IDrawable background) {
             this.background = background;
             return this;
         }
 
-        public CTPPJeiPlugin.CategoryBuilder<T> emptyBackground(int width, int height) {
+        public CategoryBuilder<T> emptyBackground(int width, int height) {
             background(new EmptyBackground(width, height));
             return this;
         }

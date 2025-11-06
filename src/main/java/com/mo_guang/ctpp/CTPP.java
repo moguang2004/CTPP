@@ -17,6 +17,9 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.RegistryObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tech.vixhentx.mcmod.ctnhlib.langprovider.LangProcessor;
+
+import static com.mo_guang.ctpp.CTPPRegistration.REGISTRATE;
 
 
 @Mod(CTPP.MODID)
@@ -25,6 +28,8 @@ public class CTPP {
     public static final String MODID = "ctpp";
     public static final Logger LOGGER = LoggerFactory.getLogger(MODID);
     public CTPP() {
+        LangProcessor langProcessor = new LangProcessor(REGISTRATE);
+        langProcessor.processAll();
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.addGenericListener(MachineDefinition.class, EventHandler::registerMachines);
         modEventBus.addGenericListener(RecipeConditionType.class, EventHandler::registerRecipeConditions);

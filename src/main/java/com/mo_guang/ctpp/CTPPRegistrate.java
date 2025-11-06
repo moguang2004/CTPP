@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.mo_guang.ctpp.api.CTPPMultiblockBuilder;
+import tech.vixhentx.mcmod.ctnhlib.registrate.CNRegistrate;
 import com.simibubi.create.foundation.data.CreateEntityBuilder;
 import com.tterrag.registrate.builders.EntityBuilder;
 import net.minecraft.world.entity.Entity;
@@ -15,7 +16,7 @@ import net.minecraft.world.entity.MobCategory;
 
 import java.util.function.Function;
 
-public class CTPPRegistrate extends GTRegistrate {
+public class CTPPRegistrate extends CNRegistrate {
     protected CTPPRegistrate(String modId) {
         super(modId);
     }

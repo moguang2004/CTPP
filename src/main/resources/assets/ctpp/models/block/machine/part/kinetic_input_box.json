@@ -4,10 +4,8 @@
 	"textures": {
 		"overlay": "gtceu:block/overlay/machine/overlay_pipe_in_emissive",
 		"gearbox": "gtceu:block/machines/gearbox",
-		"bottom": "gtceu:block/casings/voltage/lv/bottom",
-		"top": "gtceu:block/casings/voltage/lv/top",
-		"particle": "gtceu:block/casings/voltage/lv/side",
-		"side": "gtceu:block/casings/voltage/lv/side"
+		"particle": "#side"
+
 	},
 	"elements": [
 		{

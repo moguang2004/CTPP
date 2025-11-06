@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
 import com.mo_guang.ctpp.common.data.CTPPRecipeConditions;
 import com.mo_guang.ctpp.common.machine.multiblock.KineticMultiblockMachine;
 import com.mo_guang.ctpp.common.machine.multiblock.part.MechanicalUpgradePartMachine;
+import com.mo_guang.ctpp.util.CTPPValues;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.NoArgsConstructor;
@@ -16,8 +17,13 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.GsonHelper;
 import org.jetbrains.annotations.NotNull;
+import tech.vixhentx.mcmod.ctnhlib.langprovider.Lang;
+import tech.vixhentx.mcmod.ctnhlib.langprovider.annotation.CN;
+import tech.vixhentx.mcmod.ctnhlib.langprovider.annotation.EN;
+import tech.vixhentx.mcmod.ctnhlib.langprovider.annotation.Prefix;
 
 @NoArgsConstructor
+@Prefix("recipe.condition")
 public class MechanicalTierCondition extends RecipeCondition {
     public static final Codec<MechanicalTierCondition> CODEC = RecordCodecBuilder
             .create(instance -> RecipeCondition.isReverse(instance)
@@ -37,9 +43,12 @@ public class MechanicalTierCondition extends RecipeCondition {
         return CTPPRecipeConditions.MECHANICAL_TIER;
     }
 
+    @CN("机械等级：%d(%s)")
+    @EN("Mechanical Tier: %d(%s)")
+    static Lang mechanical_tier;
     @Override
     public Component getTooltips() {
-        return Component.translatable("recipe.condition.mechanical_tier.tooltip", tier);
+        return mechanical_tier.translate(tier, CTPPValues.MT[tier]);
     }
 
     @Override
@@ -54,31 +63,31 @@ public class MechanicalTierCondition extends RecipeCondition {
     public RecipeCondition createTemplate() {
         return new MechanicalTierCondition();
     }
-    @NotNull
-    @Override
-    public JsonObject serialize() {
-        JsonObject config = super.serialize();
-        config.addProperty("mechanical_tier", tier);
-        return config;
-    }
-
-    @Override
-    public RecipeCondition deserialize(@NotNull JsonObject config) {
-        super.deserialize(config);
-        tier = GsonHelper.getAsInt(config, "mechanical_tier", 0);
-        return this;
-    }
-
-    @Override
-    public RecipeCondition fromNetwork(FriendlyByteBuf buf) {
-        super.fromNetwork(buf);
-        tier = buf.readInt();
-        return this;
-    }
-
-    @Override
-    public void toNetwork(FriendlyByteBuf buf) {
-        super.toNetwork(buf);
-        buf.writeInt(tier);
-    }
+//    @NotNull
+//    @Override
+//    public JsonObject serialize() {
+//        JsonObject config = super.serialize();
+//        config.addProperty("mechanical_tier", tier);
+//        return config;
+//    }
+//
+//    @Override
+//    public RecipeCondition deserialize(@NotNull JsonObject config) {
+//        super.deserialize(config);
+//        tier = GsonHelper.getAsInt(config, "mechanical_tier", 0);
+//        return this;
+//    }
+//
+//    @Override
+//    public RecipeCondition fromNetwork(FriendlyByteBuf buf) {
+//        super.fromNetwork(buf);
+//        tier = buf.readInt();
+//        return this;
+//    }
+//
+//    @Override
+//    public void toNetwork(FriendlyByteBuf buf) {
+//        super.toNetwork(buf);
+//        buf.writeInt(tier);
+//    }
 }
