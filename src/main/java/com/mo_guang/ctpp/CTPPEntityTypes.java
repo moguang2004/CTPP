@@ -19,7 +19,7 @@ import net.minecraft.world.entity.MobCategory;
 import static com.mo_guang.ctpp.CTPPRegistration.REGISTRATE;
 
 public class CTPPEntityTypes {
-
+    //这是控制结构的实体,从ct抄的
     public static final EntityEntry<SimpleRotatingContraptionEntity> SIMPLE_CONTRAPTION = contraption("simple_contraption",
             SimpleRotatingContraptionEntity::new, () -> (SimpleContraptionEntityRenderer::new)
             , 10, 3, true)
@@ -40,7 +40,7 @@ public class CTPPEntityTypes {
                                                                          NonNullConsumer<EntityType.Builder<T>> propertyBuilder) {
         String id = Lang.asId(name);
         return (CreateEntityBuilder<T, ?>) REGISTRATE
-                .entity(id, factory, group)
+                .movingEntity(id, factory, group)
                 .properties(b -> b.setTrackingRange(range)
                         .setUpdateInterval(updateFrequency)
                         .setShouldReceiveVelocityUpdates(sendVelocity))

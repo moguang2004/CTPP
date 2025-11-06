@@ -18,7 +18,7 @@ public class CTPPItems {
     public static ItemEntry<Item> STEEL_MECHANISM = REGISTRATE.item("steel_mechanism", Item::new).register();
     public static ItemEntry<RotationWandItem> ROTATION_WAND = REGISTRATE.item("rotation_wand", p -> new RotationWandItem(p)).register();
     public static final EntityEntry<SimpleRotatingContraptionEntity> ROTATING_CONTRAPTION =
-            REGISTRATE.entity("rotating_contraption",
+            REGISTRATE.movingEntity("rotating_contraption",
                             (EntityType.EntityFactory<SimpleRotatingContraptionEntity>) SimpleRotatingContraptionEntity::new, MobCategory.MISC)
                     .properties(builder -> builder
                             .sized(1.0f, 1.0f) // 实体大小
