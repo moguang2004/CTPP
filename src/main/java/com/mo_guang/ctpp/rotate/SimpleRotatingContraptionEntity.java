@@ -21,8 +21,12 @@ import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
@@ -318,4 +322,12 @@ public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity{
         return AngleHelper.angleLerp(partialTicks, prevZRot, zRot);
     }
 
+    @Override
+    public InteractionResult interact(Player player, InteractionHand hand) {
+        ItemStack item = player.getItemInHand(hand);
+        if (item.getItem() instanceof RotationWandItem rotationWandItem) {
+            this.disassemble();
+        }
+        return InteractionResult.SUCCESS;
+    }
 }

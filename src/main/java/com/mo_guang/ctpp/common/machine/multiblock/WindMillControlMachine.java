@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.mo_guang.ctpp.common.machine.IKineticMachine;
+import com.mo_guang.ctpp.rotate.SimpleRotatingContraptionEntity;
 import com.simibubi.create.content.contraptions.bearing.WindmillBearingBlockEntity;
 import com.simibubi.create.infrastructure.config.AllConfigs;
 import net.minecraft.network.chat.Component;
@@ -17,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class WindMillControlMachine extends KineticOutputMachine {
+    public SimpleRotatingContraptionEntity rotatingEntity;
     public int efficiency = 0;
     public float TotalOutput = 0;
 
