@@ -9,6 +9,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 
 public class WindmillControllerContraption extends Contraption {
+
     public WindmillControllerContraption() {
         super();
     }

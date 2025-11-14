@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WindMillControlMachine extends KineticOutputMachine {
+public class WindMillControlMachine extends KineticOutputMachine implements IRotationMultiblock {
     public SimpleRotatingContraptionEntity rotatingEntity;
     public int efficiency = 0;
     public float TotalOutput = 0;
@@ -94,5 +94,10 @@ public class WindMillControlMachine extends KineticOutputMachine {
             }
         }
         efficiency = Math.min(WindMillAround.size(),6 + tier * 2);
+    }
+
+    @Override
+    public void assemble() {
+
     }
 }
