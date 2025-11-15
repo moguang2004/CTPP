@@ -6,12 +6,12 @@ import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
 import com.mo_guang.ctpp.CTPPItems;
 import com.mo_guang.ctpp.common.data.CTPPMachines;
 import com.mo_guang.ctpp.common.data.CTPPMultiblockMachines;
-import com.mo_guang.ctpp.common.data.CTPPRecipeTypes;
 import com.mo_guang.ctpp.core.CTPPCreativeModeTabs;
+import tech.vixhentx.mcmod.ctnhlib.registrate.lang.RegistrateCNLangProvider;
 
 public class ChineseLangHandler {
     public static void init(RegistrateCNLangProvider provider){
-        provider.add("ctpp.common_tooltip.kinetic_overclock", "-拥有应力超频机制，根据输入的总应力大小获得并行数(非线性)，根据输入的转速大小拥有不同的效果：\n转速 < 64:无效果\n转速 < 128:获得20%耗时减免\n转速 < 256:获得一次超频机会\n转速 < 512:获得一次无损超频机会\n输入速度由所有应力仓中速度最低者决定");
+        provider.add("ctpp.common_tooltip.kinetic_overclock", "-拥有应力超频机制，根据输入的总应力大小获得并行数(非线性)");
         provider.add("ctpp.common_tooltip.input_speed", "*输入转速以等级最高的应力仓的转速为准");
         provider.add("ctpp.common_tooltip.mechanical_tier", "*§n机械等级§r由§l机械升级仓§r中的物品决定：无(0)，§7基础构件(1)§r，§e精密构件(2)§r，\n§8钢铁构建或基础电子电路(3)§r，§b高级电子电路(4)§r，§6集成电路(5)§r");
         provider.add("ctpp.common_tooltip.mechanical_tier_machine", "§n机械等级§r请详见§l机械升级仓§r的物品信息");

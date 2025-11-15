@@ -139,6 +139,7 @@
   "item.ctpp.steel_mechanism": "Steel Mechanism",
   "itemGroup.ctpp.machine": "CTPP Machines",
   "recipe.capability.su.name": "Create Stress",
+  "recipe.condition.ctpp.mechanical_tier": "Mechanical Tier: %d(%s)",
   "recipe.condition.mechanical_tier.tooltip": "Mechanical Tier: %s",
   "recipe.condition.rpm.tooltip": "RPM: %d"
 }

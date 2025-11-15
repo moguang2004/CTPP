@@ -92,44 +92,10 @@ public class KineticWorkableMultiblockMachine extends KineticMultiblockMachine i
         }
     }
 
-    /**
-     * use to calculate modifierFunction through rotation speed
-     * 0 < rpm < 64: no change
-     * 64 <= rpm < 128: duration reduction(x0.8)
-     * 128 <= rpm < 256: non_perfect overclock(inputStress multiplied by 4 while duration divided by 2)
-     * 256 <= rpm < 512: perfect overclock(inputStress multiplied by 4 while duration divided by 4)
-     * */
-    public ModifierFunction calculateModifier() {
-        if(speed < 64){
-            return ModifierFunction.IDENTITY;
-        }
-        else if(speed < 128){
-            return ModifierFunction.builder().durationMultiplier(0.8).build();
-        }
-        else if(speed < 256){
-            return ModifierFunction.builder().durationMultiplier(0.5).build().andThen(CTPPModifierFunction.inputStressMultiplier(4));
-        }
-        else{
-            return ModifierFunction.builder().durationMultiplier(0.25).build().andThen(CTPPModifierFunction.inputStressMultiplier(4));
-        }
-    }
-
     @Override
     public void addDisplayText(List<Component> textList) {
         super.addDisplayText(textList);
         textList.add(Component.translatable("ctpp.multiblock.kinetic_workable_multiblock_machine.speed",speed));
         textList.add(Component.translatable("ctpp.multiblock.kinetic_workable_multiblock_machine.parallel",parallels));
-        if(speed < 64){
-            textList.add(Component.translatable("ctpp.multiblock.kinetic_workable_multiblock_machine.null"));
-        }
-        else if(speed < 128){
-            textList.add(Component.translatable("ctpp.multiblock.kinetic_workable_multiblock_machine.reduction"));
-        }
-        else if(speed < 256){
-            textList.add(Component.translatable("ctpp.multiblock.kinetic_workable_multiblock_machine.overclock"));
-        }
-        else{
-            textList.add(Component.translatable("ctpp.multiblock.kinetic_workable_multiblock_machine.perfect_overclock"));
-        }
     }
 }
