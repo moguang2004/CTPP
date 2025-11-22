@@ -47,7 +47,6 @@ public class WindMillControlMachine extends KineticOutputMachine implements IRot
     public void onStructureInvalid() {
         super.onStructureInvalid();
         if (rotatingEntity != null) {
-            this.rotatingEntity.getContraption().stop(getLevel());
             this.rotatingEntity.disassemble();
         }
         this.rotatingEntity = null;
