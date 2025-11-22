@@ -14,14 +14,16 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class FactoryStaticBlockPattern {
     private static final Joiner COMMA_JOIN = Joiner.on(",");
     private final List<String[]> depth;
     private final List<int[]> aisleRepetitions;
     private final Char2ObjectMap<TraceabilityPredicate> symbolMap;
-    private final List<Character> dynamicSymbols;
+    private final Map<Character, Integer> dynamicSymbolMap;
     private final RelativeDirection[] structureDir;
     private int aisleHeight;
     private int rowWidth;
@@ -30,7 +32,7 @@ public class FactoryStaticBlockPattern {
         depth = new ArrayList<>();
         aisleRepetitions = new ArrayList<>();
         symbolMap = new Char2ObjectArrayMap<>();
-        dynamicSymbols = new ArrayList<>();
+        dynamicSymbolMap = new HashMap<>();
         structureDir = new RelativeDirection[3];
         structureDir[0] = charDir;
         structureDir[1] = stringDir;
@@ -121,13 +123,19 @@ public class FactoryStaticBlockPattern {
     public FactoryStaticBlockPattern where(String symbol, TraceabilityPredicate blockMatcher) {
         return this.where(symbol.charAt(0), blockMatcher, true);
     }
-
+    public FactoryStaticBlockPattern where(String symbol, TraceabilityPredicate blockMatcher, boolean isStatic) {
+        return this.where(symbol.charAt(0), blockMatcher, isStatic, 0);
+    }
     public FactoryStaticBlockPattern where(char symbol, TraceabilityPredicate blockMatcher, boolean isStatic) {
+        return this.where(symbol, blockMatcher, isStatic, 0);
+    }
+
+    public FactoryStaticBlockPattern where(char symbol, TraceabilityPredicate blockMatcher, boolean isStatic, int group) {
         if (blockMatcher.isAny() || blockMatcher.isAir()) {
             this.symbolMap.put(symbol, blockMatcher);
         } else {
             if (!isStatic) {
-                this.dynamicSymbols.add(symbol);
+                this.dynamicSymbolMap.putIfAbsent(symbol, group);
             }
             this.symbolMap.put(symbol, new TraceabilityPredicate(blockMatcher).sort());
         }
@@ -140,23 +148,23 @@ public class FactoryStaticBlockPattern {
         int[][] aisleRepetitions = this.aisleRepetitions.toArray(new int[this.aisleRepetitions.size()][]);
         TraceabilityPredicate[][][] predicate = (TraceabilityPredicate[][][]) Array
                 .newInstance(TraceabilityPredicate.class, this.depth.size(), this.aisleHeight, this.rowWidth);
-        TraceabilityPredicate[][][] staticPredicate = (TraceabilityPredicate[][][]) Array
-                .newInstance(TraceabilityPredicate.class, this.depth.size(), this.aisleHeight, this.rowWidth);
-        TraceabilityPredicate[][][] dynamicPredicate = (TraceabilityPredicate[][][]) Array
-                .newInstance(TraceabilityPredicate.class, this.depth.size(), this.aisleHeight, this.rowWidth);
+        boolean[][][] staticPredicate = (boolean[][][]) Array
+                .newInstance(Boolean.TYPE, this.depth.size(), this.aisleHeight, this.rowWidth);
+        int[][][] dynamicPredicate = (int[][][]) Array
+                .newInstance(Integer.TYPE, this.depth.size(), this.aisleHeight, this.rowWidth);
 
         for (int i = 0, minZ = 0, maxZ = 0; i <
                 this.depth.size(); minZ += aisleRepetitions[i][0], maxZ += aisleRepetitions[i][1], i++) {
             for (int j = 0; j < this.aisleHeight; j++) {
                 for (int k = 0; k < this.rowWidth; k++) {
+                    staticPredicate[i][j][k] = true;
                     char symbol = this.depth.get(i)[j].charAt(k);
-                    if (!dynamicSymbols.contains(symbol)){
-                        dynamicPredicate[i][j][k] = Predicates.air();
-                        staticPredicate[i][j][k] = this.symbolMap.get(symbol);
+                    if (!dynamicSymbolMap.containsKey(symbol)){
+                        staticPredicate[i][j][k] = true;
                     }
                     else {
-                        dynamicPredicate[i][j][k] = this.symbolMap.get(symbol);
-                        staticPredicate[i][j][k] = Predicates.air();
+                        dynamicPredicate[i][j][k] = this.dynamicSymbolMap.get(symbol);
+                        staticPredicate[i][j][k] = false;
                     }
                     predicate[i][j][k] = this.symbolMap.get(symbol);
                     if (predicate[i][j][k].isController) {

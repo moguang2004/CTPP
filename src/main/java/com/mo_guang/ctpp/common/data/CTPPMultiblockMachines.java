@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.api.pattern.Predicates;
 import com.gregtechceu.gtceu.common.data.*;
 import com.mo_guang.ctpp.CTPP;
 import com.mo_guang.ctpp.api.CTPPPartAbility;
+import com.mo_guang.ctpp.api.pattern.FactoryStaticBlockPattern;
 import com.mo_guang.ctpp.common.machine.multiblock.*;
 import com.mo_guang.ctpp.util.CommonTooltips;
 import com.simibubi.create.AllBlocks;
@@ -242,7 +243,7 @@ public class CTPPMultiblockMachines {
             .recipeType(CTPPRecipeTypes.WINDMILL_CONTROL)
             .appearanceBlock(AllBlocks.BRASS_CASING)
             .recipeModifiers(WindMillControlMachine::recipeModifier,CTPPRecipeModifiers.KINETIC_ADJUST)
-            .pattern(definition -> FactoryBlockPattern.start()
+            .pattern(definition -> FactoryStaticBlockPattern.start()
                 .aisle("AABPPPPPBAA", "###CDDDC###", "###CDDDC###", "###CDDDC###", "AAACCCCCAAA", "###########", "#####EE####", "####EE#####", "####E######", "###########", "###########", "######E####", "#####EE####", "####EE#####", "####E######", "###########", "###########", "######E####", "#####EE####", "####EE#####", "####E######", "###########", "###########", "######E####", "#####EE####", "###EEE#####")
                 .aisle("AFFCCCCCFFA", "#GFF###FFG#", "#HFF###FFH#", "#GFF###FFG#", "AFFCCICCFFA", "#####J#####", "#####KE####", "###########", "###E#######", "###E#######", "#######E###", "#######E###", "###########", "###########", "###E#######", "###E#######", "#######E###", "#######E###", "###########", "###########", "###E#######", "###E#######", "#######E###", "#######E###", "###########", "###########")
                 .aisle("BFCCCCCCCFB", "#F#######F#", "#F#######F#", "#F#######F#", "AFCCCICCCFA", "#####J#####", "####KKE####", "###########", "###########", "##E#####E##", "##E#####E##", "###########", "###########", "###########", "###########", "##E#####E##", "##E#####E##", "###########", "###########", "###########", "###########", "##E#####E##", "##E#####E##", "###########", "###########", "###########")
@@ -259,13 +260,13 @@ public class CTPPMultiblockMachines {
                 .where("C", Predicates.blocks(AllBlocks.BRASS_CASING.get()))
                 .where("#", Predicates.any())
                 .where("D", Predicates.blocks(CASING_TEMPERED_GLASS.get()))
-                .where("E", Predicates.blocks(Blocks.YELLOW_WOOL))
+                .where("E", Predicates.blocks(Blocks.YELLOW_WOOL), false)
                 .where("F", Predicates.blocks(AllBlocks.RAILWAY_CASING.get()))
                 .where("G", Predicates.blocks(AllBlocks.METAL_GIRDER.get()))
                 .where("H", Predicates.blocks(AllBlocks.METAL_GIRDER.get()))
                 .where("I", Predicates.blocks(AllBlocks.ROSE_QUARTZ_LAMP.get()))
-                .where("J", Predicates.blocks(AllBlocks.LINEAR_CHASSIS.get()))
-                .where("K", Predicates.blocks(Blocks.WHITE_WOOL))
+                .where("J", Predicates.blocks(AllBlocks.LINEAR_CHASSIS.get()), false)
+                .where("K", Predicates.blocks(Blocks.WHITE_WOOL), false)
                 .where("L", Predicates.blocks(CASING_BRONZE_GEARBOX.get()))
                 .where("M", Predicates.blocks(CASING_BRONZE_PIPE.get()))
                 .where("N", Predicates.blocks(GCYMBlocks.CASING_INDUSTRIAL_STEAM.get()))

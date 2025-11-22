@@ -9,13 +9,16 @@ import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.mo_guang.ctpp.common.machine.IKineticMachine;
 import com.mo_guang.ctpp.rotate.SimpleRotatingContraptionEntity;
+import com.mo_guang.ctpp.util.MathUtil;
 import com.simibubi.create.content.contraptions.bearing.WindmillBearingBlockEntity;
 import com.simibubi.create.infrastructure.config.AllConfigs;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class WindMillControlMachine extends KineticOutputMachine implements IRotationMultiblock {
     public SimpleRotatingContraptionEntity rotatingEntity;
@@ -27,12 +30,28 @@ public class WindMillControlMachine extends KineticOutputMachine implements IRot
         super(holder);
     }
 
+    //////////////////////////////////////
+    // *** Multiblock LifeCycle ***//
+    //////////////////////////////////////
     @Override
     public void onStructureFormed() {
         super.onStructureFormed();
         calculateWindmillAround();
+        var rotatingEntities = assemble(MachineUtils.getOffset(this, 0, 5, 5));
+        if (rotatingEntities != null) {
+            this.rotatingEntity = rotatingEntities.get(0);
+        }
     }
 
+    @Override
+    public void onStructureInvalid() {
+        super.onStructureInvalid();
+        if (rotatingEntity != null) {
+            this.rotatingEntity.getContraption().stop(getLevel());
+            this.rotatingEntity.disassemble();
+        }
+        this.rotatingEntity = null;
+    }
 
     @Override
     public boolean onWorking() {
@@ -51,6 +70,18 @@ public class WindMillControlMachine extends KineticOutputMachine implements IRot
             updateRotateBlocks(result);
         }
         return result;
+    }
+
+    //////////////////////////////////////
+    // *** Rotation Control ***//
+    //////////////////////////////////////
+    @Override
+    public void updateRotateBlocks(boolean active){
+        super.updateRotateBlocks(active);
+        if (active) {
+            float speed = MathUtil.rpm2rads(this.speed);
+            if (rotatingEntity != null) rotatingEntity.setRotationSpeed(0, speed, 0);
+        }
     }
 
     @Override
@@ -96,8 +127,4 @@ public class WindMillControlMachine extends KineticOutputMachine implements IRot
         efficiency = Math.min(WindMillAround.size(),6 + tier * 2);
     }
 
-    @Override
-    public void assemble() {
-
-    }
 }

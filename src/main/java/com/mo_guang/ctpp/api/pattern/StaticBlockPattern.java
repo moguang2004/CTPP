@@ -20,16 +20,13 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 public class StaticBlockPattern extends BlockPattern {
-    protected final TraceabilityPredicate[][][] staticBlockMatches;
-    protected final TraceabilityPredicate[][][] dynamicBlockMatches;
+    protected final boolean[][][] staticBlockMatches;
+    protected final int[][][] dynamicBlockMatches;
     public StaticBlockPattern(TraceabilityPredicate[][][] predicatesIn, RelativeDirection[] structureDir, int[][] aisleRepetitions, int[] centerOffset,
-                              TraceabilityPredicate[][][] staticPredicates, TraceabilityPredicate[][][] dynamicPredicates) {
+                              boolean[][][] staticPredicates, int[][][] dynamicPredicates) {
         super(predicatesIn, structureDir, aisleRepetitions, centerOffset);
         this.staticBlockMatches = staticPredicates;
         this.dynamicBlockMatches = dynamicPredicates;
@@ -58,31 +55,34 @@ public class StaticBlockPattern extends BlockPattern {
         }
         return false;
     }
-    public List<BlockPos> getDynamicPart(MultiblockState worldState) {
+    public Map<Integer, List<BlockPos>> getDynamicPart(MultiblockState worldState) {
         IMultiController controller = worldState.getController();
         BlockPos centerPos = controller.self().getPos();
         Direction frontFacing = controller.self().getFrontFacing();
         Direction upwardsFacing = controller.self().getUpwardsFacing();
-        List<BlockPos> positions = new ArrayList<>();
+        Map<Integer, List<BlockPos>> parts = new HashMap<>();
         for (int c = 0; c < this.fingerLength; c++) {
             for (int b = 0; b < this.thumbLength; b++) {
                 for (int a = 0; a < this.palmLength; a++) {
-                    TraceabilityPredicate predicate = this.dynamicBlockMatches[c][b][a];
-                    if (predicate.equals(Predicates.air())) continue;
+                    if (staticBlockMatches[c][b][a]) continue;
                     int relativeX = a - centerOffset[0];
                     int relativeY = b - centerOffset[1];
                     int relativeZ = c - centerOffset[2];
                     var position = setActualRelativeOffset(relativeX, relativeY, relativeZ, frontFacing, upwardsFacing, false)
                             .offset(centerPos.getX(), centerPos.getY(), centerPos.getZ());
-                    positions.add(position);
+                    parts.computeIfAbsent(dynamicBlockMatches[c][b][a], k -> new ArrayList<>()).add(position);
                 }
             }
         }
-        return positions;
+        return parts;
     }
     @Override
     public boolean checkPatternAt(MultiblockState worldState, BlockPos centerPos, Direction frontFacing,
                                   Direction upwardsFacing, boolean isFlipped, boolean savePredicate) {
+        IMultiController controller = worldState.getController();
+        if (!controller.isFormed()) {
+            return super.checkPatternAt(worldState, centerPos, frontFacing, upwardsFacing, isFlipped, savePredicate);
+        }
         boolean findFirstAisle = false;
         int minZ = -centerOffset[4];
         worldState.clean();
@@ -101,7 +101,7 @@ public class StaticBlockPattern extends BlockPattern {
                 for (int b = 0, y = -centerOffset[1]; b < this.thumbLength; b++, y++) {
                     for (int a = 0, x = -centerOffset[0]; a < this.palmLength; a++, x++) {
                         worldState.setError(null);
-                        TraceabilityPredicate predicate = this.staticBlockMatches[c][b][a];
+                        TraceabilityPredicate predicate = this.staticBlockMatches[c][b][a]? this.blockMatches[c][b][a] : Predicates.air();
                         BlockPos pos = setActualRelativeOffset(x, y, z, frontFacing, upwardsFacing, isFlipped)
                                 .offset(centerPos.getX(), centerPos.getY(), centerPos.getZ());
                         if (!worldState.update(pos, predicate)) {

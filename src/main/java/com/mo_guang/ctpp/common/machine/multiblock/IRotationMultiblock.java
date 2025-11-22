@@ -1,31 +1,35 @@
 package com.mo_guang.ctpp.common.machine.multiblock;
 
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
+import com.lowdragmc.lowdraglib.utils.TrackedDummyWorld;
 import com.mo_guang.ctpp.api.pattern.StaticBlockPattern;
+import com.mo_guang.ctpp.rotate.SimpleRotatingContraption;
+import com.mo_guang.ctpp.rotate.SimpleRotatingContraptionEntity;
+import net.minecraft.core.BlockPos;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public interface IRotationMultiblock extends IMultiController {
-    @Override
-    default boolean checkPattern() {
-        if (isFormed()) {
-            return checkStaticPattern();
-        }
-        return IMultiController.super.checkPattern();
-    }
-    default boolean checkStaticPattern() {
+    default Map<Integer, SimpleRotatingContraptionEntity> assemble(BlockPos pivot) {
+        if (self().getLevel() instanceof TrackedDummyWorld) return null;
+        Map<Integer, SimpleRotatingContraptionEntity> ce = new HashMap<>();
         var pattern = self().getDefinition().getPatternFactory().get();
         if (pattern instanceof StaticBlockPattern staticBlockPattern) {
-            return staticBlockPattern.checkPatternAt(this.getMultiblockState(), false);
-        }
-        return true;
-    }
-    default void assemble() {
-        var pattern = self().getDefinition().getPatternFactory().get();
-        if (pattern instanceof StaticBlockPattern staticBlockPattern) {
-            var dymanicPart = staticBlockPattern.getDynamicPart(self().getMultiblockState());
-            for (var blockpos : dymanicPart) {
-
+            Map<Integer, List<BlockPos>> dymanicPart = staticBlockPattern.getDynamicPart(self().getMultiblockState());
+            for (var entry : dymanicPart.entrySet()) {
+                int group = entry.getKey();
+                var part = entry.getValue();
+                SimpleRotatingContraption contraption = new SimpleRotatingContraption(part, pivot);
+                contraption.assemble(this.self().getLevel(), self().getPos());
+                contraption.removeBlocksFromWorld(this.self().getLevel(), BlockPos.ZERO);
+                SimpleRotatingContraptionEntity contraptionEntity = SimpleRotatingContraptionEntity.create(self().getLevel(), contraption, pivot.getCenter());
+                this.self().getLevel().addFreshEntity(contraptionEntity);
+                ce.put(group, contraptionEntity);
             }
+            return ce;
         }
-
-    };
+        return null;
+    }
 }
