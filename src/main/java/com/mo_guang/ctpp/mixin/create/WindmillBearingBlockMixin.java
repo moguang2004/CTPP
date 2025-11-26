@@ -2,6 +2,7 @@ package com.mo_guang.ctpp.mixin.create;
 
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.mo_guang.ctpp.common.machine.multiblock.WindMillControlMachine;
+import com.mojang.datafixers.util.Pair;
 import com.simibubi.create.content.contraptions.bearing.WindmillBearingBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
@@ -28,11 +29,13 @@ public class WindmillBearingBlockMixin extends Block {
     public void onPlace(BlockState pState, Level pLevel, BlockPos pPos, BlockState pOldState, boolean pMovedByPiston) {
         super.onPlace(pState, pLevel, pPos, pOldState, pMovedByPiston);
         notifyWindmillController(pLevel, pPos);
+        WindMillControlMachine.workingWindmill.add(Pair.of(pLevel, pPos));
     }
     @Override
     public void onRemove(BlockState p_60515_, Level level, BlockPos pos, BlockState p_60518_, boolean p_60519_) {
         super.onRemove(p_60515_, level, pos, p_60518_, p_60519_);
         notifyWindmillController(level, pos);
+        WindMillControlMachine.workingWindmill.removeIf(posPair -> posPair.getFirst().equals(level) && posPair.getSecond().equals(pos));
     }
     @Inject(method = "use", at = @At(value = "RETURN", ordinal = 3), remap = false)
     public void use(BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit, CallbackInfoReturnable<InteractionResult> cir) {
@@ -41,11 +44,13 @@ public class WindmillBearingBlockMixin extends Block {
 
     @Unique
     public void notifyWindmillController(Level level, BlockPos pos) {
-        BlockPos.betweenClosed(pos.offset(-10, -10, -10), pos.offset(10, 10, 10))
-                .forEach(checkPos -> {
-                    MetaMachine machine = MetaMachine.getMachine(level, checkPos);
-                    if (machine instanceof WindMillControlMachine wmachine) {
-                        wmachine.willTick = true;
+        WindMillControlMachine.workingWindmillController
+                .forEach(posPair -> {
+                    if (posPair.getSecond().distToCenterSqr(pos.getX(), pos.getY(), pos.getZ()) <= 32) {
+                        MetaMachine machine = MetaMachine.getMachine(level, posPair.getSecond());
+                        if (machine instanceof WindMillControlMachine wmachine) {
+                            wmachine.willTick = true;
+                        }
                     }
                 });
     }
