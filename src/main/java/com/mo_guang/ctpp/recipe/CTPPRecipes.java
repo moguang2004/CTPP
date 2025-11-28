@@ -55,7 +55,6 @@ public class CTPPRecipes {
                 .outputItems(Items.KELP.getDefaultInstance().copyWithCount(4))
                 .chancedOutput(Items.KELP.getDefaultInstance().copyWithCount(2), 2000, 500)
                 .chancedOutput(Items.KELP.getDefaultInstance().copyWithCount(1), 500, 500)
-                .addData("stress", 512)
                 .save(provider);
         CTPPRecipeBuilder.of(CTPP.id("windmill_control"),CTPPRecipeTypes.WINDMILL_CONTROL)
                 .inputFluids(GTMaterials.Lubricant.getFluid(25))
@@ -67,28 +66,24 @@ public class CTPPRecipes {
                 .inputFluids(GTMaterials.PCBCoolant.getFluid(50))
                 .outputStress(16777216)
                 .duration(200)
-                .addData("stress", 16777216)
                 .save(provider);
         CTPPRecipeBuilder.of(CTPP.id("boom_of_create2"),CTPPRecipeTypes.BOOM_OF_CREATE)
                 .inputItems(Items.TNT.getDefaultInstance().copyWithCount(4))
                 .inputFluids(GTMaterials.PCBCoolant.getFluid(50))
                 .outputStress(16777216)
                 .duration(200)
-                .addData("stress", 16777216)
                 .save(provider);
         CTPPRecipeBuilder.of(CTPP.id("boom_of_create3"),CTPPRecipeTypes.BOOM_OF_CREATE)
                 .inputItems(GTItems.DYNAMITE.get().getDefaultInstance().copyWithCount(2))
                 .inputFluids(GTMaterials.PCBCoolant.getFluid(50))
                 .outputStress(16777216)
                 .duration(200)
-                .addData("stress", 16777216)
                 .save(provider);
         CTPPRecipeBuilder.of(CTPP.id("boom_of_create4"),CTPPRecipeTypes.BOOM_OF_CREATE)
                 .inputItems(GTBlocks.POWDERBARREL.get().asItem().getDefaultInstance().copyWithCount(8))
                 .inputFluids(GTMaterials.PCBCoolant.getFluid(50))
                 .outputStress(16777216)
                 .duration(200)
-                .addData("stress", 16777216)
                 .save(provider);
     }
 }

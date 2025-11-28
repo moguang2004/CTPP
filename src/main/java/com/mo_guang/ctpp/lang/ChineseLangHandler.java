@@ -18,8 +18,8 @@ public class ChineseLangHandler {
 
         provider.add("recipe.capability.su.name", "应力");
         provider.add("recipe.condition.rpm.tooltip", "转速: %d");
-        provider.add("ctpp.stress_input","应力输入：%dsu");
-        provider.add("ctpp.stress_output","应力输出：%dsu");
+        provider.add("ctpp.stress_input","应力输入：%d su");
+        provider.add("ctpp.stress_output","应力输出：%d su");
         provider.add("ctpp.mechanical_tier", "机械等级：%d(%s)");
 
         // Multiblock UI info
