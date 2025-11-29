@@ -2,15 +2,12 @@ package com.mo_guang.ctpp.common.machine.multiblock;
 
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
-import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import com.mo_guang.ctpp.common.machine.IKineticMachine;
-import com.mo_guang.ctpp.rotate.SimpleRotatingContraptionEntity;
+import com.mo_guang.ctpp.dynamicPart.rotation.SimpleRotatingContraptionEntity;
 import com.mo_guang.ctpp.util.MathUtil;
 import com.mojang.datafixers.util.Pair;
 import com.simibubi.create.content.contraptions.bearing.WindmillBearingBlockEntity;
@@ -23,7 +20,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class WindMillControlMachine extends KineticOutputMachine implements IRotationMultiblock {
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
@@ -43,6 +39,15 @@ public class WindMillControlMachine extends KineticOutputMachine implements IRot
     //////////////////////////////////////
     // *** Multiblock LifeCycle ***//
     //////////////////////////////////////
+    @Override
+    public void onUnload() {
+        super.onUnload();
+        if (rotatingEntity != null) {
+            this.rotatingEntity.disassemble();
+        }
+        this.rotatingEntity = null;
+    }
+
     @Override
     public void onStructureFormed() {
         super.onStructureFormed();
@@ -96,7 +101,7 @@ public class WindMillControlMachine extends KineticOutputMachine implements IRot
     //////////////////////////////////////
     @Override
     public void updateRotateBlocks(boolean active){
-                   super.updateRotateBlocks(active);
+        super.updateRotateBlocks(active);
         if (active) {
             float speed = MathUtil.rpm2rads(this.speed);
             if (rotatingEntity != null) rotatingEntity.setRotationSpeed(0, -speed, 0);
@@ -107,7 +112,7 @@ public class WindMillControlMachine extends KineticOutputMachine implements IRot
     public void addDisplayText(List<Component> textList) {
         super.addDisplayText(textList);
         if (isFormed()) {
-            textList.add(Component.translatable("ctpp.multiblock.windmill_control_center.info.0", efficiency, 4 + 2 * tier));
+            textList.add(Component.translatable("ctpp.multiblock.windmill_control_center.info.0", efficiency, 6 + 2 * tier));
             textList.add(Component.translatable("ctpp.multiblock.windmill_control_center.info.1", String.format("%.1f",TotalOutput)));
             textList.add(Component.translatable("ctpp.multiblock.windmill_control_center.info.2", String.format("%d",efficiency*100)));
             textList.add(Component.translatable("ctpp.multiblock.windmill_control_center.info.3",String.format("%.1f",(TotalOutput + 512) * efficiency)));

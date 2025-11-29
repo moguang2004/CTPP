@@ -64,7 +64,7 @@ public class ChineseLangHandler {
         provider.add("ctpp.multiblock.kinetic_steam_turbine.tooltip.3", "运行效率会获得(1 + 机械等级/(机械等级 + 1))的效率加成");
 
         provider.add("ctpp.multiblock.windmill_control_center.tooltip.0", "风力总控！越多越强！");
-        provider.add("ctpp.multiblock.windmill_control_center.tooltip.1", "-会检测多方块周围半径(5 + 机械等级)格内的风车轴承\n-总输出的应力为：周围的风车轴承数x(周围风车总应力输出 + 512)\n-§4最多控制(6 + 2 * 机械等级)个风车！§r");
+        provider.add("ctpp.multiblock.windmill_control_center.tooltip.1", "-会检测多方块周围半径32格内的风车轴承\n-总输出的应力为：周围的风车轴承数x(周围风车总应力输出 + 512)\n-§4最多控制(6 + 6 * 机械等级)个风车！§r");
         provider.add("ctpp.multiblock.windmill_control_center.tooltip.2", "输出应力越多，机器顶部的水车旋转会越快");
 
         provider.add("ctpp.multiblock.boom_of_create.tooltip.0", "艺术就是爆炸！");

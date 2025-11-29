@@ -1,4 +1,4 @@
-package com.mo_guang.ctpp.rotate;
+package com.mo_guang.ctpp.dynamicPart;
 
 import com.simibubi.create.AllContraptionTypes;
 import com.simibubi.create.api.contraption.ContraptionType;
@@ -10,12 +10,9 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.Vec3;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Queue;
 import java.util.Set;
 
 public class SimpleBearingContraption extends Contraption {

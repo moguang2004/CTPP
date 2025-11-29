@@ -3,8 +3,8 @@ package com.mo_guang.ctpp.common.machine.multiblock;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.lowdragmc.lowdraglib.utils.TrackedDummyWorld;
 import com.mo_guang.ctpp.api.pattern.StaticBlockPattern;
-import com.mo_guang.ctpp.rotate.SimpleRotatingContraption;
-import com.mo_guang.ctpp.rotate.SimpleRotatingContraptionEntity;
+import com.mo_guang.ctpp.dynamicPart.rotation.SimpleRotatingContraption;
+import com.mo_guang.ctpp.dynamicPart.rotation.SimpleRotatingContraptionEntity;
 import net.minecraft.core.BlockPos;
 
 import java.util.HashMap;
@@ -25,6 +25,7 @@ public interface IRotationMultiblock extends IMultiController {
                 contraption.assemble(this.self().getLevel(), self().getPos());
                 contraption.removeBlocksFromWorld(this.self().getLevel(), BlockPos.ZERO);
                 SimpleRotatingContraptionEntity contraptionEntity = SimpleRotatingContraptionEntity.create(self().getLevel(), contraption, pivot.getCenter());
+                contraptionEntity.setPos(pivot.getCenter());
                 this.self().getLevel().addFreshEntity(contraptionEntity);
                 ce.put(group, contraptionEntity);
             }

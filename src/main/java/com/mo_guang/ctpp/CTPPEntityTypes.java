@@ -1,7 +1,7 @@
 package com.mo_guang.ctpp;
 
-import com.mo_guang.ctpp.rotate.SimpleRotatingContraptionEntity;
-import com.mo_guang.ctpp.rotate.SimpleContraptionEntityRenderer;
+import com.mo_guang.ctpp.dynamicPart.rotation.SimpleRotatingContraptionEntity;
+import com.mo_guang.ctpp.dynamicPart.SimpleContraptionEntityRenderer;
 import com.simibubi.create.content.contraptions.AbstractContraptionEntity;
 import com.simibubi.create.content.contraptions.render.ContraptionVisual;
 import com.simibubi.create.foundation.data.CreateEntityBuilder;
