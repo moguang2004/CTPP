@@ -11,7 +11,7 @@ import tech.vixhentx.mcmod.ctnhlib.registrate.lang.RegistrateCNLangProvider;
 
 public class ChineseLangHandler {
     public static void init(RegistrateCNLangProvider provider){
-        provider.add("ctpp.common_tooltip.kinetic_overclock", "-拥有应力超频机制，根据输入的总应力大小获得并行数(非线性)");
+        provider.add("ctpp.common_tooltip.kinetic_overclock", "-根据输入的总应力大小获得并行数(非线性)");
         provider.add("ctpp.common_tooltip.input_speed", "*输入转速以等级最高的应力仓的转速为准");
         provider.add("ctpp.common_tooltip.mechanical_tier", "*§n机械等级§r由§l机械升级仓§r中的物品决定：无(0)，§7基础构件(1)§r，§e精密构件(2)§r，\n§8钢铁构建或基础电子电路(3)§r，§b高级电子电路(4)§r，§6集成电路(5)§r");
         provider.add("ctpp.common_tooltip.mechanical_tier_machine", "§n机械等级§r请详见§l机械升级仓§r的物品信息");
