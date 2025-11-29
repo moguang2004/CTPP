@@ -14,13 +14,11 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockDisplayText;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
-import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.widget.*;
 import com.mo_guang.ctpp.api.StressRecipeCapability;
 import com.mo_guang.ctpp.common.machine.NotifiableStressTrait;
 import com.mo_guang.ctpp.common.machine.multiblock.part.MechanicalUpgradePartMachine;
-import com.mo_guang.ctpp.util.CTPPValues;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import com.simibubi.create.content.processing.burner.BlazeBurnerBlock;
 import com.simibubi.create.content.processing.burner.BlazeBurnerBlockEntity;
@@ -32,7 +30,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -77,30 +74,21 @@ public class KineticMultiblockMachine extends WorkableMultiblockMachine implemen
         return (KineticRecipeLogic) super.getRecipeLogic();
     }
 
-    @Override
-    public boolean beforeWorking(@Nullable GTRecipe recipe) {
+
+    public void stopWorking() {
         getCapabilitiesFlat(IO.OUT, StressRecipeCapability.CAP).forEach(iRecipeHandler -> {
             if (iRecipeHandler instanceof NotifiableStressTrait notifiableStressTrait) {
-                notifiableStressTrait.preWorking();
+                notifiableStressTrait.stopWorking();
             }
         });
-        return super.beforeWorking(recipe);
     }
 
-    public void postWorking() {
-        getCapabilitiesFlat(IO.OUT, StressRecipeCapability.CAP).forEach(iRecipeHandler -> {
-            if (iRecipeHandler instanceof NotifiableStressTrait notifiableStressTrait) {
-                notifiableStressTrait.postWorking();
-            }
-        });
+    @Override
+    public void notifyStatusChanged(RecipeLogic.Status oldStatus, RecipeLogic.Status newStatus) {
+        super.notifyStatusChanged(oldStatus, newStatus);
+        if(newStatus != RecipeLogic.Status.WORKING) stopWorking();
     }
-    public void preWorking() {
-        getCapabilitiesFlat(IO.OUT, StressRecipeCapability.CAP).forEach(iRecipeHandler -> {
-            if (iRecipeHandler instanceof NotifiableStressTrait notifiableStressTrait) {
-                notifiableStressTrait.preWorking();
-            }
-        });
-    }
+
     @Override
     public void updateActiveBlocks(boolean active) {
         super.updateActiveBlocks(active);
@@ -232,27 +220,12 @@ public class KineticMultiblockMachine extends WorkableMultiblockMachine implemen
             super(machine);
         }
 
-        @Override
-        public void handleRecipeWorking() {
-            Status last = this.getStatus();
-            super.handleRecipeWorking();
-            if (last == Status.WORKING && getStatus() != Status.WORKING) {
-                if (machine instanceof KineticMultiblockMachine kineticMultiblockMachine) {
-                    kineticMultiblockMachine.postWorking();
-                }
-            }
-            if (last != Status.WORKING && getStatus() == Status.WORKING) {
-                if (machine instanceof KineticMultiblockMachine kineticMultiblockMachine) {
-                    kineticMultiblockMachine.preWorking();;
-                }
-            }
-        }
 
         @Override
         public void inValid() {
             if (lastRecipe != null && machine.onWorking()) {
                 if (machine instanceof KineticMultiblockMachine kineticMultiblockMachine) {
-                    kineticMultiblockMachine.postWorking();
+                    kineticMultiblockMachine.stopWorking();
                 }
             }
         }

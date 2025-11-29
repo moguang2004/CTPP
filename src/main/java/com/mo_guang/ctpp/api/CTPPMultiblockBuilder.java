@@ -326,8 +326,8 @@ public class CTPPMultiblockBuilder extends CTNHMultiblockMachineBuilder {
 
     @Override
     public MultiblockMachineDefinition register() {
-        this.tooltips(Component.literal("-----------------------------------"),
-                Component.translatable("ctpp.copyright.info"));
+//        this.tooltips(Component.literal("-----------------------------------"),
+//                Component.translatable("ctpp.copyright.info"));
         return super.register();
     }
 }

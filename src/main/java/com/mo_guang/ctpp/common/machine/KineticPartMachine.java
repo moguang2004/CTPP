@@ -64,18 +64,6 @@ public class KineticPartMachine extends TieredIOPartMachine implements IKineticM
     }
 
     @Override
-    public boolean onWaiting(IWorkableMultiController controller) {
-        getKineticHolder().stopWorking();
-        return super.onWaiting(controller);
-    }
-
-    @Override
-    public boolean onPaused(IWorkableMultiController controller) {
-        getKineticHolder().stopWorking();
-        return super.onPaused(controller);
-    }
-
-    @Override
     public void removedFromController(IMultiController controller) {
         super.removedFromController(controller);
         getKineticHolder().stopWorking();
@@ -102,6 +90,11 @@ public class KineticPartMachine extends TieredIOPartMachine implements IKineticM
     //////////////////////////////////////
     @Override
     public boolean shouldOpenUI(Player player, InteractionHand hand, BlockHitResult hit) {
+        return false;
+    }
+
+    @Override
+    public boolean canShared() {
         return false;
     }
 }

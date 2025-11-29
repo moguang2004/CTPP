@@ -132,13 +132,14 @@
   "ctpp.recipe.breathing.fan": "pɐǝɥ uobɐɹᗡ ǝɥʇ puıɥǝq uɐɟ ǝɥʇ ǝɔɐןԀ",
   "ctpp.recipe.fan_acid_washing": "buıssǝɔoɹԀ uɐℲ buıɥsɐMpıɔⱯ",
   "ctpp.recipe.fan_breathing": "buıssǝɔoɹԀ uɐℲ uobɐɹᗡ",
-  "ctpp.stress_input": "n%ds：ʇnduI ssǝɹʇS",
-  "ctpp.stress_output": "n%ds：ʇndʇnO ssǝɹʇS",
+  "ctpp.stress_input": "ns %d：ʇnduI ssǝɹʇS",
+  "ctpp.stress_output": "ns %d：ʇndʇnO ssǝɹʇS",
   "item.ctpp.basic_mechanism": "ɯsıuɐɥɔǝW ɔısɐᗺ",
   "item.ctpp.incomplete_basic_mechanism": "ɯsıuɐɥɔǝW ɔısɐᗺ ǝʇǝןdɯoɔuI",
   "item.ctpp.steel_mechanism": "ɯsıuɐɥɔǝW ןǝǝʇS",
   "itemGroup.ctpp.machine": "sǝuıɥɔɐW ԀԀ⟘Ɔ",
   "recipe.capability.su.name": "ssǝɹʇS ǝʇɐǝɹƆ",
+  "recipe.condition.ctpp.mechanical_tier": ")%s(%d :ɹǝı⟘ ןɐɔıuɐɥɔǝW",
   "recipe.condition.mechanical_tier.tooltip": "%s :ɹǝı⟘ ןɐɔıuɐɥɔǝW",
   "recipe.condition.rpm.tooltip": "%d :WԀᴚ"
 }

@@ -82,7 +82,7 @@
   "config.ctpp.option.steamPoweredKineticGeneratingBoost": "蒸汽动力的应力产出加成",
   "config.screen.ctpp": "CTPP设置",
   "ctpp.common_tooltip.input_speed": "*输入转速以等级最高的应力仓的转速为准",
-  "ctpp.common_tooltip.kinetic_overclock": "-拥有应力超频机制，根据输入的总应力大小获得并行数(非线性)，根据输入的转速大小拥有不同的效果：\n转速 < 64:无效果\n转速 < 128:获得20%耗时减免\n转速 < 256:获得一次超频机会\n转速 < 512:获得一次无损超频机会\n输入速度由所有应力仓中速度最低者决定",
+  "ctpp.common_tooltip.kinetic_overclock": "-根据输入的总应力大小获得并行数(非线性)",
   "ctpp.common_tooltip.mechanical_tier": "*§n机械等级§r由§l机械升级仓§r中的物品决定：无(0)，§7基础构件(1)§r，§e精密构件(2)§r，\n§8钢铁构建或基础电子电路(3)§r，§b高级电子电路(4)§r，§6集成电路(5)§r",
   "ctpp.common_tooltip.mechanical_tier_machine": "§n机械等级§r请详见§l机械升级仓§r的物品信息",
   "ctpp.copyright.info": "该机器由§6CT++§r添加",
@@ -131,8 +131,8 @@
   "ctpp.recipe.breathing.fan": "在龙首后放置鼓风机",
   "ctpp.recipe.fan_acid_washing": "批量酸洗",
   "ctpp.recipe.fan_breathing": "批量龙吟",
-  "ctpp.stress_input": "应力输入：%dsu",
-  "ctpp.stress_output": "应力输出：%dsu",
+  "ctpp.stress_input": "应力输入：%d su",
+  "ctpp.stress_output": "应力输出：%d su",
   "gtceu.boom_of_create": "聚爆应力厂",
   "gtceu.kinetic_generator": "应力发电",
   "gtceu.kinetic_mixer": "应力搅拌",
@@ -145,6 +145,6 @@
   "item.ctpp.steel_mechanism": "钢铁构件",
   "itemGroup.ctpp.machine": "CTPP机器",
   "recipe.capability.su.name": "应力",
-  "recipe.condition.mechanical_tier.tooltip": "机械等级: %s",
+  "recipe.condition.ctpp.mechanical_tier": "机械等级：%d(%s)",
   "recipe.condition.rpm.tooltip": "转速: %d"
 }

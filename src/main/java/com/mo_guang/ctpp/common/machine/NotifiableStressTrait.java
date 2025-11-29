@@ -1,7 +1,6 @@
 package com.mo_guang.ctpp.common.machine;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.capability.recipe.IRecipeCapabilityHolder;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.trait.ICapabilityTrait;
@@ -12,7 +11,6 @@ import com.mo_guang.ctpp.api.StressRecipeCapability;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.util.Mth;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.List;
@@ -64,9 +62,8 @@ public class NotifiableStressTrait extends NotifiableRecipeHandlerTrait<Float> i
                     sum = sum - capacity;
                 }
             } else if (io == IO.OUT && kineticDefinition.isSource()) {
-                if (simulate) {
-                    available = kineticMachine.getKineticHolder().scheduleWorking(sum, true);
-                }
+                available = kineticMachine.getKineticHolder().scheduleWorking(sum, simulate);
+
                 sum = sum - available;
             }
             return sum <= 0 ? null : Collections.singletonList(sum);
@@ -84,15 +81,8 @@ public class NotifiableStressTrait extends NotifiableRecipeHandlerTrait<Float> i
         return available;
     }
 
-    public void preWorking() {
-        if (machine instanceof IKineticMachine kineticMachine) {
-            var kineticDefinition = kineticMachine.getKineticDefinition();
-            if (available > 0 && kineticDefinition.isSource()) {
-                kineticMachine.getKineticHolder().scheduleWorking(available, false);
-            }
-        }
-    }
-    public void postWorking() {
+
+    public void stopWorking() {
         if (machine instanceof IKineticMachine kineticMachine) {
             var kineticDefinition = kineticMachine.getKineticDefinition();
             if (kineticDefinition.isSource()) {

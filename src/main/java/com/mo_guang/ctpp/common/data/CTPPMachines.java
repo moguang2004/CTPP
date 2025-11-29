@@ -80,24 +80,7 @@ public class CTPPMachines {
     public static final KineticMachineDefinition[] KINETIC_MIXER = CTPPRegistration.conditionalRegistration(gtmEnabled("GTMKineticCreateMixer"),() -> 
         registerSimpleKineticElectricMachine("kinetic_mixer",CTPPRecipeTypes.KINETIC_MIXER_RECIPES, LOW_TIERS));
     public static KineticMachineDefinition[] KINETIC_INPUT_BOX;
-    public static final KineticMachineDefinition[] KINETIC_OUTPUT_BOX = CTPPRegistration.conditionalRegistration(gtmEnabled("GTMKineticOutputBox"),() ->
-            registerKineticTieredMachines("kinetic_output_box",
-                (tier, id) -> new KineticMachineDefinition(id, true, GTValues.V[tier] * MainConfig.INSTANCE.gtmConfig.kineticOutputBoxTorqueMultiplier).setFrontRotation(true),
-                (holder, tier) -> new KineticPartMachine(holder, tier, IO.OUT), (tier, builder) -> builder
-                    .langValue("%s %s %s".formatted(VLVH[tier], toEnglishName("kinetic_output_box"), VLVT[tier]))
-                    .tooltips(Component.translatable("ctpp.machine.kinetic_output_box.tooltip", GTValues.V[tier]*MainConfig.INSTANCE.gtmConfig.kineticOutputBoxTorqueMultiplier))
-                    .rotationState(RotationState.ALL)
-                    .blockProp(BlockBehaviour.Properties::dynamicShape)
-                    .blockProp(BlockBehaviour.Properties::noOcclusion)
-                    .abilities(CTPPPartAbility.OUTPUT_KINETIC)
-                    .modelProperty(GTMachineModelProperties.IS_FORMED, false)
-                    .model(createTieredCustomModel(CTPP.id("block/machine/part/kinetic_output_box"))
-                            .andThen((ctx, prov, model) ->
-                                    model.addReplaceableTextures("bottom", "top", "side"))
-                    )
-                    .tier(tier)
-                    .register(),
-                    () -> (VisualizationContext var1, KineticMachineBlockEntity var2, float var3) -> new SplitShaftVisual(var1, var2, var3), false, ALL_TIERS));
+    public static KineticMachineDefinition[] KINETIC_OUTPUT_BOX;
 
     @SuppressWarnings("unchecked")
     public static KineticMachineDefinition[] registerElectricGearBox(int maxAmps, int... tiers) {
@@ -182,7 +165,10 @@ public class CTPPMachines {
                 (tier, id) -> new KineticMachineDefinition(id, false, GTValues.V[tier]*MainConfig.INSTANCE.gtmConfig.kineticInputBoxTorqueMultiplier).setFrontRotation(true),
                 (holder, tier) -> new KineticPartMachine(holder, tier, IO.IN), (tier, builder) -> builder
                         .langValue("%s %s %s".formatted(VLVH[tier], toEnglishName("kinetic_input_box"), VLVT[tier]))
-                        .tooltips(Component.translatable("ctpp.machine.kinetic_input_box.tooltip", GTValues.V[tier]*MainConfig.INSTANCE.gtmConfig.kineticInputBoxTorqueMultiplier))
+                        .tooltips(
+                                Component.translatable("ctpp.machine.kinetic_input_box.tooltip", GTValues.V[tier]*MainConfig.INSTANCE.gtmConfig.kineticInputBoxTorqueMultiplier),
+                                Component.translatable("gtceu.part_sharing.disabled")
+                        )
                         .rotationState(RotationState.ALL)
                         .blockProp(BlockBehaviour.Properties::dynamicShape)
                         .blockProp(BlockBehaviour.Properties::noOcclusion)
@@ -194,5 +180,27 @@ public class CTPPMachines {
                         .tier(tier)
                         .register(),
                 () -> (VisualizationContext var1, KineticMachineBlockEntity var2, float var3) -> new SplitShaftVisual(var1, var2, var3), false, ALL_TIERS);
+
+        KINETIC_OUTPUT_BOX = CTPPRegistration.conditionalRegistration(gtmEnabled("GTMKineticOutputBox"),() ->
+                registerKineticTieredMachines("kinetic_output_box",
+                        (tier, id) -> new KineticMachineDefinition(id, true, GTValues.V[tier] * MainConfig.INSTANCE.gtmConfig.kineticOutputBoxTorqueMultiplier).setFrontRotation(true),
+                        (holder, tier) -> new KineticPartMachine(holder, tier, IO.OUT), (tier, builder) -> builder
+                                .langValue("%s %s %s".formatted(VLVH[tier], toEnglishName("kinetic_output_box"), VLVT[tier]))
+                                .tooltips(
+                                        Component.translatable("ctpp.machine.kinetic_output_box.tooltip", GTValues.V[tier]*MainConfig.INSTANCE.gtmConfig.kineticOutputBoxTorqueMultiplier),
+                                        Component.translatable("gtceu.part_sharing.disabled")
+                                )
+                                .rotationState(RotationState.ALL)
+                                .blockProp(BlockBehaviour.Properties::dynamicShape)
+                                .blockProp(BlockBehaviour.Properties::noOcclusion)
+                                .abilities(CTPPPartAbility.OUTPUT_KINETIC)
+                                .modelProperty(GTMachineModelProperties.IS_FORMED, false)
+                                .model(createTieredCustomModel(CTPP.id("block/machine/part/kinetic_output_box"))
+                                        .andThen((ctx, prov, model) ->
+                                                model.addReplaceableTextures("bottom", "top", "side"))
+                                )
+                                .tier(tier)
+                                .register(),
+                        () -> (VisualizationContext var1, KineticMachineBlockEntity var2, float var3) -> new SplitShaftVisual(var1, var2, var3), false, ALL_TIERS));
     }
 }

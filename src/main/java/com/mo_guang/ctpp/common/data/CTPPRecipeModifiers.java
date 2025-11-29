@@ -19,9 +19,8 @@ import static com.gregtechceu.gtceu.api.recipe.OverclockingLogic.NON_PERFECT_OVE
 public class CTPPRecipeModifiers {
     public static final RecipeModifier KINETIC_OVERCLOCK = ((machine, recipe) -> {
         if (machine instanceof KineticWorkableMultiblockMachine kmachine) {
-            var modifier = kmachine.calculateModifier();
-            kmachine.parallels = CTPPParallelLogic.getKineticParallelAmount(kmachine,modifier.apply(recipe),2147483647);
-            return CTPPModifierFunction.accurateParallel(kmachine,recipe,kmachine.parallels).compose(modifier);
+            kmachine.parallels = CTPPParallelLogic.getKineticParallelAmount(kmachine,recipe,2147483647);
+            return CTPPModifierFunction.accurateParallel(kmachine,recipe,kmachine.parallels);
         }
         return ModifierFunction.IDENTITY;
     });

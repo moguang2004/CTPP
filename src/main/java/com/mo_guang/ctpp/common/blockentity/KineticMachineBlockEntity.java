@@ -73,6 +73,7 @@ public class KineticMachineBlockEntity extends KineticBlockEntity implements IMa
     @RequireRerender
     private MachineRenderState renderState;
     private final long offset = GTValues.RNG.nextInt(20);
+    @Persisted
     public float workingSpeed;
     public boolean reActivateSource;
 
@@ -205,7 +206,10 @@ public class KineticMachineBlockEntity extends KineticBlockEntity implements IMa
             float speed = Math.min(AllConfigs.server().kinetics.maxRotationSpeed.get(), su / getDefinition().getTorque());
             if (!simulate) {
                 workingSpeed = speed;
-                updateGeneratedRotation();
+                reActivateSource = true;
+//                level.getServer().tell(
+//                        new TickTask(level.getServer().getTickCount() + 1, this::updateGeneratedRotation)
+//                );
             }
             return speed * getDefinition().getTorque();
         }
@@ -219,7 +223,7 @@ public class KineticMachineBlockEntity extends KineticBlockEntity implements IMa
     public void stopWorking() {
         if (getDefinition().isSource() && getGeneratedSpeed() != 0) {
             workingSpeed = 0;
-            updateGeneratedRotation();
+            reActivateSource = true;
         }
     }
 
@@ -358,17 +362,17 @@ public class KineticMachineBlockEntity extends KineticBlockEntity implements IMa
         return this.worldPosition.asLong();
     }
 
-    @Override
-    protected void write(CompoundTag compound, boolean clientPacket) {
-        super.write(compound, clientPacket);
-        compound.putFloat("workingSpeed", workingSpeed);
-    }
-
-    @Override
-    protected void read(CompoundTag compound, boolean clientPacket) {
-        super.read(compound, clientPacket);
-        workingSpeed = compound.contains("workingSpeed") ? compound.getFloat("workingSpeed") : 0;
-    }
+//    @Override
+//    protected void write(CompoundTag compound, boolean clientPacket) {
+//        super.write(compound, clientPacket);
+//        compound.putFloat("workingSpeed", workingSpeed);
+//    }
+//
+//    @Override
+//    protected void read(CompoundTag compound, boolean clientPacket) {
+//        super.read(compound, clientPacket);
+//        workingSpeed = compound.contains("workingSpeed") ? compound.getFloat("workingSpeed") : 0;
+//    }
 
     @Override
     public ManagedFieldHolder getFieldHolder() {

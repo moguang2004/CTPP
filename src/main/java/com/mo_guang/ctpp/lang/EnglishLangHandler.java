@@ -13,8 +13,8 @@ public class EnglishLangHandler {
         provider.add("recipe.capability.su.name", "Create Stress");
         provider.add("recipe.condition.rpm.tooltip", "RPM: %d");
         provider.add("recipe.condition.mechanical_tier.tooltip", "Mechanical Tier: %s");
-        provider.add("ctpp.stress_input","Stress Input：%dsu");
-        provider.add("ctpp.stress_output","Stress Output：%dsu");
+        provider.add("ctpp.stress_input","Stress Input：%d su");
+        provider.add("ctpp.stress_output","Stress Output：%d su");
         provider.add("ctpp.mechanical_tier", "Mechanical Tier：%d(%s)");
 
         // Multiblock UI info
