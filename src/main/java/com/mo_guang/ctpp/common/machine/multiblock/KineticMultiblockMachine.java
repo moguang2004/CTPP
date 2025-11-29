@@ -86,7 +86,7 @@ public class KineticMultiblockMachine extends WorkableMultiblockMachine implemen
     @Override
     public void notifyStatusChanged(RecipeLogic.Status oldStatus, RecipeLogic.Status newStatus) {
         super.notifyStatusChanged(oldStatus, newStatus);
-        if(newStatus == RecipeLogic.Status.IDLE) stopWorking();
+        if(newStatus != RecipeLogic.Status.WORKING) stopWorking();
     }
 
     @Override
