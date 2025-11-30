@@ -4,7 +4,7 @@ dependencies {
     modImplementation(project(":modules:CTNH-Lib")){transitive = false}
     // Mixin
     annotationProcessor('org.spongepowered:mixin:0.8.5:processor')
-
+    compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:0.5.0-rc.3"))
     // JEI, EMI, Jade
     modImplementation("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")
     //modCompileOnly("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
@@ -23,6 +23,8 @@ dependencies {
     modImplementation("dev.engine-room.flywheel:flywheel-forge-${minecraft_version}:${flywheel_version}")
     modImplementation("net.createmod.ponder:Ponder-Forge-${minecraft_version}:${ponder_version}")
 
+    modImplementation("earth.terrarium.botarium:botarium-forge-${minecraft_version}:${botarium_version}")
+    modImplementation("curse.maven:create-new-age-905861:6482827")
 
     modRuntimeOnly("curse.maven:modernfix-790626:6719008")
 
