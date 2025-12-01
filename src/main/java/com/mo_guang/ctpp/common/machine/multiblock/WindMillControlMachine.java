@@ -58,7 +58,7 @@ public class WindMillControlMachine extends KineticOutputMachine {
             textList.add(Component.translatable("ctpp.multiblock.windmill_control_center.info.0", efficiency, 4 + 2 * tier));
             textList.add(Component.translatable("ctpp.multiblock.windmill_control_center.info.1", String.format("%.1f",TotalOutput)));
             textList.add(Component.translatable("ctpp.multiblock.windmill_control_center.info.2", String.format("%d",efficiency*100)));
-            textList.add(Component.translatable("ctpp.multiblock.windmill_control_center.info.3",String.format("%.1f",(TotalOutput + 512) * efficiency)));
+            //textList.add(Component.translatable("ctpp.multiblock.windmill_control_center.info.3",String.format("%.1f",(TotalOutput + 512) * efficiency)));
         }
     }
     public static ModifierFunction recipeModifier(MetaMachine machine, GTRecipe recipe) {

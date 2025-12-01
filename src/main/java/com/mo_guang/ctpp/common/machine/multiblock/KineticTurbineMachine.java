@@ -64,13 +64,13 @@ public class KineticTurbineMachine extends KineticOutputMachine implements ITier
                         FormattingUtil.formatNumbers(rotorHolder.getMaxRotorHolderSpeed())));
                 textList.add(Component.translatable("ctpp.multiblock.kinetic_steam_turbine.info.0",
                         FormattingUtil.formatNumbers(rotorHolder.getTotalEfficiency() * lossrate)));
-                if (isActive()) {
-                    double output = 0;
-                    if(recipeLogic.getLastRecipe() != null){
-                        output = recipeLogic.getLastRecipe().outputs.get(StressRecipeCapability.CAP).stream().map(Content::getContent).mapToDouble(StressRecipeCapability.CAP::of).sum();
-                    }
-                    textList.add(Component.translatable("ctpp.multiblock.kinetic_steam_turbine.info.1",FormattingUtil.formatNumbers(output)));
-                }
+//                if (isActive()) {
+//                    double output = 0;
+//                    if(recipeLogic.getLastRecipe() != null){
+//                        output = recipeLogic.getLastRecipe().outputs.get(StressRecipeCapability.CAP).stream().map(Content::getContent).mapToDouble(StressRecipeCapability.CAP::of).sum();
+//                    }
+//                    textList.add(Component.translatable("ctpp.multiblock.kinetic_steam_turbine.info.1",FormattingUtil.formatNumbers(output)));
+//                }
 
                 int rotorDurability = rotorHolder.getRotorDurabilityPercent();
                 if (rotorDurability > MIN_DURABILITY_TO_WARN) {

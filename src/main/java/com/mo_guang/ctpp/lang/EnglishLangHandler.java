@@ -13,9 +13,12 @@ public class EnglishLangHandler {
         provider.add("recipe.capability.su.name", "Create Stress");
         provider.add("recipe.condition.rpm.tooltip", "RPM: %d");
         provider.add("recipe.condition.mechanical_tier.tooltip", "Mechanical Tier: %s");
-        provider.add("ctpp.stress_input","Stress Input：%d su");
-        provider.add("ctpp.stress_output","Stress Output：%d su");
+        provider.add("ctpp.stress_input","Stress Input：§b%s su§r");
+        provider.add("ctpp.stress_output","Stress Output：§b%s su§r");
         provider.add("ctpp.mechanical_tier", "Mechanical Tier：%d(%s)");
+
+        provider.add("ctpp.top.stress_production", "Stress Production：");
+        provider.add("ctpp.top.stress_consumption", "Stress Consumption：");
 
         // Multiblock UI info
         provider.add("ctpp.multiblock.kinetic_multiblock.info.waiting", "Waiting：");
