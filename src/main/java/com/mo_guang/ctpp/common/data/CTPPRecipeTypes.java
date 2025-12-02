@@ -7,8 +7,10 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
+import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
+import com.gregtechceu.gtceu.common.data.GTRecipes;
 import com.gregtechceu.gtceu.common.data.GTSoundEntries;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
@@ -18,6 +20,10 @@ import com.mo_guang.ctpp.config.MainConfig;
 import com.mo_guang.ctpp.recipe.CTPPRecipeBuilder;
 import com.mo_guang.ctpp.util.CTPPValues;
 import com.simibubi.create.AllBlocks;
+import net.minecraft.resources.ResourceLocation;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 import static com.gregtechceu.gtceu.common.data.GTRecipes.RECIPE_FILTERS;
@@ -33,7 +39,7 @@ public class CTPPRecipeTypes {
                 .setSound(GTSoundEntries.MIXER)
                 .setMaxTooltips(4);
     public static final GTRecipeType SMASHING_FACTORY_RECIPES = GTRecipeTypes.register("smashing_factory_recipes", KINETIC)
-            .setMaxIOSize(1,6,1,3)
+            .setMaxIOSize(1,4,0,0)
             .setSlotOverlay(false, false, GuiTextures.DUST_OVERLAY)
             .setSlotOverlay(true, false, GuiTextures.DUST_OVERLAY)
             .setProgressBar(GuiTextures.PROGRESS_BAR_MIXER, LEFT_TO_RIGHT)
@@ -65,9 +71,12 @@ public class CTPPRecipeTypes {
             .setSlotOverlay(false, false, GuiTextures.SOLIDIFIER_OVERLAY)
             .setProgressBar(GuiTextures.PROGRESS_BAR_ARROW, ProgressTexture.FillDirection.LEFT_TO_RIGHT)
             .setSound(GTSoundEntries.COOLING);
+    public static ResourceLocation convert(ResourceLocation id, GTRecipeType recipeType) {
+        return ResourceLocation.tryBuild(id.getNamespace(), recipeType.registryName.getPath() + "/" + id.getPath());
+    }
     public static void init(){
         MIXER_RECIPES.onRecipeBuild((builder, provider) -> {
-            if (!RECIPE_FILTERS.contains(builder.id)) {
+            if (!GTRecipes.RECIPE_FILTERS.contains(convert(builder.id, builder.recipeType))) {
                 assert KINETIC_MIXER_RECIPES != null;
                 var newrecipe = KINETIC_MIXER_RECIPES.copyFrom(builder)
                         .duration(Math.max((int) (builder.duration / MainConfig.INSTANCE.gtmConfig.kineticCreateMixerSpeedMultiplier), 1))
@@ -78,15 +87,20 @@ public class CTPPRecipeTypes {
         });
         MACERATOR_RECIPES.onRecipeBuild((builder, provider) ->{
             assert SMASHING_FACTORY_RECIPES != null;
-            if(GTUtil.getTierByVoltage(builder.EUt().voltage()) <= MainConfig.INSTANCE.ctnhConfig.smashingFactoryMaximumProcessingCapacity) {
-                var newrecipe = SMASHING_FACTORY_RECIPES.copyFrom(builder)
+            if(!GTRecipes.RECIPE_FILTERS.contains(convert(builder.id, builder.recipeType)) &&
+                    GTUtil.getTierByVoltage(builder.EUt().voltage()) <= MainConfig.INSTANCE.ctnhConfig.smashingFactoryMaximumProcessingCapacity) {
+                var newRecipe = SMASHING_FACTORY_RECIPES.copyFrom(builder)
                 .duration(Math.max((int)(builder.duration / MainConfig.INSTANCE.ctnhConfig.smashingFactorySpeedMultiplier), 1))
                         .buildRawRecipe();
-                new CTPPRecipeBuilder(newrecipe, SMASHING_FACTORY_RECIPES).rpm(MainConfig.INSTANCE.ctnhConfig.smashingFactoryRPMRequirement)
+                List<Content> output = new ArrayList<>();
+                for(var content:newRecipe.getOutputContents(ItemRecipeCapability.CAP)){
+                    if (!content.isChanced()) output.add(content);
+                }
+                newRecipe.outputs.put(ItemRecipeCapability.CAP, output);
+                new CTPPRecipeBuilder(newRecipe, SMASHING_FACTORY_RECIPES).rpm(MainConfig.INSTANCE.ctnhConfig.smashingFactoryRPMRequirement)
                         .noEUt()
                         .tier(Math.min(GTUtil.getTierByVoltage(builder.EUt().voltage()) * 2, 5))
                         .inputStress(builder.EUt().voltage() * MainConfig.INSTANCE.ctnhConfig.smashingFactoryStressRequirement)
-                        .chancedOutputLogic(ItemRecipeCapability.CAP, ChanceLogic.NONE)
                         .save(provider);
             }
         });
