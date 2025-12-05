@@ -6,7 +6,7 @@ dependencies {
     annotationProcessor('org.spongepowered:mixin:0.8.5:processor')
     compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:0.5.0-rc.3"))
     // JEI, EMI, Jade
-    modImplementation("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")
+    //modImplementation("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")
     //modCompileOnly("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
     //modRuntimeOnly("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")
     //modRuntimeOnly("dev.emi:emi-forge:${emi_version}+${minecraft_version}")
