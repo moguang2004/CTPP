@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.mo_guang.ctpp.api.StressRecipeCapability;
+import com.mo_guang.ctpp.common.data.CTPPRecipeHelper;
 import com.mo_guang.ctpp.common.machine.KineticPartMachine;
 import com.mo_guang.ctpp.recipe.CTPPRecipeBuilder;
 import com.simibubi.create.infrastructure.config.AllConfigs;
@@ -61,7 +62,7 @@ public class KineticOutputMachine extends KineticMultiblockMachine{
                     FormattingUtil.formatNumbers(maxOutputStress)
             ).withStyle(ChatFormatting.GRAY));
             textList.add(recipeKineticOutput.translate(FormattingUtil.formatNumbers(
-                    CTPPRecipeBuilder.getOutputStress(getRecipeLogic().getLastRecipe())
+                    CTPPRecipeHelper.getOutputStress(getRecipeLogic().getLastRecipe())
             )).withStyle(ChatFormatting.GRAY));
         }
     }

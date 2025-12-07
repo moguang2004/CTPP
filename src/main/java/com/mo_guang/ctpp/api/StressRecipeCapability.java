@@ -40,9 +40,9 @@ public class StressRecipeCapability extends RecipeCapability<Float> {
     }
     @Override
     public int getMaxParallelByInput(IRecipeCapabilityHolder holder, GTRecipe recipe, int parallelAmount, boolean tick) {
-        if(holder instanceof KineticWorkableMultiblockMachine){
-            float inputStress = Math.abs(((KineticWorkableMultiblockMachine) holder).getTotalInputStress());
-            float recipeStress = (float) CTPPRecipeHelper.getInputStress(recipe);
+        if(holder instanceof KineticWorkableMultiblockMachine machine){
+            float inputStress = Math.max(machine.getAvailableStress(), 0);
+            float recipeStress = CTPPRecipeHelper.getInputStress(recipe);
             if (recipeStress == 0) return parallelAmount;
             return (int) Math.min(inputStress/recipeStress, parallelAmount);
         }
@@ -53,7 +53,7 @@ public class StressRecipeCapability extends RecipeCapability<Float> {
     public int limitMaxParallelByOutput(IRecipeCapabilityHolder holder, GTRecipe recipe, int maxMultiplier, boolean tick) {
         if (holder instanceof KineticOutputMachine kineticOutputMachine){
             float outputStress = Math.abs(kineticOutputMachine.getMaxOutputStress());
-            float recipeStress = (float) CTPPRecipeHelper.getOutputStress(recipe);
+            float recipeStress = CTPPRecipeHelper.getOutputStress(recipe);
             if (recipeStress == 0) return maxMultiplier;
             return (int) Math.min(outputStress/recipeStress, maxMultiplier);
         }

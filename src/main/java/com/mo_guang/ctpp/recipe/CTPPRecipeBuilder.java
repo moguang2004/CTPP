@@ -113,30 +113,4 @@ public class CTPPRecipeBuilder extends GTRecipeBuilder {
         //this.data.putInt("mechanical_tier", tier);
         return this;
     }
-
-    public static float getOutputStress(GTRecipe recipe){
-        var outputs = recipe.outputs.get(StressRecipeCapability.CAP);
-        if (outputs == null) return 0;
-        float sum = 0;
-        for(var content: outputs){
-            sum += StressRecipeCapability.CAP.of(content.content);
-        }
-        return sum;
-    }
-
-    public static float getInputStress(GTRecipe recipe){
-        var inputs = recipe.inputs.get(StressRecipeCapability.CAP);
-        if (inputs == null) return 0;
-        float sum = 0;
-        for(var content: inputs){
-            sum += StressRecipeCapability.CAP.of(content.content);
-        }
-        return sum;
-    }
-
-    public static float getStressWithIO(GTRecipe recipe){
-        float input = getInputStress(recipe);
-        if(input!=0) return input;
-        return -getOutputStress(recipe);
-    }
 }

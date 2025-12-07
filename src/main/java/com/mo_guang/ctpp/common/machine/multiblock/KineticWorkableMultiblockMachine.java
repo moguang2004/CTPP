@@ -23,7 +23,8 @@ public class KineticWorkableMultiblockMachine extends KineticMultiblockMachine i
 
     @Getter
     public float maxTorque = 0;
-    public int parallels = 1;
+
+    public float availableStress = -1;
 
     public List<BlockPos> inputPartsMax = new ArrayList<>();
 
@@ -96,6 +97,19 @@ public class KineticWorkableMultiblockMachine extends KineticMultiblockMachine i
     public void addDisplayText(List<Component> textList) {
         super.addDisplayText(textList);
         textList.add(Component.translatable("ctpp.multiblock.kinetic_workable_multiblock_machine.speed",speed));
-        textList.add(Component.translatable("ctpp.multiblock.kinetic_workable_multiblock_machine.parallel",parallels));
+        var lastRecipe = getRecipeLogic().getLastRecipe();
+        if(lastRecipe != null)
+            textList.add(Component.translatable("ctpp.multiblock.kinetic_workable_multiblock_machine.parallel",lastRecipe.parallels));
+    }
+
+    public float getAvailableStress(){
+        if(availableStress == -1){
+            availableStress = getTotalInputStress();
+        }
+        return availableStress;
+    }
+
+    public void resetAvailableStress(){
+        availableStress = getTotalInputStress();
     }
 }
