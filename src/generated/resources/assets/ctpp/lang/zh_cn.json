@@ -81,6 +81,7 @@
   "config.ctpp.option.smashingFactoryStressRequirement": "粉碎工厂的应力要求（等于原配方的电压需求乘以该倍数）",
   "config.ctpp.option.steamPoweredKineticGeneratingBoost": "蒸汽动力的应力产出加成",
   "config.screen.ctpp": "CTPP设置",
+  "ctnh.recipe_type.info": "配方类型：%s",
   "ctpp.common_tooltip.input_speed": "*输入转速以等级最高的应力仓的转速为准",
   "ctpp.common_tooltip.kinetic_overclock": "-根据输入的总应力大小获得并行数(非线性)",
   "ctpp.common_tooltip.mechanical_tier": "*§n机械等级§r由§l机械升级仓§r中的物品决定：无(0)，§7基础构件(1)§r，§e精密构件(2)§r，\n§8钢铁构建或基础电子电路(3)§r，§b高级电子电路(4)§r，§6集成电路(5)§r",

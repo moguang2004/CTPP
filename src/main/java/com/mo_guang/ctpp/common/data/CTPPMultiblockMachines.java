@@ -34,9 +34,9 @@ public class CTPPMultiblockMachines {
         ctnhEnabled("SmashingFactory"),
         () -> REGISTRATE.multiblock("smashing_factory", KineticWorkableMultiblockMachine::new)
             .rotationState(RotationState.NON_Y_AXIS)
-                .tooltips(CommonTooltips.KINETIC_OVERCLOCK)
             .appearanceBlock(AllBlocks.ANDESITE_CASING)
             .recipeType(CTPPRecipeTypes.SMASHING_FACTORY_RECIPES)
+                .tooltips(CommonTooltips.KINETIC_OVERCLOCK)
             .recipeModifier(CTPPRecipeModifiers.KINETIC_PARALLEL)
             .pattern(definition -> FactoryBlockPattern.start()
                     .aisle("AAAAA", "ABBBA", "ABBBA")
