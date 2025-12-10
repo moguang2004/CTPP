@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.content.SerializerFloat;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
+import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
@@ -39,9 +40,9 @@ public class StressRecipeCapability extends RecipeCapability<Float> {
     }
     @Override
     public int getMaxParallelByInput(IRecipeCapabilityHolder holder, GTRecipe recipe, int parallelAmount, boolean tick) {
-        if(holder instanceof KineticWorkableMultiblockMachine){
-            float inputStress = Math.abs(((KineticWorkableMultiblockMachine) holder).getTotalInputStress());
-            float recipeStress = (float) CTPPRecipeHelper.getInputStress(recipe);
+        if(holder instanceof KineticWorkableMultiblockMachine machine){
+            float inputStress = Math.max(machine.getAvailableStress(), 0);
+            float recipeStress = CTPPRecipeHelper.getInputStress(recipe);
             if (recipeStress == 0) return parallelAmount;
             return (int) Math.min(inputStress/recipeStress, parallelAmount);
         }
@@ -52,7 +53,7 @@ public class StressRecipeCapability extends RecipeCapability<Float> {
     public int limitMaxParallelByOutput(IRecipeCapabilityHolder holder, GTRecipe recipe, int maxMultiplier, boolean tick) {
         if (holder instanceof KineticOutputMachine kineticOutputMachine){
             float outputStress = Math.abs(kineticOutputMachine.getMaxOutputStress());
-            float recipeStress = (float) CTPPRecipeHelper.getOutputStress(recipe);
+            float recipeStress = CTPPRecipeHelper.getOutputStress(recipe);
             if (recipeStress == 0) return maxMultiplier;
             return (int) Math.min(outputStress/recipeStress, maxMultiplier);
         }
@@ -64,7 +65,7 @@ public class StressRecipeCapability extends RecipeCapability<Float> {
         String langKey = "ctpp." + (isInput? "stress_input" : "stress_output");
         float stress = (float) contents.stream().map(Content::getContent).mapToDouble(CAP::of).sum();
         group.addWidget(new LabelWidget(3 - xOffset, yOffset.addAndGet(10),
-                LocalizationUtils.format(langKey, String.format("%.1f", stress))));
+                LocalizationUtils.format(langKey, FormattingUtil.formatNumbers(stress))));
         var handler = new CustomItemStackHandler(AllBlocks.COGWHEEL.asStack());
         group.addWidget(new SlotWidget(handler, 0, group.getSize().width - 30,
                 group.getSize().height - 30, false, false));

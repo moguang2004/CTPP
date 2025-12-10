@@ -10,13 +10,15 @@ import java.util.Objects;
 import static com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic.*;
 
 public class CTPPParallelLogic {
-    public static int getKineticParallelAmount(MetaMachine machine, GTRecipe recipe, int parallelLimit) {
+    public static int getKineticParallelAmount(MetaMachine machine, GTRecipe recipe, int parallelLimit, boolean perfect) {
         if (parallelLimit <= 1) {
             return parallelLimit;
         } else if (machine instanceof IRecipeLogicMachine) {
             IRecipeLogicMachine rlm = (IRecipeLogicMachine)machine;
             int maxInputMultiplier = getMaxByInput(rlm, recipe, parallelLimit, List.of());
-            int maxParallelKinetic = (int) Math.sqrt(StressRecipeCapability.CAP.getMaxParallelByInput(rlm, recipe, parallelLimit, false));
+            int maxParallelKinetic = StressRecipeCapability.CAP.getMaxParallelByInput(rlm, recipe, parallelLimit, false);
+            if(!perfect)
+                maxParallelKinetic = (int)Math.sqrt(maxParallelKinetic);
             maxInputMultiplier = Math.min(maxParallelKinetic, maxInputMultiplier);
             if (maxInputMultiplier == 0) {
                 return 0;

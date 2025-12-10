@@ -6,7 +6,6 @@
   "mixins": [
     "BlockPatternMixin",
     "GTBucketItemMixin",
-    "GTRecipeComponentsMixin",
     "RotationPropagatorMixin",
     "SmartBlockEntityMixin",
     "create.WindmillBearingBlockMixin",

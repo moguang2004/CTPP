@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
-import com.gregtechceu.gtceu.api.machine.multiblock.CoilWorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
 import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
@@ -17,8 +16,6 @@ import com.mo_guang.ctpp.api.pattern.FactoryStaticBlockPattern;
 import com.mo_guang.ctpp.common.machine.multiblock.*;
 import com.mo_guang.ctpp.util.CommonTooltips;
 import com.simibubi.create.AllBlocks;
-import com.simibubi.create.Create;
-import com.simibubi.create.foundation.data.BlockStateGen;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -38,10 +35,10 @@ public class CTPPMultiblockMachines {
         ctnhEnabled("SmashingFactory"),
         () -> REGISTRATE.multiblock("smashing_factory", KineticWorkableMultiblockMachine::new)
             .rotationState(RotationState.NON_Y_AXIS)
-                .tooltips(CommonTooltips.KINETIC_OVERCLOCK)
             .appearanceBlock(AllBlocks.ANDESITE_CASING)
             .recipeType(CTPPRecipeTypes.SMASHING_FACTORY_RECIPES)
-            .recipeModifier(CTPPRecipeModifiers.KINETIC_OVERCLOCK)
+                .tooltips(CommonTooltips.KINETIC_OVERCLOCK)
+            .recipeModifier(CTPPRecipeModifiers.KINETIC_PARALLEL)
             .pattern(definition -> FactoryBlockPattern.start()
                     .aisle("AAAAA", "ABBBA", "ABBBA")
                     .aisle("AAAAA", "A   A", "AC CA")
@@ -117,7 +114,7 @@ public class CTPPMultiblockMachines {
                     Component.translatable("ctpp.multiblock.kinetic_steam_turbine.tooltip.2").withStyle(ChatFormatting.RED),
                     Component.translatable("ctpp.multiblock.kinetic_steam_turbine.tooltip.3"),
                     CommonTooltips.MECHANICAL_TIER_MACHINE)
-            .recipeModifiers(KineticTurbineMachine::recipeModifier,CTPPRecipeModifiers.KINETIC_ADJUST)
+            .recipeModifiers(KineticTurbineMachine::recipeModifier)
             .pattern(definition -> FactoryBlockPattern.start()
                 .aisle("CCCC", "CSSC", "CCCC")
                 .aisle("CSSC", "TGGT", "CSSC")
@@ -140,7 +137,7 @@ public class CTPPMultiblockMachines {
         () -> REGISTRATE.multiblock("seaweed_farm", KineticWorkableMultiblockMachine::new)
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeType(CTPPRecipeTypes.SEAWEED_FARM)
-            .recipeModifier(CTPPRecipeModifiers.KINETIC_OVERCLOCK)
+            .recipeModifier(CTPPRecipeModifiers.KINETIC_PARALLEL)
             .tooltips(CommonTooltips.KINETIC_OVERCLOCK)
             .appearanceBlock(AllBlocks.ANDESITE_CASING)
             .pattern(definition -> FactoryBlockPattern.start()
@@ -173,7 +170,7 @@ public class CTPPMultiblockMachines {
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeType(CTPPRecipeTypes.WINDMILL_CONTROL)
             .appearanceBlock(AllBlocks.BRASS_CASING)
-            .recipeModifiers(WindMillControlMachine::recipeModifier,CTPPRecipeModifiers.KINETIC_ADJUST)
+            .recipeModifiers(WindMillControlMachine::recipeModifier)
             .tooltips(Component.translatable("ctpp.multiblock.windmill_control_center.tooltip.0").withStyle(ChatFormatting.GRAY),
                     Component.translatable("ctpp.multiblock.windmill_control_center.tooltip.1"),
                     CommonTooltips.MECHANICAL_TIER_MACHINE,
@@ -201,7 +198,7 @@ public class CTPPMultiblockMachines {
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeType(CTPPRecipeTypes.BOOM_OF_CREATE)
             .appearanceBlock(CASING_STEEL_SOLID)
-            .recipeModifier(CTPPRecipeModifiers.KINETIC_ADJUST)
+            .noRecipeModifier()
             .tooltips(Component.translatable("ctpp.multiblock.boom_of_create.tooltip.0").withStyle(ChatFormatting.GRAY),
                     Component.translatable("ctpp.multiblock.boom_of_create.tooltip.1"),
                     Component.translatable("ctpp.multiblock.boom_of_create.tooltip.2"),

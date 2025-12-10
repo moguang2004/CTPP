@@ -1,12 +1,26 @@
 package com.mo_guang.ctpp.common.machine.multiblock;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
+import com.gregtechceu.gtceu.utils.FormattingUtil;
+import com.mo_guang.ctpp.api.StressRecipeCapability;
+import com.mo_guang.ctpp.common.data.CTPPRecipeHelper;
 import com.mo_guang.ctpp.common.machine.KineticPartMachine;
+import com.mo_guang.ctpp.recipe.CTPPRecipeBuilder;
 import com.simibubi.create.infrastructure.config.AllConfigs;
 import lombok.Getter;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import tech.vixhentx.mcmod.ctnhlib.langprovider.Lang;
+import tech.vixhentx.mcmod.ctnhlib.langprovider.annotation.CN;
+import tech.vixhentx.mcmod.ctnhlib.langprovider.annotation.EN;
+import tech.vixhentx.mcmod.ctnhlib.langprovider.annotation.Suffix;
 
+import java.util.List;
+
+@Suffix("tooltip")
 public class KineticOutputMachine extends KineticMultiblockMachine{
     @Getter
     public float maxOutputStress = 0;
@@ -30,5 +44,31 @@ public class KineticOutputMachine extends KineticMultiblockMachine{
     public void onStructureInvalid() {
         super.onStructureInvalid();
         maxOutputStress = 0;
+    }
+
+    @CN("最大应力输出：%s")
+    @EN("Max stress output: %s")
+    static Lang maxKineticOutput;
+
+    @CN("配方应力产出：%s")
+    @EN("Recipe stress output: %s")
+    static Lang recipeKineticOutput;
+
+    @Override
+    public void addDisplayText(List<Component> textList) {
+        super.addDisplayText(textList);
+        if(isFormed() && getRecipeLogic().getLastRecipe() != null){
+            textList.add(maxKineticOutput.translate(
+                    FormattingUtil.formatNumbers(maxOutputStress)
+            ).withStyle(ChatFormatting.GRAY));
+            textList.add(recipeKineticOutput.translate(FormattingUtil.formatNumbers(
+                    CTPPRecipeHelper.getOutputStress(getRecipeLogic().getLastRecipe())
+            )).withStyle(ChatFormatting.GRAY));
+        }
+    }
+
+    @Override
+    public boolean canVoidRecipeOutputs(RecipeCapability<?> capability) {
+        return super.canVoidRecipeOutputs(capability) || capability == StressRecipeCapability.CAP;
     }
 }

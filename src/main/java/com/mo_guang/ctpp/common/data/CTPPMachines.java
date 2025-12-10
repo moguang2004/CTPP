@@ -18,6 +18,7 @@ import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
 import com.gregtechceu.gtceu.common.registry.GTRegistration;
 
+import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.mo_guang.ctpp.CTPP;
 import com.mo_guang.ctpp.CTPPRegistration;
 import com.mo_guang.ctpp.api.CTPPPartAbility;
@@ -166,7 +167,9 @@ public class CTPPMachines {
                 (holder, tier) -> new KineticPartMachine(holder, tier, IO.IN), (tier, builder) -> builder
                         .langValue("%s %s %s".formatted(VLVH[tier], toEnglishName("kinetic_input_box"), VLVT[tier]))
                         .tooltips(
-                                Component.translatable("ctpp.machine.kinetic_input_box.tooltip", GTValues.V[tier]*MainConfig.INSTANCE.gtmConfig.kineticInputBoxTorqueMultiplier),
+                                Component.translatable("ctpp.machine.kinetic_input_box.tooltip",
+                                        FormattingUtil.formatNumbers(GTValues.V[tier]*MainConfig.INSTANCE.gtmConfig.kineticInputBoxTorqueMultiplier)
+                                ),
                                 Component.translatable("gtceu.part_sharing.disabled")
                         )
                         .rotationState(RotationState.ALL)
@@ -187,7 +190,9 @@ public class CTPPMachines {
                         (holder, tier) -> new KineticPartMachine(holder, tier, IO.OUT), (tier, builder) -> builder
                                 .langValue("%s %s %s".formatted(VLVH[tier], toEnglishName("kinetic_output_box"), VLVT[tier]))
                                 .tooltips(
-                                        Component.translatable("ctpp.machine.kinetic_output_box.tooltip", GTValues.V[tier]*MainConfig.INSTANCE.gtmConfig.kineticOutputBoxTorqueMultiplier),
+                                        Component.translatable("ctpp.machine.kinetic_output_box.tooltip",
+                                                FormattingUtil.formatNumbers(GTValues.V[tier]*MainConfig.INSTANCE.gtmConfig.kineticInputBoxTorqueMultiplier)
+                                        ),
                                         Component.translatable("gtceu.part_sharing.disabled")
                                 )
                                 .rotationState(RotationState.ALL)
