@@ -6,6 +6,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 import com.simibubi.create.content.contraptions.*;
 import com.simibubi.create.foundation.collision.Matrix3d;
+import lombok.Getter;
 import net.createmod.catnip.math.AngleHelper;
 import net.createmod.catnip.math.VecHelper;
 import net.minecraft.core.BlockPos;
@@ -31,7 +32,8 @@ public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity{
 
     /** 服务端 authoritative 角度 **/
     private float prevXRot, prevYRot, prevZRot;
-    private float xRot=0f, yRot=0f, zRot;
+    protected float xRot=0f, yRot=0f, zRot;
+    protected float serverXRot = 0f, serverYRot = 0f, serverZRot = 0f;
 
     /** 旋转速度（deg/tick） **/
     private static final EntityDataAccessor<Float> DATA_X_SPEED =
@@ -40,9 +42,14 @@ public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity{
             SynchedEntityData.defineId(SimpleRotatingContraptionEntity.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Float> DATA_Z_SPEED =
             SynchedEntityData.defineId(SimpleRotatingContraptionEntity.class, EntityDataSerializers.FLOAT);
-
     private static final EntityDataAccessor<Vector3f> DATA_PIVOT =
             SynchedEntityData.defineId(SimpleRotatingContraptionEntity.class, EntityDataSerializers.VECTOR3);
+    private static final EntityDataAccessor<Float> DATA_X_ROT =
+            SynchedEntityData.defineId(SimpleRotatingContraptionEntity.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Float> DATA_Y_ROT =
+            SynchedEntityData.defineId(SimpleRotatingContraptionEntity.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Float> DATA_Z_ROT =
+            SynchedEntityData.defineId(SimpleRotatingContraptionEntity.class, EntityDataSerializers.FLOAT);
 
 
 
@@ -50,6 +57,7 @@ public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity{
     private float xSpeed, ySpeed, zSpeed;
 
     /** 旋转基点 **/
+    @Getter
     private Vec3 pivot = Vec3.ZERO;
 
     public SimpleRotatingContraptionEntity(EntityType<?> type, Level world) {
@@ -97,6 +105,9 @@ public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity{
         entityData.define(DATA_Y_SPEED, 0f);
         entityData.define(DATA_Z_SPEED, 0f);
         entityData.define(DATA_PIVOT, new Vector3f(0,0,0));
+        entityData.define(DATA_X_ROT, 0f);
+        entityData.define(DATA_Y_ROT, 0f);
+        entityData.define(DATA_Z_ROT, 0f);
 
     }
 
@@ -116,7 +127,25 @@ public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity{
             Vector3f vec = entityData.get(DATA_PIVOT);
             this.pivot = new Vec3(vec.x(), vec.y(), vec.z());
         }
-
+        if (DATA_X_ROT.equals(key)) {
+            float newXRot = entityData.get(DATA_X_ROT);
+            // 客户端插值处理
+            if (level().isClientSide) {
+                xRot = newXRot;
+            }
+        }
+        if (DATA_Y_ROT.equals(key)) {
+            float newYRot = entityData.get(DATA_Y_ROT);
+            if (level().isClientSide) {
+                yRot = newYRot;
+            }
+        }
+        if (DATA_Z_ROT.equals(key)) {
+            float newZRot = entityData.get(DATA_Z_ROT);
+            if (level().isClientSide) {
+                zRot = newZRot;
+            }
+        }
     }
 
     @Override
@@ -135,8 +164,6 @@ public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity{
     public ContraptionRotationState getRotationState() {
         ContraptionRotationState crs = new ContraptionRotationState();
 
-        // 直接构造一个 Matrix3d，使其与渲染/位置计算使用的旋转顺序和角度一致
-        // 这里我们用 X -> Y -> Z 顺序（与你在渲染中使用的 rotateXYZ 保持一致）
         Matrix3d mat = new Matrix3d().asIdentity();
         mat.multiply(new Matrix3d().asZRotation(AngleHelper.rad(-zRot)));
         mat.multiply(new Matrix3d().asYRotation(AngleHelper.rad(-yRot)));
@@ -207,52 +234,46 @@ public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity{
     @Override
     public void tick() {
         super.tick();
+        if (!level().isClientSide) {
+            // 服务端根据 speed 自行推进角度
+            serverXRot = (serverXRot + xSpeed) % 360f;
+            serverYRot = (serverYRot + ySpeed) % 360f;
+            serverZRot = (serverZRot + zSpeed) % 360f;
 
-        prevXRot = xRot;
-        prevYRot = yRot;
-        prevZRot = zRot;
+            syncRotationAngles();
+        }
+        else {
+            prevXRot = xRot;
+            prevYRot = yRot;
+            prevZRot = zRot;
 
-        // 服务端 / 客户端都根据 speed 自行推进角度
-//        xRot = 45f;
-//        yRot = 0f;
-//        zRot = 0f;
-        xRot = (xRot + xSpeed) % 360f;
-        yRot = (yRot + ySpeed) % 360f;
-        zRot = (zRot + zSpeed) % 360f;
+            xRot = (xRot + xSpeed) % 360f;
+            yRot = (yRot + ySpeed) % 360f;
+            zRot = (zRot + zSpeed) % 360f;
+        }
 
-//        Vec3 offset = contraption.anchor.getCenter().subtract(pivot);
-//
-//        Quaternionf q = new Quaternionf()
-//                .rotateXYZ((float) Math.toRadians(xRot),
-//                        (float) Math.toRadians(yRot),
-//                        (float) Math.toRadians(zRot));
-//        Vector3f rotated = new Vector3f((float) offset.x, (float) offset.y, (float) offset.z);
-//
-//       rotated.rotate(q);
-//
-//        Vec3 worldPos = pivot.add(rotated.x, rotated.y, rotated.z);
-//
-//        setPos(worldPos.x-0.5, worldPos.y-0.5, worldPos.z-0.5);
-
-        setPos(contraption.anchor.getX(), contraption.anchor.getY(), contraption.anchor.getZ());
-
-
-//        if (tickCount % 20 == 0) {
-//            if(!level().isClientSide){
-//                System.out.printf("[RotatingContraptionEntity.tick] Server tick (%.1f, %.1f, %.1f) speed=(%.2f, %.2f, %.2f)%n",
-//                        xRot, yRot, zRot, xSpeed, ySpeed, zSpeed);
-//            }
-//            else {
-//                System.out.printf("[RotatingContraptionEntity.tick] Client tick (%.1f, %.1f, %.1f) speed=(%.2f, %.2f, %.2f)%n",
-//                        xRot, yRot, zRot, xSpeed, ySpeed, zSpeed);
-//            }
-//        }
+//        setPos(contraption.anchor.getX(), contraption.anchor.getY(), contraption.anchor.getZ());
     }
+    private void syncRotationAngles() {
+        // 使用阈值减少不必要的同步
+        float lastXRot = entityData.get(DATA_X_ROT);
+        float lastYRot = entityData.get(DATA_Y_ROT);
+        float lastZRot = entityData.get(DATA_Z_ROT);
 
+        float threshold = 0.5f; // 0.5度阈值
+
+        if (Math.abs(serverXRot - lastXRot) > threshold ||
+                Math.abs(serverYRot - lastYRot) > threshold ||
+                Math.abs(serverZRot - lastZRot) > threshold) {
+
+            entityData.set(DATA_X_ROT, serverXRot);
+            entityData.set(DATA_Y_ROT, serverYRot);
+            entityData.set(DATA_Z_ROT, serverZRot);
+        }
+    }
+    @Override
     protected void tickContraption() {
-
         tickActors();
-
     }
 
 
@@ -285,37 +306,27 @@ public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity{
         float iz = getZRot(partialTicks);
 
         // 构造四元数（保持和 tick 完全一致）
-        Quaternionf q = new Quaternionf()
-                .rotateXYZ((float) Math.toRadians(ix),
-                        (float) Math.toRadians(iy),
-                        (float) Math.toRadians(iz));
+        Quaternionf q = new Quaternionf();
+        q.rotateX((float) Math.toRadians(ix));
+        q.rotateY((float) Math.toRadians(iy));
+        q.rotateZ((float) Math.toRadians(iz));
 
-//        var dx = pivot.x - getX();
-//        var dy = pivot.y - getY();
-//        var dz = pivot.z - getZ();
-        //TransformStack.of(matrixStack).center()
-        matrixStack.translate(0.5f, 0.5f, 0.5f);
+        matrixStack.translate(0.5, 0.5, 0.5);
         matrixStack.mulPose(q);
-        matrixStack.translate(-0.5f, -0.5f, -0.5f);
+        matrixStack.translate(-0.5, -0.5, -0.5);
 
     }
 
     public float getXRot(float partialTicks) {
-        return AngleHelper.angleLerp(partialTicks, prevXRot, xRot);
+        if (level().isClientSide) return AngleHelper.angleLerp(partialTicks, prevXRot, xRot);
+        else return xRot;
     }
     public float getYRot(float partialTicks) {
-        return AngleHelper.angleLerp(partialTicks, prevYRot, yRot);
+        if (level().isClientSide) return AngleHelper.angleLerp(partialTicks, prevYRot, yRot);
+        else return yRot;
     }
     public float getZRot(float partialTicks) {
-        return AngleHelper.angleLerp(partialTicks, prevZRot, zRot);
-    }
-
-    @Override
-    public InteractionResult interact(Player player, InteractionHand hand) {
-        ItemStack item = player.getItemInHand(hand);
-        if (item.getItem() instanceof RotationWandItem rotationWandItem) {
-            this.disassemble();
-        }
-        return InteractionResult.SUCCESS;
+        if (level().isClientSide) return AngleHelper.angleLerp(partialTicks, prevZRot, zRot);
+        else return zRot;
     }
 }

@@ -1,0 +1,263 @@
+package com.mo_guang.ctpp.dynamicPart.rotation;
+
+import com.mo_guang.ctpp.CTPPEntityTypes;
+import com.simibubi.create.content.contraptions.Contraption;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
+
+public class RubiksCubeContraptionEntity extends SimpleRotatingContraptionEntity{
+    public float ROTATE_SPEED = 9; // 90 degrees per 10 ticks
+    public Direction frontFacing;
+    public BlockPos startPos;
+
+    public RubiksCubeContraptionEntity(EntityType<?> type, Level world, Direction frontFacing, BlockPos pos) {
+        super(type, world);
+        this.layer = RotationLayer.FRONT_LAYER;
+        this.clockwise = true;
+        this.shouldStop = true;
+        this.frontFacing = frontFacing;
+        this.startPos = pos;
+    }
+    public boolean shouldStop;
+    public RotationLayer layer;
+    public boolean clockwise;
+    public static RubiksCubeContraptionEntity create(Level world, Contraption contraption, Vec3 pivot, Direction frontFacing, BlockPos pos) {
+        RubiksCubeContraptionEntity entity =
+                new RubiksCubeContraptionEntity(CTPPEntityTypes.SIMPLE_CONTRAPTION.get(), world, frontFacing, pos);
+        entity.setContraption(contraption);
+        entity.setPivot(pivot);
+        return entity;
+    }
+
+    // 旋转层定义
+    public enum RotationLayer {
+        // 相对于整体朝向的层
+        FRONT_LAYER,     // 前面层
+        BACK_LAYER,      // 后面层
+        LEFT_LAYER,      // 左面层
+        RIGHT_LAYER,     // 右面层
+        TOP_LAYER,       // 顶面层
+        BOTTOM_LAYER;    // 底面层
+
+        /**
+         * 根据整体朝向和层类型获取实际的方向
+         */
+        public Direction getDirection(Direction frontFacing) {
+            switch (this) {
+                case FRONT_LAYER:
+                    return frontFacing;
+                case BACK_LAYER:
+                    return frontFacing.getOpposite();
+                case LEFT_LAYER:
+                    return getLeftDirection(frontFacing);
+                case RIGHT_LAYER:
+                    return getRightDirection(frontFacing);
+                case TOP_LAYER:
+                    return Direction.UP;
+                case BOTTOM_LAYER:
+                    return Direction.DOWN;
+                default:
+                    return frontFacing;
+            }
+        }
+
+        /**
+         * 根据整体朝向获取旋转轴
+         */
+        public Direction.Axis getRotationAxis(Direction frontFacing) {
+            Direction layerDirection = getDirection(frontFacing);
+            return layerDirection.getAxis();
+        }
+
+        /**
+         * 根据整体朝向获取旋转轴向量
+         */
+        public Vec3 getRotationVector(Direction frontFacing) {
+            Direction layerDirection = getDirection(frontFacing);
+            return new Vec3(layerDirection.getStepX(), layerDirection.getStepY(), layerDirection.getStepZ());
+        }
+
+        /**
+         * 获取左方向（基于整体朝向）
+         */
+        private static Direction getLeftDirection(Direction frontFacing) {
+            // 根据frontFacing计算左方向
+            switch (frontFacing) {
+                case NORTH:
+                    return Direction.WEST;
+                case SOUTH:
+                    return Direction.EAST;
+                case WEST:
+                    return Direction.SOUTH;
+                case EAST:
+                    return Direction.NORTH;
+                default:
+                    return Direction.WEST;
+            }
+        }
+
+        /**
+         * 获取右方向（基于整体朝向）
+         */
+        private static Direction getRightDirection(Direction frontFacing) {
+            return getLeftDirection(frontFacing).getOpposite();
+        }
+
+        /**
+         * 判断一个角块位置是否属于这个旋转层
+         */
+        public boolean isInLayer(Vec3 startPos, Direction frontFacing, Quaternionf rotating) {
+            Direction layerDirection = this.getDirection(frontFacing);
+            Vector3f rotated = new Vector3f((float) startPos.x, (float) startPos.y, (float) startPos.z);
+            Vector3f localPos = rotated.rotate(rotating);
+
+            // 根据层的方向判断位置是否在指定层
+            switch (layerDirection) {
+                case EAST:
+                    return Math.signum(localPos.x) == 1;
+                case WEST:
+                    return Math.signum(localPos.x) == -1;
+                case UP:
+                    return Math.signum(localPos.y) == 1;
+                case DOWN:
+                    return Math.signum(localPos.y) == -1;
+                case SOUTH:
+                    return Math.signum(localPos.z) == 1;
+                case NORTH:
+                    return Math.signum(localPos.z) == -1;
+                default:
+                    return false;
+            }
+        }
+    }
+
+//    @Override
+//    public void tick() {
+//        super.tick();
+//        Vec3 offset = contraption.anchor.getCenter().subtract(getPivot());
+//        Quaternionf q = new Quaternionf()
+//                .rotateXYZ((float) Math.toRadians(xRot),
+//                        (float) Math.toRadians(yRot),
+//                        (float) Math.toRadians(zRot));
+////        q.rotateX((float) Math.toRadians(xRot));
+////        q.rotateY((float) Math.toRadians(yRot));
+////        q.rotateZ((float) Math.toRadians(zRot));
+//        Vector3f rotated = new Vector3f((float) offset.x, (float) offset.y, (float) offset.z);
+//
+//        rotated.rotate(q);
+//
+//        Vec3 worldPos = getPivot().add(rotated.x, rotated.y, rotated.z);
+//
+//        setPos(worldPos.x - 0.5, worldPos.y -0.5, worldPos.z - 0.5);
+//    }
+
+    public void notifyChange() {
+        Quaternionf q = new Quaternionf();
+        q.rotateX((float) Math.toRadians(serverXRot));
+        q.rotateY((float) Math.toRadians(serverYRot));
+        q.rotateZ((float) Math.toRadians(serverZRot));
+        if (this.layer.isInLayer(this.startPos.getCenter().subtract(getPivot()), frontFacing, q) && !this.shouldStop) {
+            float speed = clockwise ? ROTATE_SPEED : - ROTATE_SPEED;
+            Vec3 worldAxisVector = layer.getRotationVector(frontFacing);
+
+            // 转换到局部坐标系
+            Vector3f localAxis = transformAxisToLocal(worldAxisVector, q);
+            this.setRotationSpeed(
+                    localAxis.x * speed,
+                    localAxis.y * speed,
+                    localAxis.z * speed
+            );
+        }
+        else {
+            setRotationSpeed(0, 0, 0);
+        }
+    }
+    private Vector3f transformAxisToLocal(Vec3 worldAxis, Quaternionf rotation) {
+        // 获取旋转的逆（将世界轴转换到局部坐标系）
+        Quaternionf inverseRotation = new Quaternionf(rotation).conjugate();
+
+        Vector3f axis = new Vector3f(
+                (float) worldAxis.x,
+                (float) worldAxis.y,
+                (float) worldAxis.z
+        );
+
+        // 应用逆旋转
+        axis.rotate(inverseRotation);
+
+        return axis;
+    }
+
+    public void performStandardMove(String moveNotation) {
+        switch (moveNotation.toUpperCase()) {
+            case "U": // 顶层顺时针
+                this.layer = RotationLayer.TOP_LAYER;
+                this.clockwise = true;
+                this.shouldStop = false;
+                break;
+            case "U'": // 顶层逆时针
+                this.layer = RotationLayer.TOP_LAYER;
+                this.clockwise = false;
+                this.shouldStop = false;
+                break;
+            case "D": // 底层顺时针
+                this.layer = RotationLayer.BOTTOM_LAYER;
+                this.clockwise = true;
+                this.shouldStop = false;
+                break;
+            case "D'": // 底层逆时针
+                this.layer = RotationLayer.BOTTOM_LAYER;
+                this.clockwise = false;
+                this.shouldStop = false;
+                break;
+            case "L": // 左层顺时针
+                this.layer = RotationLayer.LEFT_LAYER;
+                this.clockwise = true;
+                this.shouldStop = false;
+                break;
+            case "L'": // 左层逆时针
+                this.layer = RotationLayer.LEFT_LAYER;
+                this.clockwise = false;
+                this.shouldStop = false;
+                break;
+            case "R": // 右层顺时针
+                this.layer = RotationLayer.RIGHT_LAYER;
+                this.clockwise = true;
+                this.shouldStop = false;
+                break;
+            case "R'": // 右层逆时针
+                this.layer = RotationLayer.RIGHT_LAYER;
+                this.clockwise = false;
+                this.shouldStop = false;
+                break;
+            case "F": // 前层顺时针
+                this.layer = RotationLayer.BACK_LAYER;
+                this.clockwise = true;
+                this.shouldStop = false;
+                break;
+            case "F'": // 前层逆时针
+                this.layer = RotationLayer.BACK_LAYER;
+                this.clockwise = false;
+                this.shouldStop = false;
+                break;
+            case "B": // 后层顺时针
+                this.layer = RotationLayer.FRONT_LAYER;
+                this.clockwise = true;
+                this.shouldStop = false;
+                break;
+            case "B'": // 后层逆时针
+                this.layer = RotationLayer.FRONT_LAYER;
+                this.clockwise = false;
+                this.shouldStop = false;
+                break;
+            case "STOP":
+                this.shouldStop = true;
+        }
+        notifyChange();
+    }
+}

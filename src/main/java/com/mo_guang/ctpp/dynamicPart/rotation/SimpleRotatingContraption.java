@@ -21,7 +21,7 @@ public class SimpleRotatingContraption extends Contraption {
         super();
         this.partPos = partPos;
         this.anchor = anchor;
-        this.bounds = new AABB(anchor);
+        this.bounds = new AABB(BlockPos.ZERO);
     }
     @Override
     public boolean assemble(Level world, BlockPos pos_) {

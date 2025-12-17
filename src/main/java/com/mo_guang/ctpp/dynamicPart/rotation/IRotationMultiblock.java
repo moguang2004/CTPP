@@ -1,4 +1,4 @@
-package com.mo_guang.ctpp.common.machine.multiblock;
+package com.mo_guang.ctpp.dynamicPart.rotation;
 
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.lowdragmc.lowdraglib.utils.TrackedDummyWorld;

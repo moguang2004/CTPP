@@ -126,6 +126,9 @@ public class FactoryStaticBlockPattern {
     public FactoryStaticBlockPattern where(String symbol, TraceabilityPredicate blockMatcher, boolean isStatic) {
         return this.where(symbol.charAt(0), blockMatcher, isStatic, 0);
     }
+    public FactoryStaticBlockPattern where(String symbol, TraceabilityPredicate blockMatcher, boolean isStatic, int group) {
+        return this.where(symbol.charAt(0), blockMatcher, isStatic, group);
+    }
     public FactoryStaticBlockPattern where(char symbol, TraceabilityPredicate blockMatcher, boolean isStatic) {
         return this.where(symbol, blockMatcher, isStatic, 0);
     }
