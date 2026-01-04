@@ -11,14 +11,16 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 
+import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.mo_guang.ctpp.CTPP;
 import com.mo_guang.ctpp.CTPPRegistration;
 import com.mo_guang.ctpp.api.CTPPPartAbility;
 import com.mo_guang.ctpp.common.blockentity.KineticMachineBlockEntity;
-import com.mo_guang.ctpp.common.machine.ElectricGearBoxMachine;
-import com.mo_guang.ctpp.common.machine.KineticMachineDefinition;
-import com.mo_guang.ctpp.common.machine.KineticPartMachine;
+import com.mo_guang.ctpp.common.machine.simple.CarbonBrushesGeneratorMachine;
+import com.mo_guang.ctpp.common.machine.simple.ElectricGearBoxMachine;
+import com.mo_guang.ctpp.api.KineticMachineDefinition;
+import com.mo_guang.ctpp.common.machine.multiblock.part.KineticPartMachine;
 import com.mo_guang.ctpp.common.block.KineticMachineBlock;
 import com.mo_guang.ctpp.common.machine.multiblock.part.MechanicalUpgradePartMachine;
 import com.mo_guang.ctpp.config.MainConfig;
@@ -27,7 +29,14 @@ import com.simibubi.create.content.kinetics.base.SingleAxisRotatingVisual;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraftforge.client.model.generators.BlockModelBuilder;
+import net.minecraftforge.client.model.generators.ModelFile;
+import tech.vixhentx.mcmod.ctnhlib.langprovider.Lang;
+import tech.vixhentx.mcmod.ctnhlib.langprovider.annotation.CN;
+import tech.vixhentx.mcmod.ctnhlib.langprovider.annotation.EN;
+import tech.vixhentx.mcmod.ctnhlib.langprovider.annotation.Prefix;
 
+import java.util.List;
 import java.util.Locale;
 import java.util.function.BiFunction;
 
@@ -39,28 +48,22 @@ import static com.mo_guang.ctpp.common.data.model.CTPPMachineModels.createTiered
 import static com.mo_guang.ctpp.registry.CTPPCreativeModeTabs.MACHINE;
 import static com.mo_guang.ctpp.config.ConfigUtils.*;
 
+@Prefix("machine")
 public class CTPPMachines {
     static {
         REGISTRATE.creativeModeTab(() -> MACHINE);
     }
-    public static final MachineDefinition MECHANICAL_UPGRADE_BUS = REGISTRATE.machine("mechanical_upgrade_bus", MechanicalUpgradePartMachine::new)
-            .langValue("Mechanical Upgrade Bus")
-            .tooltips(CommonTooltips.MECHANICAL_TIER)
-            .tier(LV)
-            .rotationState(RotationState.ALL)
-            .abilities(CTPPPartAbility.MECHANICAL_UPGRADE)
-            .modelProperty(GTMachineModelProperties.IS_FORMED, false)
-            .overlayTieredHullModel(GTCEu.id("block/machine/part/item_passthrough_hatch"))
-            .register();
+    public static MachineDefinition MECHANICAL_UPGRADE_BUS;
 
-    public static final KineticMachineDefinition[] ELECTRIC_GEAR_BOX_2A = registerElectricGearBox(2, LOW_TIERS);
-    public static final KineticMachineDefinition[] ELECTRIC_GEAR_BOX_8A = registerElectricGearBox(8, LOW_TIERS);
-    public static final KineticMachineDefinition[] ELECTRIC_GEAR_BOX_16A = registerElectricGearBox(16, LOW_TIERS);
-    public static final KineticMachineDefinition[] ELECTRIC_GEAR_BOX_32A = registerElectricGearBox(32, LOW_TIERS);
+    public static KineticMachineDefinition[] ELECTRIC_GEAR_BOX_2A;
+    public static KineticMachineDefinition[] ELECTRIC_GEAR_BOX_8A;
+    public static KineticMachineDefinition[] ELECTRIC_GEAR_BOX_16A;
+    public static KineticMachineDefinition[] ELECTRIC_GEAR_BOX_32A;
 //    public static final KineticMachineDefinition[] KINETIC_MIXER = CTPPRegistration.conditionalRegistration(gtmEnabled("GTMKineticCreateMixer"),() ->
 //        registerSimpleKineticElectricMachine("kinetic_mixer",CTPPRecipeTypes.KINETIC_MIXER_RECIPES, LOW_TIERS));
     public static KineticMachineDefinition[] KINETIC_INPUT_BOX;
     public static KineticMachineDefinition[] KINETIC_OUTPUT_BOX;
+    public static KineticMachineDefinition CARBON_BRUSHES;
 
     @SuppressWarnings("unchecked")
     public static KineticMachineDefinition[] registerElectricGearBox(int maxAmps, int... tiers) {
@@ -74,7 +77,6 @@ public class CTPPMachines {
                         .model(createTieredCustomModel(
                                 CTPP.id("block/machine/electric_gear_box")))
                         .tier(tier)
-                        .tooltips(explosion())
                         .register(),
                          tiers));
     }
@@ -125,6 +127,14 @@ public class CTPPMachines {
         return definitions;
     }
 
+    @CN("输出发电机线圈产生的能量")
+    @EN("Energy Output for Generator Coil")
+    static Lang carbon_brushes;
+
+    @CN("§e最大输出电流§r %sA")
+    @EN("§eMax Output Amperage:§r %sA")
+    static Lang max_output_amperage;
+
     public static void init() {
         KINETIC_INPUT_BOX = registerKineticTieredMachines(
                 "kinetic_input_box",
@@ -169,5 +179,46 @@ public class CTPPMachines {
                                 .tier(tier)
                                 .register(),
                         ALL_TIERS);
+
+        CARBON_BRUSHES = REGISTRATE.machine("carbon_brushes",
+                "碳刷",
+                id -> new KineticMachineDefinition(id, false, GTValues.V[LV] * MainConfig.INSTANCE.gtmConfig.kineticOutputBoxTorqueMultiplier).setFrontRotation(true),
+                holder -> new CarbonBrushesGeneratorMachine(holder, LV, genericGeneratorTankSizeFunction),
+                KineticMachineBlock::new,
+                MetaMachineItem::new,
+                KineticMachineBlockEntity::create)
+                .model((ctx, prov, builder) -> {
+                    ModelFile parentModel = prov.models().getExistingFile(ResourceLocation.tryParse("create_new_age:block/generation/carbon_brushes"));
+                    BlockModelBuilder model = prov.models().nested().parent(parentModel);
+                    builder.forAllStatesModels(state -> model);
+                })
+                .rotationState(RotationState.ALL)
+                .recipeType(GTRecipeTypes.DUMMY_RECIPES)
+                .tier(LV)
+                .tooltips(List.of(
+                        Component.translatable("gtceu.universal.tooltip.voltage_out", FormattingUtil.formatNumbers(V[LV]), VNF[LV]),
+                        max_output_amperage.translate("16"),
+                        Component.translatable("gtceu.universal.tooltip.energy_storage_capacity", FormattingUtil.formatNumbers(2048)),
+                        carbon_brushes.translate()
+                ))
+                .blockProp(BlockBehaviour.Properties::noOcclusion)
+                .onBlockEntityRegister(type -> KineticMachineBlockEntity.onBlockEntityRegister(type,
+                                () -> SingleAxisRotatingVisual::shaft, false))
+                .register();
+
+        ELECTRIC_GEAR_BOX_2A = registerElectricGearBox(2, LOW_TIERS);
+        ELECTRIC_GEAR_BOX_8A = registerElectricGearBox(8, LOW_TIERS);
+        ELECTRIC_GEAR_BOX_16A = registerElectricGearBox(16, LOW_TIERS);
+        ELECTRIC_GEAR_BOX_32A = registerElectricGearBox(32, LOW_TIERS);
+
+        MECHANICAL_UPGRADE_BUS = REGISTRATE.machine("mechanical_upgrade_bus", MechanicalUpgradePartMachine::new)
+                .langValue("Mechanical Upgrade Bus")
+                .tooltips(CommonTooltips.MECHANICAL_TIER)
+                .tier(LV)
+                .rotationState(RotationState.ALL)
+                .abilities(CTPPPartAbility.MECHANICAL_UPGRADE)
+                .modelProperty(GTMachineModelProperties.IS_FORMED, false)
+                .overlayTieredHullModel(GTCEu.id("block/machine/part/item_passthrough_hatch"))
+                .register();
     }
 }

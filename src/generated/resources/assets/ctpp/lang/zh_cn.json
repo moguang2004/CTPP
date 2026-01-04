@@ -1,5 +1,6 @@
 {
   "block.ctpp.boom_of_create": "大型聚爆应力厂",
+  "block.ctpp.carbon_brushes": "碳刷",
   "block.ctpp.ev_electric_gear_box_16a": "§5EV16A电力齿轮箱",
   "block.ctpp.ev_electric_gear_box_2a": "§5EV2A电力齿轮箱",
   "block.ctpp.ev_electric_gear_box_32a": "§5EV32A电力齿轮箱",
@@ -144,6 +145,8 @@
   "item.ctpp.incomplete_basic_mechanism": "未完成的基础构件",
   "item.ctpp.steel_mechanism": "钢铁构件",
   "itemGroup.ctpp.machine": "CTPP机器",
+  "machine.ctpp.carbon_brushes": "输出发电机线圈产生的能量",
+  "machine.ctpp.max_output_amperage": "§e最大输出电流§r %sA",
   "recipe.capability.su.name": "应力",
   "recipe.condition.ctpp.mechanical_tier": "机械等级：%d(%s)",
   "recipe.condition.rpm.tooltip": "转速: %d"

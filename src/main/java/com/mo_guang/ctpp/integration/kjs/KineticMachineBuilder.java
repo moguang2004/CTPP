@@ -12,7 +12,7 @@ package com.mo_guang.ctpp.integration.kjs;//package com.mo_guang.ctpp.integratio
 //import com.mo_guang.ctpp.client.SplitShaftInstance;
 //import com.mo_guang.ctpp.common.block.KineticMachineBlock;
 //import com.mo_guang.ctpp.common.blockentity.KineticMachineBlockEntity;
-//import com.mo_guang.ctpp.common.machine.KineticMachineDefinition;
+//import com.mo_guang.ctpp.api.KineticMachineDefinition;
 //import com.mo_guang.ctpp.common.machine.SimpleKineticElectricWorkableMachine;
 //import com.mo_guang.ctpp.render.KineticWorkableTieredHullMachineRenderer;
 //import com.tterrag.registrate.util.nullness.NonNullConsumer;

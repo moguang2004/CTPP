@@ -1,4 +1,4 @@
-package com.mo_guang.ctpp.common.machine;
+package com.mo_guang.ctpp.api;
 
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import lombok.Getter;

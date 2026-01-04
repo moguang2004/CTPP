@@ -7,21 +7,18 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.CoilWorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
 import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
-import com.mo_guang.ctpp.common.machine.IKineticMachine;
-import com.mo_guang.ctpp.common.machine.KineticPartMachine;
+import com.mo_guang.ctpp.common.machine.multiblock.part.KineticPartMachine;
 import com.mo_guang.ctpp.config.MainConfig;
 
 import net.minecraft.network.chat.Component;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class KineticGeneratorMachine extends CoilWorkableElectricMultiblockMachine {
     public static final float GENERATING_BOOST = MainConfig.INSTANCE.ctnhConfig.kineticGeneratorGeneratingBoost;

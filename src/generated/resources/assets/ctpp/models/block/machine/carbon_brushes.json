@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/block",
+  "loader": "gtceu:machine",
+  "machine": "ctpp:carbon_brushes",
+  "variants": {
+    "": {
+      "model": {
+        "parent": "create_new_age:block/generation/carbon_brushes"
+      }
+    }
+  }
+}

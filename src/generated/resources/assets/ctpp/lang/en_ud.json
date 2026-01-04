@@ -1,5 +1,6 @@
 {
   "block.ctpp.boom_of_create": "ǝʇɐǝɹƆ ɟO ɯooᗺ",
+  "block.ctpp.carbon_brushes": "sǝɥsnɹᗺ uoqɹɐƆ",
   "block.ctpp.ev_electric_gear_box_16a": "xoᗺ ɹɐǝ⅁ ɔıɹʇɔǝןƎ Ɐ9Ɩ ΛƎϛ§",
   "block.ctpp.ev_electric_gear_box_2a": "xoᗺ ɹɐǝ⅁ ɔıɹʇɔǝןƎ Ɐᄅ ΛƎϛ§",
   "block.ctpp.ev_electric_gear_box_32a": "xoᗺ ɹɐǝ⅁ ɔıɹʇɔǝןƎ ⱯᄅƐ ΛƎϛ§",
@@ -138,6 +139,8 @@
   "item.ctpp.incomplete_basic_mechanism": "ɯsıuɐɥɔǝW ɔısɐᗺ ǝʇǝןdɯoɔuI",
   "item.ctpp.steel_mechanism": "ɯsıuɐɥɔǝW ןǝǝʇS",
   "itemGroup.ctpp.machine": "sǝuıɥɔɐW ԀԀ⟘Ɔ",
+  "machine.ctpp.carbon_brushes": "ןıoƆ ɹoʇɐɹǝuǝ⅁ ɹoɟ ʇndʇnO ʎbɹǝuƎ",
+  "machine.ctpp.max_output_amperage": "Ɐ%s ɹ§:ǝbɐɹǝdɯⱯ ʇndʇnO xɐWǝ§",
   "recipe.capability.su.name": "ssǝɹʇS ǝʇɐǝɹƆ",
   "recipe.condition.ctpp.mechanical_tier": ")%s(%d :ɹǝı⟘ ןɐɔıuɐɥɔǝW",
   "recipe.condition.mechanical_tier.tooltip": "%s :ɹǝı⟘ ןɐɔıuɐɥɔǝW",

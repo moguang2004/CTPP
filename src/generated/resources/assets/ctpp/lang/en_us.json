@@ -1,5 +1,6 @@
 {
   "block.ctpp.boom_of_create": "Boom Of Create",
+  "block.ctpp.carbon_brushes": "Carbon Brushes",
   "block.ctpp.ev_electric_gear_box_16a": "§5EV 16A Electric Gear Box",
   "block.ctpp.ev_electric_gear_box_2a": "§5EV 2A Electric Gear Box",
   "block.ctpp.ev_electric_gear_box_32a": "§5EV 32A Electric Gear Box",
@@ -138,6 +139,8 @@
   "item.ctpp.incomplete_basic_mechanism": "Incomplete Basic Mechanism",
   "item.ctpp.steel_mechanism": "Steel Mechanism",
   "itemGroup.ctpp.machine": "CTPP Machines",
+  "machine.ctpp.carbon_brushes": "Energy Output for Generator Coil",
+  "machine.ctpp.max_output_amperage": "§eMax Output Amperage:§r %sA",
   "recipe.capability.su.name": "Create Stress",
   "recipe.condition.ctpp.mechanical_tier": "Mechanical Tier: %d(%s)",
   "recipe.condition.mechanical_tier.tooltip": "Mechanical Tier: %s",
