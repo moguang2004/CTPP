@@ -100,13 +100,16 @@ public class KineticMachineBlockEntity extends KineticBlockEntity implements IMa
                                              NonNullSupplier<SimpleBlockEntityVisualizer.Factory<? extends KineticBlockEntity>> visualFactory,
                                              boolean renderNormally) {
         if (visualFactory != null && LDLib.isClient()) {
-            DistExecutor.unsafeRunWhenOn(Dist.CLIENT,
-                    () -> () -> OneTimeEventReceiver.addModListener(GTRegistration.REGISTRATE,
+            DistExecutor.unsafeRunWhenOn(
+                    Dist.CLIENT,
+                    () -> () ->
+                            OneTimeEventReceiver.addModListener(GTRegistration.REGISTRATE,
                             FMLClientSetupEvent.class,
                             ($) -> SimpleBlockEntityVisualizer.builder(blockEntityType)
                                     .factory(visualFactory.get())
                                     .skipVanillaRender((be) -> !renderNormally)
-                                    .apply()));
+                                    .apply())
+            );
         }
     }
 

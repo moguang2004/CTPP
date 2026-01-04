@@ -33,6 +33,7 @@ import com.mo_guang.ctpp.common.machine.multiblock.part.MechanicalUpgradePartMac
 import com.mo_guang.ctpp.config.MainConfig;
 import com.mo_guang.ctpp.util.CommonTooltips;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
+import com.simibubi.create.content.kinetics.base.SingleAxisRotatingVisual;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
 import dev.engine_room.flywheel.api.visualization.VisualizationContext;
 import dev.engine_room.flywheel.lib.visualization.SimpleBlockEntityVisualizer;
@@ -78,8 +79,8 @@ public class CTPPMachines {
     public static final KineticMachineDefinition[] ELECTRIC_GEAR_BOX_8A = registerElectricGearBox(8, LOW_TIERS);
     public static final KineticMachineDefinition[] ELECTRIC_GEAR_BOX_16A = registerElectricGearBox(16, LOW_TIERS);
     public static final KineticMachineDefinition[] ELECTRIC_GEAR_BOX_32A = registerElectricGearBox(32, LOW_TIERS);
-    public static final KineticMachineDefinition[] KINETIC_MIXER = CTPPRegistration.conditionalRegistration(gtmEnabled("GTMKineticCreateMixer"),() -> 
-        registerSimpleKineticElectricMachine("kinetic_mixer",CTPPRecipeTypes.KINETIC_MIXER_RECIPES, LOW_TIERS));
+//    public static final KineticMachineDefinition[] KINETIC_MIXER = CTPPRegistration.conditionalRegistration(gtmEnabled("GTMKineticCreateMixer"),() ->
+//        registerSimpleKineticElectricMachine("kinetic_mixer",CTPPRecipeTypes.KINETIC_MIXER_RECIPES, LOW_TIERS));
     public static KineticMachineDefinition[] KINETIC_INPUT_BOX;
     public static KineticMachineDefinition[] KINETIC_OUTPUT_BOX;
 
@@ -87,85 +88,72 @@ public class CTPPMachines {
     public static KineticMachineDefinition[] registerElectricGearBox(int maxAmps, int... tiers) {
         return CTPPRegistration.conditionalRegistration(gtmEnabled("GTMElectricGearBox"),() -> 
                 registerKineticTieredMachines("electric_gear_box_%sa".formatted(maxAmps),
+                "%sA电力齿轮箱".formatted(maxAmps),
                 (tier, id) -> new KineticMachineDefinition(id, true, GTValues.V[tier]).setFrontRotation(true),
                 (holder, tier) -> new ElectricGearBoxMachine(holder, tier, maxAmps), (tier, builder) -> builder
-                        .langValue(
-                                "%s %s %s".formatted(VLVH[tier], "Electric Gearbox %dA".formatted(maxAmps), VLVT[tier]))
+                                .langValue(VNF[tier] + " %sA Electric Gear Box".formatted(maxAmps))
                         .rotationState(RotationState.ALL)
-                        .blockProp(BlockBehaviour.Properties::dynamicShape)
-                        .blockProp(BlockBehaviour.Properties::noOcclusion)
                         .model(createTieredCustomModel(
                                 CTPP.id("block/machine/electric_gear_box")))
                         .tier(tier)
                         .tooltips(explosion())
                         .register(),
-                        () -> (VisualizationContext var1, KineticMachineBlockEntity var2, float var3) -> new SplitShaftVisual(var1, var2, var3), false, tiers));
+                         tiers));
     }
 
-    public static KineticMachineDefinition[] registerSimpleKineticElectricMachine(String name, GTRecipeType recipeType,
-                                                                                  int... tiers) {
-        return registerKineticTieredMachines(name, (tier, id) -> new KineticMachineDefinition(id, false, GTValues.V[tier]),
-                (holder, tier) -> new SimpleKineticElectricWorkableMachine(holder, tier, defaultTankSizeFunction),
-                (tier, builder) -> builder
-                        .langValue("%s %s %s".formatted(VLVH[tier], toEnglishName(name), VLVT[tier]))
-                        .rotationState(RotationState.NON_Y_AXIS)
-                        .editableUI(SimpleTieredMachine.EDITABLE_UI_CREATOR.apply(GTCEu.id(name), recipeType))
-                        .blockProp(BlockBehaviour.Properties::dynamicShape)
-                        .blockProp(BlockBehaviour.Properties::noOcclusion)
-                        .recipeType(recipeType)
-                        .recipeModifier(
-                                GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
-                        .model(createWorkableTieredCustomMachineModel(CTPP.id("block/machine/kinetic_electric_machine"),GTCEu.id("block/machines/"+name)))
-                        .tier(tier)
-                        .tooltips(explosion())
-                        .tooltips(workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64, recipeType,
-                                defaultTankSizeFunction.apply(tier), true))
-                        .register(),
-                () -> (VisualizationContext var1, KineticMachineBlockEntity var2, float var3) -> new SplitShaftVisual(var1, var2, var3), false, tiers);
-    }
+//    public static KineticMachineDefinition[] registerSimpleKineticElectricMachine(String name, GTRecipeType recipeType,
+//                                                                                  int... tiers) {
+//        return registerKineticTieredMachines(name, (tier, id) -> new KineticMachineDefinition(id, false, GTValues.V[tier]),
+//                (holder, tier) -> new SimpleKineticElectricWorkableMachine(holder, tier, defaultTankSizeFunction),
+//                (tier, builder) -> builder
+//                        .langValue("%s %s %s".formatted(VLVH[tier], toEnglishName(name), VLVT[tier]))
+//                        .rotationState(RotationState.NON_Y_AXIS)
+//                        .editableUI(SimpleTieredMachine.EDITABLE_UI_CREATOR.apply(GTCEu.id(name), recipeType))
+//                        .recipeType(recipeType)
+//                        .recipeModifier(
+//                                GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
+//                        .model(createWorkableTieredCustomMachineModel(CTPP.id("block/machine/kinetic_electric_machine"),GTCEu.id("block/machines/"+name))
+//                        )
+//                        .tier(tier)
+//                        .tooltips(explosion())
+//                        .tooltips(workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64, recipeType,
+//                                defaultTankSizeFunction.apply(tier), true))
+//                        .register(),
+//                 tiers);
+//    }
 
-    public static MachineBuilder<KineticMachineDefinition> registerMachines(String name,
-                                                                            Function<ResourceLocation, KineticMachineDefinition> definitionFactory,
-                                                                            Function<IMachineBlockEntity, MetaMachine> factory,
-                                                                            @Nullable NonNullSupplier<SimpleBlockEntityVisualizer.Factory<? extends KineticBlockEntity>> visualFactory,
-                                                                            boolean renderNormally) {
-        return REGISTRATE
-                .machine(name, definitionFactory, factory, KineticMachineBlock::new, MetaMachineItem::new,
-                        KineticMachineBlockEntity::create)
-                .hasBER(visualFactory != null)
-                .onBlockEntityRegister(
-                        type -> KineticMachineBlockEntity.onBlockEntityRegister(type, visualFactory, renderNormally));
-    }
 
     public static KineticMachineDefinition[] registerKineticTieredMachines(String name,
+                                                                    String cnname,
                                                                     BiFunction<Integer, ResourceLocation, KineticMachineDefinition> definitionFactory,
                                                                     BiFunction<IMachineBlockEntity, Integer, MetaMachine> factory,
                                                                     BiFunction<Integer, MachineBuilder<KineticMachineDefinition>, KineticMachineDefinition> builder,
-                                                                    @Nullable NonNullSupplier<SimpleBlockEntityVisualizer.Factory<? extends KineticBlockEntity>> visualFactory,
-                                                                    boolean renderNormally,
                                                                     int... tiers) {
         KineticMachineDefinition[] definitions = new KineticMachineDefinition[GTValues.TIER_COUNT];
         for (int tier : tiers) {
-            var register = REGISTRATE.machine(GTValues.VN[tier].toLowerCase(Locale.ROOT) + "_" + name,
+            var register = REGISTRATE.machine(VN[tier].toLowerCase(Locale.ROOT) + "_" + name,
+                            VNF[tier] + cnname,
                             id -> definitionFactory.apply(tier, id),
                             holder -> factory.apply(holder, tier),
                             KineticMachineBlock::new,
                             MetaMachineItem::new,
                             KineticMachineBlockEntity::create)
                     .tier(tier)
-                    .hasBER(visualFactory != null)
+                    .blockProp(BlockBehaviour.Properties::noOcclusion)
                     .onBlockEntityRegister(type -> KineticMachineBlockEntity.onBlockEntityRegister(type,
-                            visualFactory, renderNormally));
+                            () -> SingleAxisRotatingVisual::shaft, false));
             definitions[tier] = builder.apply(tier, register);
         }
         return definitions;
     }
 
     public static void init() {
-        KINETIC_INPUT_BOX = registerKineticTieredMachines("kinetic_input_box",
+        KINETIC_INPUT_BOX = registerKineticTieredMachines(
+                "kinetic_input_box",
+                "应力输入箱",
                 (tier, id) -> new KineticMachineDefinition(id, false, GTValues.V[tier]*MainConfig.INSTANCE.gtmConfig.kineticInputBoxTorqueMultiplier).setFrontRotation(true),
                 (holder, tier) -> new KineticPartMachine(holder, tier, IO.IN), (tier, builder) -> builder
-                        .langValue("%s %s %s".formatted(VLVH[tier], toEnglishName("kinetic_input_box"), VLVT[tier]))
+                        .langValue(VNF[tier] + " Kinetic Input Box")
                         .tooltips(
                                 Component.translatable("ctpp.machine.kinetic_input_box.tooltip",
                                         FormattingUtil.formatNumbers(GTValues.V[tier]*MainConfig.INSTANCE.gtmConfig.kineticInputBoxTorqueMultiplier)
@@ -173,8 +161,6 @@ public class CTPPMachines {
                                 Component.translatable("gtceu.part_sharing.disabled")
                         )
                         .rotationState(RotationState.ALL)
-                        .blockProp(BlockBehaviour.Properties::dynamicShape)
-                        .blockProp(BlockBehaviour.Properties::noOcclusion)
                         .abilities(CTPPPartAbility.INPUT_KINETIC)
                         .modelProperty(GTMachineModelProperties.IS_FORMED, false)
                         .model(createTieredCustomModel(CTPP.id("block/machine/part/kinetic_input_box"))
@@ -182,13 +168,13 @@ public class CTPPMachines {
                                         model.addReplaceableTextures("bottom", "top", "side")))
                         .tier(tier)
                         .register(),
-                () -> (VisualizationContext var1, KineticMachineBlockEntity var2, float var3) -> new SplitShaftVisual(var1, var2, var3), false, ALL_TIERS);
+                ALL_TIERS);
 
-        KINETIC_OUTPUT_BOX = CTPPRegistration.conditionalRegistration(gtmEnabled("GTMKineticOutputBox"),() ->
-                registerKineticTieredMachines("kinetic_output_box",
+        KINETIC_OUTPUT_BOX = registerKineticTieredMachines("kinetic_output_box",
+                "应力输出箱",
                         (tier, id) -> new KineticMachineDefinition(id, true, GTValues.V[tier] * MainConfig.INSTANCE.gtmConfig.kineticOutputBoxTorqueMultiplier).setFrontRotation(true),
                         (holder, tier) -> new KineticPartMachine(holder, tier, IO.OUT), (tier, builder) -> builder
-                                .langValue("%s %s %s".formatted(VLVH[tier], toEnglishName("kinetic_output_box"), VLVT[tier]))
+                        .langValue(VNF[tier] + " Kinetic Output Box")
                                 .tooltips(
                                         Component.translatable("ctpp.machine.kinetic_output_box.tooltip",
                                                 FormattingUtil.formatNumbers(GTValues.V[tier]*MainConfig.INSTANCE.gtmConfig.kineticInputBoxTorqueMultiplier)
@@ -196,8 +182,6 @@ public class CTPPMachines {
                                         Component.translatable("gtceu.part_sharing.disabled")
                                 )
                                 .rotationState(RotationState.ALL)
-                                .blockProp(BlockBehaviour.Properties::dynamicShape)
-                                .blockProp(BlockBehaviour.Properties::noOcclusion)
                                 .abilities(CTPPPartAbility.OUTPUT_KINETIC)
                                 .modelProperty(GTMachineModelProperties.IS_FORMED, false)
                                 .model(createTieredCustomModel(CTPP.id("block/machine/part/kinetic_output_box"))
@@ -206,6 +190,6 @@ public class CTPPMachines {
                                 )
                                 .tier(tier)
                                 .register(),
-                        () -> (VisualizationContext var1, KineticMachineBlockEntity var2, float var3) -> new SplitShaftVisual(var1, var2, var3), false, ALL_TIERS));
+                        ALL_TIERS);
     }
 }
