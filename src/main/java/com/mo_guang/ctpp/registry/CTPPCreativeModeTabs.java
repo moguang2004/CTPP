@@ -1,13 +1,10 @@
-package com.mo_guang.ctpp.core;
+package com.mo_guang.ctpp.registry;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.common.data.GTCreativeModeTabs;
 import com.mo_guang.ctpp.CTPP;
-import com.mo_guang.ctpp.common.data.CTPPMachines;
-import com.simibubi.create.AllItems;
 import com.tterrag.registrate.util.entry.RegistryEntry;
 import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.Items;
 
 import static com.mo_guang.ctpp.CTPPRegistration.REGISTRATE;
 

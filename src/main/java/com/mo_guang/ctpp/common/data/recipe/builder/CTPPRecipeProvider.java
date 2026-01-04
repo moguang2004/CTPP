@@ -1,10 +1,6 @@
-package com.mo_guang.ctpp.common.data;
+package com.mo_guang.ctpp.common.data.recipe.builder;
 
-import com.mo_guang.ctpp.recipe.AcidWashingRecipeGen;
-import com.mo_guang.ctpp.recipe.BreathingRecipeGen;
 import com.simibubi.create.api.data.recipe.ProcessingRecipeGen;
-import com.tterrag.registrate.AbstractRegistrate;
-import com.tterrag.registrate.providers.RegistrateRecipeProvider;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;

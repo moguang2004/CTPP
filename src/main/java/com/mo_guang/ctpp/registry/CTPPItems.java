@@ -1,4 +1,4 @@
-package com.mo_guang.ctpp;
+package com.mo_guang.ctpp.registry;
 
 import com.tterrag.registrate.util.entry.ItemEntry;
 import net.minecraft.world.item.Item;

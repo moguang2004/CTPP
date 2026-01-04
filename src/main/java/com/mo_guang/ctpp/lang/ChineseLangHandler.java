@@ -1,12 +1,10 @@
 package com.mo_guang.ctpp.lang;
 
 
-import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
-import com.mo_guang.ctpp.CTPPItems;
-import com.mo_guang.ctpp.common.data.CTPPMachines;
-import com.mo_guang.ctpp.common.data.CTPPMultiblockMachines;
-import com.mo_guang.ctpp.core.CTPPCreativeModeTabs;
+import com.mo_guang.ctpp.registry.CTPPItems;
+import com.mo_guang.ctpp.registry.CTPPMachines;
+import com.mo_guang.ctpp.registry.CTPPMultiblockMachines;
+import com.mo_guang.ctpp.registry.CTPPCreativeModeTabs;
 import tech.vixhentx.mcmod.ctnhlib.registrate.lang.RegistrateCNLangProvider;
 
 public class ChineseLangHandler {

@@ -1,4 +1,4 @@
-package com.mo_guang.ctpp.common.data;
+package com.mo_guang.ctpp.registry;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.api.pattern.Predicates;
 import com.gregtechceu.gtceu.common.data.*;
 import com.mo_guang.ctpp.CTPP;
 import com.mo_guang.ctpp.api.CTPPPartAbility;
+import com.mo_guang.ctpp.common.data.recipe.CTPPRecipeModifiers;
 import com.mo_guang.ctpp.common.machine.multiblock.*;
 import com.mo_guang.ctpp.util.CommonTooltips;
 import com.simibubi.create.AllBlocks;

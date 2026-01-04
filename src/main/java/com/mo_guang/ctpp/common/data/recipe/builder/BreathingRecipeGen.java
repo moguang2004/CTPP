@@ -1,8 +1,7 @@
-package com.mo_guang.ctpp.recipe;
+package com.mo_guang.ctpp.common.data.recipe.builder;
 
 import com.mo_guang.ctpp.CTPP;
-import com.mo_guang.ctpp.common.data.CTPPRecipeTypeInfo;
-import com.simibubi.create.Create;
+import com.mo_guang.ctpp.common.data.recipe.CTPPRecipeTypeInfo;
 import com.simibubi.create.api.data.recipe.ProcessingRecipeGen;
 import com.simibubi.create.foundation.recipe.IRecipeTypeInfo;
 import net.createmod.catnip.platform.CatnipServices;

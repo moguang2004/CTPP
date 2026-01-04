@@ -1,8 +1,7 @@
-package com.mo_guang.ctpp.common.data;
+package com.mo_guang.ctpp.common.data.recipe.builder;
 
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
-import com.gregtechceu.gtceu.utils.GTUtil;
 import com.mo_guang.ctpp.api.StressRecipeCapability;
 import org.jetbrains.annotations.NotNull;
 

@@ -1,21 +1,16 @@
 package com.mo_guang.ctpp.common.condition;
 
-import com.google.gson.JsonObject;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
-import com.mo_guang.ctpp.common.data.CTPPRecipeConditions;
+import com.mo_guang.ctpp.api.CTPPRecipeConditions;
 import com.mo_guang.ctpp.common.machine.multiblock.KineticMultiblockMachine;
-import com.mo_guang.ctpp.common.machine.multiblock.part.MechanicalUpgradePartMachine;
 import com.mo_guang.ctpp.util.CTPPValues;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.NoArgsConstructor;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.GsonHelper;
 import org.jetbrains.annotations.NotNull;
 import tech.vixhentx.mcmod.ctnhlib.langprovider.Lang;
 import tech.vixhentx.mcmod.ctnhlib.langprovider.annotation.CN;

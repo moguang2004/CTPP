@@ -1,16 +1,14 @@
-package com.mo_guang.ctpp.recipe;
+package com.mo_guang.ctpp.common.data.recipe.builder;
 
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.mo_guang.ctpp.CTPP;
-import com.mo_guang.ctpp.common.data.CTPPRecipeTypes;
 
 import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.world.item.Items;
 import com.mo_guang.ctpp.config.MainConfig;
 
 import java.util.function.Consumer;
 
-import static com.mo_guang.ctpp.common.data.CTPPRecipeTypes.*;
+import static com.mo_guang.ctpp.registry.CTPPRecipeTypes.*;
 import static com.mo_guang.ctpp.common.machine.multiblock.KineticGeneratorMachine.GENERATING_BOOST;
 
 public class KineticGeneratorRecipes {

@@ -1,32 +1,23 @@
-package com.mo_guang.ctpp.common.data;
+package com.mo_guang.ctpp.registry;
 
-import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
-import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
-import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.data.GTRecipes;
 import com.gregtechceu.gtceu.common.data.GTSoundEntries;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
-import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
-import com.mo_guang.ctpp.common.condition.RPMCondition;
 import com.mo_guang.ctpp.config.MainConfig;
-import com.mo_guang.ctpp.recipe.CTPPRecipeBuilder;
-import com.mo_guang.ctpp.util.CTPPValues;
-import com.simibubi.create.AllBlocks;
+import com.mo_guang.ctpp.common.data.recipe.builder.CTPPRecipeBuilder;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
-import static com.gregtechceu.gtceu.common.data.GTRecipes.RECIPE_FILTERS;
 import static com.lowdragmc.lowdraglib.gui.texture.ProgressTexture.FillDirection.LEFT_TO_RIGHT;
 
 public class CTPPRecipeTypes {

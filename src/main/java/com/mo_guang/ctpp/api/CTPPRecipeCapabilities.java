@@ -1,8 +1,7 @@
-package com.mo_guang.ctpp.common.data;
+package com.mo_guang.ctpp.api;
 
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.mo_guang.ctpp.api.StressRecipeCapability;
 
 public class CTPPRecipeCapabilities {
     public final static RecipeCapability<Float> SU = StressRecipeCapability.CAP;

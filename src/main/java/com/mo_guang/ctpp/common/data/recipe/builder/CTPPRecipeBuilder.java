@@ -1,4 +1,4 @@
-package com.mo_guang.ctpp.recipe;
+package com.mo_guang.ctpp.common.data.recipe.builder;
 
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;

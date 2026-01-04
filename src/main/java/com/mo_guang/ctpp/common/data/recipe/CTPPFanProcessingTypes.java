@@ -1,11 +1,10 @@
-package com.mo_guang.ctpp.common.data;
+package com.mo_guang.ctpp.common.data.recipe;
 
 import com.mo_guang.ctpp.CTPP;
 import com.mo_guang.ctpp.common.kinetic.fan.acidwashing.AcidWashingProcessingType;
 import com.mo_guang.ctpp.common.kinetic.fan.breathing.BreathingFanProcessingType;
 import com.simibubi.create.api.registry.CreateRegistries;
 import com.simibubi.create.content.kinetics.fan.processing.FanProcessingType;
-import com.simibubi.create.content.kinetics.fan.processing.FanProcessingTypeRegistry;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;

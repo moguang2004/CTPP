@@ -1,64 +1,42 @@
-package com.mo_guang.ctpp.common.data;
+package com.mo_guang.ctpp.registry;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.block.IMachineBlock;
-import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
-import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
-import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
-import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
-import com.gregtechceu.gtceu.common.registry.GTRegistration;
 
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.mo_guang.ctpp.CTPP;
 import com.mo_guang.ctpp.CTPPRegistration;
 import com.mo_guang.ctpp.api.CTPPPartAbility;
-import com.mo_guang.ctpp.client.SplitShaftVisual;
 import com.mo_guang.ctpp.common.blockentity.KineticMachineBlockEntity;
 import com.mo_guang.ctpp.common.machine.ElectricGearBoxMachine;
 import com.mo_guang.ctpp.common.machine.KineticMachineDefinition;
 import com.mo_guang.ctpp.common.machine.KineticPartMachine;
-import com.mo_guang.ctpp.common.machine.SimpleKineticElectricWorkableMachine;
 import com.mo_guang.ctpp.common.block.KineticMachineBlock;
 import com.mo_guang.ctpp.common.machine.multiblock.part.MechanicalUpgradePartMachine;
 import com.mo_guang.ctpp.config.MainConfig;
 import com.mo_guang.ctpp.util.CommonTooltips;
-import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import com.simibubi.create.content.kinetics.base.SingleAxisRotatingVisual;
-import com.tterrag.registrate.util.nullness.NonNullSupplier;
-import dev.engine_room.flywheel.api.visualization.VisualizationContext;
-import dev.engine_room.flywheel.lib.visualization.SimpleBlockEntityVisualizer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-
-import org.jetbrains.annotations.Nullable;
-import tech.vixhentx.mcmod.ctnhlib.langprovider.Lang;
-import tech.vixhentx.mcmod.ctnhlib.langprovider.annotation.CN;
-import tech.vixhentx.mcmod.ctnhlib.langprovider.annotation.EN;
 
 import java.util.Locale;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.GTValues.ALL_TIERS;
 import static com.gregtechceu.gtceu.common.data.machines.GTMachineUtils.*;
-import static com.gregtechceu.gtceu.utils.FormattingUtil.toEnglishName;
 import static com.mo_guang.ctpp.CTPPRegistration.REGISTRATE;
 import static com.mo_guang.ctpp.common.data.model.CTPPMachineModels.createTieredCustomModel;
-import static com.mo_guang.ctpp.common.data.model.CTPPMachineModels.createWorkableTieredCustomMachineModel;
-import static com.mo_guang.ctpp.core.CTPPCreativeModeTabs.MACHINE;
+import static com.mo_guang.ctpp.registry.CTPPCreativeModeTabs.MACHINE;
 import static com.mo_guang.ctpp.config.ConfigUtils.*;
 
 public class CTPPMachines {

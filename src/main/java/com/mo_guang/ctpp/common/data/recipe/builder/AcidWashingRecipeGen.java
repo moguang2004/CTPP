@@ -1,11 +1,11 @@
-package com.mo_guang.ctpp.recipe;
+package com.mo_guang.ctpp.common.data.recipe.builder;
 
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterialItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.mo_guang.ctpp.CTPP;
-import com.mo_guang.ctpp.common.data.CTPPRecipeTypeInfo;
+import com.mo_guang.ctpp.common.data.recipe.CTPPRecipeTypeInfo;
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.api.data.recipe.ProcessingRecipeGen;
 import com.simibubi.create.foundation.recipe.IRecipeTypeInfo;

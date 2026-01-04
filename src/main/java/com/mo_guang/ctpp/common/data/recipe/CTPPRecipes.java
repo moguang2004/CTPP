@@ -1,17 +1,15 @@
-package com.mo_guang.ctpp.recipe;
+package com.mo_guang.ctpp.common.data.recipe;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
-import com.gregtechceu.gtceu.data.recipe.misc.MetaTileEntityLoader;
 import com.mo_guang.ctpp.CTPP;
-import com.mo_guang.ctpp.common.data.CTPPMachines;
-import com.mo_guang.ctpp.common.data.CTPPRecipeTypes;
-import com.mo_guang.ctpp.recipe.CTPPRecipeBuilder;
-import com.mo_guang.ctpp.recipe.KineticGeneratorRecipes;
+import com.mo_guang.ctpp.common.data.recipe.builder.CTPPRecipeBuilder;
+import com.mo_guang.ctpp.common.data.recipe.builder.KineticGeneratorRecipes;
+import com.mo_guang.ctpp.registry.CTPPMachines;
+import com.mo_guang.ctpp.registry.CTPPRecipeTypes;
 import com.simibubi.create.AllBlocks;
-import com.simibubi.create.AllItems;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.world.item.Items;
 

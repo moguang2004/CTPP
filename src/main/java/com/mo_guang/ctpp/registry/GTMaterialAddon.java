@@ -1,4 +1,4 @@
-package com.mo_guang.ctpp;
+package com.mo_guang.ctpp.registry;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
