@@ -136,62 +136,26 @@ public class RubiksCubeContraptionEntity extends SimpleRotatingContraptionEntity
         }
     }
 
-//    @Override
-//    public void tick() {
-//        super.tick();
-//        Vec3 offset = contraption.anchor.getCenter().subtract(getPivot());
-//        Quaternionf q = new Quaternionf()
-//                .rotateXYZ((float) Math.toRadians(xRot),
-//                        (float) Math.toRadians(yRot),
-//                        (float) Math.toRadians(zRot));
-////        q.rotateX((float) Math.toRadians(xRot));
-////        q.rotateY((float) Math.toRadians(yRot));
-////        q.rotateZ((float) Math.toRadians(zRot));
-//        Vector3f rotated = new Vector3f((float) offset.x, (float) offset.y, (float) offset.z);
-//
-//        rotated.rotate(q);
-//
-//        Vec3 worldPos = getPivot().add(rotated.x, rotated.y, rotated.z);
-//
-//        setPos(worldPos.x - 0.5, worldPos.y -0.5, worldPos.z - 0.5);
-//    }
+
+
 
     public void notifyChange() {
-        Quaternionf q = new Quaternionf();
-        q.rotateX((float) Math.toRadians(serverXRot));
-        q.rotateY((float) Math.toRadians(serverYRot));
-        q.rotateZ((float) Math.toRadians(serverZRot));
+        Quaternionf q = serverRotation;
         if (this.layer.isInLayer(this.startPos.getCenter().subtract(getPivot()), frontFacing, q) && !this.shouldStop) {
             float speed = clockwise ? ROTATE_SPEED : - ROTATE_SPEED;
             Vec3 worldAxisVector = layer.getRotationVector(frontFacing);
 
-            // 转换到局部坐标系
-            Vector3f localAxis = transformAxisToLocal(worldAxisVector, q);
             this.setRotationSpeed(
-                    localAxis.x * speed,
-                    localAxis.y * speed,
-                    localAxis.z * speed
+                    ((float)worldAxisVector.x * speed),
+                    ((float)worldAxisVector.y * speed),
+                    ((float)worldAxisVector.z * speed)
             );
         }
         else {
             setRotationSpeed(0, 0, 0);
         }
     }
-    private Vector3f transformAxisToLocal(Vec3 worldAxis, Quaternionf rotation) {
-        // 获取旋转的逆（将世界轴转换到局部坐标系）
-        Quaternionf inverseRotation = new Quaternionf(rotation).conjugate();
 
-        Vector3f axis = new Vector3f(
-                (float) worldAxis.x,
-                (float) worldAxis.y,
-                (float) worldAxis.z
-        );
-
-        // 应用逆旋转
-        axis.rotate(inverseRotation);
-
-        return axis;
-    }
 
     public void performStandardMove(String moveNotation) {
         switch (moveNotation.toUpperCase()) {

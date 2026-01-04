@@ -3,9 +3,13 @@ package com.mo_guang.ctpp.common.machine.multiblock;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
+import com.lowdragmc.lowdraglib.gui.util.ClickData;
+import com.lowdragmc.lowdraglib.gui.widget.ComponentPanelWidget;
 import com.mo_guang.ctpp.dynamicPart.rotation.IRubiksRotationMultiblock;
 import com.mo_guang.ctpp.dynamicPart.rotation.RubiksCubeContraptionEntity;
 import com.simibubi.create.content.contraptions.AbstractContraptionEntity;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 
 import java.util.ArrayList;
@@ -13,9 +17,10 @@ import java.util.List;
 
 public class ComplexRotatingMachine extends WorkableElectricMultiblockMachine implements IRubiksRotationMultiblock {
     public List<RubiksCubeContraptionEntity> rotatingEntities;
-    public List<String> avalibleMoving = List.of("U","L");//List.of("U", "U'", "D", "D'", "L", "L'", "R", "R'", "F", "F'", "B", "B'");
+    public List<String> avalibleMoving = List.of("U", "U'", "D", "D'", "L", "L'", "R", "R'", "F", "F'", "B", "B'");
     protected TickableSubscription rotatingSubs;
     public int count = 0;
+    public String rotation = "STOP";
     public ComplexRotatingMachine(IMachineBlockEntity holder, Object... args) {
         super(holder, args);
     }
@@ -44,6 +49,25 @@ public class ComplexRotatingMachine extends WorkableElectricMultiblockMachine im
         }
     }
 
+    @Override
+    public void addDisplayText(List<Component> textList) {
+        super.addDisplayText(textList);
+        var button = Component.literal("旋转：");
+        button.append(" ");
+        button.append(ComponentPanelWidget.withButton(Component.literal("U"), "U"));
+        button.append(" ");
+        button.append(ComponentPanelWidget.withButton(Component.literal("L"), "L"));
+        button.append(" ");
+        button.append(ComponentPanelWidget.withButton(Component.literal("R"), "R"));
+        button.append(" ");
+        button.append(ComponentPanelWidget.withButton(Component.literal("F"), "F"));
+        textList.add(button);
+    }
+    public void handleDisplayClick(String componentData, ClickData clickData) {
+        if (!clickData.isRemote) {
+            rotation = componentData;
+        }
+    }
     @Override
     public void onUnload() {
         super.onUnload();

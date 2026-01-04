@@ -25,7 +25,7 @@ public interface IRotationMultiblock extends IMultiController {
                 contraption.assemble(this.self().getLevel(), self().getPos());
                 contraption.removeBlocksFromWorld(this.self().getLevel(), BlockPos.ZERO);
                 SimpleRotatingContraptionEntity contraptionEntity = SimpleRotatingContraptionEntity.create(self().getLevel(), contraption, pivot.getCenter());
-                contraptionEntity.setPos(pivot.getCenter());
+                contraptionEntity.setPos(pivot.getX(), pivot.getY(), pivot.getZ());
                 this.self().getLevel().addFreshEntity(contraptionEntity);
                 ce.put(group, contraptionEntity);
             }
