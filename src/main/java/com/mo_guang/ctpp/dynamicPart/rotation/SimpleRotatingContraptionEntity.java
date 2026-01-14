@@ -268,8 +268,8 @@ public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity {
             // 3. 检查是否需要强制同步（纠正预测）
             checkAndCorrectRotation();
         }
-
-//        setPos(contraption.anchor.getX(), contraption.anchor.getY(), contraption.anchor.getZ());
+        // TODO: fix this
+        setPos(contraption.anchor.getX(), contraption.anchor.getY(), contraption.anchor.getZ());
     }
 
     /**
@@ -317,7 +317,7 @@ public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity {
         if (angleDiff > Math.toRadians(thresholdDeg)) {
             // 差异过大，纠正客户端旋转
             // 使用插值平滑过渡到正确旋转
-            float lerpFactor = 0.3f;  // 纠正强度
+            float lerpFactor = 0.5f;  // 纠正强度
 
             // 插值到服务端旋转
             Quaternionf corrected = slerp(clientRotation, serverQ, lerpFactor);
@@ -328,7 +328,7 @@ public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity {
 
         } else if (angleDiff > 0.001f) {
             // 微小差异，轻微纠正
-            float lerpFactor = 0.1f;
+            float lerpFactor = 0.3f;
             Quaternionf corrected = slerp(clientRotation, serverQ, lerpFactor);
             corrected.normalize();
             clientRotation = corrected;

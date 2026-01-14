@@ -6,6 +6,7 @@
   "mixins": [
     "BlockPatternMixin",
     "GTBucketItemMixin",
+    "MultiblockStateMixin",
     "RotationPropagatorMixin",
     "SmartBlockEntityMixin",
     "create.WindmillBearingBlockMixin",

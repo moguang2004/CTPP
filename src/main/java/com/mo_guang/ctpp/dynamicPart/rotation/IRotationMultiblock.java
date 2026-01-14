@@ -14,6 +14,7 @@ import java.util.Map;
 public interface IRotationMultiblock extends IMultiController {
     default Map<Integer, SimpleRotatingContraptionEntity> assemble(BlockPos pivot) {
         if (self().getLevel() instanceof TrackedDummyWorld) return null;
+        if (self().getLevel().isClientSide) return null;
         Map<Integer, SimpleRotatingContraptionEntity> ce = new HashMap<>();
         var pattern = self().getDefinition().getPatternFactory().get();
         if (pattern instanceof StaticBlockPattern staticBlockPattern) {

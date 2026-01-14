@@ -43,7 +43,7 @@ public class WindMillControlMachine extends KineticOutputMachine implements IRot
     @Override
     public void onUnload() {
         super.onUnload();
-        if (rotatingEntity != null) {
+        if (rotatingEntity != null && !getLevel().isClientSide) {
             this.rotatingEntity.disassemble();
         }
         this.rotatingEntity = null;
@@ -53,7 +53,7 @@ public class WindMillControlMachine extends KineticOutputMachine implements IRot
     public void onStructureFormed() {
         super.onStructureFormed();
         calculateWindmillAround();
-        if (rotatingEntity == null) {
+        if (rotatingEntity == null && !getLevel().isClientSide) {
             var rotatingEntities = assemble(MachineUtils.getOffset(this, 0, 5, 5));
             if (rotatingEntities != null) {
                 this.rotatingEntity = rotatingEntities.get(0);
@@ -64,7 +64,7 @@ public class WindMillControlMachine extends KineticOutputMachine implements IRot
     @Override
     public void onStructureInvalid() {
         super.onStructureInvalid();
-        if (rotatingEntity != null) {
+        if (rotatingEntity != null && !getLevel().isClientSide) {
             this.rotatingEntity.disassemble();
         }
         this.rotatingEntity = null;
