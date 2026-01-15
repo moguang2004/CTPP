@@ -11,7 +11,7 @@ import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
 public class RubiksCubeContraptionEntity extends SimpleRotatingContraptionEntity{
-    public float ROTATE_SPEED = 9; // 90 degrees per 10 ticks
+    public float ROTATE_SPEED = 4.5f; // 90 degrees per 10 ticks
     public Direction frontFacing;
     public BlockPos startPos;
 
@@ -48,22 +48,15 @@ public class RubiksCubeContraptionEntity extends SimpleRotatingContraptionEntity
          * 根据整体朝向和层类型获取实际的方向
          */
         public Direction getDirection(Direction frontFacing) {
-            switch (this) {
-                case FRONT_LAYER:
-                    return frontFacing;
-                case BACK_LAYER:
-                    return frontFacing.getOpposite();
-                case LEFT_LAYER:
-                    return getLeftDirection(frontFacing);
-                case RIGHT_LAYER:
-                    return getRightDirection(frontFacing);
-                case TOP_LAYER:
-                    return Direction.UP;
-                case BOTTOM_LAYER:
-                    return Direction.DOWN;
-                default:
-                    return frontFacing;
-            }
+            return switch (this) {
+                case FRONT_LAYER -> frontFacing;
+                case BACK_LAYER -> frontFacing.getOpposite();
+                case LEFT_LAYER -> getLeftDirection(frontFacing);
+                case RIGHT_LAYER -> getRightDirection(frontFacing);
+                case TOP_LAYER -> Direction.UP;
+                case BOTTOM_LAYER -> Direction.DOWN;
+                default -> frontFacing;
+            };
         }
 
         /**
@@ -87,18 +80,13 @@ public class RubiksCubeContraptionEntity extends SimpleRotatingContraptionEntity
          */
         private static Direction getLeftDirection(Direction frontFacing) {
             // 根据frontFacing计算左方向
-            switch (frontFacing) {
-                case NORTH:
-                    return Direction.WEST;
-                case SOUTH:
-                    return Direction.EAST;
-                case WEST:
-                    return Direction.SOUTH;
-                case EAST:
-                    return Direction.NORTH;
-                default:
-                    return Direction.WEST;
-            }
+            return switch (frontFacing) {
+                case NORTH -> Direction.WEST;
+                case SOUTH -> Direction.EAST;
+                case WEST -> Direction.SOUTH;
+                case EAST -> Direction.NORTH;
+                default -> Direction.WEST;
+            };
         }
 
         /**
@@ -117,22 +105,14 @@ public class RubiksCubeContraptionEntity extends SimpleRotatingContraptionEntity
             Vector3f localPos = rotated.rotate(rotating);
 
             // 根据层的方向判断位置是否在指定层
-            switch (layerDirection) {
-                case EAST:
-                    return Math.signum(localPos.x) == 1;
-                case WEST:
-                    return Math.signum(localPos.x) == -1;
-                case UP:
-                    return Math.signum(localPos.y) == 1;
-                case DOWN:
-                    return Math.signum(localPos.y) == -1;
-                case SOUTH:
-                    return Math.signum(localPos.z) == 1;
-                case NORTH:
-                    return Math.signum(localPos.z) == -1;
-                default:
-                    return false;
-            }
+            return switch (layerDirection) {
+                case EAST -> Math.signum(localPos.x) == 1;
+                case WEST -> Math.signum(localPos.x) == -1;
+                case UP -> Math.signum(localPos.y) == 1;
+                case DOWN -> Math.signum(localPos.y) == -1;
+                case SOUTH -> Math.signum(localPos.z) == 1;
+                case NORTH -> Math.signum(localPos.z) == -1;
+            };
         }
     }
 

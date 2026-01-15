@@ -31,6 +31,9 @@ public class SimpleRotatingContraption extends Contraption {
             StructureTemplate.StructureBlockInfo info = new StructureTemplate.StructureBlockInfo(pos, state, be != null ? be.saveWithFullMetadata() : null);
             addBlock(world, pos, Pair.of(info, be));
         }
+        expandBoundsAroundAxis(Direction.Axis.X);
+        expandBoundsAroundAxis(Direction.Axis.Y);
+        expandBoundsAroundAxis(Direction.Axis.Z);
         return true;
     }
 
