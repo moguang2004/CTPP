@@ -16,7 +16,7 @@ public class CTPPItems {
     public static ItemEntry<Item> BASIC_MECHANISM = REGISTRATE.item("basic_mechanism", Item::new).register();
     public static ItemEntry<Item> INCOMPLETE_BASIC_MECHANISM = REGISTRATE.item("incomplete_basic_mechanism", Item::new).register();
     public static ItemEntry<Item> STEEL_MECHANISM = REGISTRATE.item("steel_mechanism", Item::new).register();
-    public static ItemEntry<RotationWandItem> ROTATION_WAND = REGISTRATE.item("rotation_wand", p -> new RotationWandItem(p)).register();
+//    public static ItemEntry<RotationWandItem> ROTATION_WAND = REGISTRATE.item("rotation_wand", p -> new RotationWandItem(p)).register();
     public static final EntityEntry<SimpleRotatingContraptionEntity> ROTATING_CONTRAPTION =
             REGISTRATE.movingEntity("rotating_contraption",
                             (EntityType.EntityFactory<SimpleRotatingContraptionEntity>) SimpleRotatingContraptionEntity::new, MobCategory.MISC)

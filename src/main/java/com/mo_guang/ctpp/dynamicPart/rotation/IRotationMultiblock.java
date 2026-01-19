@@ -5,6 +5,8 @@ import com.lowdragmc.lowdraglib.utils.TrackedDummyWorld;
 import com.mo_guang.ctpp.api.pattern.StaticBlockPattern;
 import com.mo_guang.ctpp.dynamicPart.rotation.SimpleRotatingContraption;
 import com.mo_guang.ctpp.dynamicPart.rotation.SimpleRotatingContraptionEntity;
+import com.simibubi.create.content.contraptions.AbstractContraptionEntity;
+import com.simibubi.create.content.contraptions.ControlledContraptionEntity;
 import net.minecraft.core.BlockPos;
 
 import java.util.HashMap;
@@ -23,9 +25,9 @@ public interface IRotationMultiblock extends IMultiController {
                 int group = entry.getKey();
                 var part = entry.getValue();
                 SimpleRotatingContraption contraption = new SimpleRotatingContraption(part, pivot);
-                contraption.assemble(this.self().getLevel(), self().getPos());
+                contraption.assemble(this.self().getLevel(), self().getPos()); // 第二个参数无用
                 contraption.removeBlocksFromWorld(this.self().getLevel(), BlockPos.ZERO);
-                SimpleRotatingContraptionEntity contraptionEntity = SimpleRotatingContraptionEntity.create(self().getLevel(), contraption, pivot.getCenter());
+                SimpleRotatingContraptionEntity contraptionEntity = SimpleRotatingContraptionEntity.create(self().getLevel(), contraption, this, pivot.getCenter());
                 contraptionEntity.setPos(pivot.getX(), pivot.getY(), pivot.getZ());
                 this.self().getLevel().addFreshEntity(contraptionEntity);
                 ce.put(group, contraptionEntity);
@@ -33,5 +35,24 @@ public interface IRotationMultiblock extends IMultiController {
             return ce;
         }
         return null;
+    }
+    List<SimpleRotatingContraptionEntity> getRotatingEntity();
+    void setRotatingEntity(List<SimpleRotatingContraptionEntity> entities);
+    default boolean isAttachedTo(AbstractContraptionEntity contraption) {
+        return getRotatingEntity() != null && getRotatingEntity().contains(contraption);
+    }
+
+    default void attach(SimpleRotatingContraptionEntity contraption) {
+        if (getRotatingEntity() == null) {
+            setRotatingEntity(List.of(contraption));
+        }
+        else {
+            getRotatingEntity().add(contraption);
+        }
+        self().holder.notifyBlockUpdate();
+    }
+
+    default BlockPos getBlockPosition() {
+        return self().getPos();
     }
 }

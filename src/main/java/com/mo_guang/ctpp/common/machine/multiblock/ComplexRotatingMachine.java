@@ -63,6 +63,7 @@ public class ComplexRotatingMachine extends WorkableElectricMultiblockMachine im
         button.append(ComponentPanelWidget.withButton(Component.literal("F"), "F"));
         textList.add(button);
     }
+    @Override
     public void handleDisplayClick(String componentData, ClickData clickData) {
         if (!clickData.isRemote) {
             rotation = componentData;
@@ -78,12 +79,15 @@ public class ComplexRotatingMachine extends WorkableElectricMultiblockMachine im
     }
     public void rotatingTick() {
         if (isFormed && rotatingEntities != null) {
-            if (getOffsetTimer() % 20 == 0) {
-                count += 1;
-                int index = count % avalibleMoving.size();
-                rotatingEntities.forEach(entity -> entity.performStandardMove(avalibleMoving.get(index)));
+            var halfTick = 90 / RubiksCubeContraptionEntity.ROTATE_SPEED;
+            if (getOffsetTimer() % (2 * halfTick) == 0) {
+                rotatingEntities.forEach(entity -> entity.performStandardMove(rotation));
+                rotation = "STOP";
+//                count += 1;
+//                int index = count % avalibleMoving.size();
+//                rotatingEntities.forEach(entity -> entity.performStandardMove(avalibleMoving.get(index)));
             }
-            if (getOffsetTimer() % 20 == 10) {
+            if (getOffsetTimer() % (2 * halfTick) == halfTick) {
                 rotatingEntities.forEach(entity -> entity.performStandardMove("STOP"));
             }
         }

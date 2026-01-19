@@ -37,7 +37,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-public class KineticMultiblockMachine extends WorkableMultiblockMachine implements IFancyUIMachine, IDisplayUIMachine {
+public abstract class KineticMultiblockMachine extends WorkableMultiblockMachine implements IFancyUIMachine, IDisplayUIMachine {
     @Getter
     public LongSet rotateBlocks;
     @Getter
@@ -64,6 +64,7 @@ public class KineticMultiblockMachine extends WorkableMultiblockMachine implemen
     // ********* Recipe Logic **********//
     //////////////////////////////////////
 
+    public void onTierChanged() {}
     @Override
     protected RecipeLogic createRecipeLogic(Object... args) {
         return new KineticRecipeLogic(this);

@@ -11,7 +11,7 @@ import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
 public class RubiksCubeContraptionEntity extends SimpleRotatingContraptionEntity{
-    public float ROTATE_SPEED = 4.5f; // 90 degrees per 10 ticks
+    public static float ROTATE_SPEED = 4.5f; // 90 degrees per 10 ticks
     public Direction frontFacing;
     public BlockPos startPos;
 

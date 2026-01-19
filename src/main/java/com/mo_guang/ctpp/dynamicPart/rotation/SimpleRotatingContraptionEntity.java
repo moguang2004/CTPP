@@ -1,5 +1,6 @@
 package com.mo_guang.ctpp.dynamicPart.rotation;
 
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.mo_guang.ctpp.CTPPEntityTypes;
 import com.mojang.blaze3d.vertex.PoseStack;
 
@@ -8,23 +9,30 @@ import com.simibubi.create.foundation.collision.Matrix3d;
 import lombok.Getter;
 import net.createmod.catnip.math.AngleHelper;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
+import tech.vixhentx.mcmod.ctnhlib.utils.ExtendNbtUtils;
 
 import java.lang.reflect.Field;
 
 import static com.mo_guang.ctpp.util.MathUtil.*;
-
+/**
+ * 一个可以被控制的绕着某个锚点自由旋转的装置实体
+ * */
 public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity {
 
+    public BlockPos controllerPos;
     /**
      * 服务端 authoritative 角度
      **/
@@ -33,7 +41,11 @@ public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity {
     protected Quaternionf prevClientRotation = new Quaternionf();
     // 旋转速度（世界坐标系）
     private Vec3 angularVelocity = Vec3.ZERO;
-
+    // 装置运行状态（主要用于刚刚载入游戏时的自锁）
+    @Getter
+    private boolean isRunning = false;
+    @OnlyIn(Dist.CLIENT)
+    private float clientRotationDiff = 0.0f;
 
     private static final EntityDataAccessor<Float> DATA_Q_W =
             SynchedEntityData.defineId(SimpleRotatingContraptionEntity.class, EntityDataSerializers.FLOAT);
@@ -47,7 +59,12 @@ public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity {
             SynchedEntityData.defineId(SimpleRotatingContraptionEntity.class, EntityDataSerializers.VECTOR3);
     private static final EntityDataAccessor<Vector3f> DATA_PIVOT =
             SynchedEntityData.defineId(SimpleRotatingContraptionEntity.class, EntityDataSerializers.VECTOR3);
+    private static final EntityDataAccessor<Boolean> DATA_IS_RUNNING =
+            SynchedEntityData.defineId(SimpleRotatingContraptionEntity.class, EntityDataSerializers.BOOLEAN);
 
+    /**
+    * 同步服务端与客户端的四元数数据
+    * **/
     @Override
     protected void defineSynchedData() {
         super.defineSynchedData();
@@ -57,6 +74,7 @@ public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity {
         entityData.define(DATA_Q_Z, 0.0f);  // 四元数 z 分量
         entityData.define(DATA_ANGULAR_VEL, new Vector3f(0, 0, 0));
         entityData.define(DATA_PIVOT, new Vector3f(0, 0, 0));
+        entityData.define(DATA_IS_RUNNING, false);
     }
 
 
@@ -70,9 +88,11 @@ public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity {
         super(type, world);
     }
 
-    public static SimpleRotatingContraptionEntity create(Level world, Contraption contraption, Vec3 pivot) {
+    public static SimpleRotatingContraptionEntity create(Level world, Contraption contraption, IRotationMultiblock controller, Vec3 pivot) {
         SimpleRotatingContraptionEntity entity =
                 new SimpleRotatingContraptionEntity(CTPPEntityTypes.SIMPLE_CONTRAPTION.get(), world);
+        entity.controllerPos = controller.getBlockPosition();
+        entity.isRunning = true;
         entity.setContraption(contraption);
         entity.setPivot(pivot);
         return entity;
@@ -91,6 +111,10 @@ public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity {
     }
 
     public void setRotationSpeed(Vec3 worldAxis, float degPerTick) {
+        if (!isRunning) {
+            this.angularVelocity = Vec3.ZERO;
+            return;
+        }
         if (worldAxis.length() < 0.001f) {
             this.angularVelocity = Vec3.ZERO;
         } else {
@@ -104,6 +128,18 @@ public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity {
                     (float) angularVelocity.z
             );
             entityData.set(DATA_ANGULAR_VEL, vec);
+        }
+    }
+
+    public void setRunning(boolean running) {
+        this.isRunning = running;
+        if (!level().isClientSide()) {
+            entityData.set(DATA_IS_RUNNING, running);
+            // 停止运行时，强制清零角速度（避免残留）
+            if (!running) {
+                this.angularVelocity = Vec3.ZERO;
+                entityData.set(DATA_ANGULAR_VEL, new Vector3f(0, 0, 0));
+            }
         }
     }
 
@@ -122,6 +158,15 @@ public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity {
         if (DATA_PIVOT.equals(key)) {
             Vector3f vec = entityData.get(DATA_PIVOT);
             this.pivot = new Vec3(vec.x(), vec.y(), vec.z());
+        }
+        if (DATA_IS_RUNNING.equals(key)) {
+            this.isRunning = entityData.get(DATA_IS_RUNNING);
+            // 客户端停止运行时，清零预测旋转差值
+            if (level().isClientSide() && !this.isRunning) {
+                this.clientRotationDiff = 0.0f;
+                this.clientRotation = new Quaternionf(this.serverRotation);
+                this.prevClientRotation = new Quaternionf(this.serverRotation);
+            }
         }
         if (level().isClientSide) {
             if (DATA_Q_W.equals(key) || DATA_Q_X.equals(key) ||
@@ -161,9 +206,9 @@ public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity {
         ContraptionRotationState crs = new ContraptionRotationState();
 
         Matrix3d mat = new Matrix3d().asIdentity();
-        mat.multiply(new Matrix3d().asZRotation(AngleHelper.rad(-getEulerAngle().x)));
-        mat.multiply(new Matrix3d().asYRotation(AngleHelper.rad(-getEulerAngle().y)));
-        mat.multiply(new Matrix3d().asXRotation(AngleHelper.rad(-getEulerAngle().z)));
+        mat.multiply(new Matrix3d().asZRotation(AngleHelper.rad(getEulerAngle().x)));
+        mat.multiply(new Matrix3d().asYRotation(AngleHelper.rad(getEulerAngle().y)));
+        mat.multiply(new Matrix3d().asXRotation(AngleHelper.rad(getEulerAngle().z)));
 
 
         // 直接设置 matrix 字段（asMatrix 会优先返回该 matrix）
@@ -188,7 +233,11 @@ public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity {
     public Vec3 applyRotation(Vec3 localPos, float partialTicks) {
         Quaternionf interpQ;
         if (level().isClientSide) {
-            interpQ = slerp(prevClientRotation, clientRotation, partialTicks);
+            if (!isRunning || clientRotationDiff > 0.001f) {
+                interpQ = new Quaternionf(serverRotation);
+            } else {
+                interpQ = slerp(prevClientRotation, clientRotation, partialTicks);
+            }
         } else {
             interpQ = serverRotation;
         }
@@ -200,7 +249,11 @@ public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity {
     public Vec3 reverseRotation(Vec3 globalPos, float partialTicks) {
         Quaternionf interpQ;
         if (level().isClientSide) {
-            interpQ = slerp(prevClientRotation, clientRotation, partialTicks);
+            if (!isRunning || clientRotationDiff > 0.001f) {
+                interpQ = new Quaternionf(serverRotation);
+            } else {
+                interpQ = slerp(prevClientRotation, clientRotation, partialTicks);
+            }
         } else {
             interpQ = serverRotation;
         }
@@ -228,6 +281,14 @@ public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity {
     @Override
     public void tick() {
         super.tick();
+        if (!isRunning) {
+            return;
+        }
+        IRotationMultiblock controller = getController();
+        if (controller == null || !controller.isAttachedTo(this)) {
+            setRunning(false);
+            return;
+        }
         if (!level().isClientSide) {
             if (!angularVelocity.equals(Vec3.ZERO)) {
                 float speed = (float) angularVelocity.length();
@@ -276,6 +337,9 @@ public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity {
      * 同步四元数旋转到客户端（服务端调用）
      */
     private void syncRotationQuaternion() {
+        if (!isRunning) {
+            return;
+        }
         // 获取当前存储的值
         float storedW = entityData.get(DATA_Q_W);
         float storedX = entityData.get(DATA_Q_X);
@@ -303,6 +367,9 @@ public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity {
      * 检查并纠正客户端旋转预测（客户端调用）
      */
     private void checkAndCorrectRotation() {
+        if (!isRunning) {
+            return;
+        }
         // 获取服务端同步的旋转
         float serverW = entityData.get(DATA_Q_W);
         float serverX = entityData.get(DATA_Q_X);
@@ -317,7 +384,7 @@ public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity {
         if (angleDiff > Math.toRadians(thresholdDeg)) {
             // 差异过大，纠正客户端旋转
             // 使用插值平滑过渡到正确旋转
-            float lerpFactor = 0.5f;  // 纠正强度
+            float lerpFactor = 1f;  // 纠正强度
 
             // 插值到服务端旋转
             Quaternionf corrected = slerp(clientRotation, serverQ, lerpFactor);
@@ -335,9 +402,36 @@ public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity {
         }
     }
 
+    protected IRotationMultiblock getController() {
+        if (controllerPos == null)
+            return null;
+        if (!level().isLoaded(controllerPos))
+            return null;
+        var controller = MetaMachine.getMachine(level(), controllerPos);
+        if (!(controller instanceof IRotationMultiblock))
+            return null;
+        return (IRotationMultiblock) controller;
+    }
+
     @Override
     protected void tickContraption() {
         tickActors();
+        if (controllerPos == null)
+            return;
+        if (!level().isLoaded(controllerPos))
+            return;
+        IRotationMultiblock controller = getController();
+        if (controller == null) {
+            setRunning(false);
+            discard();
+            return;
+        }
+        if (!controller.isAttachedTo(this)) {
+            controller.attach(this);
+            setRunning(true);
+            if (level().isClientSide)
+                setPos(getX(), getY(), getZ());
+        }
     }
 
 
@@ -350,6 +444,7 @@ public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity {
     @Override
     protected void onContraptionStalled() {
         super.onContraptionStalled();
+        setRunning(false);
     }
 
     @Override
@@ -369,7 +464,11 @@ public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity {
         Quaternionf rotationQ;
         if (level().isClientSide) {
             // 客户端使用插值四元数
-            rotationQ = slerp(prevClientRotation, clientRotation, partialTicks);
+            if (!isRunning || clientRotationDiff > 0.001f) {
+                rotationQ = new Quaternionf(serverRotation);
+            } else {
+                rotationQ = slerp(prevClientRotation, clientRotation, partialTicks);
+            }
         } else {
             // 服务端直接使用当前旋转
             rotationQ = new Quaternionf(serverRotation);
@@ -381,6 +480,71 @@ public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity {
         matrixStack.translate(-0.5, -0.5, -0.5);
 
     }
+    @Override
+    protected void writeAdditional(CompoundTag nbt, boolean spawnPacket) {
+        // 先调用父类方法，保存父类的核心数据
+        super.writeAdditional(nbt, spawnPacket);
+
+        nbt.put("ControllerRelative", NbtUtils.writeBlockPos(controllerPos.subtract(blockPosition())));
+        nbt.put("Pivot", ExtendNbtUtils.writeVec3(pivot));
+        // 校验服务端旋转四元数是否为空，避免空指针异常
+        if (this.serverRotation == null) {
+            this.serverRotation = new Quaternionf().identity(); // 兜底：初始化为单位四元数（无旋转）
+        }
+
+        CompoundTag rotationTag = new CompoundTag();
+        rotationTag.putBoolean("IsRunning", this.isRunning);
+        // 将四元数的 x/y/z/w 四个分量写入子 NBT（浮点型数据）
+        rotationTag.put("Quaternionf", ExtendNbtUtils.writeQuaternionf(this.serverRotation));
+
+        // 将子 NBT 标签写入实体主 NBT，指定唯一键名（如 "ContraptionRotationData"）
+        nbt.put("ContraptionRotationData", rotationTag);
+    }
+
+    @Override
+    protected void readAdditional(CompoundTag nbt, boolean spawnData) {
+        super.readAdditional(nbt, spawnData);
+
+        controllerPos = NbtUtils.readBlockPos(nbt.getCompound("ControllerRelative")).offset(blockPosition());
+        pivot = ExtendNbtUtils.readVec3(nbt.getCompound("Pivot"));
+        // 校验旋转子 NBT 标签是否存在，避免空指针异常
+        if (!nbt.contains("ContraptionRotationData", CompoundTag.TAG_COMPOUND)) {
+            // 兜底：初始化默认旋转状态（无旋转）
+            this.serverRotation = new Quaternionf().identity();
+            this.angularVelocity = Vec3.ZERO;
+            return;
+        }
+
+        // 读取旋转子 NBT 标签
+        CompoundTag rotationTag = nbt.getCompound("ContraptionRotationData");
+        this.isRunning = rotationTag.getBoolean("IsRunning");
+        // 构建服务端旋转四元数，还原旋转角度
+        this.serverRotation = ExtendNbtUtils.readQuaternionf(rotationTag.getCompound("Quaternionf"));
+
+        // 四元数归一化（关键）：修复 NBT 存储/读取过程中可能出现的精度损失，保证旋转有效性
+        this.serverRotation.normalize();
+
+        if (!this.level().isClientSide()) {
+            entityData.set(DATA_Q_W, this.serverRotation.w());
+            entityData.set(DATA_Q_X, this.serverRotation.x());
+            entityData.set(DATA_Q_Y, this.serverRotation.y());
+            entityData.set(DATA_Q_Z, this.serverRotation.z());
+            this.isRunning = false;
+            entityData.set(DATA_IS_RUNNING, false);
+            // 角速度同步为零，绑定后由控制器分配
+            this.angularVelocity = Vec3.ZERO;
+            entityData.set(DATA_ANGULAR_VEL, new Vector3f(0, 0, 0));
+        }
+        // 客户端同步：加载时立即将服务端数据同步到客户端，避免视觉延迟
+        if (this.level().isClientSide()) {
+            this.clientRotation = new Quaternionf(this.serverRotation);
+            this.prevClientRotation = new Quaternionf(this.serverRotation);
+            this.isRunning = false;
+            this.clientRotationDiff = quaternionAngleDifference(this.clientRotation, this.serverRotation);
+            this.angularVelocity = Vec3.ZERO;
+        }
+    }
+
     public Vec3 getEulerAngle() {
         return getSmartEulerAngles(serverRotation, 5.0f);
     }

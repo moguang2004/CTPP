@@ -14,6 +14,7 @@ import com.mo_guang.ctpp.CTPP;
 import com.mo_guang.ctpp.api.CTPPPartAbility;
 import com.mo_guang.ctpp.api.pattern.FactoryStaticBlockPattern;
 import com.mo_guang.ctpp.common.machine.multiblock.*;
+import com.mo_guang.ctpp.common.machine.multiblock.windmillController.WindMillControlMachine;
 import com.mo_guang.ctpp.util.CommonTooltips;
 import com.simibubi.create.AllBlocks;
 import net.minecraft.ChatFormatting;

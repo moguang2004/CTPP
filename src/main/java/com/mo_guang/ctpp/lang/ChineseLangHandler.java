@@ -38,6 +38,7 @@ public class ChineseLangHandler {
         provider.add("ctpp.multiblock.windmill_control_center.info.1", "控制的风车总应力：%dsu");
         provider.add("ctpp.multiblock.windmill_control_center.info.2", "总产能效率：%d%%");
         provider.add("ctpp.multiblock.windmill_control_center.info.3", "总应力输出：§a%dsu§r");
+        provider.add("ctpp.multiblock.windmill_control_center.button", "高亮显示");
 
         provider.add("ctpp.multiblock.kinetic_workable_multiblock_machine.speed","输入转速：%drpm");
         provider.add("ctpp.multiblock.kinetic_workable_multiblock_machine.parallel","并行数： %d");
