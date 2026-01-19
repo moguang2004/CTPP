@@ -1,6 +1,6 @@
 package com.mo_guang.ctpp.common.kinetic.fan.breathing;
 
-import com.mo_guang.ctpp.common.data.CTPPRecipeTypeInfo;
+import com.mo_guang.ctpp.common.data.recipe.CTPPRecipeTypeInfo;
 import com.simibubi.create.content.processing.recipe.ProcessingRecipe;
 import com.simibubi.create.content.processing.recipe.ProcessingRecipeBuilder;
 import net.minecraft.world.level.Level;

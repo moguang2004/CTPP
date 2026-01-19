@@ -1,7 +1,6 @@
 package com.mo_guang.ctpp;
 
-import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
-import com.mo_guang.ctpp.core.CTPPCreativeModeTabs;
+import com.mo_guang.ctpp.registry.CTPPCreativeModeTabs;
 import com.tterrag.registrate.util.entry.RegistryEntry;
 import java.util.function.Supplier;
 

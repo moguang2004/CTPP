@@ -1,7 +1,7 @@
 package com.mo_guang.ctpp.integration.kjs;
 
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.ContentJS;
-import com.mo_guang.ctpp.common.data.CTPPRecipeCapabilities;
+import com.mo_guang.ctpp.api.CTPPRecipeCapabilities;
 import dev.latvian.mods.kubejs.recipe.component.NumberComponent;
 
 

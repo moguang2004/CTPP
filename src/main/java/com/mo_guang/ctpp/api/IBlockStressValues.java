@@ -1,8 +1,6 @@
 package com.mo_guang.ctpp.api;
 
 import com.gregtechceu.gtceu.api.block.IMachineBlock;
-import com.mo_guang.ctpp.common.machine.KineticMachineDefinition;
-import com.simibubi.create.api.stress.BlockStressValues;
 import net.createmod.catnip.data.Couple;
 import net.minecraft.world.level.block.Block;
 

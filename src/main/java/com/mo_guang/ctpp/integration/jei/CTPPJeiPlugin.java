@@ -2,7 +2,7 @@ package com.mo_guang.ctpp.integration.jei;
 
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.mo_guang.ctpp.CTPP;
-import com.mo_guang.ctpp.common.data.CTPPRecipeTypeInfo;
+import com.mo_guang.ctpp.common.data.recipe.CTPPRecipeTypeInfo;
 import com.mo_guang.ctpp.common.kinetic.fan.acidwashing.AcidwashingRecipe;
 import com.mo_guang.ctpp.common.kinetic.fan.breathing.BreathingRecipe;
 import com.mo_guang.ctpp.integration.jei.category.FanAcidWashingCategory;
@@ -16,7 +16,6 @@ import com.simibubi.create.compat.jei.EmptyBackground;
 import com.simibubi.create.compat.jei.ItemIcon;
 import com.simibubi.create.compat.jei.category.CreateRecipeCategory;
 import com.simibubi.create.foundation.recipe.IRecipeTypeInfo;
-import com.simibubi.create.foundation.utility.CreateLang;
 import com.simibubi.create.infrastructure.config.AllConfigs;
 import com.simibubi.create.infrastructure.config.CRecipes;
 import mezz.jei.api.IModPlugin;

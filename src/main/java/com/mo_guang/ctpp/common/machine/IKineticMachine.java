@@ -1,8 +1,12 @@
 package com.mo_guang.ctpp.common.machine;
 
 import com.gregtechceu.gtceu.api.machine.feature.IMachineFeature;
+import com.mo_guang.ctpp.api.KineticMachineDefinition;
 import com.mo_guang.ctpp.common.blockentity.KineticMachineBlockEntity;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
+
+import java.util.List;
 
 public interface IKineticMachine extends IMachineFeature {
 
@@ -26,5 +30,9 @@ public interface IKineticMachine extends IMachineFeature {
 
     default boolean hasShaftTowards(Direction face) {
         return face.getAxis() == getRotationFacing().getAxis();
+    }
+
+    default boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking){
+        return false;
     }
 }

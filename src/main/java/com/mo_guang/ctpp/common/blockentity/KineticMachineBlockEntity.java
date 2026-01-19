@@ -10,7 +10,6 @@ import com.gregtechceu.gtceu.common.registry.GTRegistration;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.syncdata.IManaged;
-import com.lowdragmc.lowdraglib.syncdata.IManagedStorage;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
@@ -18,9 +17,9 @@ import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.syncdata.managed.MultiManagedStorage;
 import com.mo_guang.ctpp.api.IBlockStressValues;
-import com.mo_guang.ctpp.common.machine.KineticMachineDefinition;
-import com.mo_guang.ctpp.common.machine.KineticPartMachine;
-import com.simibubi.create.api.stress.BlockStressValues;
+import com.mo_guang.ctpp.api.KineticMachineDefinition;
+import com.mo_guang.ctpp.common.machine.IKineticMachine;
+import com.mo_guang.ctpp.common.machine.multiblock.part.KineticPartMachine;
 import com.simibubi.create.content.kinetics.KineticNetwork;
 import com.simibubi.create.content.kinetics.base.IRotate;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
@@ -34,7 +33,6 @@ import lombok.Getter;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -51,8 +49,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
-import java.util.function.BiFunction;
 
 public class KineticMachineBlockEntity extends KineticBlockEntity implements IMachineBlockEntity, IManaged {
 
@@ -62,8 +58,6 @@ public class KineticMachineBlockEntity extends KineticBlockEntity implements IMa
 
     @Getter
     private final FieldManagedStorage syncStorage = new FieldManagedStorage(this);
-
-
 
     @Getter
     public final MetaMachine metaMachine;
@@ -100,13 +94,16 @@ public class KineticMachineBlockEntity extends KineticBlockEntity implements IMa
                                              NonNullSupplier<SimpleBlockEntityVisualizer.Factory<? extends KineticBlockEntity>> visualFactory,
                                              boolean renderNormally) {
         if (visualFactory != null && LDLib.isClient()) {
-            DistExecutor.unsafeRunWhenOn(Dist.CLIENT,
-                    () -> () -> OneTimeEventReceiver.addModListener(GTRegistration.REGISTRATE,
+            DistExecutor.unsafeRunWhenOn(
+                    Dist.CLIENT,
+                    () -> () ->
+                            OneTimeEventReceiver.addModListener(GTRegistration.REGISTRATE,
                             FMLClientSetupEvent.class,
                             ($) -> SimpleBlockEntityVisualizer.builder(blockEntityType)
                                     .factory(visualFactory.get())
                                     .skipVanillaRender((be) -> !renderNormally)
-                                    .apply()));
+                                    .apply())
+            );
         }
     }
 
@@ -169,11 +166,11 @@ public class KineticMachineBlockEntity extends KineticBlockEntity implements IMa
         metaMachine.onUnload();
     }
 
-    @Override
-    public void clearRemoved() {
-        super.clearRemoved();
-        metaMachine.onLoad();
-    }
+//    @Override
+//    public void clearRemoved() {
+//        super.clearRemoved();
+//        metaMachine.onLoad();
+//    }
 
     @Override
     public boolean shouldRenderGrid(Player player, BlockPos pos, BlockState state, ItemStack held,
@@ -263,6 +260,11 @@ public class KineticMachineBlockEntity extends KineticBlockEntity implements IMa
     }
 
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
+        if(getMetaMachine() instanceof IKineticMachine kineticMachine
+                && kineticMachine.addToGoggleTooltip(tooltip, isPlayerSneaking)){
+            return true;
+        }
+
         boolean added = super.addToGoggleTooltip(tooltip, isPlayerSneaking);
         float stressBase = this.calculateAddedStressCapacity();
         if (stressBase != 0.0F && IRotate.StressImpact.isEnabled()) {
