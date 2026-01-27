@@ -8,6 +8,10 @@ import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.mo_guang.ctpp.api.CTPPMultiblockBuilder;
 import tech.vixhentx.mcmod.ctnhlib.registrate.CNRegistrate;
+import com.simibubi.create.foundation.data.CreateEntityBuilder;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobCategory;
 
 import java.util.function.Function;
 
@@ -23,5 +27,19 @@ public class CTPPRegistrate extends CNRegistrate {
 
     public static CTPPRegistrate create(String modId) {
         return new CTPPRegistrate(modId);
+    }
+
+
+    public <T extends Entity> CreateEntityBuilder<T, GTRegistrate> movingEntity(String name,
+                                                                                EntityType.EntityFactory<T> factory, MobCategory classification) {
+        return this.movingEntity(self(), name, factory, classification);
+    }
+
+
+    public <T extends Entity, P> CreateEntityBuilder<T, P> movingEntity(P parent, String name,
+                                                                        EntityType.EntityFactory<T> factory, MobCategory classification) {
+        return (CreateEntityBuilder<T, P>) this.entry(name, (callback) -> {
+            return CreateEntityBuilder.create(this, parent, name, callback, factory, classification);
+        });
     }
 }
