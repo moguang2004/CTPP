@@ -1,5 +1,6 @@
 package com.mo_guang.ctpp.common.machine.multiblock.windmillController;
 
+import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -14,6 +15,7 @@ import java.util.List;
 public class WindmillSavedData extends SavedData {
     public static final ResourceLocation ID = ResourceLocation.tryBuild("ctpp", "windmill_data");
     private final List<BlockPos> windmillPositions = new ArrayList<>();
+    private final List<BlockPos> formedControllerPositions = new ArrayList<>();
     public WindmillSavedData() {}
     public WindmillSavedData(CompoundTag nbt) {
         this.load(nbt); // 调用自定义的加载逻辑，完成数据反序列化
@@ -52,6 +54,71 @@ public class WindmillSavedData extends SavedData {
         windmillPositions.clear();
         setDirty();
     }
+    /**
+     * 注册已成型的风车控制中心
+     */
+    public void registerFormedController(BlockPos pos) {
+        if (!formedControllerPositions.contains(pos)) {
+            formedControllerPositions.add(pos);
+            setDirty(); // 标记数据修改，触发持久化
+        }
+    }
+
+    /**
+     * 注销失效的风车控制中心（结构破坏时调用）
+     */
+    public void unregisterFormedController(BlockPos pos) {
+        if (formedControllerPositions.remove(pos)) {
+            setDirty(); // 标记数据修改，触发持久化
+        }
+    }
+
+    /**
+     * 获取当前存档内所有已成型的风车控制中心
+     */
+    public List<BlockPos> getAllFormedControllers() {
+        return List.copyOf(formedControllerPositions); // 返回不可修改副本，保证数据安全
+    }
+
+    /**
+     * 校验指定位置周围LEGAL_DISTANCE内是否存在其他已成型控制中心
+     * @param currentPos 当前控制中心位置
+     * @param legalDistance 合法距离阈值
+     * @return true=存在冲突，false=无冲突
+     */
+    public boolean hasConflictingController(BlockPos currentPos, int legalDistance) {
+        // 遍历所有已成型控制中心，排除自身，校验距离
+        for (BlockPos controllerPos : formedControllerPositions) {
+            if (!currentPos.equals(controllerPos)) { // 排除自己
+                // 计算两点之间的距离（平方比较，比sqrt更高效，避免浮点运算）
+                double distanceSqr = currentPos.distSqr(controllerPos);
+                double legalDistanceSqr = (double) legalDistance * legalDistance;
+                if (distanceSqr <= legalDistanceSqr) { // 范围内存在其他控制中心
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    public void notifyAllControllersRefresh(ServerLevel serverLevel, BlockPos excludePos) {
+        // 遍历所有已注册的控制中心
+        for (BlockPos controllerPos : formedControllerPositions) {
+            // 排除自己（刚失效的那个控制中心）
+            if (controllerPos.equals(excludePos)) {
+                continue;
+            }
+            // 获取控制中心的机器实例
+            var blockEntity = serverLevel.getBlockEntity(controllerPos);
+            if (blockEntity instanceof IMachineBlockEntity machineBlockEntity) {
+                var machine = machineBlockEntity.getMetaMachine();
+                // 判断是否为存活的风车控制中心
+                if (machine instanceof WindMillControlMachine windMillControl && windMillControl.isFormed()) {
+                    // 调用刷新方法，重新校验冲突
+                    windMillControl.refreshControllerState();
+                }
+            }
+        }
+    }
     // ************************ NBT序列化/反序列化（持久化核心） ************************
     @Override
     public CompoundTag save(CompoundTag nbt) {
@@ -64,6 +131,15 @@ public class WindmillSavedData extends SavedData {
             posList.add(posTag);
         }
         nbt.put("windmill_positions", posList);
+        ListTag controllerList = new ListTag();
+        for (BlockPos pos : formedControllerPositions) {
+            CompoundTag posTag = new CompoundTag();
+            posTag.putInt("cx", pos.getX());
+            posTag.putInt("cy", pos.getY());
+            posTag.putInt("cz", pos.getZ());
+            controllerList.add(posTag);
+        }
+        nbt.put("formed_controller_positions", controllerList);
         return nbt;
     }
 
@@ -77,6 +153,15 @@ public class WindmillSavedData extends SavedData {
             int z = posTag.getInt("z");
             windmillPositions.add(new BlockPos(x, y, z));
         }
+        formedControllerPositions.clear();
+        ListTag controllerList = nbt.getList("formed_controller_positions", Tag.TAG_COMPOUND);
+        for (int i = 0; i < controllerList.size(); i++) {
+            CompoundTag posTag = controllerList.getCompound(i);
+            int x = posTag.getInt("cx");
+            int y = posTag.getInt("cy");
+            int z = posTag.getInt("cz");
+            formedControllerPositions.add(new BlockPos(x, y, z));
+        }
     }
 
     public static WindmillSavedData get(ServerLevel level) {
@@ -87,9 +172,9 @@ public class WindmillSavedData extends SavedData {
 
         // 从Level中获取或创建SavedData，绑定到存档的「overworld」（主世界），保证跨维度数据统一（可根据需求修改）
         return level.getDataStorage().computeIfAbsent(
-                WindmillSavedData::new,          // 数据不存在时的创建逻辑
-                WindmillSavedData::new,          // 从NBT加载数据的逻辑
-                ID.toString()                    // 数据唯一标识
+                WindmillSavedData::new,
+                WindmillSavedData::new,
+                ID.toString()
         );
     }
 }

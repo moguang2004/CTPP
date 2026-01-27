@@ -9,45 +9,24 @@ import com.simibubi.create.content.contraptions.AbstractContraptionEntity;
 import com.simibubi.create.content.contraptions.ControlledContraptionEntity;
 import net.minecraft.core.BlockPos;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-public interface IRotationMultiblock extends IMultiController {
-    default Map<Integer, SimpleRotatingContraptionEntity> assemble(BlockPos pivot) {
-        if (self().getLevel() instanceof TrackedDummyWorld) return null;
-        if (self().getLevel().isClientSide) return null;
-        Map<Integer, SimpleRotatingContraptionEntity> ce = new HashMap<>();
-        var pattern = self().getDefinition().getPatternFactory().get();
-        if (pattern instanceof StaticBlockPattern staticBlockPattern) {
-            Map<Integer, List<BlockPos>> dymanicPart = staticBlockPattern.getDynamicPart(self().getMultiblockState());
-            for (var entry : dymanicPart.entrySet()) {
-                int group = entry.getKey();
-                var part = entry.getValue();
-                SimpleRotatingContraption contraption = new SimpleRotatingContraption(part, pivot);
-                contraption.assemble(this.self().getLevel(), self().getPos()); // 第二个参数无用
-                contraption.removeBlocksFromWorld(this.self().getLevel(), BlockPos.ZERO);
-                SimpleRotatingContraptionEntity contraptionEntity = SimpleRotatingContraptionEntity.create(self().getLevel(), contraption, this, pivot.getCenter());
-                contraptionEntity.setPos(pivot.getX(), pivot.getY(), pivot.getZ());
-                this.self().getLevel().addFreshEntity(contraptionEntity);
-                ce.put(group, contraptionEntity);
-            }
-            return ce;
-        }
-        return null;
-    }
-    List<SimpleRotatingContraptionEntity> getRotatingEntity();
-    void setRotatingEntity(List<SimpleRotatingContraptionEntity> entities);
+public interface IRotationMultiblock<T extends SimpleRotatingContraptionEntity> extends IMultiController {
+    Map<Integer, T> assemble(BlockPos pivot);
+    List<T> getRotatingEntity();
+    void setRotatingEntity(List<T> entities);
     default boolean isAttachedTo(AbstractContraptionEntity contraption) {
         return getRotatingEntity() != null && getRotatingEntity().contains(contraption);
     }
 
-    default void attach(SimpleRotatingContraptionEntity contraption) {
-        if (getRotatingEntity() == null) {
+    default void attach(T contraption) {
+        if (getRotatingEntity().isEmpty()) {
             setRotatingEntity(List.of(contraption));
         }
         else {
-            getRotatingEntity().add(contraption);
+            List<T> rotatingEntity = new ArrayList<>(getRotatingEntity());
+            rotatingEntity.add(contraption);
+            setRotatingEntity(rotatingEntity);
         }
         self().holder.notifyBlockUpdate();
     }

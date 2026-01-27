@@ -32,6 +32,7 @@ public class ChineseLangHandler {
         provider.add("ctpp.multiblock.kinetic_steam_turbine.info.0", "涡轮总效率：%d%%");
         provider.add("ctpp.multiblock.kinetic_steam_turbine.info.1", "应力输出：%dsu");
 
+        provider.add("ctpp.multiblock.windmill_control_center.conflict", "附近存在其他风车控制中心");
         provider.add("ctpp.multiblock.windmill_control_center.info.0", "控制的风车数量：%d(最大：%d)");
         provider.add("ctpp.multiblock.windmill_control_center.info.1", "控制的风车总应力：%dsu");
         provider.add("ctpp.multiblock.windmill_control_center.info.2", "总产能效率：%d%%");
@@ -67,7 +68,7 @@ public class ChineseLangHandler {
 
         provider.add("ctpp.multiblock.windmill_control_center.tooltip.0", "风力总控！越多越强！");
         provider.add("ctpp.multiblock.windmill_control_center.tooltip.1", "-会检测多方块周围半径32格内的风车轴承\n-总输出的应力为：周围的风车轴承数x(周围风车总应力输出 + 512)\n-§4最多控制(6 + 6 * 机械等级)个风车！§r");
-        provider.add("ctpp.multiblock.windmill_control_center.tooltip.2", "输出应力越多，机器顶部的水车旋转会越快");
+        provider.add("ctpp.multiblock.windmill_control_center.tooltip.2", "64格范围内存在其他风车控制中心会使得输出变为0");
 
         provider.add("ctpp.multiblock.boom_of_create.tooltip.0", "艺术就是爆炸！");
         provider.add("ctpp.multiblock.boom_of_create.tooltip.1", "大型聚爆应力厂使用爆炸物以及一小部分电力运行，以此产生大量应力");

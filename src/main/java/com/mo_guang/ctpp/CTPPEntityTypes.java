@@ -1,5 +1,6 @@
 package com.mo_guang.ctpp;
 
+import com.mo_guang.ctpp.dynamicPart.rotation.RubiksCubeContraptionEntity;
 import com.mo_guang.ctpp.dynamicPart.rotation.SimpleRotatingContraptionEntity;
 import com.mo_guang.ctpp.dynamicPart.SimpleContraptionEntityRenderer;
 import com.simibubi.create.content.contraptions.AbstractContraptionEntity;
@@ -22,6 +23,11 @@ public class CTPPEntityTypes {
     //这是控制结构的实体,从ct抄的
     public static final EntityEntry<SimpleRotatingContraptionEntity> SIMPLE_CONTRAPTION = contraption("simple_contraption",
             SimpleRotatingContraptionEntity::new, () -> (SimpleContraptionEntityRenderer::new)
+            , 10, 3, true)
+            .visual(() -> ContraptionVisual::new)
+            .register();
+    public static final EntityEntry<RubiksCubeContraptionEntity> RUBIKS_CUBE_CONTRAPTION = contraption("rubiks_cube_contraption",
+            RubiksCubeContraptionEntity::new, () -> (SimpleContraptionEntityRenderer::new)
             , 10, 3, true)
             .visual(() -> ContraptionVisual::new)
             .register();

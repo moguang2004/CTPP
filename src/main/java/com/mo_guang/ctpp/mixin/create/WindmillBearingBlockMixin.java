@@ -45,10 +45,10 @@ public class WindmillBearingBlockMixin extends Block {
 
     @Unique
     public void notifyWindmillController(Level level, BlockPos pos) {
-        WindMillControlMachine.formedWindmillController
-                .forEach(posPair -> {
-                    if (posPair.getSecond().distToCenterSqr(pos.getX(), pos.getY(), pos.getZ()) <= 32) {
-                        MetaMachine machine = MetaMachine.getMachine(level, posPair.getSecond());
+        WindmillSavedData.get((ServerLevel) level).getAllFormedControllers()
+                .forEach(controllerPos -> {
+                    if (controllerPos.distToCenterSqr(pos.getX(), pos.getY(), pos.getZ()) <= 32) {
+                        MetaMachine machine = MetaMachine.getMachine(level, controllerPos);
                         if (machine instanceof WindMillControlMachine wmachine) {
                             wmachine.willTick = true;
                         }

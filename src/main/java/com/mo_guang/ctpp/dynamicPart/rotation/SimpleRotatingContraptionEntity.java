@@ -43,7 +43,7 @@ public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity {
     private Vec3 angularVelocity = Vec3.ZERO;
     // 装置运行状态（主要用于刚刚载入游戏时的自锁）
     @Getter
-    private boolean isRunning = false;
+    protected boolean isRunning = false;
     @OnlyIn(Dist.CLIENT)
     private float clientRotationDiff = 0.0f;
 

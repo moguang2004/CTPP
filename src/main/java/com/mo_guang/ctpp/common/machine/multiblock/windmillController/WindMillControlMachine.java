@@ -8,9 +8,12 @@ import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.lowdragmc.lowdraglib.gui.util.ClickData;
 import com.lowdragmc.lowdraglib.gui.widget.ComponentPanelWidget;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import com.lowdragmc.lowdraglib.utils.TrackedDummyWorld;
+import com.mo_guang.ctpp.api.pattern.StaticBlockPattern;
 import com.mo_guang.ctpp.common.machine.multiblock.KineticOutputMachine;
 import com.mo_guang.ctpp.common.machine.multiblock.MachineUtils;
 import com.mo_guang.ctpp.dynamicPart.rotation.IRotationMultiblock;
+import com.mo_guang.ctpp.dynamicPart.rotation.SimpleRotatingContraption;
 import com.mo_guang.ctpp.dynamicPart.rotation.SimpleRotatingContraptionEntity;
 import com.mo_guang.ctpp.util.MathUtil;
 import com.mojang.datafixers.util.Pair;
@@ -32,13 +35,13 @@ import tech.vixhentx.mcmod.ctnhlib.client.render.ColorData;
 import tech.vixhentx.mcmod.ctnhlib.client.render.highlight.HighlightHandler;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-public class WindMillControlMachine extends KineticOutputMachine implements IRotationMultiblock {
+public class WindMillControlMachine extends KineticOutputMachine implements IRotationMultiblock<SimpleRotatingContraptionEntity> {
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
             WindMillControlMachine.class, KineticOutputMachine.MANAGED_FIELD_HOLDER);
-
-    public static List<Pair<Level, BlockPos>> formedWindmillController = new ArrayList<>();
     public static int LEGAL_DISTANCE = 64;
     public List<BlockPos> windmillAround = new ArrayList<>();
     public int efficiency = 0;
@@ -47,6 +50,7 @@ public class WindMillControlMachine extends KineticOutputMachine implements IRot
     @Setter
     List<SimpleRotatingContraptionEntity> rotatingEntity = new ArrayList<>();
     public boolean willTick = false;
+    private boolean hasConflictingController = false;
     public WindMillControlMachine(IMachineBlockEntity holder) {
         super(holder);
     }
@@ -58,19 +62,12 @@ public class WindMillControlMachine extends KineticOutputMachine implements IRot
     @Override
     public void onStructureFormed() {
         super.onStructureFormed();
-//        boolean islegal = true;
-//        for (Pair<Level, BlockPos> levelBlockPosPair : formedWindmillController) {
-//            if (levelBlockPosPair.getFirst().equals(this.getLevel()) &&
-//                    levelBlockPosPair.getSecond().closerToCenterThan(this.getPos().getCenter(), LEGAL_DISTANCE)) {
-//                islegal = false;
-//            }
-//        }
-//        if (!islegal) {
-//            onStructureInvalid();
-//            return;
-//        }
         calculateWindmillAround();
-        formedWindmillController.add(Pair.of(this.getLevel(), this.getPos()));
+        if (!getLevel().isClientSide()) {
+            ServerLevel serverLevel = (ServerLevel) getLevel();
+            WindmillSavedData windmillData = WindmillSavedData.get(serverLevel);
+            windmillData.registerFormedController(this.getPos());
+        }
         if (rotatingEntity.isEmpty() && !getLevel().isClientSide) {
             var rotatingEntities = assemble(MachineUtils.getOffset(this, 0, 5, 5));
             if (rotatingEntities != null) {
@@ -82,8 +79,12 @@ public class WindMillControlMachine extends KineticOutputMachine implements IRot
     @Override
     public void onStructureInvalid() {
         super.onStructureInvalid();
-        formedWindmillController.removeIf(levelBlockPosPair ->
-                levelBlockPosPair.getFirst().equals(this.getLevel()) && levelBlockPosPair.getSecond().equals(this.getPos()));
+        if (!getLevel().isClientSide()) {
+            ServerLevel serverLevel = (ServerLevel) getLevel();
+            WindmillSavedData windmillData = WindmillSavedData.get(serverLevel);
+            windmillData.unregisterFormedController(this.getPos());
+            windmillData.notifyAllControllersRefresh(serverLevel, getPos());
+        }
         if (!rotatingEntity.isEmpty() && !getLevel().isClientSide) {
             this.rotatingEntity.forEach(AbstractContraptionEntity::disassemble);
         }
@@ -114,6 +115,30 @@ public class WindMillControlMachine extends KineticOutputMachine implements IRot
         super.onTierChanged();
         calculateWindmillAround();
     }
+
+    @Override
+    public Map<Integer, SimpleRotatingContraptionEntity> assemble(BlockPos pivot) {
+        if (self().getLevel() instanceof TrackedDummyWorld) return null;
+        if (self().getLevel().isClientSide) return null;
+        Map<Integer, SimpleRotatingContraptionEntity> ce = new HashMap<>();
+        var pattern = self().getDefinition().getPatternFactory().get();
+        if (pattern instanceof StaticBlockPattern staticBlockPattern) {
+            Map<Integer, List<BlockPos>> dymanicPart = staticBlockPattern.getDynamicPart(self().getMultiblockState());
+            for (var entry : dymanicPart.entrySet()) {
+                int group = entry.getKey();
+                var part = entry.getValue();
+                SimpleRotatingContraption contraption = new SimpleRotatingContraption(part, pivot);
+                contraption.assemble(this.self().getLevel(), self().getPos()); // 第二个参数无用
+                contraption.removeBlocksFromWorld(this.self().getLevel(), BlockPos.ZERO);
+                SimpleRotatingContraptionEntity contraptionEntity = SimpleRotatingContraptionEntity.create(self().getLevel(), contraption, this, pivot.getCenter());
+                contraptionEntity.setPos(pivot.getX(), pivot.getY(), pivot.getZ());
+                this.self().getLevel().addFreshEntity(contraptionEntity);
+                ce.put(group, contraptionEntity);
+            }
+            return ce;
+        }
+        return null;
+    }
     //////////////////////////////////////
     // *** Rotation Control ***//
     //////////////////////////////////////
@@ -130,6 +155,12 @@ public class WindMillControlMachine extends KineticOutputMachine implements IRot
     public void addDisplayText(List<Component> textList) {
         super.addDisplayText(textList);
         if (isFormed()) {
+            if (hasConflictingController) {
+                textList.add(Component.translatable("ctpp.multiblock.windmill_control_center.conflict")
+                        .withStyle(ChatFormatting.RED, ChatFormatting.BOLD));
+                // 冲突时直接返回，不显示正常数据（或按需保留，标记为无效）
+                return;
+            }
             var button = ComponentPanelWidget.withButton(Component.translatable("ctpp.multiblock.windmill_control_center.button").withStyle(ChatFormatting.RED), "Highlight");
             textList.add(Component.translatable("ctpp.multiblock.windmill_control_center.info.0", efficiency, 6 + 2 * tier).append(button));
             textList.add(Component.translatable("ctpp.multiblock.windmill_control_center.info.1", String.format("%.1f",TotalOutput)));
@@ -147,17 +178,40 @@ public class WindMillControlMachine extends KineticOutputMachine implements IRot
     }
     public static ModifierFunction recipeModifier(MetaMachine machine, GTRecipe recipe) {
         if (machine instanceof WindMillControlMachine wmachine) {
+            if (wmachine.hasConflictingController) {
+                return ModifierFunction.builder().outputModifier(ContentModifier.multiplier(0)).build();
+            }
             var add = ModifierFunction.builder().outputModifier(ContentModifier.addition(wmachine.TotalOutput)).build();
             return add.andThen(ModifierFunction.builder().outputModifier(ContentModifier.multiplier(wmachine.efficiency)).build());
         }
         return ModifierFunction.NULL;
     }
+
+    public void refreshControllerState() {
+        // 强制重新计算风车和冲突状态
+        calculateWindmillAround();
+    }
+
     public float getOutputSpeed() {
+        if (hasConflictingController) {
+            return 0.0f;
+        }
         return Math.min((512 + TotalOutput) * efficiency / 512, AllConfigs.server().kinetics.maxRotationSpeed.get());
     }
     public void calculateWindmillAround() {
         windmillAround.clear();
         TotalOutput = 0;
+        hasConflictingController = false;
+        if (!getLevel().isClientSide()) {
+            ServerLevel serverLevel = (ServerLevel) getLevel();
+            WindmillSavedData windmillData = WindmillSavedData.get(serverLevel);
+            // 调用WindmillSavedData的冲突校验方法
+            hasConflictingController = windmillData.hasConflictingController(this.getPos(), LEGAL_DISTANCE);
+        }
+        // 存在冲突则直接返回（输出保持0），无冲突再计算风车数据
+        if (hasConflictingController) {
+            return;
+        }
         var workingWindmill = WindmillSavedData.get((ServerLevel) getLevel()).getAllWindmills();
         for (var windmill: workingWindmill) {
             if (Mth.sqrt((float) windmill.distToCenterSqr(this.getPos().getX(), this.getPos().getY(), this.getPos().getZ())) <= 32) {

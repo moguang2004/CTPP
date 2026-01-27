@@ -29,10 +29,12 @@ public class EnglishLangHandler {
         provider.add("ctpp.multiblock.kinetic_steam_turbine.info.0", "Total Turbine Efficiency：%d%%");
         provider.add("ctpp.multiblock.kinetic_steam_turbine.info.1", "Kinetic Output：%dsu");
 
+        provider.add("ctpp.multiblock.windmill_control_center.conflict", "There are other Windmill Controllers Around");
         provider.add("ctpp.multiblock.windmill_control_center.info.0", "Number of controlled windmills: %d(Max: %d)");
         provider.add("ctpp.multiblock.windmill_control_center.info.1", "Total stress of controlled windmills: %dsu");
         provider.add("ctpp.multiblock.windmill_control_center.info.2", "Total energy efficiency: %d%%");
         provider.add("ctpp.multiblock.windmill_control_center.info.3", "Total stress output: §a%dsu§r");
+        provider.add("ctpp.multiblock.windmill_control_center.button", "Highlight Info");
 
         provider.add("ctpp.multiblock.kinetic_workable_multiblock_machine.speed", "Input speed: %drpm");
         provider.add("ctpp.multiblock.kinetic_workable_multiblock_machine.parallel", "Parallelism: %d");
@@ -62,8 +64,8 @@ public class EnglishLangHandler {
         provider.add("ctpp.multiblock.kinetic_steam_turbine.tooltip.3", "Running efficiency will gain an addition of (1 + tier/(tier + 1))");
 
         provider.add("ctpp.multiblock.windmill_control_center.tooltip.0", "Windmill Master Control! The more, the stronger!");
-        provider.add("ctpp.multiblock.windmill_control_center.tooltip.1", "-Detects windmill bearings within a radius of (5 + tier) blocks around the multiblock. \n-The total stress output is calculated as: Number of windmill bearings × (Total stress output of surrounding windmills + 512). \n-§4Can control up to (4 + 2 * tier) windmills!§r");
-        provider.add("ctpp.multiblock.windmill_control_center.tooltip.2", "The more stress it outputs, the faster the water wheel will rotate.");
+        provider.add("ctpp.multiblock.windmill_control_center.tooltip.1", "-Detects windmill bearings within a radius of 32 blocks around the multiblock. \n-The total stress output is calculated as: Number of windmill bearings × (Total stress output of surrounding windmills + 512). \n-§4Can control up to (6 + 6 * tier) windmills!§r");
+        provider.add("ctpp.multiblock.windmill_control_center.tooltip.2", "If there are other windmill controllers within 64 blocks, the output will decrease to 0.");
 
         provider.add("ctpp.multiblock.boom_of_create.tooltip.0", "Art is an explosion!");
         provider.add("ctpp.multiblock.boom_of_create.tooltip.1", "The Explosive Vortex Stress Induction System (EVSIS) using explosives and a small amount of electricity to generate massive stress.");

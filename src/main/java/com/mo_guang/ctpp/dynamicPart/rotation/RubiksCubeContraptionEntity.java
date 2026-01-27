@@ -1,9 +1,12 @@
 package com.mo_guang.ctpp.dynamicPart.rotation;
 
+import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.mo_guang.ctpp.CTPPEntityTypes;
 import com.simibubi.create.content.contraptions.Contraption;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -15,20 +18,22 @@ public class RubiksCubeContraptionEntity extends SimpleRotatingContraptionEntity
     public Direction frontFacing;
     public BlockPos startPos;
 
-    public RubiksCubeContraptionEntity(EntityType<?> type, Level world, Direction frontFacing, BlockPos pos) {
+    public RubiksCubeContraptionEntity(EntityType<?> type, Level world) {
         super(type, world);
         this.layer = RotationLayer.FRONT_LAYER;
         this.clockwise = true;
         this.shouldStop = true;
-        this.frontFacing = frontFacing;
-        this.startPos = pos;
     }
     public boolean shouldStop;
     public RotationLayer layer;
     public boolean clockwise;
-    public static RubiksCubeContraptionEntity create(Level world, Contraption contraption, Vec3 pivot, Direction frontFacing, BlockPos pos) {
+    public static RubiksCubeContraptionEntity create(Level world, Contraption contraption, Vec3 pivot, Direction frontFacing, BlockPos pos, IRotationMultiblock controller) {
         RubiksCubeContraptionEntity entity =
-                new RubiksCubeContraptionEntity(CTPPEntityTypes.SIMPLE_CONTRAPTION.get(), world, frontFacing, pos);
+                new RubiksCubeContraptionEntity(CTPPEntityTypes.RUBIKS_CUBE_CONTRAPTION.get(), world);
+        entity.controllerPos = controller.getBlockPosition();
+        entity.isRunning = true;
+        entity.frontFacing = frontFacing;
+        entity.startPos = pos;
         entity.setContraption(contraption);
         entity.setPivot(pivot);
         return entity;
@@ -203,5 +208,38 @@ public class RubiksCubeContraptionEntity extends SimpleRotatingContraptionEntity
                 this.shouldStop = true;
         }
         notifyChange();
+    }
+    @Override
+    protected void writeAdditional(CompoundTag nbt, boolean spawnPacket) {
+        super.writeAdditional(nbt, spawnPacket); // 先调用父类方法保存父类字段
+
+        // 保存子类自定义字段
+        nbt.putString("FrontFacing", frontFacing.getName()); // 保存朝向
+        nbt.put("StartPos", NbtUtils.writeBlockPos(startPos)); // 保存起始位置
+        nbt.putBoolean("ShouldStop", shouldStop); // 保存停止标记
+        nbt.putString("RotationLayer", layer.name()); // 保存旋转层
+        nbt.putBoolean("Clockwise", clockwise); // 保存旋转方向
+    }
+
+    // ========== 核心修复：重写 NBT 读取 ==========
+    @Override
+    protected void readAdditional(CompoundTag nbt, boolean spawnData) {
+        super.readAdditional(nbt, spawnData); // 先调用父类方法读取父类字段
+
+        // 读取子类自定义字段（添加兜底，避免加载失败）
+        this.frontFacing = Direction.byName(nbt.getString("FrontFacing"));
+        if (this.frontFacing == null) this.frontFacing = Direction.NORTH;
+
+        this.startPos = NbtUtils.readBlockPos(nbt.getCompound("StartPos"));
+        this.shouldStop = nbt.getBoolean("ShouldStop");
+
+        // 读取旋转层（兜底）
+        try {
+            this.layer = RotationLayer.valueOf(nbt.getString("RotationLayer"));
+        } catch (IllegalArgumentException e) {
+            this.layer = RotationLayer.FRONT_LAYER;
+        }
+
+        this.clockwise = nbt.getBoolean("Clockwise");
     }
 }

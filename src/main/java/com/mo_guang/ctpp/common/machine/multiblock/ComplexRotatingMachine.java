@@ -5,18 +5,27 @@ import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.lowdragmc.lowdraglib.gui.util.ClickData;
 import com.lowdragmc.lowdraglib.gui.widget.ComponentPanelWidget;
-import com.mo_guang.ctpp.dynamicPart.rotation.IRubiksRotationMultiblock;
-import com.mo_guang.ctpp.dynamicPart.rotation.RubiksCubeContraptionEntity;
+import com.lowdragmc.lowdraglib.utils.TrackedDummyWorld;
+import com.mo_guang.ctpp.api.pattern.StaticBlockPattern;
+import com.mo_guang.ctpp.dynamicPart.rotation.*;
 import com.simibubi.create.content.contraptions.AbstractContraptionEntity;
+import lombok.Getter;
+import lombok.Setter;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-public class ComplexRotatingMachine extends WorkableElectricMultiblockMachine implements IRubiksRotationMultiblock {
-    public List<RubiksCubeContraptionEntity> rotatingEntities;
+public class ComplexRotatingMachine extends WorkableElectricMultiblockMachine implements IRotationMultiblock<RubiksCubeContraptionEntity> {
+    @Getter
+    @Setter
+    public List<RubiksCubeContraptionEntity> rotatingEntity = new ArrayList<>();
     public List<String> avalibleMoving = List.of("U", "U'", "D", "D'", "L", "L'", "R", "R'", "F", "F'", "B", "B'");
     protected TickableSubscription rotatingSubs;
     public int count = 0;
@@ -28,22 +37,22 @@ public class ComplexRotatingMachine extends WorkableElectricMultiblockMachine im
     @Override
     public void onStructureFormed() {
         super.onStructureFormed();
-        if (rotatingEntities == null) {
-            var rotatingEntities = assemble(MachineUtils.getOffset(this, 0, 0, 1), getFrontFacing());
+        if (rotatingEntity.isEmpty()) {
+            var rotatingEntities = assemble(MachineUtils.getOffset(this, 0, 0, 1));
             if (rotatingEntities != null) {
-                this.rotatingEntities = new ArrayList<>(rotatingEntities.values());
+                this.rotatingEntity.addAll(rotatingEntities.values());
             }
-            this.rotatingSubs = this.subscribeServerTick(this::rotatingTick);
         }
+        this.rotatingSubs = this.subscribeServerTick(this::rotatingTick);
     }
 
     @Override
     public void onStructureInvalid() {
         super.onStructureInvalid();
-        if (rotatingEntities != null) {
-            this.rotatingEntities.forEach(AbstractContraptionEntity::disassemble);
+        if (!rotatingEntity.isEmpty()) {
+            this.rotatingEntity.forEach(AbstractContraptionEntity::disassemble);
         }
-        this.rotatingEntities = null;
+        this.rotatingEntity.clear();
         if (rotatingSubs != null) {
             unsubscribe(rotatingSubs);
         }
@@ -69,27 +78,53 @@ public class ComplexRotatingMachine extends WorkableElectricMultiblockMachine im
             rotation = componentData;
         }
     }
-    @Override
-    public void onUnload() {
-        super.onUnload();
-        if (rotatingEntities != null) {
-            this.rotatingEntities.forEach(AbstractContraptionEntity::disassemble);
-        }
-        this.rotatingEntities = null;
-    }
     public void rotatingTick() {
-        if (isFormed && rotatingEntities != null) {
+        if (isFormed && rotatingEntity != null) {
             var halfTick = 90 / RubiksCubeContraptionEntity.ROTATE_SPEED;
             if (getOffsetTimer() % (2 * halfTick) == 0) {
-                rotatingEntities.forEach(entity -> entity.performStandardMove(rotation));
+                rotatingEntity.forEach(entity -> {
+                    if(!(entity instanceof RubiksCubeContraptionEntity)) return;
+                    entity.performStandardMove(rotation);
+                });
                 rotation = "STOP";
 //                count += 1;
 //                int index = count % avalibleMoving.size();
 //                rotatingEntities.forEach(entity -> entity.performStandardMove(avalibleMoving.get(index)));
             }
             if (getOffsetTimer() % (2 * halfTick) == halfTick) {
-                rotatingEntities.forEach(entity -> entity.performStandardMove("STOP"));
+                rotatingEntity.forEach(entity -> {
+                    if(!(entity instanceof RubiksCubeContraptionEntity)) return;
+                    entity.performStandardMove("STOP");
+                });
             }
         }
+    }
+
+    @Override
+    public Map<Integer, RubiksCubeContraptionEntity> assemble(BlockPos pivot) {
+        if (self().getLevel() instanceof TrackedDummyWorld) return null;
+        Map<Integer, RubiksCubeContraptionEntity> ce = new HashMap<>();
+        var pattern = self().getDefinition().getPatternFactory().get();
+        if (pattern instanceof StaticBlockPattern staticBlockPattern) {
+            Map<Integer, List<BlockPos>> dymanicPart = staticBlockPattern.getDynamicPart(self().getMultiblockState());
+            for (var entry : dymanicPart.entrySet()) {
+                int group = entry.getKey();
+                var part = entry.getValue();
+                BlockPos pos = pivot;
+                BlockPos randomPos = part.get(0);
+                pos = pos.offset((int) Math.signum(randomPos.getX() - pivot.getX()),
+                        (int) Math.signum(randomPos.getY() - pivot.getY()),
+                        (int) Math.signum(randomPos.getZ() - pivot.getZ()));
+                SimpleRotatingContraption contraption = new SimpleRotatingContraption(part, pivot);
+                contraption.assemble(this.self().getLevel(), self().getPos());
+                contraption.removeBlocksFromWorld(this.self().getLevel(), BlockPos.ZERO);
+                RubiksCubeContraptionEntity contraptionEntity = RubiksCubeContraptionEntity.create(self().getLevel(), contraption, pivot.getCenter(), getFrontFacing(), pos, this);
+                contraptionEntity.setPos(pivot.getX(), pivot.getY(), pivot.getZ());
+                this.self().getLevel().addFreshEntity(contraptionEntity);
+                ce.put(group, contraptionEntity);
+            }
+            return ce;
+        }
+        return null;
     }
 }
