@@ -207,25 +207,27 @@ public class WindMillControlMachine extends KineticOutputMachine implements IRot
             WindmillSavedData windmillData = WindmillSavedData.get(serverLevel);
             // 调用WindmillSavedData的冲突校验方法
             hasConflictingController = windmillData.hasConflictingController(this.getPos(), LEGAL_DISTANCE);
-        }
-        // 存在冲突则直接返回（输出保持0），无冲突再计算风车数据
-        if (hasConflictingController) {
-            return;
-        }
-        var workingWindmill = WindmillSavedData.get((ServerLevel) getLevel()).getAllWindmills();
-        for (var windmill: workingWindmill) {
-            if (Mth.sqrt((float) windmill.distToCenterSqr(this.getPos().getX(), this.getPos().getY(), this.getPos().getZ())) <= 32) {
-                var kineticBlockEntity = getLevel().getBlockEntity(windmill);
-                if (kineticBlockEntity instanceof WindmillBearingBlockEntity windmillBearingBlockEntity) {
-                    var speed = windmillBearingBlockEntity.getGeneratedSpeed();
-                    if (speed != 0 && windmillAround.size() <= 6 + tier * 6) {
-                        windmillAround.add(windmill);
-                        TotalOutput += speed * 512;
+
+            // 存在冲突则直接返回（输出保持0），无冲突再计算风车数据
+            if (hasConflictingController) {
+                return;
+            }
+            var workingWindmill = WindmillSavedData.get((ServerLevel) getLevel()).getAllWindmills();
+            for (var windmill: workingWindmill) {
+                if (Mth.sqrt((float) windmill.distToCenterSqr(this.getPos().getX(), this.getPos().getY(), this.getPos().getZ())) <= 32) {
+                    var kineticBlockEntity = getLevel().getBlockEntity(windmill);
+                    if (kineticBlockEntity instanceof WindmillBearingBlockEntity windmillBearingBlockEntity) {
+                        var speed = windmillBearingBlockEntity.getGeneratedSpeed();
+                        if (speed != 0 && windmillAround.size() <= 6 + tier * 6) {
+                            windmillAround.add(windmill);
+                            TotalOutput += speed * 512;
+                        }
                     }
                 }
             }
+            efficiency = Math.min(windmillAround.size(),6 + tier * 6);
         }
-        efficiency = Math.min(windmillAround.size(),6 + tier * 6);
+
     }
 
     @Override
