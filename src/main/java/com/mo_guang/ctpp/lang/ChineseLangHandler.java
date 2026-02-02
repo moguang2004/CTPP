@@ -39,7 +39,7 @@ public class ChineseLangHandler {
         provider.add("ctpp.multiblock.windmill_control_center.info.3", "总应力输出：§a%dsu§r");
         provider.add("ctpp.multiblock.windmill_control_center.button", "高亮显示");
 
-        provider.add("ctpp.multiblock.kinetic_workable_multiblock_machine.speed","输入转速：%drpm");
+        provider.add("ctpp.multiblock.kinetic_workable_multiblock_machine.input_stress","输入应力：%dsu");
         provider.add("ctpp.multiblock.kinetic_workable_multiblock_machine.parallel","并行数： %d");
         provider.add("ctpp.multiblock.kinetic_workable_multiblock_machine.null","状态：无");
         provider.add("ctpp.multiblock.kinetic_workable_multiblock_machine.reduction","状态：配方耗时减免x0.8");

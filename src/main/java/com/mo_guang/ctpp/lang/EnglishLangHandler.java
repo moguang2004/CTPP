@@ -36,7 +36,7 @@ public class EnglishLangHandler {
         provider.add("ctpp.multiblock.windmill_control_center.info.3", "Total stress output: §a%dsu§r");
         provider.add("ctpp.multiblock.windmill_control_center.button", "Highlight Info");
 
-        provider.add("ctpp.multiblock.kinetic_workable_multiblock_machine.speed", "Input speed: %drpm");
+        provider.add("ctpp.multiblock.kinetic_workable_multiblock_machine.input_stress", "Input stress: %dsu");
         provider.add("ctpp.multiblock.kinetic_workable_multiblock_machine.parallel", "Parallelism: %d");
         provider.add("ctpp.multiblock.kinetic_workable_multiblock_machine.null", "Status: None");
         provider.add("ctpp.multiblock.kinetic_workable_multiblock_machine.reduction", "Status: Recipe time reduction x0.75");

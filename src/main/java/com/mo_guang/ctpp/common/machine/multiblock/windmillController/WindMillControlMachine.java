@@ -50,7 +50,7 @@ public class WindMillControlMachine extends KineticOutputMachine implements IRot
     @Setter
     List<SimpleRotatingContraptionEntity> rotatingEntity = new ArrayList<>();
     public boolean willTick = false;
-    private boolean hasConflictingController = false;
+    public boolean hasConflictingController = false;
     public WindMillControlMachine(IMachineBlockEntity holder) {
         super(holder);
     }
@@ -58,6 +58,22 @@ public class WindMillControlMachine extends KineticOutputMachine implements IRot
     //////////////////////////////////////
     // *** Multiblock LifeCycle ***//
     //////////////////////////////////////
+
+    @Override
+    public void onLoad() {
+        super.onLoad();
+        if (!getLevel().isClientSide()) {
+            ServerLevel serverLevel = (ServerLevel) getLevel();
+            BlockPos controllerPos = this.getPos();
+            // 向WindmillManager提交扫描任务：参数（世界，控制中心位置，扫描半径32，冲突检测距离64）
+            WindmillManager.getInstance().submitScanTask(
+                    serverLevel,
+                    controllerPos,
+                    32, // 你的原代码中扫描半径是32
+                    LEGAL_DISTANCE // 64，控制器冲突检测距离
+            );
+        }
+    }
 
     @Override
     public void onStructureFormed() {
@@ -172,7 +188,7 @@ public class WindMillControlMachine extends KineticOutputMachine implements IRot
     public void handleDisplayClick(String componentData, ClickData clickData) {
         if (!clickData.isRemote) {
             if (componentData.equals("Highlight")) {
-                windmillAround.forEach(blockPos -> HighlightHandler.highlight(blockPos, this.getLevel().dimension(), System.currentTimeMillis() + 5000, ColorData.RED));
+                windmillAround.forEach(blockPos -> HighlightHandler.highlight(blockPos, this.getLevel().dimension(), System.currentTimeMillis() + 10000, ColorData.RED));
             }
         }
     }

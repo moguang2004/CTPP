@@ -94,10 +94,12 @@ public class KineticWorkableMultiblockMachine extends KineticMultiblockMachine i
     @Override
     public void addDisplayText(List<Component> textList) {
         super.addDisplayText(textList);
-        textList.add(Component.translatable("ctpp.multiblock.kinetic_workable_multiblock_machine.speed",speed));
-        var lastRecipe = getRecipeLogic().getLastRecipe();
-        if(lastRecipe != null)
-            textList.add(Component.translatable("ctpp.multiblock.kinetic_workable_multiblock_machine.parallel",lastRecipe.parallels));
+        if (isFormed) {
+            textList.add(Component.translatable("ctpp.multiblock.kinetic_workable_multiblock_machine.speed", getAvailableStress()));
+            var lastRecipe = getRecipeLogic().getLastRecipe();
+            if (lastRecipe != null)
+                textList.add(Component.translatable("ctpp.multiblock.kinetic_workable_multiblock_machine.parallel", lastRecipe.parallels));
+        }
     }
 
     public float getAvailableStress(){

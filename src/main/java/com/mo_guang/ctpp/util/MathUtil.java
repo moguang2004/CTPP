@@ -1,12 +1,18 @@
 package com.mo_guang.ctpp.util;
 
 import com.simibubi.create.infrastructure.config.AllConfigs;
+import net.minecraft.core.Vec3i;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Quaternionf;
 
 public class MathUtil {
     public static float rpm2rads(float rpm) {
         return rpm / AllConfigs.server().kinetics.maxRotationSpeed.get() * 360 / 20 * 4;
+    }
+    public static Vec3 rotateByVec(Vec3 from, double angle, Vec3 axis) {
+        axis = axis.normalize();
+        angle = Math.toRadians(angle);
+        return from.scale(Math.cos(angle)).add(axis.cross(from).scale(Math.sin(angle))).add(axis.scale(axis.dot(from) * (1 - Math.cos(angle))));
     }
     /**
      * 计算两个四元数之间的角度差

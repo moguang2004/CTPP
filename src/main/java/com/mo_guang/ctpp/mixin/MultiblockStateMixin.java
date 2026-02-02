@@ -18,8 +18,8 @@ public class MultiblockStateMixin {
     @Inject(method = "onBlockStateChanged",
             at = @At(value = "INVOKE", target = "Lcom/gregtechceu/gtceu/api/machine/feature/multiblock/IMultiController;isFormed()Z", shift = At.Shift.BEFORE),
             locals = LocalCapture.CAPTURE_FAILHARD,
-            remap = false
-    )
+            remap = false,
+            cancellable = true)
     public void onBlockStateChanged(BlockPos pos, BlockState state, CallbackInfo ci, ServerLevel serverLevel, IMultiController controller) {
         if (controller.isFormed() &&
                 controller instanceof IRotationMultiblock &&
@@ -27,7 +27,7 @@ public class MultiblockStateMixin {
             var dynamicParts = staticBlockPattern.getDynamicPart(controller.getMultiblockState()).values();
             for (var dynamicPart: dynamicParts) {
                 if (dynamicPart.contains(pos)) {
-                    return;
+                    ci.cancel();
                 }
             }
         }
