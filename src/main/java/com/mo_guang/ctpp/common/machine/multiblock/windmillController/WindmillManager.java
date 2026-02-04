@@ -1,32 +1,42 @@
 package com.mo_guang.ctpp.common.machine.multiblock.windmillController;
 
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.chunk.LevelChunk;
-import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.server.ServerStoppingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import com.simibubi.create.content.contraptions.bearing.WindmillBearingBlockEntity;
 
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
+import java.util.concurrent.*;
 
 @Mod.EventBusSubscriber(modid = "ctpp")
 public class WindmillManager {
     private static final WindmillManager INSTANCE = new WindmillManager();
-    // 异步线程池（核心线程数根据服务器性能调整，建议2-4）
-    private final ExecutorService asyncScanner = Executors.newFixedThreadPool(2, r -> {
-        Thread thread = new Thread(r, "Windmill-Scanner-Thread");
-        thread.setDaemon(true); // 守护线程，服务器关闭时自动销毁
-        return thread;
-    });
+
+    private static final ThreadFactory THREAD_FACTORY = new ThreadFactoryBuilder()
+            .setNameFormat("CTNH Windmill Scanner Thread-%d")
+            .setDaemon(true)
+            .setPriority(Thread.NORM_PRIORITY - 1)
+            .build();
+    private volatile ExecutorService asyncScanner;
+
+    private ExecutorService getAsyncScanner() {
+        // 双重校验锁：避免多线程重复创建，懒加载（用到才创建）
+        if (asyncScanner == null || asyncScanner.isShutdown() || asyncScanner.isTerminated()) {
+            synchronized (WindmillManager.class) {
+                if (asyncScanner == null || asyncScanner.isShutdown() || asyncScanner.isTerminated()) {
+                    // 单线程池：完全规避MC区块/BE的并发查询问题，性能最优
+                    asyncScanner = Executors.newSingleThreadExecutor(THREAD_FACTORY);
+                }
+            }
+        }
+        return asyncScanner;
+    }
 
     private WindmillManager() {}
 
@@ -45,27 +55,13 @@ public class WindmillManager {
         // 仅服务端执行，避免客户端调用世界方法崩溃
         if (serverLevel.isClientSide()) return;
         // 提交异步任务到线程池
-        asyncScanner.submit(() -> {
+        getAsyncScanner().submit(() -> {
             try {
                 // ******** 异步扫描逻辑（无世界修改，仅查询）********
                 Set<BlockPos> foundWindmills = scanWindmillsInRange(serverLevel, controllerPos, scanRange);
                 // ******** 扫描完成，切回服务端主线程更新数据（必须！）********
                 serverLevel.getServer().execute(() -> {
-                    WindmillSavedData savedData = WindmillSavedData.get(serverLevel);
-                    // 1. 将扫描到的风车添加到数据表
-                    for (BlockPos foundWindmill : foundWindmills) {
-                        if (savedData.getAllWindmills().contains(foundWindmill)) continue;
-                        savedData.registerWindmill(controllerPos);
-                    }
-                    // 2. 顺带做控制器冲突检测（复用你的逻辑）
-                    boolean hasConflict = savedData.hasConflictingController(controllerPos, legalDistance);
-                    // 3. 更新控制中心的冲突状态（如果能获取到控制中心实例）
-                    BlockEntity be = serverLevel.getBlockEntity(controllerPos);
-                    if (be instanceof IMachineBlockEntity machineBE && machineBE.getMetaMachine() instanceof WindMillControlMachine controller) {
-                        controller.hasConflictingController = hasConflict;
-                        controller.windmillAround.clear();
-                        controller.windmillAround.addAll(foundWindmills);
-                    }
+                    updateWindmillData(serverLevel, controllerPos, foundWindmills, legalDistance);
                 });
             } catch (Exception e) {
                 // 捕获异步异常，避免线程池挂掉
@@ -98,21 +94,43 @@ public class WindmillManager {
         }
         return windmillPos;
     }
+    private void updateWindmillData(ServerLevel serverLevel, BlockPos controllerPos, Set<BlockPos> foundWindmills, int legalDistance) {
+        WindmillSavedData savedData = WindmillSavedData.get(serverLevel);
+        // 1. 注册新发现的风车
+        for (BlockPos foundWindmill : foundWindmills) {
+            if (!savedData.getAllWindmills().contains(foundWindmill)) {
+                savedData.registerWindmill(foundWindmill);
+                savedData.setDirty(); // 必须调用！标记数据修改，否则不会持久化到硬盘
+            }
+        }
+        // 2. 控制器冲突检测
+        boolean hasConflict = savedData.hasConflictingController(controllerPos, legalDistance);
+        // 3. 更新控制中心状态（严格判空，避免机器被破坏后空指针）
+        BlockEntity be = serverLevel.getBlockEntity(controllerPos);
+        if (be instanceof IMachineBlockEntity machineBE && machineBE.getMetaMachine() instanceof WindMillControlMachine controller) {
+            controller.hasConflictingController = hasConflict;
+            controller.windmillAround.clear();
+            controller.windmillAround.addAll(foundWindmills);
+        }
+    }
 
     /**
      * 服务器关闭时关闭线程池，释放资源（必须！）
      */
     @SubscribeEvent
     public static void onServerStopping(ServerStoppingEvent event) {
-        try {
-            WindmillManager manager = getInstance();
-            manager.asyncScanner.shutdown();
-            // 等待线程池中的任务执行完成（最多5秒）
-            if (!manager.asyncScanner.awaitTermination(5, TimeUnit.SECONDS)) {
-                manager.asyncScanner.shutdownNow(); // 强制关闭未完成的任务
+        WindmillManager manager = getInstance();
+        if (manager.asyncScanner != null) {
+            manager.asyncScanner.shutdownNow(); // 立即关闭，避免线程残留
+            try {
+                // 等待5秒，确保任务完成，超时则强制关闭
+                if (!manager.asyncScanner.awaitTermination(5, TimeUnit.SECONDS)) {
+                    manager.asyncScanner.shutdownNow();
+                }
+            } catch (InterruptedException e) {
+                manager.asyncScanner.shutdownNow();
             }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+            manager.asyncScanner = null;
         }
     }
 }

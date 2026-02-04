@@ -119,13 +119,14 @@ public abstract class KineticMultiblockMachine extends WorkableMultiblockMachine
     public void updateRotateBlock(boolean active, BlockEntity blockEntity) {
         if (blockEntity instanceof KineticBlockEntity kineticBlockEntity) {
             if (active) {
+                float currentSpeed = kineticBlockEntity.getSpeed();
                 kineticBlockEntity.setSpeed(speed);
-                kineticBlockEntity.onSpeedChanged(previousSpeed);
+                kineticBlockEntity.onSpeedChanged(currentSpeed);
                 kineticBlockEntity.sendData();
             }
             else {
                 kineticBlockEntity.setSpeed(0);
-                kineticBlockEntity.onSpeedChanged(speed);
+                kineticBlockEntity.onSpeedChanged(kineticBlockEntity.getSpeed());
                 kineticBlockEntity.sendData();
             }
         }
