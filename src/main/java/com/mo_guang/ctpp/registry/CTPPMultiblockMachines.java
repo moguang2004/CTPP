@@ -170,6 +170,7 @@ public class CTPPMultiblockMachines {
         ctnhEnabled("WindmillControlCenter"),
         () -> REGISTRATE.multiblock("windmill_control_center", WindMillControlMachine::new)
             .rotationState(RotationState.NON_Y_AXIS)
+            .allowExtendedFacing(false)
             .recipeType(CTPPRecipeTypes.WINDMILL_CONTROL)
             .appearanceBlock(AllBlocks.BRASS_CASING)
             .recipeModifiers(WindMillControlMachine::recipeModifier)
