@@ -30,13 +30,17 @@ public class WindmillBearingBlockMixin extends Block {
     public void onPlace(BlockState pState, Level pLevel, BlockPos pPos, BlockState pOldState, boolean pMovedByPiston) {
         super.onPlace(pState, pLevel, pPos, pOldState, pMovedByPiston);
         notifyWindmillController(pLevel, pPos);
-        WindmillSavedData.get((ServerLevel) pLevel).registerWindmill(pPos);
+        if (pLevel instanceof ServerLevel serverLevel) {
+            WindmillSavedData.get(serverLevel).registerWindmill(pPos);
+        }
     }
     @Override
     public void onRemove(BlockState p_60515_, Level level, BlockPos pos, BlockState p_60518_, boolean p_60519_) {
         super.onRemove(p_60515_, level, pos, p_60518_, p_60519_);
         notifyWindmillController(level, pos);
-        WindmillSavedData.get((ServerLevel) level).unregisterWindmill(pos);
+        if (level instanceof ServerLevel serverLevel) {
+            WindmillSavedData.get(serverLevel).unregisterWindmill(pos);
+        }
     }
     @Inject(method = "use", at = @At(value = "RETURN", ordinal = 3), remap = false)
     public void use(BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit, CallbackInfoReturnable<InteractionResult> cir) {
@@ -47,7 +51,7 @@ public class WindmillBearingBlockMixin extends Block {
     public void notifyWindmillController(Level level, BlockPos pos) {
         WindmillSavedData.get((ServerLevel) level).getAllFormedControllers()
                 .forEach(controllerPos -> {
-                    if (controllerPos.distToCenterSqr(pos.getX(), pos.getY(), pos.getZ()) <= 32) {
+                    if (Math.sqrt(controllerPos.distToLowCornerSqr(pos.getX(), pos.getY(), pos.getZ())) <= 32) {
                         MetaMachine machine = MetaMachine.getMachine(level, controllerPos);
                         if (machine instanceof WindMillControlMachine wmachine) {
                             wmachine.willTick = true;

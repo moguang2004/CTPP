@@ -13,9 +13,9 @@ import static com.mo_guang.ctpp.CTPPRegistration.REGISTRATE;
 
 public class CTPPItems {
     public static void init() {}
-    public static ItemEntry<Item> BASIC_MECHANISM = REGISTRATE.item("basic_mechanism", Item::new).register();
-    public static ItemEntry<Item> INCOMPLETE_BASIC_MECHANISM = REGISTRATE.item("incomplete_basic_mechanism", Item::new).register();
-    public static ItemEntry<Item> STEEL_MECHANISM = REGISTRATE.item("steel_mechanism", Item::new).register();
+    public static ItemEntry<Item> BASIC_MECHANISM = REGISTRATE.item("basic_mechanism", Item::new).cnlang("基础构件").register();
+    public static ItemEntry<Item> INCOMPLETE_BASIC_MECHANISM = REGISTRATE.item("incomplete_basic_mechanism", Item::new).cnlang("未完成的基础构件").register();
+    public static ItemEntry<Item> STEEL_MECHANISM = REGISTRATE.item("steel_mechanism", Item::new).cnlang("钢铁构件").register();
 //    public static ItemEntry<RotationWandItem> ROTATION_WAND = REGISTRATE.item("rotation_wand", p -> new RotationWandItem(p)).register();
     public static final EntityEntry<SimpleRotatingContraptionEntity> ROTATING_CONTRAPTION =
             REGISTRATE.movingEntity("rotating_contraption",

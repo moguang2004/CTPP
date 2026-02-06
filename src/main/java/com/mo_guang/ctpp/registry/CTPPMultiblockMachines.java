@@ -21,14 +21,19 @@ import com.simibubi.create.AllBlocks;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Blocks;
 import com.mo_guang.ctpp.CTPPRegistration;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
 import static com.gregtechceu.gtceu.api.pattern.Predicates.blocks;
 import static com.gregtechceu.gtceu.common.data.GTBlocks.*;
+import static com.gregtechceu.gtceu.common.data.GTMaterialBlocks.MATERIAL_BLOCKS;
+import static com.gregtechceu.gtceu.common.data.GTMaterials.TreatedWood;
 import static com.mo_guang.ctpp.CTPPRegistration.REGISTRATE;
 import static com.mo_guang.ctpp.config.ConfigUtils.*;
+import static net.minecraft.world.level.block.Blocks.*;
+import static net.minecraft.world.level.block.Blocks.STONE_BRICKS;
 
 public class CTPPMultiblockMachines {
     public static void init() {}
@@ -36,6 +41,7 @@ public class CTPPMultiblockMachines {
     public static MultiblockMachineDefinition SMASHING_FACTORY = CTPPRegistration.conditionalRegistration(
         ctnhEnabled("SmashingFactory"),
         () -> REGISTRATE.multiblock("smashing_factory", KineticWorkableMultiblockMachine::new)
+                .cnLangValue("粉碎工厂")
             .rotationState(RotationState.NON_Y_AXIS)
             .appearanceBlock(AllBlocks.ANDESITE_CASING)
             .recipeType(CTPPRecipeTypes.SMASHING_FACTORY_RECIPES)
@@ -75,6 +81,7 @@ public class CTPPMultiblockMachines {
     public static MultiblockMachineDefinition KINETIC_GENERATOR = CTPPRegistration.conditionalRegistration(
         ctnhEnabled("KineticGenerator"),
         () -> REGISTRATE.multiblock("kinetic_generator", KineticGeneratorMachine::new)
+                .cnLangValue("应力发电机")
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeType(CTPPRecipeTypes.KINETIC_GENERATOR_RECIPES)
             .appearanceBlock(CASING_STEEL_SOLID)
@@ -108,6 +115,7 @@ public class CTPPMultiblockMachines {
     public static MultiblockMachineDefinition KINETIC_STEAM_TURBINE = CTPPRegistration.conditionalRegistration(
         ctnhEnabled("KineticSteamTurbine"),
         () -> REGISTRATE.multiblock("kinetic_steam_turbine", KineticTurbineMachine::new)
+                .cnLangValue("机械蒸汽涡轮")
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeType(CTPPRecipeTypes.KINETIC_STEAM_TURBINE_RECIPES)
             .appearanceBlock(GTBlocks.CASING_BRONZE_BRICKS)
@@ -137,6 +145,7 @@ public class CTPPMultiblockMachines {
     public static MultiblockMachineDefinition SEAWEED_FARM = CTPPRegistration.conditionalRegistration(
         ctnhEnabled("SeaweedFarm"),
         () -> REGISTRATE.multiblock("seaweed_farm", KineticWorkableMultiblockMachine::new)
+                .cnLangValue("海草养殖农场")
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeType(CTPPRecipeTypes.SEAWEED_FARM)
             .recipeModifier(CTPPRecipeModifiers.KINETIC_PARALLEL)
@@ -169,6 +178,7 @@ public class CTPPMultiblockMachines {
     public static MultiblockMachineDefinition WINDMILL_CONTROL_CENTER = CTPPRegistration.conditionalRegistration(
         ctnhEnabled("WindmillControlCenter"),
         () -> REGISTRATE.multiblock("windmill_control_center", WindMillControlMachine::new)
+                .cnLangValue("风车控制中心")
             .rotationState(RotationState.NON_Y_AXIS)
             .allowExtendedFacing(false)
             .recipeType(CTPPRecipeTypes.WINDMILL_CONTROL)
@@ -218,6 +228,7 @@ public class CTPPMultiblockMachines {
     public static MultiblockMachineDefinition BOOM_OF_CREATE = CTPPRegistration.conditionalRegistration(
         ctnhEnabled("BoomOfCreate"),
         () -> REGISTRATE.multiblock("boom_of_create", KineticOutputMachine::new)
+                .cnLangValue("大型聚爆应力厂")
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeType(CTPPRecipeTypes.BOOM_OF_CREATE)
             .appearanceBlock(CASING_STEEL_SOLID)
@@ -258,6 +269,57 @@ public class CTPPMultiblockMachines {
                 .build())
             .workableCasingModel(GTCEu.id("block/casings/solid/machine_casing_solid_steel"), GTCEu.id("block/multiblock/generator/large_steam_turbine"))
             .register());
+    public static final MultiblockMachineDefinition BIG_DAM = REGISTRATE.multiblock("big_dam",
+                    BigDamMachine::new)
+            .cnLangValue("三峡大坝")
+            .rotationState(RotationState.NON_Y_AXIS)
+            .allowExtendedFacing(false)
+            .recipeType(CTPPRecipeTypes.BIG_DAM)
+            .noRecipeModifier()
+            .appearanceBlock(() -> Blocks.STONE_BRICKS)
+            .pattern(definition -> FactoryStaticBlockPattern.start()
+                    .aisle("###########################################", "###########################################", "###########################################", "###########################################", "###########################################", "###########################################", "###########################################", "###########################################", "###########################################", "###########################################", "###########################################", "###########################################", "###########################################", "##A##A##A##A##A##A##A##A##A##A##A##A##A####", "#AB##B##B##B##B##B##B##B##B##B##B##B##B####", "#DBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####", "DDEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE####")
+                    .aisle("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####", "##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####", "##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####", "##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####", "##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####", "FFBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####", "##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####", "##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####", "##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####", "##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####", "##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####", "##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####", "##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####", "##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####", "##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####", "##BGGGGGBGGGGGBGGGGGBGGGGGBGGGGGBGGGGGB####", "FFE#####E#####E#####E#####E#####E#####E####")
+                    .aisle("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####", "#DBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####", "#DBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####", "#DBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####", "#DBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####", "DDB##B##B##B##B##B##B##B##B##B##B##B##B####", "#DB##B##B##B##B##B##B##B##B##B##B##B##B####", "#DB##B##B##B##B##B##B##B##B##B##B##B##B####", "#DB##B##B##B##B##B##B##B##B##B##B##B##B####", "#DB##B##B##B##B##B##B##B##B##B##B##B##B####", "#DB##B##B##B##B##B##B##B##B##B##B##B##B####", "#DB##B##B##B##B##B##B##B##B##B##B##B##B####", "#DB##B##B##B##B##B##B##B##B##B##B##B##B####", "#DB##B##B##B##B##B##B##B##B##B##B##B##B####", "#DB#####B#####B#####B#####B#####B#####B####", "#DE#####E#####E#####E#####E#####E#####E####", "DD#########################################")
+                    .aisle("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####", "##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####", "##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####", "##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####", "##B##B##B##B##B##B##B##B##B##B##B##B##B####", "FFB##B##B##B##B##B##B##B##B##B##B##B##B####", "##B##B##B##B##B##B##B##B##B##B##B##B##B####", "##H##A##H##A##H##A##H##A##H##A##H##A##H####", "##H##A##H##A##H##A##H##A##H##A##H##A##H####", "##A##A##A##A##A##A##A##A##A##A##A##A##A####", "##A##A##A##A##A##A##A##A##A##A##A##A##A####", "##A##A##A##A##A##A##A##A##A##A##A##A##A####", "##A##A##A##A##A##A##A##A##A##A##A##A##A####", "##A##A##A##A##A##A##A##A##A##A##A##A##A####", "##EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE####", "###########################################", "###########################################")
+                    .aisle("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####", "##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####", "##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####", "##B##B##B##B##B##B##B##B##B##B##B##B##B####", "##B##B##B##B##B##B##B##B##B##B##B##B##B####", "FFB##B##B##B##B##B##B##B##B##B##B##B##B####", "##H#####H#####H#####H#####H#####H#####H####", "##H#####H#####H#####H#####H#####H#####H####", "##I#####I#####I#####I#####I#####I#####I####", "###########################################", "###########################################", "###########################################", "###########################################", "###########################################", "###########################################", "###########################################", "###########################################")
+                    .aisle("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####", "##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####", "##B##B##B##B##B##B##B##B##B##B##B##B##B####", "##B##B##B##B##B##B##B##B##B##B##B##B##B####", "##B##B##B##B##B##B##B##B##B##B##B##B##B####", "FFB#####B#####B#####B#####B#####B#####B####", "##H#####H#####H#####H#####H#####H#####H####", "###########################################", "##I#####I#####I#####I#####I#####I#####I####", "###########################################", "###########################################", "###########################################", "###########################################", "###########################################", "###########################################", "###########################################", "###########################################")
+                    .aisle("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####", "##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####", "##B##B##B##B##B##B##B##B##B##B##B##B##B####", "##B##B##B##B##B##B##B##B##B##B##B##B##B####", "###########################################", "FF#########################################", "##I#####I#####I#####I#####I#####I#####I####", "###########################################", "##I#####I#####I#####I#####I#####I#####I####", "###########################################", "###########################################", "###########################################", "###########################################", "###########################################", "###########################################", "###########################################", "###########################################")
+                    .aisle("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####", "##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####", "##B##B##B##B##B##B##B##B##B##B##B##B##B####", "###########################################", "###########################################", "FF#########################################", "##ICC#CCICC#CCICC#CCICC#CCICC#CCICC#CCI####", "###CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#####", "##ICC#CCICC#CCICC#CCICC#CCICC#CCICC#CCI####", "###########################################", "###########################################", "###########################################", "###########################################", "###########################################", "###########################################", "###########################################", "###########################################")
+                    .aisle("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####", "##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####", "##B##B##B##B##B##B##B##B##B##B##B##B##B####", "###########################################", "###CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#####", "FF#CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#####", "##IJJ#JJIJJ#JJIJJ#JJIJJ#JJIJJ#JJIJJ#JJI####", "###JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#####", "##IJJ#JJIJJ#JJIJJ#JJIJJ#JJIJJ#JJIJJ#JJI####", "###CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#####", "###CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#####", "###########################################", "###########################################", "###########################################", "###########################################", "###########################################", "###########################################")
+                    .aisle("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB", "##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBD##D", "##B##B##B##B##B##B##B##B##B##B##B##B##BD##D", "###CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#D##D", "###JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#DDDD", "FF#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#####", "##I#####I#####I#####I#####I#####I#####I####", "###C###C#C###C#C###C#C###C#C###C#C###C#####", "##I#####I#####I#####I#####I#####I#####I####", "###JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#####", "###JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#####", "###CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#####", "###########################################", "###########################################", "###########################################", "###########################################", "###########################################")
+                    .aisle("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB", "#DBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####", "#DB##B##B##B##B##B##B##B##B##B##B##B##B####", "#D#CC#CC#CC#CC#CC#CC#CC#CC#CC#C##CC#CC#####", "#D#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#FFFF", "DD##C#C###C#C###C#C###C#C###C#C###C#C######", "##I#####I#####I#####I#####I#####I#####I####", "###C###C#C###C#C###C#C###C#C###C#C###C#####", "##I#####I#####I#####I#####I#####I#####I####", "####C#C###C#C###C#C###C#C###C#C###C#C######", "###JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#####", "###CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#####", "###########################################", "###########################################", "###########################################", "###########################################", "###########################################")
+                    .aisle("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB", "##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####", "##HCCBCCHCCBCCHCCBCCHCCBCCHCCBCCHCCBCCH####", "###JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#####", "#######################################FDDF", "FF#####################################I###", "##HCCHCCHCCHCCHCCHCCHCCHCCHCCHCCHCCHCCHH###", "##HCCHCCHCCHCCHCCHCCHCCHCCHCCHCCHCCHCCHH###", "##HCCHCCHCCHCCHCCHCCHCCHCCHCCHCCHCCHCCHH###", "###########################################", "###########################################", "###JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#####", "###CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#####", "###########################################", "###########################################", "###########################################", "###########################################")
+                    .aisle("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB", "##B##B##B##B##B##B##B##B##B##B##B##B##B####", "##HCCBCCHCCBCCHCCBCCHCCBCCHCCBCCHCCBCCH####", "##EJJ#JJEJJ#JJEJJ#JJEJJ#JJEJJ#JJEJJ#JJE####", "##EC###CEC###CEC###CEC###CEC###CEC###CEFDDF", "FFEC###CEC###CEC###CEC###CEC###CEC###CE####", "##HCCHCJHCCHCJHCCHCJHCCHCJHCCHCJHCCHCJHH###", "##KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKL###", "##HCCHCCHCCHCCHCCHCCHCCHCCHCCHCCHCCHCCHH###", "###C###C#C###C#C###C#C###C#C###C#C###C#####", "###C###C#C###C#C###C#C###C#C###C#C###C#####", "###JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#####", "###CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#####", "###########################################", "###########################################", "###########################################", "###########################################")
+                    .aisle("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB", "##B##B##B##B##B##B##B##B##B##B##B##B##B####", "##HCCBCCHCCBCCHCCBCCHCCBCCHCCBCCHCCBCCH####", "##EJJ#JJEJJ#JJEJJ#JJEJJ#JJEJJ#JJEJJ#JJE####", "##E#####E#####E#####E#####E#####E#####EFDDF", "FFE#####E#####E#####E#####E#####E#####EI###", "##HCCHCCHCCHCCHCCHCCHCCHCCHCCHCCHCCHCCHH###", "##HCCHCCHCCHCCHCCHCCHCCHCCHCCHCCHCCHCCHH###", "##HCCHCCHCCHCCHCCHCCHCCHCCHCCHCCHCCHCCHH###", "###########################################", "###########################################", "###JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#####", "###CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#####", "###########################################", "###########################################", "###########################################", "###########################################")
+                    .aisle("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB", "#DB##B##B##B##B##B##B##B##B##B##B##B##B####", "#DH##B##H##B##H##B##H##B##H##B##H##B##H####", "#D#CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#####", "#D#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#FFFF", "DD##C#C###C#C###C#C###C#C###C#C###C#C######", "##E#####E#####E#####E#####E#####E#####E####", "##EC###CEC###CEC###CEC###CEC###CEC###CE####", "##E#####E#####E#####E#####E#####E#####E####", "####C#C###C#C###C#C###C#C###C#C###C#C######", "###JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#####", "###CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#####", "###########################################", "###########################################", "###########################################", "###########################################", "###########################################")
+                    .aisle("##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB", "##B##B##B##B##B##B##B##B##B##B##B##B##BD##D", "##B##B##B##B##B##B##B##B##B##B##B##B##BD##D", "###CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#DDDD", "###JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#DDDD", "##EJJ#JJEJJ#JJEJJ#JJEJJ#JJEJJ#JJEJJ#JJE####", "##E#####E#####E#####E#####E#####E#####E####", "##EC###CEC###CEC###CEC###CEC###CEC###CE####", "###########################################", "###JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#####", "###JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#####", "###CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#####", "###########################################", "###########################################", "###########################################", "###########################################", "###########################################")
+                    .aisle("##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB", "##B##B##B##B##B##B##B##B##B##B##B##B##B####", "##B##B##B##B##B##B##B##B##B##B##B##B##B####", "#######################################FFFF", "##ECC#CCECC#CCECC#CCECC#CCECC#CCECC#CCE####", "##ECC#CCECC#CCECC#CCECC#CCECC#CCECC#CCE####", "##EJJ#JJEJJ#JJEJJ#JJEJJ#JJEJJ#JJEJJ#JJE####", "###JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#####", "###JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#####", "###CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#####", "###CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#####", "###########################################", "###########################################", "###########################################", "###########################################", "###########################################", "###########################################")
+                    .aisle("##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB", "##B##B##B##B##B##B##B##B##B##B##B##B##B####", "##H##B##H##B##H##B##H##B##H##B##H##B##H####", "##E#####E#####E#####E#####E#####E#####EFDDF", "##E#####E#####E#####E#####E#####E#####E####", "##E#####E#####E#####E#####E#####E#####E####", "###CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#####", "###CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#####", "###CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#####", "###########################################", "###########################################", "###########################################", "###########################################", "###########################################", "###########################################", "###########################################", "###########################################")
+                    .aisle("##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB", "##B##B##B##B##B##B##B##B##B##B##B##B##B####", "##H##B##H##B##H##B##H##B##H##B##H##B##H####", "##H#####H#####H#####H#####H#####H#####HFDDF", "##E#####E#####E#####E#####E#####E#####E####", "###########################################", "###########################################", "###########################################", "###########################################", "###########################################", "###########################################", "###########################################", "###########################################", "###########################################", "###########################################", "###########################################", "###########################################")
+                    .aisle("##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB", "##B##B##B##B##B##B##B##B##B##B##B##B##B####", "##B##B##B##B##B##B##B##B##B##B##B##B##B####", "##H#####H#####H#####H#####H#####H#####HFDDF", "##H#####H#####H#####H#####H#####H#####H####", "###########################################", "###########################################", "###########################################", "###########################################", "###########################################", "###########################################", "###########################################", "###########################################", "###########################################", "###########################################", "###########################################", "###########################################")
+                    .aisle("##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB", "##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####", "##B##B##B##B##B##B##B##B##B##B##B##B##B####", "##B##B##B##B##B##B##B##B##B##B##B##B##BFFFF", "###########################################", "###########################################", "###########################################", "###########################################", "###########################################", "###########################################", "###########################################", "###########################################", "###########################################", "###########################################", "###########################################", "###########################################", "###########################################")
+                    .aisle("##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB", "##BBBBBBMMMMMMMMMMMM@MMMMMMMMMMMMBBBBBBD##D", "##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBD##D", "##B##B##B##B##B##B##B##B##B##B##B##B##BDDDD", "###########################################", "###########################################", "###########################################", "###########################################", "###########################################", "###########################################", "###########################################", "###########################################", "###########################################", "###########################################", "###########################################", "###########################################", "###########################################")
+                    .where("D", Predicates.frames(TreatedWood))
+                    .where("J", Predicates.blocks(TREATED_WOOD_PLANK.get()), false)
+                    .where("G", Predicates.blocks(WATER))
+                    .where("I", Predicates.blocks(AllBlocks.METAL_GIRDER.get()))
+                    .where("#", Predicates.any())
+                    .where("E", Predicates.blocks(AllBlocks.ANDESITE_CASING.get()))
+                    .where("A", Predicates.blocks(STONE_BRICK_WALL))
+                    .where("K", Predicates.blocks(MATERIAL_BLOCKS.get(TagPrefix.block, CTPPMaterials.AndesiteAlloy).get()))
+                    .where("H", Predicates.blocks(AllBlocks.INDUSTRIAL_IRON_BLOCK.get()))
+                    .where("L", Predicates.blocks(AllBlocks.ITEM_VAULT.get()))
+                    .where("C", Predicates.frames(TreatedWood), false)
+                    .where("B", Predicates.blocks(STONE_BRICKS))
+                    .where("M", Predicates.blocks(STONE_BRICKS)
+                            .or(Predicates.autoAbilities(definition.getRecipeTypes()))
+                            .or(Predicates.abilities(CTPPPartAbility.OUTPUT_KINETIC)).setMinGlobalLimited(1))
+                    .where("F", Predicates.blocks(TREATED_WOOD_PLANK.get()))
+                    .where("@", Predicates.controller(Predicates.blocks(definition.get())))
+                    .build())
+            .workableCasingModel(ResourceLocation.tryParse("minecraft:block/stone_bricks"), GTCEu.id("block/multiblock/implosion_compressor"))
+            .register();
     public static MultiblockMachineDefinition TEST = REGISTRATE.multiblock("test", ComplexRotatingMachine::new)
             .rotationState(RotationState.ALL)
             .recipeType(CTPPRecipeTypes.BOOM_OF_CREATE)

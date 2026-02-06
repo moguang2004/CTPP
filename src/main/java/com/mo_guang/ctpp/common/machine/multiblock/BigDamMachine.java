@@ -1,7 +1,7 @@
 package com.mo_guang.ctpp.common.machine.multiblock;
 
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.utils.TrackedDummyWorld;
 import com.mo_guang.ctpp.api.pattern.StaticBlockPattern;
 import com.mo_guang.ctpp.dynamicPart.rotation.IRotationMultiblock;
@@ -13,7 +13,6 @@ import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,6 +20,8 @@ import java.util.List;
 import java.util.Map;
 
 public class BigDamMachine extends KineticOutputMachine implements IRotationMultiblock<SimpleRotatingContraptionEntity> {
+    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
+            BigDamMachine.class, KineticOutputMachine.MANAGED_FIELD_HOLDER);
     @Getter
     @Setter
     List<SimpleRotatingContraptionEntity> rotatingEntity = new ArrayList<>();
@@ -37,6 +38,11 @@ public class BigDamMachine extends KineticOutputMachine implements IRotationMult
                 this.rotatingEntity.addAll(rotatingEntities.values());
             }
         }
+        rotatingEntity.forEach(entity -> {
+            var facing = getFrontFacing().getNormal();
+            Vec3 newF = new Vec3(facing.getX(), facing.getY(), facing.getZ());
+            entity.setRotationSpeed(MathUtil.rotateByVec(newF, 90, new Vec3(0, -1 ,0)), 2);
+        });
     }
 
     @Override
@@ -46,29 +52,6 @@ public class BigDamMachine extends KineticOutputMachine implements IRotationMult
             this.rotatingEntity.forEach(AbstractContraptionEntity::disassemble);
         }
         this.rotatingEntity.clear();
-    }
-
-    @Override
-    public boolean beforeWorking(@Nullable GTRecipe recipe) {
-        boolean result = super.beforeWorking(recipe);
-        if (result) {
-            rotatingEntity.forEach(entity -> {
-                var facing = getFrontFacing().getNormal();
-                Vec3 newF = new Vec3(facing.getX(), facing.getY(), facing.getZ());
-                entity.setRotationSpeed(MathUtil.rotateByVec(newF, 90, new Vec3(0, -1 ,0)), 2);
-            });
-        }
-        return result;
-    }
-
-    @Override
-    public void afterWorking() {
-        rotatingEntity.forEach(entity -> {
-            var facing = getFrontFacing().getNormal();
-            Vec3 newF = new Vec3(facing.getX(), facing.getY(), facing.getZ());
-            entity.setRotationSpeed(MathUtil.rotateByVec(newF, 90, new Vec3(0, -1 ,0)), 0);
-        });
-        super.afterWorking();
     }
 
     @Override
@@ -95,4 +78,8 @@ public class BigDamMachine extends KineticOutputMachine implements IRotationMult
         return null;
     }
 
+    @Override
+    public ManagedFieldHolder getFieldHolder() {
+        return MANAGED_FIELD_HOLDER;
+    }
 }

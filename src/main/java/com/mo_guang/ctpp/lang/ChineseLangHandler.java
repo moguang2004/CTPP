@@ -83,28 +83,7 @@ public class ChineseLangHandler {
 
         provider.add("ctpp.copyright.info", "该机器由§6CT++§r添加");
 
-        provider.add(CTPPMachines.MECHANICAL_UPGRADE_BUS.getBlock(), "机械升级仓");
         provider.add(CTPPCreativeModeTabs.MACHINE.get(), "CTPP机器");
-
-        provider.add(CTPPItems.BASIC_MECHANISM.get(), "基础构件");
-        provider.add(CTPPItems.INCOMPLETE_BASIC_MECHANISM.get(), "未完成的基础构件");
-        provider.add(CTPPItems.STEEL_MECHANISM.get(), "钢铁构件");
-
-        provider.add("gtceu.kinetic_generator", "应力发电");
-        provider.add("gtceu.kinetic_steam_turbine", "蒸汽动力");
-        provider.add("gtceu.seaweed_farm", "海草养殖");
-        provider.add("gtceu.windmill_control_center", "风车控制中心");
-        provider.add("gtceu.boom_of_create", "聚爆应力厂");
-        provider.add("gtceu.smashing_factory_recipes", "粉碎工厂");
-        provider.add("gtceu.kinetic_mixer", "应力搅拌");
-
-
-        provider.add(CTPPMultiblockMachines.SMASHING_FACTORY.getBlock(), "粉碎工厂");
-        provider.add(CTPPMultiblockMachines.KINETIC_GENERATOR.getBlock(), "应力发电机");
-        provider.add(CTPPMultiblockMachines.KINETIC_STEAM_TURBINE.getBlock(), "机械蒸汽涡轮");
-        provider.add(CTPPMultiblockMachines.SEAWEED_FARM.getBlock(), "海草农场");
-        provider.add(CTPPMultiblockMachines.WINDMILL_CONTROL_CENTER.getBlock(), "风车控制中心");
-        provider.add(CTPPMultiblockMachines.BOOM_OF_CREATE.getBlock(), "大型聚爆应力厂");
 
         provider.add("config.screen.ctpp", "CTPP设置");
 

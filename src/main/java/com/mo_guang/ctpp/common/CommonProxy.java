@@ -70,4 +70,8 @@ public class CommonProxy {
             CTPPRecipeProvider.registerAllProcessing(generator, output);
         }
     }
+    @SubscribeEvent
+    public void registerMaterial(MaterialEvent event) {
+        CTPPMaterials.init();
+    }
 }

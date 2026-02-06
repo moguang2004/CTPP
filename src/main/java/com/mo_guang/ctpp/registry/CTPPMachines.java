@@ -212,6 +212,7 @@ public class CTPPMachines {
         ELECTRIC_GEAR_BOX_32A = registerElectricGearBox(32, LOW_TIERS);
 
         MECHANICAL_UPGRADE_BUS = REGISTRATE.machine("mechanical_upgrade_bus", MechanicalUpgradePartMachine::new)
+                .cnLangValue("机械升级仓")
                 .langValue("Mechanical Upgrade Bus")
                 .tooltips(CommonTooltips.MECHANICAL_TIER)
                 .tier(LV)

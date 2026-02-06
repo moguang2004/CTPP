@@ -101,7 +101,7 @@ public class StaticBlockPattern extends BlockPattern {
                 for (int b = 0, y = -centerOffset[1]; b < this.thumbLength; b++, y++) {
                     for (int a = 0, x = -centerOffset[0]; a < this.palmLength; a++, x++) {
                         worldState.setError(null);
-                        TraceabilityPredicate predicate = this.staticBlockMatches[c][b][a]? this.blockMatches[c][b][a] : Predicates.air();
+                        TraceabilityPredicate predicate = this.staticBlockMatches[c][b][a]? this.blockMatches[c][b][a] : Predicates.any();
                         BlockPos pos = setActualRelativeOffset(x, y, z, frontFacing, upwardsFacing, isFlipped)
                                 .offset(centerPos.getX(), centerPos.getY(), centerPos.getZ());
                         if (!worldState.update(pos, predicate)) {
