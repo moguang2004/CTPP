@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "ctpp:block/machine/big_dam",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "ctpp:block/machine/big_dam"
+    },
+    "facing=south": {
+      "model": "ctpp:block/machine/big_dam",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "ctpp:block/machine/big_dam",
+      "y": 270
+    }
+  }
+}
