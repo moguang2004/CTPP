@@ -45,21 +45,21 @@ public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity {
     @Getter
     protected boolean isRunning = false;
     @OnlyIn(Dist.CLIENT)
-    private float clientRotationDiff = 0.0f;
+    protected float clientRotationDiff = 0.0f;
 
-    private static final EntityDataAccessor<Float> DATA_Q_W =
+    protected static final EntityDataAccessor<Float> DATA_Q_W =
             SynchedEntityData.defineId(SimpleRotatingContraptionEntity.class, EntityDataSerializers.FLOAT);
-    private static final EntityDataAccessor<Float> DATA_Q_X =
+    protected static final EntityDataAccessor<Float> DATA_Q_X =
             SynchedEntityData.defineId(SimpleRotatingContraptionEntity.class, EntityDataSerializers.FLOAT);
-    private static final EntityDataAccessor<Float> DATA_Q_Y =
+    protected static final EntityDataAccessor<Float> DATA_Q_Y =
             SynchedEntityData.defineId(SimpleRotatingContraptionEntity.class, EntityDataSerializers.FLOAT);
-    private static final EntityDataAccessor<Float> DATA_Q_Z =
+    protected static final EntityDataAccessor<Float> DATA_Q_Z =
             SynchedEntityData.defineId(SimpleRotatingContraptionEntity.class, EntityDataSerializers.FLOAT);
-    private static final EntityDataAccessor<Vector3f> DATA_ANGULAR_VEL =
+    protected static final EntityDataAccessor<Vector3f> DATA_ANGULAR_VEL =
             SynchedEntityData.defineId(SimpleRotatingContraptionEntity.class, EntityDataSerializers.VECTOR3);
-    private static final EntityDataAccessor<Vector3f> DATA_PIVOT =
+    protected static final EntityDataAccessor<Vector3f> DATA_PIVOT =
             SynchedEntityData.defineId(SimpleRotatingContraptionEntity.class, EntityDataSerializers.VECTOR3);
-    private static final EntityDataAccessor<Boolean> DATA_IS_RUNNING =
+    protected static final EntityDataAccessor<Boolean> DATA_IS_RUNNING =
             SynchedEntityData.defineId(SimpleRotatingContraptionEntity.class, EntityDataSerializers.BOOLEAN);
 
     /**
