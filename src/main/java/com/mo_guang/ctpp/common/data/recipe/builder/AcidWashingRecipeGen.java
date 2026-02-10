@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterialItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.mo_guang.ctpp.CTPP;
-import com.mo_guang.ctpp.common.data.recipe.CTPPRecipeTypeInfo;
+import com.mo_guang.ctpp.common.data.recipe.fan_processing.CTPPRecipeTypeInfo;
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.api.data.recipe.ProcessingRecipeGen;
 import com.simibubi.create.foundation.recipe.IRecipeTypeInfo;

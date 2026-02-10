@@ -1,4 +1,4 @@
-package com.mo_guang.ctpp.common.data.recipe;
+package com.mo_guang.ctpp.registry;
 
 import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;

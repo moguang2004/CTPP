@@ -13,6 +13,8 @@ import net.minecraft.world.phys.Vec3;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
+import static com.mo_guang.ctpp.util.MathUtil.quaternionAngleDifference;
+
 public class RubiksCubeContraptionEntity extends SimpleRotatingContraptionEntity{
     public static float ROTATE_SPEED = 4.5f; // 90 degrees per 10 ticks
     public Direction frontFacing;
@@ -241,5 +243,18 @@ public class RubiksCubeContraptionEntity extends SimpleRotatingContraptionEntity
         }
 
         this.clockwise = nbt.getBoolean("Clockwise");
+
+        this.serverRotation = new Quaternionf();
+        if (!this.level().isClientSide) {
+            entityData.set(DATA_Q_W, this.serverRotation.w());
+            entityData.set(DATA_Q_X, this.serverRotation.x());
+            entityData.set(DATA_Q_Y, this.serverRotation.y());
+            entityData.set(DATA_Q_Z, this.serverRotation.z());
+        }
+        if (this.level().isClientSide) {
+            this.clientRotation = new Quaternionf(this.serverRotation);
+            this.prevClientRotation = new Quaternionf(this.serverRotation);
+            this.clientRotationDiff = quaternionAngleDifference(this.clientRotation, this.serverRotation);
+        }
     }
 }

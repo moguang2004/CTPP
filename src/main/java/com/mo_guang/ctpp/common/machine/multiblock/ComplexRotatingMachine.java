@@ -79,23 +79,30 @@ public class ComplexRotatingMachine extends WorkableElectricMultiblockMachine im
         }
     }
     public void rotatingTick() {
+//        if (isFormed && rotatingEntity != null) {
+//            var halfTick = 90 / RubiksCubeContraptionEntity.ROTATE_SPEED;
+//            if (getOffsetTimer() % (2 * halfTick) == 0) {
+//                rotatingEntity.forEach(entity -> {
+//                    if(!(entity instanceof RubiksCubeContraptionEntity)) return;
+//                    entity.performStandardMove(rotation);
+//                });
+//                rotation = "STOP";
+//            }
+//            if (getOffsetTimer() % (2 * halfTick) == halfTick) {
+//                rotatingEntity.forEach(entity -> {
+//                    if(!(entity instanceof RubiksCubeContraptionEntity)) return;
+//                    entity.performStandardMove("STOP");
+//                });
+//            }
+//        }
         if (isFormed && rotatingEntity != null) {
             var halfTick = 90 / RubiksCubeContraptionEntity.ROTATE_SPEED;
             if (getOffsetTimer() % (2 * halfTick) == 0) {
-                rotatingEntity.forEach(entity -> {
-                    if(!(entity instanceof RubiksCubeContraptionEntity)) return;
-                    entity.performStandardMove(rotation);
-                });
-                rotation = "STOP";
-//                count += 1;
-//                int index = count % avalibleMoving.size();
-//                rotatingEntities.forEach(entity -> entity.performStandardMove(avalibleMoving.get(index)));
+                int index = RandomSource.create().nextInt(avalibleMoving.size());
+                rotatingEntity.forEach(entity -> entity.performStandardMove(avalibleMoving.get(index)));
             }
             if (getOffsetTimer() % (2 * halfTick) == halfTick) {
-                rotatingEntity.forEach(entity -> {
-                    if(!(entity instanceof RubiksCubeContraptionEntity)) return;
-                    entity.performStandardMove("STOP");
-                });
+                rotatingEntity.forEach(entity -> entity.performStandardMove("STOP"));
             }
         }
     }

@@ -1,6 +1,6 @@
 package com.mo_guang.ctpp.common.kinetic.fan.oiling;
 
-import com.mo_guang.ctpp.common.data.recipe.CTPPRecipeTypeInfo;
+import com.mo_guang.ctpp.common.data.recipe.fan_processing.CTPPRecipeTypeInfo;
 import com.simibubi.create.content.processing.recipe.ProcessingRecipe;
 import com.simibubi.create.content.processing.recipe.ProcessingRecipeBuilder;
 import net.minecraft.world.level.Level;

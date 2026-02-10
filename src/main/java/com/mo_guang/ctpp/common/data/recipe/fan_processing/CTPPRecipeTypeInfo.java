@@ -1,4 +1,4 @@
-package com.mo_guang.ctpp.common.data.recipe;
+package com.mo_guang.ctpp.common.data.recipe.fan_processing;
 
 import com.mo_guang.ctpp.CTPP;
 import com.mo_guang.ctpp.common.kinetic.fan.acidwashing.AcidwashingRecipe;
