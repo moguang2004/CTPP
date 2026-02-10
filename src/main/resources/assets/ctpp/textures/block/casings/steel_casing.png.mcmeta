@@ -1,0 +1,5 @@
+{
+    "ldlib": {
+        "connection": "ctpp:block/casings/steel_casing_connected"
+    }
+}

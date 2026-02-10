@@ -2,7 +2,7 @@ package com.mo_guang.ctpp.integration.jei;
 
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.mo_guang.ctpp.CTPP;
-import com.mo_guang.ctpp.common.data.recipe.CTPPRecipeTypeInfo;
+import com.mo_guang.ctpp.common.data.recipe.fan_processing.CTPPRecipeTypeInfo;
 import com.mo_guang.ctpp.common.kinetic.fan.acidwashing.AcidwashingRecipe;
 import com.mo_guang.ctpp.common.kinetic.fan.breathing.BreathingRecipe;
 import com.mo_guang.ctpp.integration.jei.category.FanAcidWashingCategory;
