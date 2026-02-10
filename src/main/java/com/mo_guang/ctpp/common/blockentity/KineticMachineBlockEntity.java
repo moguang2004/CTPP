@@ -18,12 +18,14 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.syncdata.managed.MultiManagedStorage;
 import com.mo_guang.ctpp.api.IBlockStressValues;
 import com.mo_guang.ctpp.api.KineticMachineDefinition;
+import com.mo_guang.ctpp.client.KineticMachineBlockEntityRenderer;
 import com.mo_guang.ctpp.common.machine.IKineticMachine;
 import com.mo_guang.ctpp.common.machine.multiblock.part.KineticPartMachine;
 import com.simibubi.create.content.kinetics.KineticNetwork;
 import com.simibubi.create.content.kinetics.base.IRotate;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import com.simibubi.create.content.kinetics.base.KineticEffectHandler;
+import com.simibubi.create.content.kinetics.base.SingleAxisRotatingVisual;
 import com.simibubi.create.foundation.utility.CreateLang;
 import com.simibubi.create.infrastructure.config.AllConfigs;
 import com.tterrag.registrate.util.OneTimeEventReceiver;
@@ -31,6 +33,7 @@ import com.tterrag.registrate.util.nullness.NonNullSupplier;
 import dev.engine_room.flywheel.lib.visualization.SimpleBlockEntityVisualizer;
 import lombok.Getter;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -90,20 +93,25 @@ public class KineticMachineBlockEntity extends KineticBlockEntity implements IMa
         return result == null ? super.getCapability(cap, side) : result;
     }
 
-    public static void onBlockEntityRegister(BlockEntityType blockEntityType,
-                                             NonNullSupplier<SimpleBlockEntityVisualizer.Factory<? extends KineticBlockEntity>> visualFactory,
-                                             boolean renderNormally) {
-        if (visualFactory != null && LDLib.isClient()) {
+    public static void onBlockEntityRegister(BlockEntityType<?> blockEntityType) {
+        if (LDLib.isClient()) {
+            var type = (BlockEntityType<KineticMachineBlockEntity>)blockEntityType;
+
             DistExecutor.unsafeRunWhenOn(
                     Dist.CLIENT,
                     () -> () ->
-                            OneTimeEventReceiver.addModListener(GTRegistration.REGISTRATE,
-                            FMLClientSetupEvent.class,
-                            ($) -> SimpleBlockEntityVisualizer.builder(blockEntityType)
-                                    .factory(visualFactory.get())
-                                    .skipVanillaRender((be) -> !renderNormally)
-                                    .apply())
-            );
+                            OneTimeEventReceiver.addModListener(
+                                    GTRegistration.REGISTRATE,
+                                    FMLClientSetupEvent.class,
+                                    ($) -> {
+                                        SimpleBlockEntityVisualizer.builder(type)
+                                                .factory(SingleAxisRotatingVisual::shaft)
+                                                .skipVanillaRender((be) -> false)
+                                                .apply();
+
+                                        BlockEntityRenderers.register(type, KineticMachineBlockEntityRenderer::new);
+                                    }
+            ));
         }
     }
 

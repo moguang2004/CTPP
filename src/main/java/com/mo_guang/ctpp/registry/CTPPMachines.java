@@ -25,9 +25,11 @@ import com.mo_guang.ctpp.common.block.KineticMachineBlock;
 import com.mo_guang.ctpp.common.machine.multiblock.part.MechanicalUpgradePartMachine;
 import com.mo_guang.ctpp.config.MainConfig;
 import com.mo_guang.ctpp.util.CommonTooltips;
+import com.mo_guang.ctpp.util.ItemAxisBuilder;
 import com.simibubi.create.content.kinetics.base.SingleAxisRotatingVisual;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraftforge.client.model.generators.BlockModelBuilder;
 import net.minecraftforge.client.model.generators.ModelFile;
@@ -120,8 +122,9 @@ public class CTPPMachines {
                             KineticMachineBlockEntity::create)
                     .tier(tier)
                     .blockProp(BlockBehaviour.Properties::noOcclusion)
-                    .onBlockEntityRegister(type -> KineticMachineBlockEntity.onBlockEntityRegister(type,
-                            () -> SingleAxisRotatingVisual::shaft, false));
+                    .onBlockEntityRegister(KineticMachineBlockEntity::onBlockEntityRegister)
+                    .itemBuilder(ItemAxisBuilder::addShaft)
+                    ;
             definitions[tier] = builder.apply(tier, register);
         }
         return definitions;
@@ -195,15 +198,16 @@ public class CTPPMachines {
                 .rotationState(RotationState.ALL)
                 .recipeType(GTRecipeTypes.DUMMY_RECIPES)
                 .tier(LV)
+                .itemBuilder(ItemAxisBuilder::addShaft)
                 .tooltips(List.of(
                         Component.translatable("gtceu.universal.tooltip.voltage_out", FormattingUtil.formatNumbers(V[LV]), VNF[LV]),
                         max_output_amperage.translate("16"),
                         Component.translatable("gtceu.universal.tooltip.energy_storage_capacity", FormattingUtil.formatNumbers(2048)),
                         carbon_brushes.translate()
                 ))
+                .hasBER(false)
                 .blockProp(BlockBehaviour.Properties::noOcclusion)
-                .onBlockEntityRegister(type -> KineticMachineBlockEntity.onBlockEntityRegister(type,
-                                () -> SingleAxisRotatingVisual::shaft, false))
+                .onBlockEntityRegister(KineticMachineBlockEntity::onBlockEntityRegister)
                 .register();
 
         ELECTRIC_GEAR_BOX_2A = registerElectricGearBox(2, LOW_TIERS);
