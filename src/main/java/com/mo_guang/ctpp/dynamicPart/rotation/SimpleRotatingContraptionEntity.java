@@ -44,7 +44,7 @@ public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity {
     // 装置运行状态（主要用于刚刚载入游戏时的自锁）
     @Getter
     protected boolean isRunning = false;
-    @OnlyIn(Dist.CLIENT)
+
     protected float clientRotationDiff = 0.0f;
 
     protected static final EntityDataAccessor<Float> DATA_Q_W =
