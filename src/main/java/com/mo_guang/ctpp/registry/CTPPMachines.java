@@ -67,7 +67,6 @@ public class CTPPMachines {
     public static KineticMachineDefinition[] KINETIC_OUTPUT_BOX;
     public static KineticMachineDefinition CARBON_BRUSHES;
 
-    @SuppressWarnings("unchecked")
     public static KineticMachineDefinition[] registerElectricGearBox(int maxAmps, int... tiers) {
         return CTPPRegistration.conditionalRegistration(gtmEnabled("GTMElectricGearBox"),() -> 
                 registerKineticTieredMachines("electric_gear_box_%sa".formatted(maxAmps),

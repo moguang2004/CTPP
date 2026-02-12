@@ -10,7 +10,9 @@ import com.mo_guang.ctpp.common.data.recipe.CTPPRecipes;
 import com.mo_guang.ctpp.registry.CTPPBlocks;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.resources.ResourceLocation;
 
+import java.util.List;
 import java.util.function.Consumer;
 
 import static com.mo_guang.ctpp.integration.kjs.CTPPRecipeComponents.SU_IN;
@@ -49,5 +51,14 @@ public class CTPPGTAddon implements IGTAddon {
                 StressRecipeCapability.CAP,
                 Pair.of(SU_IN, SU_OUT)
         );
+    }
+
+    @Override
+    public void removeRecipes(Consumer<ResourceLocation> consumer) {
+        List<String> path = List.of(
+                "create_new_age:shaped/carbon_brushes"
+        );
+
+        path.forEach(s -> consumer.accept(ResourceLocation.tryParse(s)));
     }
 }
