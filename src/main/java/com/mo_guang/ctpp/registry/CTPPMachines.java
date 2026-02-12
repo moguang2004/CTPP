@@ -121,6 +121,7 @@ public class CTPPMachines {
                             KineticMachineBlockEntity::create)
                     .tier(tier)
                     .blockProp(BlockBehaviour.Properties::noOcclusion)
+                    .hasBER(false)
                     .onBlockEntityRegister(KineticMachineBlockEntity::onBlockEntityRegister)
                     .itemBuilder(ItemAxisBuilder::addShaft)
                     ;

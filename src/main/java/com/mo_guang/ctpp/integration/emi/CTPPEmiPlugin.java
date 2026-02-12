@@ -1,5 +1,6 @@
 package com.mo_guang.ctpp.integration.emi;
 
+import dev.emi.emi.api.EmiEntrypoint;
 import dev.emi.emi.api.EmiInitRegistry;
 import dev.emi.emi.api.EmiPlugin;
 import dev.emi.emi.api.EmiRegistry;
@@ -11,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
+@EmiEntrypoint
 public class CTPPEmiPlugin implements EmiPlugin {
     public static List<Supplier<? extends Item>> disabled = new ArrayList<>();
 
