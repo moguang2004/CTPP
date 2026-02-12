@@ -45,8 +45,8 @@ public class KineticGeneratorRecipes {
         CTPPRecipeBuilder.of(CTPP.id("steam"),KINETIC_STEAM_TURBINE_RECIPES)
                 .inputFluids(GTMaterials.Steam.getFluid(640))
                 .outputFluids(GTMaterials.DistilledWater.getFluid(4))
-                .outputStress(8192*STEAM_POWERED_BOOST)
-                .addData("stress", 8192*STEAM_POWERED_BOOST)
+                .outputStress(32768*STEAM_POWERED_BOOST)
+                .addData("stress", 32768*STEAM_POWERED_BOOST)
                 .duration(10)
                 .save(provider);
         VanillaRecipeHelper.addShapedRecipe(provider, "kinetic_generator", new ItemStack(CTPPMultiblockMachines.KINETIC_GENERATOR.getItem()),

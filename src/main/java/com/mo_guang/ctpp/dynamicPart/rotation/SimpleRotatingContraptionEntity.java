@@ -336,7 +336,7 @@ public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity {
     /**
      * 同步四元数旋转到客户端（服务端调用）
      */
-    private void syncRotationQuaternion() {
+    public void syncRotationQuaternion() {
         if (!isRunning) {
             return;
         }
