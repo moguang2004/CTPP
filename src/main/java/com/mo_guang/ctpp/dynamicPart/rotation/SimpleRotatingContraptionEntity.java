@@ -2,6 +2,7 @@ package com.mo_guang.ctpp.dynamicPart.rotation;
 
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.mo_guang.ctpp.CTPPEntityTypes;
+import com.mo_guang.ctpp.dynamicPart.QuaternionRotationState;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import com.simibubi.create.content.contraptions.*;
@@ -203,30 +204,7 @@ public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity {
 
     @Override
     public ContraptionRotationState getRotationState() {
-        ContraptionRotationState crs = new ContraptionRotationState();
-
-        Matrix3d mat = new Matrix3d().asIdentity();
-        mat.multiply(new Matrix3d().asZRotation(AngleHelper.rad(getEulerAngle().x)));
-        mat.multiply(new Matrix3d().asYRotation(AngleHelper.rad(getEulerAngle().y)));
-        mat.multiply(new Matrix3d().asXRotation(AngleHelper.rad(getEulerAngle().z)));
-
-
-        // 直接设置 matrix 字段（asMatrix 会优先返回该 matrix）
-        try {
-            Field f = ContraptionRotationState.class.getDeclaredField("matrix");
-            f.setAccessible(true);
-            f.set(crs, mat);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        // 保持其它字段为默认（避免混淆）
-        crs.xRotation = 0;
-        crs.yRotation = 0;
-        crs.zRotation = 0;
-        crs.secondYRotation = 0;
-
-        return crs;
+        return new QuaternionRotationState(level().isClientSide ? clientRotation : serverRotation);
     }
 
     @Override
