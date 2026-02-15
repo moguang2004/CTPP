@@ -48,10 +48,22 @@ public class BigDamMachine extends KineticOutputMachine implements IRotationMult
     @Override
     public void onStructureInvalid() {
         super.onStructureInvalid();
-        if (!rotatingEntity.isEmpty() && !getLevel().isClientSide) {
-            this.rotatingEntity.forEach(AbstractContraptionEntity::disassemble);
+        if (!getLevel().isClientSide) {
+            if (!rotatingEntity.isEmpty()) {
+                this.rotatingEntity.forEach(AbstractContraptionEntity::disassemble);
+            }
+            this.rotatingEntity = new ArrayList<>();
         }
-        this.rotatingEntity.clear();
+    }
+
+    @Override
+    public void onLoad() {
+        super.onLoad();
+        rotatingEntity.forEach(entity -> {
+            var facing = getFrontFacing().getNormal();
+            Vec3 newF = new Vec3(facing.getX(), facing.getY(), facing.getZ());
+            entity.setRotationSpeed(MathUtil.rotateByVec(newF, 90, new Vec3(0, -1 ,0)), 2);
+        });
     }
 
     @Override

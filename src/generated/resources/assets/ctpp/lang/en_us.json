@@ -140,7 +140,6 @@
   "ctpp.tooltip.recipekineticoutput": "Recipe stress output: %s",
   "ctpp.top.stress_consumption": "Stress Consumption：",
   "ctpp.top.stress_production": "Stress Production：",
-  "entity.ctpp.rotating_contraption": "Rotating Contraption",
   "entity.ctpp.rubiks_cube_contraption": "Rubiks Cube Contraption",
   "entity.ctpp.simple_contraption": "Simple Contraption",
   "item.ctpp.basic_mechanism": "Basic Mechanism",

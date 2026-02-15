@@ -80,9 +80,6 @@ public class StaticBlockPattern extends BlockPattern {
     public boolean checkPatternAt(MultiblockState worldState, BlockPos centerPos, Direction frontFacing,
                                   Direction upwardsFacing, boolean isFlipped, boolean savePredicate) {
         IMultiController controller = worldState.getController();
-        if (!controller.isFormed()) {
-            return super.checkPatternAt(worldState, centerPos, frontFacing, upwardsFacing, isFlipped, savePredicate);
-        }
         boolean findFirstAisle = false;
         int minZ = -centerOffset[4];
         worldState.clean();
@@ -101,7 +98,13 @@ public class StaticBlockPattern extends BlockPattern {
                 for (int b = 0, y = -centerOffset[1]; b < this.thumbLength; b++, y++) {
                     for (int a = 0, x = -centerOffset[0]; a < this.palmLength; a++, x++) {
                         worldState.setError(null);
-                        TraceabilityPredicate predicate = this.staticBlockMatches[c][b][a]? this.blockMatches[c][b][a] : Predicates.any();
+                        TraceabilityPredicate predicate;
+                        if (!controller.isFormed()) {
+                            predicate = blockMatches[c][b][a];
+                        }
+                        else {
+                            predicate = this.staticBlockMatches[c][b][a] ? this.blockMatches[c][b][a] : Predicates.any();
+                        }
                         BlockPos pos = setActualRelativeOffset(x, y, z, frontFacing, upwardsFacing, isFlipped)
                                 .offset(centerPos.getX(), centerPos.getY(), centerPos.getZ());
                         if (!worldState.update(pos, predicate)) {

@@ -104,7 +104,7 @@ public class WindMillControlMachine extends KineticOutputMachine implements IRot
         if (!rotatingEntity.isEmpty() && !getLevel().isClientSide) {
             this.rotatingEntity.forEach(AbstractContraptionEntity::disassemble);
         }
-        this.rotatingEntity.clear();
+        this.rotatingEntity = new ArrayList<>();
     }
 
     @Override
