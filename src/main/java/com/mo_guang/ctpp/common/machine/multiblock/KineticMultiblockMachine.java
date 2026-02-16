@@ -19,6 +19,7 @@ import com.lowdragmc.lowdraglib.gui.widget.*;
 import com.mo_guang.ctpp.api.StressRecipeCapability;
 import com.mo_guang.ctpp.common.machine.NotifiableStressTrait;
 import com.mo_guang.ctpp.common.machine.multiblock.part.MechanicalUpgradePartMachine;
+import com.mo_guang.ctpp.common.blockentity.IKineticBlockEntityExtension;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import com.simibubi.create.content.processing.burner.BlazeBurnerBlock;
 import com.simibubi.create.content.processing.burner.BlazeBurnerBlockEntity;
@@ -58,7 +59,26 @@ public abstract class KineticMultiblockMachine extends WorkableMultiblockMachine
         checkTier();
         rotateBlocks = getMultiblockState().getMatchContext().getOrDefault("roBlocks", LongSets.emptySet());
         blazeBlocks = getMultiblockState().getMatchContext().getOrDefault("bbBlocks", LongSets.emptySet());
+        for (var pos: rotateBlocks) {
+            var blockEntity = getLevel().getBlockEntity(BlockPos.of(pos));
+            if (blockEntity instanceof KineticBlockEntity kineticBlockEntity) {
+                IKineticBlockEntityExtension mixin = ((IKineticBlockEntityExtension) kineticBlockEntity);
+                mixin.setCTNHInMultiblock(true);
+            }
+        }
         updateActiveBlocks(recipeLogic.isWorking());
+    }
+
+    @Override
+    public void onStructureInvalid() {
+        super.onStructureInvalid();
+        for (var pos: rotateBlocks) {
+            var blockEntity = getLevel().getBlockEntity(BlockPos.of(pos));
+            if (blockEntity instanceof KineticBlockEntity kineticBlockEntity) {
+                IKineticBlockEntityExtension mixin = ((IKineticBlockEntityExtension) kineticBlockEntity);
+                mixin.setCTNHInMultiblock(false);
+            }
+        }
     }
     //////////////////////////////////////
     // ********* Recipe Logic **********//

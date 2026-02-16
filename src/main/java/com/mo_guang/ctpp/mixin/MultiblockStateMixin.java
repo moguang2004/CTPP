@@ -7,6 +7,7 @@ import com.mo_guang.ctpp.common.machine.multiblock.KineticMultiblockMachine;
 import com.mo_guang.ctpp.dynamicPart.rotation.IRotationMultiblock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -23,10 +24,12 @@ public class MultiblockStateMixin {
             cancellable = true)
     public void onBlockStateChanged(BlockPos pos, BlockState state, CallbackInfo ci, ServerLevel serverLevel, IMultiController controller) {
         if (controller.isFormed() && controller instanceof KineticMultiblockMachine kineticMultiblockMachine) {
-            var blazeBlocksPos = kineticMultiblockMachine.blazeBlocks.longStream().mapToObj(BlockPos::of).toList();
-            var rotateBlockPos = kineticMultiblockMachine.rotateBlocks.longStream().mapToObj(BlockPos::of).toList();
-            if (blazeBlocksPos.contains(pos) || rotateBlockPos.contains(pos)) {
-                ci.cancel();
+            if (!serverLevel.getBlockState(pos).getBlock().equals(Blocks.AIR)) {
+                var blazeBlocksPos = kineticMultiblockMachine.blazeBlocks.longStream().mapToObj(BlockPos::of).toList();
+                var rotateBlockPos = kineticMultiblockMachine.rotateBlocks.longStream().mapToObj(BlockPos::of).toList();
+                if (blazeBlocksPos.contains(pos) || rotateBlockPos.contains(pos)) {
+                    ci.cancel();
+                }
             }
         }
         if (controller.isFormed() &&
