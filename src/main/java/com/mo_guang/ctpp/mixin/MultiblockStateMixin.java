@@ -3,6 +3,7 @@ package com.mo_guang.ctpp.mixin;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.pattern.MultiblockState;
 import com.mo_guang.ctpp.api.pattern.StaticBlockPattern;
+import com.mo_guang.ctpp.common.machine.multiblock.KineticMultiblockMachine;
 import com.mo_guang.ctpp.dynamicPart.rotation.IRotationMultiblock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -21,6 +22,13 @@ public class MultiblockStateMixin {
             remap = false,
             cancellable = true)
     public void onBlockStateChanged(BlockPos pos, BlockState state, CallbackInfo ci, ServerLevel serverLevel, IMultiController controller) {
+        if (controller.isFormed() && controller instanceof KineticMultiblockMachine kineticMultiblockMachine) {
+            var blazeBlocksPos = kineticMultiblockMachine.blazeBlocks.longStream().mapToObj(BlockPos::of).toList();
+            var rotateBlockPos = kineticMultiblockMachine.rotateBlocks.longStream().mapToObj(BlockPos::of).toList();
+            if (blazeBlocksPos.contains(pos) || rotateBlockPos.contains(pos)) {
+                ci.cancel();
+            }
+        }
         if (controller.isFormed() &&
                 controller instanceof IRotationMultiblock &&
                 controller.getPattern() instanceof StaticBlockPattern staticBlockPattern) {
