@@ -10,7 +10,7 @@ public class CTPPRecipeModifiers {
     public static final RecipeModifier KINETIC_PARALLEL = ((machine, recipe) -> {
         if (machine instanceof KineticWorkableMultiblockMachine kmachine) {
             var parallels = CTPPParallelLogic.getKineticParallelAmount(kmachine,recipe,Integer.MAX_VALUE, false);
-            return CTPPModifierFunction.accurateParallel(kmachine,recipe, parallels);
+            return CTPPModifierFunction.inputStressMultiplier(parallels).andThen(CTPPModifierFunction.accurateParallel(kmachine,recipe, parallels));
         }
         return ModifierFunction.IDENTITY;
     });
@@ -22,15 +22,6 @@ public class CTPPRecipeModifiers {
         }
         return ModifierFunction.IDENTITY;
     });
-//    public static final RecipeModifier KINETIC_ADJUST = ((machine,recipe) ->{
-//        if(machine instanceof KineticOutputMachine kmachine){
-//            float output = (float) CTPPRecipeHelper.getOutputStress(recipe);
-//            float outputMax = kmachine.getMaxOutputStress();
-//            if(outputMax < output){
-//                return CTPPModifierFunction.outputStressMultiplier(outputMax/output);
-//            }
-//        }
-//        return ModifierFunction.IDENTITY;
-//    });
+
 
 }
