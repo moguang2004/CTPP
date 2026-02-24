@@ -42,7 +42,6 @@ repositories {
     maven {
         url = "https://thedarkcolour.github.io/KotlinForForge/"
     }
-
     maven {
         url = "https://maven.architectury.dev"
     }
@@ -82,7 +81,6 @@ repositories {
             includeGroup "dev.latvian.apps"
         }
     }
-
     maven {
         url 'https://jitpack.io'
         content {
