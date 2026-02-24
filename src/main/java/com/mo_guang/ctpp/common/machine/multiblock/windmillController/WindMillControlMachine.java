@@ -178,7 +178,7 @@ public class WindMillControlMachine extends KineticOutputMachine implements IRot
                 return;
             }
             var button = ComponentPanelWidget.withButton(Component.translatable("ctpp.multiblock.windmill_control_center.button").withStyle(ChatFormatting.RED), "Highlight");
-            textList.add(Component.translatable("ctpp.multiblock.windmill_control_center.info.0", efficiency, 6 + 2 * tier).append(button));
+            textList.add(Component.translatable("ctpp.multiblock.windmill_control_center.info.0", efficiency, 6 + 6 * tier).append(button));
             textList.add(Component.translatable("ctpp.multiblock.windmill_control_center.info.1", String.format("%.1f",TotalOutput)));
             textList.add(Component.translatable("ctpp.multiblock.windmill_control_center.info.2", String.format("%d",efficiency*100)));
             //textList.add(Component.translatable("ctpp.multiblock.windmill_control_center.info.3",String.format("%.1f",(TotalOutput + 512) * efficiency)));
@@ -212,7 +212,7 @@ public class WindMillControlMachine extends KineticOutputMachine implements IRot
         if (hasConflictingController) {
             return 0.0f;
         }
-        return Math.min((512 + TotalOutput) * efficiency / 512, AllConfigs.server().kinetics.maxRotationSpeed.get());
+        return (float)Math.min(Math.sqrt((512 + TotalOutput) * efficiency / 512), AllConfigs.server().kinetics.maxRotationSpeed.get());
     }
     public void calculateWindmillAround() {
         windmillAround.clear();
@@ -234,7 +234,7 @@ public class WindMillControlMachine extends KineticOutputMachine implements IRot
                     var kineticBlockEntity = getLevel().getBlockEntity(windmill);
                     if (kineticBlockEntity instanceof WindmillBearingBlockEntity windmillBearingBlockEntity) {
                         var speed = windmillBearingBlockEntity.getGeneratedSpeed();
-                        if (speed != 0 && windmillAround.size() <= 6 + tier * 6) {
+                        if (speed != 0 && windmillAround.size() < 6 + tier * 6) {
                             windmillAround.add(windmill);
                             TotalOutput += speed * 512;
                         }

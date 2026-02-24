@@ -41,7 +41,7 @@ public class StressRecipeCapability extends RecipeCapability<Float> {
     @Override
     public int getMaxParallelByInput(IRecipeCapabilityHolder holder, GTRecipe recipe, int parallelAmount, boolean tick) {
         if(holder instanceof KineticWorkableMultiblockMachine machine){
-            float inputStress = Math.max(machine.getAvailableStress(), 0);
+            float inputStress = Math.max(machine.getTotalInputStress(), 0);
             float recipeStress = CTPPRecipeHelper.getInputStress(recipe);
             if (recipeStress == 0) return parallelAmount;
             return (int) Math.min(inputStress/recipeStress, parallelAmount);
