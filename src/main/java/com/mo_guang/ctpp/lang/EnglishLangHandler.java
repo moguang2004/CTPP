@@ -5,7 +5,7 @@ import com.mo_guang.ctpp.config.MainConfig;
 
 public class EnglishLangHandler {
     public static void init(RegistrateLangProvider provider){
-        provider.add("ctpp.common_tooltip.kinetic_overclock", "-Has a stress overclocking mechanism that determines parallelism based on the total input stress. The effects vary based on input speed:\nSpeed < 64: No effect\nSpeed < 128: 25% time reduction\nSpeed < 256: One overclocking opportunity\nSpeed < 512: One lossless overclocking opportunity");
+        provider.add("ctpp.common_tooltip.kinetic_overclock", "- Input (N squared) times stress required by the recipe to get N parallels");
         provider.add("ctpp.common_tooltip.input_speed", "*The input speed is based on the highest-speed stress chamber.");
         provider.add("ctpp.common_tooltip.mechanical_tier", "*§nMechanical Tier§r is determined by items in the Mechanical Upgrade Bus: None (0), §7Basic Components (1)§r, §ePrecision Components (2)§r,\n§8Steel Structures or Basic Electronic Circuits (3)§r, §bAdvanced Electronic Circuits (4)§r, §6Integrated Circuits (5)§r");
         provider.add("ctpp.common_tooltip.mechanical_tier_machine", "§nMechanical Tier§r please be seen in the Tooltip of §lMechanical upgrade bus§r");
