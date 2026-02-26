@@ -12,9 +12,17 @@
     "create.KineticBlockEntityMixin",
     "create.Matrix3dMixin",
     "create.WindmillBearingBlockMixin",
+    "create.fix.DeployerApplicationRecipeMixin$BasinBlockEntityMixin",
+    "create.fix.DeployerApplicationRecipeMixin$BrassTunnelBlockEntityMixin",
+    "create.fix.DeployerApplicationRecipeMixin$ChuteBlockEntityMixin",
+    "create.fix.DeployerApplicationRecipeMixin$DeployerBlockEntityMixin",
+    "create.fix.DeployerApplicationRecipeMixin$MaterialChecklistMixin",
     "fix.IRotorHolderMachineMixin",
     "fix.RotorHolderPartMachineMixin"
   ],
-  "client": [],
+  "client": [
+    "create.fix.DeployerApplicationRecipeMixin",
+    "create.fix.DeployerApplicationRecipeMixin$StockTickerBlockEntityMixin"
+  ],
   "minVersion": "0.8"
 }

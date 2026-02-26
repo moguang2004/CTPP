@@ -72,7 +72,7 @@ public class CarbonBrushesGeneratorMachine extends WorkableTieredMachine impleme
 
     @Override
     protected long getMaxInputOutputAmperage() {
-        return 64;
+        return 16;
     }
 
     public void tick() {
