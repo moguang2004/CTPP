@@ -82,16 +82,16 @@ public class CTPPRecipeTypes {
         return ResourceLocation.tryBuild(id.getNamespace(), recipeType.registryName.getPath() + "/" + id.getPath());
     }
     public static void init(){
-        MIXER_RECIPES.onRecipeBuild((builder, provider) -> {
-            if (!GTRecipes.RECIPE_FILTERS.contains(convert(builder.id, builder.recipeType))) {
-                assert KINETIC_MIXER_RECIPES != null;
-                var newrecipe = KINETIC_MIXER_RECIPES.copyFrom(builder)
-                        .duration(Math.max((int) (builder.duration / MainConfig.INSTANCE.gtmConfig.kineticCreateMixerSpeedMultiplier), 1))
-                        .buildRawRecipe();
-                new CTPPRecipeBuilder(newrecipe, KINETIC_MIXER_RECIPES).rpm(MainConfig.INSTANCE.gtmConfig.kineticCreateMixerRPMRequirement)
-                        .save(provider);
-            }
-        });
+//        MIXER_RECIPES.onRecipeBuild((builder, provider) -> {
+//            if (!GTRecipes.RECIPE_FILTERS.contains(convert(builder.id, builder.recipeType))) {
+//                assert KINETIC_MIXER_RECIPES != null;
+//                var newrecipe = KINETIC_MIXER_RECIPES.copyFrom(builder)
+//                        .duration(Math.max((int) (builder.duration / MainConfig.INSTANCE.gtmConfig.kineticCreateMixerSpeedMultiplier), 1))
+//                        .buildRawRecipe();
+//                new CTPPRecipeBuilder(newrecipe, KINETIC_MIXER_RECIPES).rpm(MainConfig.INSTANCE.gtmConfig.kineticCreateMixerRPMRequirement)
+//                        .save(provider);
+//            }
+//        });
         MACERATOR_RECIPES.onRecipeBuild((builder, provider) ->{
             assert SMASHING_FACTORY_RECIPES != null;
             if(!GTRecipes.RECIPE_FILTERS.contains(convert(builder.id, builder.recipeType)) &&
