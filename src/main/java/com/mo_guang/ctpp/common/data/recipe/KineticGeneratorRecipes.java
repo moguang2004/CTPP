@@ -50,9 +50,9 @@ public class KineticGeneratorRecipes {
                 .duration(10)
                 .save(provider);
         VanillaRecipeHelper.addShapedRecipe(provider, "kinetic_generator", new ItemStack(CTPPMultiblockMachines.KINETIC_GENERATOR.getItem()),
-                " A ",
-                "BCB",
-                "DED",
+                "ABA",
+                "CDC",
+                "ABA",
                 'A', CTPPBlocks.HEAVY_MACHINERY_CASING,
                 'B', GTBlocks.CASING_STEEL_SOLID,
                 'C', CustomTags.MV_CIRCUITS,
