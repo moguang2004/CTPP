@@ -30,7 +30,7 @@ public class DeployerApplicationRecipeMixin {
         @Shadow
         protected ItemStack heldItem;
 
-        @Redirect(method = "addToGoggleTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/chat/MutableComponent;getString()Ljava/lang/String;"))
+        @Redirect(method = "addToGoggleTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/chat/MutableComponent;getString()Ljava/lang/String;", remap = true))
         String fixGTName(MutableComponent instance){
             return heldItem.getDisplayName().getString();
         }
@@ -41,7 +41,7 @@ public class DeployerApplicationRecipeMixin {
         @Shadow
         ItemStack item;
 
-        @Redirect(method = "addToGoggleTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/chat/MutableComponent;getString()Ljava/lang/String;"))
+        @Redirect(method = "addToGoggleTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/chat/MutableComponent;getString()Ljava/lang/String;", remap = true))
         String fixGTName(MutableComponent instance){
             return item.getDisplayName().getString();
         }
@@ -49,7 +49,7 @@ public class DeployerApplicationRecipeMixin {
 
     @Mixin(value = StockTickerBlockEntity.class, remap = false)
     static class StockTickerBlockEntityMixin{
-        @Redirect(method = "addToTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/chat/MutableComponent;getString()Ljava/lang/String;"))
+        @Redirect(method = "addToTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/chat/MutableComponent;getString()Ljava/lang/String;", remap = true))
         String fixGTName(MutableComponent instance, @Local(name = "entry") BigItemStack entry){
             return entry.stack.getDisplayName().getString();
         }
@@ -57,7 +57,7 @@ public class DeployerApplicationRecipeMixin {
 
     @Mixin(value = BrassTunnelBlockEntity.class, remap = false)
     static class BrassTunnelBlockEntityMixin{
-        @Redirect(method = "addToGoggleTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/chat/MutableComponent;getString()Ljava/lang/String;"))
+        @Redirect(method = "addToGoggleTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/chat/MutableComponent;getString()Ljava/lang/String;", remap = true))
         String fixGTName(MutableComponent instance, @Local(name = "item") ItemStack item){
             return item.getDisplayName().getString();
         }
@@ -65,7 +65,7 @@ public class DeployerApplicationRecipeMixin {
 
     @Mixin(value = BasinBlockEntity.class, remap = false)
     static class BasinBlockEntityMixin{
-        @Redirect(method = "addToGoggleTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/chat/Component;translatable(Ljava/lang/String;)Lnet/minecraft/network/chat/MutableComponent;"))
+        @Redirect(method = "addToGoggleTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/chat/Component;translatable(Ljava/lang/String;)Lnet/minecraft/network/chat/MutableComponent;", remap = true))
         MutableComponent fixGTName(String key, @Local(name = "stackInSlot") ItemStack stackInSlot){
             return stackInSlot.getDisplayName().copy();
         }
@@ -73,7 +73,7 @@ public class DeployerApplicationRecipeMixin {
 
     @Mixin(value = MaterialChecklist.class, remap = false)
     static class MaterialChecklistMixin{
-        @Redirect(method = "entry", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/chat/Component;translatable(Ljava/lang/String;)Lnet/minecraft/network/chat/MutableComponent;"))
+        @Redirect(method = "entry", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/chat/Component;translatable(Ljava/lang/String;)Lnet/minecraft/network/chat/MutableComponent;", remap = true))
         MutableComponent fixGTName(String key, ItemStack item){
             return item.getDisplayName().copy();
         }
