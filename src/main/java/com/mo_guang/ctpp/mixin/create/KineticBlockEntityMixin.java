@@ -1,8 +1,9 @@
 package com.mo_guang.ctpp.mixin.create;
 
+import net.minecraft.nbt.CompoundTag;
+
 import com.mo_guang.ctpp.common.blockentity.IKineticBlockEntityExtension;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
-import net.minecraft.nbt.CompoundTag;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -11,11 +12,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(KineticBlockEntity.class)
 public class KineticBlockEntityMixin implements IKineticBlockEntityExtension {
+
     @Unique
     private boolean CTNH$inMultiblock;
 
     @Inject(method = "validateKinetics",
-            at = @At(value = "INVOKE", target = "Lcom/simibubi/create/content/kinetics/base/KineticBlockEntity;hasSource()Z", shift = At.Shift.AFTER),
+            at = @At(value = "INVOKE",
+                     target = "Lcom/simibubi/create/content/kinetics/base/KineticBlockEntity;hasSource()Z",
+                     shift = At.Shift.AFTER),
             remap = false,
             cancellable = true)
     public void validateKinetics(CallbackInfo ci) {
@@ -23,6 +27,7 @@ public class KineticBlockEntityMixin implements IKineticBlockEntityExtension {
             ci.cancel();
         }
     }
+
     @Inject(method = "write",
             at = @At(value = "TAIL"),
             remap = false)

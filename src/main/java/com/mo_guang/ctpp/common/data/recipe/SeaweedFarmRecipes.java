@@ -5,21 +5,25 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
+
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+
 import com.mo_guang.ctpp.CTPP;
 import com.mo_guang.ctpp.common.data.recipe.builder.CTPPRecipeBuilder;
 import com.mo_guang.ctpp.registry.CTPPMultiblockMachines;
 import com.mo_guang.ctpp.registry.CTPPRecipeTypes;
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.AllItems;
-import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 
 import java.util.function.Consumer;
 
 public class SeaweedFarmRecipes {
+
     public static void init(Consumer<FinishedRecipe> provider) {
-        VanillaRecipeHelper.addShapedRecipe(provider, "seaweed_farm", new ItemStack(CTPPMultiblockMachines.SEAWEED_FARM.getItem()),
+        VanillaRecipeHelper.addShapedRecipe(provider, "seaweed_farm",
+                new ItemStack(CTPPMultiblockMachines.SEAWEED_FARM.getItem()),
                 "ABA",
                 "CDC",
                 "EFE",

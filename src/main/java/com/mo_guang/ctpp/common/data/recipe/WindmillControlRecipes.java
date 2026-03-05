@@ -2,20 +2,24 @@ package com.mo_guang.ctpp.common.data.recipe;
 
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
+
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.world.item.ItemStack;
+
 import com.mo_guang.ctpp.CTPP;
 import com.mo_guang.ctpp.common.data.recipe.builder.CTPPRecipeBuilder;
 import com.mo_guang.ctpp.registry.CTPPMultiblockMachines;
 import com.mo_guang.ctpp.registry.CTPPRecipeTypes;
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.AllItems;
-import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.world.item.ItemStack;
 
 import java.util.function.Consumer;
 
 public class WindmillControlRecipes {
+
     public static void init(Consumer<FinishedRecipe> provider) {
-        VanillaRecipeHelper.addShapedRecipe(provider, "windmill_control_center", new ItemStack(CTPPMultiblockMachines.WINDMILL_CONTROL_CENTER.getItem()),
+        VanillaRecipeHelper.addShapedRecipe(provider, "windmill_control_center",
+                new ItemStack(CTPPMultiblockMachines.WINDMILL_CONTROL_CENTER.getItem()),
                 " A ",
                 "BCB",
                 "DED",

@@ -5,15 +5,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.event.MaterialEvent;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
-import com.mo_guang.ctpp.common.data.recipe.fan_processing.CTPPFanProcessingTypes;
-import com.mo_guang.ctpp.common.data.recipe.fan_processing.CTPPRecipeTypeInfo;
-import com.mo_guang.ctpp.data.CTPPDatagen;
-import com.mo_guang.ctpp.CTPPRegistration;
-import com.mo_guang.ctpp.registry.GTMaterialAddon;
-import com.mo_guang.ctpp.api.CTPPRecipeConditions;
-import com.mo_guang.ctpp.common.data.recipe.builder.CTPPRecipeProvider;
-import com.mo_guang.ctpp.config.MainConfig;
-import com.mo_guang.ctpp.registry.*;
+
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
@@ -21,8 +13,20 @@ import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+
+import com.mo_guang.ctpp.CTPPRegistration;
+import com.mo_guang.ctpp.api.CTPPRecipeConditions;
+import com.mo_guang.ctpp.common.data.recipe.builder.CTPPRecipeProvider;
+import com.mo_guang.ctpp.common.data.recipe.fan_processing.CTPPFanProcessingTypes;
+import com.mo_guang.ctpp.common.data.recipe.fan_processing.CTPPRecipeTypeInfo;
+import com.mo_guang.ctpp.config.MainConfig;
+import com.mo_guang.ctpp.data.CTPPDatagen;
+import com.mo_guang.ctpp.registry.*;
+import com.mo_guang.ctpp.registry.GTMaterialAddon;
+
 @SuppressWarnings("removal")
 public class CommonProxy {
+
     public CommonProxy() {
         init();
         MainConfig.init();
@@ -43,10 +47,10 @@ public class CommonProxy {
         modEventBus.addGenericListener(RecipeConditionType.class, this::registerRecipeConditions);
         modEventBus.addGenericListener(GTRecipeType.class, this::registerRecipeTypes);
     }
+
     public void addMaterialFlag(MaterialEvent event) {
         GTMaterialAddon.init();
     }
-
 
     public void registerMachines(GTCEuAPI.RegisterEvent<ResourceLocation, MachineDefinition> event) {
         CTPPMachines.init();
@@ -70,6 +74,7 @@ public class CommonProxy {
             CTPPRecipeProvider.registerAllProcessing(generator, output);
         }
     }
+
     @SubscribeEvent
     public void registerMaterial(MaterialEvent event) {
         CTPPMaterials.init();

@@ -5,8 +5,10 @@ import dev.toma.configuration.Configuration;
 import dev.toma.configuration.config.Config;
 import dev.toma.configuration.config.Configurable;
 import dev.toma.configuration.config.format.ConfigFormats;
+
 @Config(id = CTPP.MODID)
 public class MainConfig {
+
     public static MainConfig INSTANCE;
     private static final Object LOCK = new Object();
 
@@ -17,9 +19,11 @@ public class MainConfig {
             }
         }
     }
+
     public static String getConfigOptionKey(String fieldName) {
         return "config.ctpp.option." + fieldName;
     }
+
     @Configurable
     @Configurable.Comment("GTM's Origenal Configs")
     public GtmConfig gtmConfig = new GtmConfig();
@@ -27,7 +31,8 @@ public class MainConfig {
     @Configurable.Comment("CTNH's Configs")
     public CTNHConfig ctnhConfig = new CTNHConfig();
 
-    public static class GtmConfig{
+    public static class GtmConfig {
+
         @Configurable
         @Configurable.Comment("Is GTM KineticOutputBox Enabled?")
         public boolean enableGTMKineticOutputBox = true;
@@ -54,7 +59,9 @@ public class MainConfig {
         @Configurable.Comment("Is GTM ElectricGearBox Enabled?")
         public boolean enableGTMElectricGearBox = true;
     }
-    public static class CTNHConfig{
+
+    public static class CTNHConfig {
+
         @Configurable
         @Configurable.Comment("Is CTNH SmashingFactory Enabled?")
         public boolean enableSmashingFactory = true;
@@ -103,5 +110,4 @@ public class MainConfig {
         @Configurable.Comment("Is CTNH BoomOfCreate Enabled?")
         public boolean enableBoomOfCreate = true;
     }
-
 }

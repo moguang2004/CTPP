@@ -1,8 +1,5 @@
 package com.mo_guang.ctpp.dynamicPart;
 
-import com.simibubi.create.AllContraptionTypes;
-import com.simibubi.create.api.contraption.ContraptionType;
-import com.simibubi.create.content.contraptions.Contraption;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
@@ -10,6 +7,10 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.phys.AABB;
+
+import com.simibubi.create.AllContraptionTypes;
+import com.simibubi.create.api.contraption.ContraptionType;
+import com.simibubi.create.content.contraptions.Contraption;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.HashSet;
@@ -34,10 +35,9 @@ public class SimpleBearingContraption extends Contraption {
     public boolean assemble(Level world, BlockPos pos) {
         // anchor 就是点击位置
 
-
         Set<BlockPos> visited = new HashSet<>();
         dfsCollect(world, pos, visited);
-        //bounds.setMinY(bounds.minY-10);
+        // bounds.setMinY(bounds.minY-10);
         if (blocks.isEmpty())
             return false;
 
@@ -66,7 +66,8 @@ public class SimpleBearingContraption extends Contraption {
         }
         // 捕获方块和 BE
         BlockEntity be = world.getBlockEntity(pos);
-        StructureTemplate.StructureBlockInfo info = new StructureTemplate.StructureBlockInfo(pos, state, be != null ? be.saveWithFullMetadata() : null);
+        StructureTemplate.StructureBlockInfo info = new StructureTemplate.StructureBlockInfo(pos, state,
+                be != null ? be.saveWithFullMetadata() : null);
         addBlock(world, pos, Pair.of(info, be));
 
         // 递归遍历 6 个方向相邻方块

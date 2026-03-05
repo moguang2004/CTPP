@@ -1,8 +1,13 @@
 package com.mo_guang.ctpp.common.machine.multiblock;
 
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.utils.TrackedDummyWorld;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.Vec3;
+
 import com.mo_guang.ctpp.api.pattern.StaticBlockPattern;
 import com.mo_guang.ctpp.dynamicPart.rotation.IRotationMultiblock;
 import com.mo_guang.ctpp.dynamicPart.rotation.SimpleRotatingContraption;
@@ -11,20 +16,21 @@ import com.mo_guang.ctpp.util.MathUtil;
 import com.simibubi.create.content.contraptions.AbstractContraptionEntity;
 import lombok.Getter;
 import lombok.Setter;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class BigDamMachine extends KineticOutputMachine implements IRotationMultiblock<SimpleRotatingContraptionEntity> {
+public class BigDamMachine extends KineticOutputMachine
+                           implements IRotationMultiblock<SimpleRotatingContraptionEntity> {
+
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
             BigDamMachine.class, KineticOutputMachine.MANAGED_FIELD_HOLDER);
     @Getter
     @Setter
     List<SimpleRotatingContraptionEntity> rotatingEntity = new ArrayList<>();
+
     public BigDamMachine(IMachineBlockEntity holder) {
         super(holder);
     }
@@ -41,7 +47,7 @@ public class BigDamMachine extends KineticOutputMachine implements IRotationMult
         rotatingEntity.forEach(entity -> {
             var facing = getFrontFacing().getNormal();
             Vec3 newF = new Vec3(facing.getX(), facing.getY(), facing.getZ());
-            entity.setRotationSpeed(MathUtil.rotateByVec(newF, 90, new Vec3(0, -1 ,0)), 2);
+            entity.setRotationSpeed(MathUtil.rotateByVec(newF, 90, new Vec3(0, -1, 0)), 2);
         });
     }
 
@@ -62,7 +68,7 @@ public class BigDamMachine extends KineticOutputMachine implements IRotationMult
         rotatingEntity.forEach(entity -> {
             var facing = getFrontFacing().getNormal();
             Vec3 newF = new Vec3(facing.getX(), facing.getY(), facing.getZ());
-            entity.setRotationSpeed(MathUtil.rotateByVec(newF, 90, new Vec3(0, -1 ,0)), 2);
+            entity.setRotationSpeed(MathUtil.rotateByVec(newF, 90, new Vec3(0, -1, 0)), 2);
         });
     }
 
@@ -80,7 +86,8 @@ public class BigDamMachine extends KineticOutputMachine implements IRotationMult
                 SimpleRotatingContraption contraption = new SimpleRotatingContraption(part, pivot);
                 contraption.assemble(this.self().getLevel(), self().getPos()); // 第二个参数无用
                 contraption.removeBlocksFromWorld(this.self().getLevel(), BlockPos.ZERO);
-                SimpleRotatingContraptionEntity contraptionEntity = SimpleRotatingContraptionEntity.create(self().getLevel(), contraption, this, pivot.getCenter());
+                SimpleRotatingContraptionEntity contraptionEntity = SimpleRotatingContraptionEntity
+                        .create(self().getLevel(), contraption, this, pivot.getCenter());
                 contraptionEntity.setPos(pivot.getX(), pivot.getY(), pivot.getZ());
                 this.self().getLevel().addFreshEntity(contraptionEntity);
                 ce.put(group, contraptionEntity);

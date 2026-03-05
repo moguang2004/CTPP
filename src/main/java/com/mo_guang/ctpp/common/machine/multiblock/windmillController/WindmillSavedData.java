@@ -1,6 +1,7 @@
 package com.mo_guang.ctpp.common.machine.multiblock.windmillController;
 
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -13,13 +14,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class WindmillSavedData extends SavedData {
+
     public static final ResourceLocation ID = ResourceLocation.tryBuild("ctpp", "windmill_data");
     private final List<BlockPos> windmillPositions = new ArrayList<>();
     private final List<BlockPos> formedControllerPositions = new ArrayList<>();
+
     public WindmillSavedData() {}
+
     public WindmillSavedData(CompoundTag nbt) {
         this.load(nbt); // 调用自定义的加载逻辑，完成数据反序列化
     }
+
     /**
      * 注册风车坐标（风车生成/加载时调用）
      */
@@ -54,6 +59,7 @@ public class WindmillSavedData extends SavedData {
         windmillPositions.clear();
         setDirty();
     }
+
     /**
      * 注册已成型的风车控制中心
      */
@@ -82,7 +88,8 @@ public class WindmillSavedData extends SavedData {
 
     /**
      * 校验指定位置周围LEGAL_DISTANCE内是否存在其他已成型控制中心
-     * @param currentPos 当前控制中心位置
+     * 
+     * @param currentPos    当前控制中心位置
      * @param legalDistance 合法距离阈值
      * @return true=存在冲突，false=无冲突
      */
@@ -100,6 +107,7 @@ public class WindmillSavedData extends SavedData {
         }
         return false;
     }
+
     public void notifyAllControllersRefresh(ServerLevel serverLevel, BlockPos excludePos) {
         // 遍历所有已注册的控制中心
         for (BlockPos controllerPos : formedControllerPositions) {
@@ -119,6 +127,7 @@ public class WindmillSavedData extends SavedData {
             }
         }
     }
+
     // ************************ NBT序列化/反序列化（持久化核心） ************************
     @Override
     public CompoundTag save(CompoundTag nbt) {
@@ -174,7 +183,6 @@ public class WindmillSavedData extends SavedData {
         return level.getDataStorage().computeIfAbsent(
                 WindmillSavedData::new,
                 WindmillSavedData::new,
-                ID.toString()
-        );
+                ID.toString());
     }
 }

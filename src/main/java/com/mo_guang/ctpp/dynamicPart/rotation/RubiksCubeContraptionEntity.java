@@ -1,8 +1,5 @@
 package com.mo_guang.ctpp.dynamicPart.rotation;
 
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
-import com.mo_guang.ctpp.CTPPEntityTypes;
-import com.simibubi.create.content.contraptions.Contraption;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -10,12 +7,16 @@ import net.minecraft.nbt.NbtUtils;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+
+import com.mo_guang.ctpp.CTPPEntityTypes;
+import com.simibubi.create.content.contraptions.Contraption;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
 import static com.mo_guang.ctpp.util.MathUtil.quaternionAngleDifference;
 
-public class RubiksCubeContraptionEntity extends SimpleRotatingContraptionEntity{
+public class RubiksCubeContraptionEntity extends SimpleRotatingContraptionEntity {
+
     public static float ROTATE_SPEED = 4.5f; // 90 degrees per 10 ticks
     public Direction frontFacing;
     public BlockPos startPos;
@@ -26,12 +27,16 @@ public class RubiksCubeContraptionEntity extends SimpleRotatingContraptionEntity
         this.clockwise = true;
         this.shouldStop = true;
     }
+
     public boolean shouldStop;
     public RotationLayer layer;
     public boolean clockwise;
-    public static RubiksCubeContraptionEntity create(Level world, Contraption contraption, Vec3 pivot, Direction frontFacing, BlockPos pos, IRotationMultiblock controller) {
-        RubiksCubeContraptionEntity entity =
-                new RubiksCubeContraptionEntity(CTPPEntityTypes.RUBIKS_CUBE_CONTRAPTION.get(), world);
+
+    public static RubiksCubeContraptionEntity create(Level world, Contraption contraption, Vec3 pivot,
+                                                     Direction frontFacing, BlockPos pos,
+                                                     IRotationMultiblock controller) {
+        RubiksCubeContraptionEntity entity = new RubiksCubeContraptionEntity(
+                CTPPEntityTypes.RUBIKS_CUBE_CONTRAPTION.get(), world);
         entity.controllerPos = controller.getBlockPosition();
         entity.isRunning = true;
         entity.frontFacing = frontFacing;
@@ -43,6 +48,7 @@ public class RubiksCubeContraptionEntity extends SimpleRotatingContraptionEntity
 
     // 旋转层定义
     public enum RotationLayer {
+
         // 相对于整体朝向的层
         FRONT_LAYER,     // 前面层
         BACK_LAYER,      // 后面层
@@ -123,26 +129,20 @@ public class RubiksCubeContraptionEntity extends SimpleRotatingContraptionEntity
         }
     }
 
-
-
-
     public void notifyChange() {
         Quaternionf q = serverRotation;
         if (this.layer.isInLayer(this.startPos.getCenter().subtract(getPivot()), frontFacing, q) && !this.shouldStop) {
-            float speed = clockwise ? ROTATE_SPEED : - ROTATE_SPEED;
+            float speed = clockwise ? ROTATE_SPEED : -ROTATE_SPEED;
             Vec3 worldAxisVector = layer.getRotationVector(frontFacing);
 
             this.setRotationSpeed(
-                    ((float)worldAxisVector.x * speed),
-                    ((float)worldAxisVector.y * speed),
-                    ((float)worldAxisVector.z * speed)
-            );
-        }
-        else {
+                    ((float) worldAxisVector.x * speed),
+                    ((float) worldAxisVector.y * speed),
+                    ((float) worldAxisVector.z * speed));
+        } else {
             setRotationSpeed(0, 0, 0);
         }
     }
-
 
     public void performStandardMove(String moveNotation) {
         switch (moveNotation.toUpperCase()) {
@@ -211,6 +211,7 @@ public class RubiksCubeContraptionEntity extends SimpleRotatingContraptionEntity
         }
         notifyChange();
     }
+
     @Override
     protected void writeAdditional(CompoundTag nbt, boolean spawnPacket) {
         super.writeAdditional(nbt, spawnPacket); // 先调用父类方法保存父类字段

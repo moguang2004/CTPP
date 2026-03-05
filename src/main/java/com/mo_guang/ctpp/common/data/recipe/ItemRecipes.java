@@ -5,15 +5,17 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
-import com.mo_guang.ctpp.registry.CTPPItems;
-import com.mo_guang.ctpp.registry.CTPPMaterials;
+
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.tags.ItemTags;
-import net.minecraftforge.common.Tags;
+
+import com.mo_guang.ctpp.registry.CTPPItems;
+import com.mo_guang.ctpp.registry.CTPPMaterials;
 
 import java.util.function.Consumer;
 
 public class ItemRecipes {
+
     public static void init(Consumer<FinishedRecipe> provider) {
         VanillaRecipeHelper.addShapedRecipe(provider, "basic_mechanism", CTPPItems.BASIC_MECHANISM.asStack(),
                 "ABC",

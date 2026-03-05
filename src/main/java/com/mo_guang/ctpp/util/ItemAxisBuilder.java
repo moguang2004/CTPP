@@ -1,23 +1,24 @@
 package com.mo_guang.ctpp.util;
 
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
-import com.tterrag.registrate.builders.ItemBuilder;
+
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemDisplayContext;
 
+import com.tterrag.registrate.builders.ItemBuilder;
+
 public class ItemAxisBuilder {
-    public static void addShaft(ItemBuilder<? extends MetaMachineItem, ?> builder){
+
+    public static void addShaft(ItemBuilder<? extends MetaMachineItem, ?> builder) {
         builder.model((ctx, prov) -> {
 
             ResourceLocation baseLoc = ResourceLocation.tryBuild(
                     builder.getOwner().getModid(),
-                    "block/machine/" + ctx.getName()
-            );
+                    "block/machine/" + ctx.getName());
 
             ResourceLocation cubeLoc = ResourceLocation.tryBuild(
                     builder.getOwner().getModid(),
-                    "item/axis"
-            );
+                    "item/axis");
 
             var baseModel = prov.withExistingParent(ctx.getName() + "_base", baseLoc);
 
@@ -60,5 +61,4 @@ public class ItemAxisBuilder {
                     .child("axis", cubeModel);
         });
     }
-
 }

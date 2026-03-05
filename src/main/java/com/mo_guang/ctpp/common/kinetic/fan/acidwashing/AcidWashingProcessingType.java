@@ -1,9 +1,5 @@
 package com.mo_guang.ctpp.common.kinetic.fan.acidwashing;
 
-import com.mo_guang.ctpp.common.data.recipe.fan_processing.CTPPRecipeTypeInfo;
-import com.mo_guang.ctpp.data.tags.CustomTags;
-import com.simibubi.create.content.kinetics.fan.processing.FanProcessingType;
-import com.simibubi.create.foundation.recipe.RecipeApplier;
 import net.createmod.catnip.math.VecHelper;
 import net.createmod.catnip.theme.Color;
 import net.minecraft.core.BlockPos;
@@ -22,13 +18,20 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.Vec3;
+
+import com.mo_guang.ctpp.common.data.recipe.fan_processing.CTPPRecipeTypeInfo;
+import com.mo_guang.ctpp.data.tags.CustomTags;
+import com.simibubi.create.content.kinetics.fan.processing.FanProcessingType;
+import com.simibubi.create.foundation.recipe.RecipeApplier;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Optional;
 
 public class AcidWashingProcessingType implements FanProcessingType {
+
     public static AcidwashingRecipe.AcidwashingWrapper RECIPE_WRAPPER = new AcidwashingRecipe.AcidwashingWrapper();
+
     @Override
     public boolean isValidAt(Level level, BlockPos blockPos) {
         FluidState fluidState = level.getFluidState(blockPos);

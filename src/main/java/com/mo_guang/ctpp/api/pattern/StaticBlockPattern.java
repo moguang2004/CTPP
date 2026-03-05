@@ -14,18 +14,23 @@ import com.gregtechceu.gtceu.api.pattern.error.SinglePredicateError;
 import com.gregtechceu.gtceu.api.pattern.predicates.SimplePredicate;
 import com.gregtechceu.gtceu.api.pattern.util.PatternMatchContext;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 
 import java.util.*;
 
 public class StaticBlockPattern extends BlockPattern {
+
     protected final boolean[][][] staticBlockMatches;
     protected final int[][][] dynamicBlockMatches;
-    public StaticBlockPattern(TraceabilityPredicate[][][] predicatesIn, RelativeDirection[] structureDir, int[][] aisleRepetitions, int[] centerOffset,
+
+    public StaticBlockPattern(TraceabilityPredicate[][][] predicatesIn, RelativeDirection[] structureDir,
+                              int[][] aisleRepetitions, int[] centerOffset,
                               boolean[][][] staticPredicates, int[][][] dynamicPredicates) {
         super(predicatesIn, structureDir, aisleRepetitions, centerOffset);
         this.staticBlockMatches = staticPredicates;
@@ -55,6 +60,7 @@ public class StaticBlockPattern extends BlockPattern {
         }
         return false;
     }
+
     public Map<Integer, List<BlockPos>> getDynamicPart(MultiblockState worldState) {
         IMultiController controller = worldState.getController();
         BlockPos centerPos = controller.self().getPos();
@@ -68,7 +74,8 @@ public class StaticBlockPattern extends BlockPattern {
                     int relativeX = a - centerOffset[0];
                     int relativeY = b - centerOffset[1];
                     int relativeZ = c - centerOffset[2];
-                    var position = setActualRelativeOffset(relativeX, relativeY, relativeZ, frontFacing, upwardsFacing, false)
+                    var position = setActualRelativeOffset(relativeX, relativeY, relativeZ, frontFacing, upwardsFacing,
+                            false)
                             .offset(centerPos.getX(), centerPos.getY(), centerPos.getZ());
                     parts.computeIfAbsent(dynamicBlockMatches[c][b][a], k -> new ArrayList<>()).add(position);
                 }
@@ -76,6 +83,7 @@ public class StaticBlockPattern extends BlockPattern {
         }
         return parts;
     }
+
     @Override
     public boolean checkPatternAt(MultiblockState worldState, BlockPos centerPos, Direction frontFacing,
                                   Direction upwardsFacing, boolean isFlipped, boolean savePredicate) {
@@ -101,9 +109,9 @@ public class StaticBlockPattern extends BlockPattern {
                         TraceabilityPredicate predicate;
                         if (!controller.isFormed()) {
                             predicate = blockMatches[c][b][a];
-                        }
-                        else {
-                            predicate = this.staticBlockMatches[c][b][a] ? this.blockMatches[c][b][a] : Predicates.any();
+                        } else {
+                            predicate = this.staticBlockMatches[c][b][a] ? this.blockMatches[c][b][a] :
+                                    Predicates.any();
                         }
                         BlockPos pos = setActualRelativeOffset(x, y, z, frontFacing, upwardsFacing, isFlipped)
                                 .offset(centerPos.getX(), centerPos.getY(), centerPos.getZ());
@@ -186,6 +194,7 @@ public class StaticBlockPattern extends BlockPattern {
         worldState.setNeededFlip(isFlipped);
         return true;
     }
+
     private BlockPos setActualRelativeOffset(int x, int y, int z, Direction facing, Direction upwardsFacing,
                                              boolean isFlipped) {
         int[] c0 = new int[] { x, y, z }, c1 = new int[3];

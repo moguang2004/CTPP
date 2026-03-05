@@ -4,17 +4,20 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
+
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import com.mo_guang.ctpp.common.machine.IKineticMachine;
-import com.mo_guang.ctpp.common.machine.NotifiableStressTrait;
-import com.mo_guang.ctpp.common.machine.multiblock.KineticMultiblockMachine;
-import lombok.Getter;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.BlockHitResult;
+
+import com.mo_guang.ctpp.common.machine.IKineticMachine;
+import com.mo_guang.ctpp.common.machine.NotifiableStressTrait;
+import com.mo_guang.ctpp.common.machine.multiblock.KineticMultiblockMachine;
+import lombok.Getter;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -33,7 +36,8 @@ public class KineticPartMachine extends TieredIOPartMachine implements IKineticM
         super(holder, tier, io);
         this.stressTrait = createStressTrait(args);
     }
-    public IO getIO(){
+
+    public IO getIO() {
         return this.io;
     }
 
@@ -73,7 +77,8 @@ public class KineticPartMachine extends TieredIOPartMachine implements IKineticM
     @Override
     public void onChanged() {
         super.onChanged();
-        if (!getControllers().isEmpty() && getControllers().first() instanceof KineticMultiblockMachine kineticMultiblockMachine) {
+        if (!getControllers().isEmpty() &&
+                getControllers().first() instanceof KineticMultiblockMachine kineticMultiblockMachine) {
             kineticMultiblockMachine.onChanged();
         }
     }

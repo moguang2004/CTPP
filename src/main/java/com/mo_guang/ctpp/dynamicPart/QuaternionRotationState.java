@@ -24,7 +24,7 @@ public class QuaternionRotationState extends AbstractContraptionEntity.Contrapti
         Matrix3f m = new Matrix3f().set(quaternion);
 
         cachedMatrix = new Matrix3d();
-        ((IMatrix3dAccess)cachedMatrix).ctpp$setFromMatrix3f(m);
+        ((IMatrix3dAccess) cachedMatrix).ctpp$setFromMatrix3f(m);
 
         return cachedMatrix;
     }
@@ -43,4 +43,3 @@ public class QuaternionRotationState extends AbstractContraptionEntity.Contrapti
         return (float) Math.atan2(forward.x, forward.z);
     }
 }
-

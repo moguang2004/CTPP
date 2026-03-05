@@ -1,19 +1,23 @@
 package com.mo_guang.ctpp.util;
 
-import com.simibubi.create.infrastructure.config.AllConfigs;
-import net.minecraft.core.Vec3i;
 import net.minecraft.world.phys.Vec3;
+
+import com.simibubi.create.infrastructure.config.AllConfigs;
 import org.joml.Quaternionf;
 
 public class MathUtil {
+
     public static float rpm2rads(float rpm) {
         return rpm / AllConfigs.server().kinetics.maxRotationSpeed.get() * 360 / 20 * 4;
     }
+
     public static Vec3 rotateByVec(Vec3 from, double angle, Vec3 axis) {
         axis = axis.normalize();
         angle = Math.toRadians(angle);
-        return from.scale(Math.cos(angle)).add(axis.cross(from).scale(Math.sin(angle))).add(axis.scale(axis.dot(from) * (1 - Math.cos(angle))));
+        return from.scale(Math.cos(angle)).add(axis.cross(from).scale(Math.sin(angle)))
+                .add(axis.scale(axis.dot(from) * (1 - Math.cos(angle))));
     }
+
     /**
      * 计算两个四元数之间的角度差
      */
@@ -27,7 +31,7 @@ public class MathUtil {
         // 确保值在有效范围内
         dot = Math.min(1.0f, Math.max(-1.0f, dot));
 
-        return (float)(2.0f * Math.acos(dot));
+        return (float) (2.0f * Math.acos(dot));
     }
 
     /**
@@ -52,14 +56,14 @@ public class MathUtil {
         dot = Math.min(1.0f, Math.max(-1.0f, dot));
 
         // 计算插值
-        float theta0 = (float)Math.acos(dot);
+        float theta0 = (float) Math.acos(dot);
         float theta = theta0 * alpha;
 
-        float sinTheta = (float)Math.sin(theta);
-        float sinTheta0 = (float)Math.sin(theta0);
+        float sinTheta = (float) Math.sin(theta);
+        float sinTheta0 = (float) Math.sin(theta0);
 
         if (sinTheta0 > 0.001f) {
-            float s0 = (float)Math.cos(theta) - dot * sinTheta / sinTheta0;
+            float s0 = (float) Math.cos(theta) - dot * sinTheta / sinTheta0;
             float s1 = sinTheta / sinTheta0;
 
             result.x = from.x() * s0 + to.x() * s1;
@@ -101,6 +105,7 @@ public class MathUtil {
 
         return new Vec3(rx, ry, rz);
     }
+
     /**
      * 智能选择欧拉角转换方法
      */
@@ -114,6 +119,7 @@ public class MathUtil {
             return getStableEulerAngles(q);
         }
     }
+
     /**
      * 检测旋转是否与某个轴对齐
      */
@@ -121,18 +127,18 @@ public class MathUtil {
         q.normalize();
 
         // 检查是否接近绕单个轴的旋转
-        float angle = 2 * (float)Math.acos(Math.abs(q.w()));
+        float angle = 2 * (float) Math.acos(Math.abs(q.w()));
         Vec3 axis = new Vec3(q.x(), q.y(), q.z()).normalize();
 
         // 检查与坐标轴的对齐程度
-        float alignX = Math.abs((float)axis.dot(new Vec3(1, 0, 0)));
-        float alignY = Math.abs((float)axis.dot(new Vec3(0, 1, 0)));
-        float alignZ = Math.abs((float)axis.dot(new Vec3(0, 0, 1)));
+        float alignX = Math.abs((float) axis.dot(new Vec3(1, 0, 0)));
+        float alignY = Math.abs((float) axis.dot(new Vec3(0, 1, 0)));
+        float alignZ = Math.abs((float) axis.dot(new Vec3(0, 0, 1)));
 
         // 如果接近某个坐标轴（夹角小于阈值）
-        return alignX > 1 - thresholdDeg/90f ||
-                alignY > 1 - thresholdDeg/90f ||
-                alignZ > 1 - thresholdDeg/90f;
+        return alignX > 1 - thresholdDeg / 90f ||
+                alignY > 1 - thresholdDeg / 90f ||
+                alignZ > 1 - thresholdDeg / 90f;
     }
 
     /**
@@ -166,6 +172,7 @@ public class MathUtil {
         // 否则使用标准转换
         return getStableEulerAngles(q);
     }
+
     /**
      * 计算绕特定轴的旋转角度（稳定版本）
      */
@@ -176,7 +183,7 @@ public class MathUtil {
         axis = axis.normalize();
 
         // 将四元数转换为轴角表示
-        float angle = 2 * (float)Math.acos(Math.min(1.0f, Math.max(-1.0f, q.w())));
+        float angle = 2 * (float) Math.acos(Math.min(1.0f, Math.max(-1.0f, q.w())));
 
         // 如果角度很小，直接返回0
         if (Math.abs(angle) < 1e-6) {
@@ -184,22 +191,22 @@ public class MathUtil {
         }
 
         // 计算旋转轴
-        float sinHalfAngle = (float)Math.sin(angle / 2);
+        float sinHalfAngle = (float) Math.sin(angle / 2);
         Vec3 qAxis = new Vec3(
                 q.x() / sinHalfAngle,
                 q.y() / sinHalfAngle,
-                q.z() / sinHalfAngle
-        );
+                q.z() / sinHalfAngle);
 
         // 计算与目标轴的点积
-        float dot = (float)qAxis.dot(axis);
+        float dot = (float) qAxis.dot(axis);
 
         // 实际绕目标轴的旋转角度 = 总角度 × 与目标轴的相似度
         float projectedAngle = angle * dot;
 
         // 限制在合理范围内
-        return (float)Math.toDegrees(Math.max(-Math.PI, Math.min(Math.PI, projectedAngle)));
+        return (float) Math.toDegrees(Math.max(-Math.PI, Math.min(Math.PI, projectedAngle)));
     }
+
     /**
      * 从四元数提取欧拉角（X->Y->Z顺序），处理轴对齐的特殊情况
      * 使用稳定的算法避免万向节死锁问题
@@ -211,28 +218,29 @@ public class MathUtil {
         // 方法1：使用atan2的稳定算法
         float sinr_cosp = 2 * (w * x + y * z);
         float cosr_cosp = 1 - 2 * (x * x + y * y);
-        float roll = (float)Math.atan2(sinr_cosp, cosr_cosp);
+        float roll = (float) Math.atan2(sinr_cosp, cosr_cosp);
 
         // 检查是否接近万向节死锁
         float sinp = 2 * (w * y - z * x);
         float pitch;
         if (Math.abs(sinp) >= 1) {
             // 在万向节死锁处，使用atan2的符号
-            pitch = (float)Math.copySign(Math.PI / 2, sinp);
+            pitch = (float) Math.copySign(Math.PI / 2, sinp);
         } else {
-            pitch = (float)Math.asin(sinp);
+            pitch = (float) Math.asin(sinp);
         }
 
         float siny_cosp = 2 * (w * z + x * y);
         float cosy_cosp = 1 - 2 * (y * y + z * z);
-        float yaw = (float)Math.atan2(siny_cosp, cosy_cosp);
+        float yaw = (float) Math.atan2(siny_cosp, cosy_cosp);
 
         return new Vec3(
-                normalizeAngle((float)Math.toDegrees(pitch)),   // X rotation
-                normalizeAngle((float)Math.toDegrees(yaw)),     // Y rotation
-                normalizeAngle((float)Math.toDegrees(roll))     // Z rotation
+                normalizeAngle((float) Math.toDegrees(pitch)),   // X rotation
+                normalizeAngle((float) Math.toDegrees(yaw)),     // Y rotation
+                normalizeAngle((float) Math.toDegrees(roll))     // Z rotation
         );
     }
+
     /**
      * 将角度标准化到0-360度范围
      */
@@ -244,4 +252,3 @@ public class MathUtil {
         return angle;
     }
 }
-

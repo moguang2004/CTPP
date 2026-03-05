@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 
 public class GTMaterialAddon {
+
     public static void init() {
         GTMaterials.SulfuricAcid.getProperty(PropertyKey.FLUID).getQueuedBuilder(FluidStorageKeys.LIQUID)
                 .block().flowing();

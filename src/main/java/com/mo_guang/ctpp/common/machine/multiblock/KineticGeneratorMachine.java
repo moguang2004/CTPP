@@ -13,17 +13,20 @@ import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
-import com.mo_guang.ctpp.common.machine.multiblock.part.KineticPartMachine;
-import com.mo_guang.ctpp.config.MainConfig;
 
 import net.minecraft.network.chat.Component;
+
+import com.mo_guang.ctpp.common.machine.multiblock.part.KineticPartMachine;
+import com.mo_guang.ctpp.config.MainConfig;
 
 import java.util.List;
 
 public class KineticGeneratorMachine extends CoilWorkableElectricMultiblockMachine {
+
     public static final float GENERATING_BOOST = MainConfig.INSTANCE.ctnhConfig.kineticGeneratorGeneratingBoost;
     public double efficiency;
     public double outputEnergy = 0;
+
     public KineticGeneratorMachine(IMachineBlockEntity holder) {
         super(holder);
         efficiency = getCoilTier() * 0.1 + 0.9;
@@ -32,11 +35,11 @@ public class KineticGeneratorMachine extends CoilWorkableElectricMultiblockMachi
     @Override
     public void onStructureFormed() {
         super.onStructureFormed();
-        var pos = MachineUtils.getOffset(this,0,0,1);
-        if (getLevel().getBlockState(pos).getBlock().equals(GTMaterialBlocks.MATERIAL_BLOCKS.get(TagPrefix.block, GTMaterials.Graphene).get())) {
+        var pos = MachineUtils.getOffset(this, 0, 0, 1);
+        if (getLevel().getBlockState(pos).getBlock()
+                .equals(GTMaterialBlocks.MATERIAL_BLOCKS.get(TagPrefix.block, GTMaterials.Graphene).get())) {
             efficiency = getCoilTier() * 0.1 + 1;
-        }
-        else efficiency = getCoilTier() * 0.1 + 0.9;
+        } else efficiency = getCoilTier() * 0.1 + 0.9;
     }
 
     @Override
@@ -44,21 +47,27 @@ public class KineticGeneratorMachine extends CoilWorkableElectricMultiblockMachi
         super.addDisplayText(textList);
         if (isFormed()) {
             var voltageName = GTValues.VNF[GTUtil.getTierByVoltage((long) outputEnergy)];
-            textList.add(textList.size(), Component.translatable("ctpp.multiblock.kinetic_generator.info.0", FormattingUtil.formatNumbers(outputEnergy), voltageName));
-            textList.add(textList.size(), Component.translatable("ctpp.multiblock.kinetic_generator.info.1", String.format("%.1f",efficiency*100)));
+            textList.add(textList.size(), Component.translatable("ctpp.multiblock.kinetic_generator.info.0",
+                    FormattingUtil.formatNumbers(outputEnergy), voltageName));
+            textList.add(textList.size(), Component.translatable("ctpp.multiblock.kinetic_generator.info.1",
+                    String.format("%.1f", efficiency * 100)));
         }
     }
 
     public static ModifierFunction recipeModifier(MetaMachine machine, GTRecipe recipe) {
         if (machine instanceof KineticGeneratorMachine kmachine) {
-            var kinetic = (KineticPartMachine) kmachine.getParts().stream().filter(part -> part instanceof KineticPartMachine).toList().get(0);
-            kmachine.outputEnergy = Math.abs(kinetic.getKineticHolder().getSpeed()) * kinetic.getKineticDefinition().torque * kmachine.efficiency*GENERATING_BOOST / 160;
+            var kinetic = (KineticPartMachine) kmachine.getParts().stream()
+                    .filter(part -> part instanceof KineticPartMachine).toList().get(0);
+            kmachine.outputEnergy = Math.abs(kinetic.getKineticHolder().getSpeed()) *
+                    kinetic.getKineticDefinition().torque * kmachine.efficiency * GENERATING_BOOST / 160;
             var modifiedRecipe = recipe.copy();
-            modifiedRecipe.tickOutputs.put(EURecipeCapability.CAP, EURecipeCapability.makeEUContent(new EnergyStack((long) kmachine.outputEnergy)));
+            modifiedRecipe.tickOutputs.put(EURecipeCapability.CAP,
+                    EURecipeCapability.makeEUContent(new EnergyStack((long) kmachine.outputEnergy)));
             return recipe1 -> modifiedRecipe;
         }
         return ModifierFunction.NULL;
     }
+
     @Override
     public boolean regressWhenWaiting() {
         return false;

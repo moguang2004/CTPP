@@ -1,6 +1,16 @@
 package com.mo_guang.ctpp.integration.jei;
 
 import com.gregtechceu.gtceu.common.data.GTMaterials;
+
+import net.createmod.catnip.config.ConfigBase;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.ItemLike;
+
 import com.mo_guang.ctpp.CTPP;
 import com.mo_guang.ctpp.common.data.recipe.fan_processing.CTPPRecipeTypeInfo;
 import com.mo_guang.ctpp.common.kinetic.fan.acidwashing.AcidwashingRecipe;
@@ -9,7 +19,6 @@ import com.mo_guang.ctpp.integration.jei.category.FanAcidWashingCategory;
 import com.mo_guang.ctpp.integration.jei.category.FanBreathingCategory;
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.AllItems;
-
 import com.simibubi.create.compat.jei.CreateJEI;
 import com.simibubi.create.compat.jei.DoubleItemIcon;
 import com.simibubi.create.compat.jei.EmptyBackground;
@@ -25,14 +34,6 @@ import mezz.jei.api.recipe.category.IRecipeCategory;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
-import net.createmod.catnip.config.ConfigBase;
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.level.ItemLike;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -47,34 +48,40 @@ import static com.simibubi.create.compat.jei.CreateJEI.*;
 
 @JeiPlugin
 public class CTPPJeiPlugin implements IModPlugin {
+
     private final List<CreateRecipeCategory<?>> categories = new ArrayList<>();
 
     @Override
     public ResourceLocation getPluginUid() {
         return CTPP.id("jei_plugin");
     }
+
     private void loadCategories() {
         this.categories.clear();
-        CreateRecipeCategory<?>
-                breathing = builder(BreathingRecipe.class)
+        CreateRecipeCategory<?> breathing = builder(BreathingRecipe.class)
                 .addTypedRecipes(CTPPRecipeTypeInfo.BREATHING)
-                .catalystStack(() -> AllBlocks.ENCASED_FAN.asStack().setHoverName(Component.translatable("ctpp.recipe.breathing.fan").withStyle(style -> style.withItalic(false))))
+                .catalystStack(() -> AllBlocks.ENCASED_FAN.asStack()
+                        .setHoverName(Component.translatable("ctpp.recipe.breathing.fan")
+                                .withStyle(style -> style.withItalic(false))))
                 .doubleItemIcon(AllItems.PROPELLER.get(), Items.DRAGON_BREATH)
                 .emptyBackground(178, 72)
                 .build("fan_breathing", FanBreathingCategory::new);
-        CreateRecipeCategory<?>
-                acidwashing = builder(AcidwashingRecipe.class)
+        CreateRecipeCategory<?> acidwashing = builder(AcidwashingRecipe.class)
                 .addTypedRecipes(CTPPRecipeTypeInfo.ACIDWASHING)
-                .catalystStack(() -> AllBlocks.ENCASED_FAN.asStack().setHoverName(Component.translatable("ctpp.recipe.acid_washing.fan").withStyle(style -> style.withItalic(false))))
+                .catalystStack(() -> AllBlocks.ENCASED_FAN.asStack()
+                        .setHoverName(Component.translatable("ctpp.recipe.acid_washing.fan")
+                                .withStyle(style -> style.withItalic(false))))
                 .doubleItemIcon(AllItems.PROPELLER.get(), GTMaterials.SulfuricAcid.getBucket())
                 .emptyBackground(178, 72)
                 .build("fan_acid_washing", FanAcidWashingCategory::new);
     }
+
     @Override
     public void registerCategories(IRecipeCategoryRegistration registration) {
         loadCategories();
         registration.addRecipeCategories(categories.toArray(IRecipeCategory[]::new));
     }
+
     @Override
     public void registerRecipes(IRecipeRegistration registration) {
         categories.forEach(category -> category.registerRecipes(registration));
@@ -84,11 +91,13 @@ public class CTPPJeiPlugin implements IModPlugin {
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
         categories.forEach(category -> category.registerCatalysts(registration));
     }
+
     private <T extends Recipe<?>> CategoryBuilder<T> builder(Class<? extends T> recipeClass) {
         return new CategoryBuilder<>(recipeClass);
     }
 
     private class CategoryBuilder<T extends Recipe<?>> {
+
         private final Class<? extends T> recipeClass;
         private Predicate<CRecipes> predicate = cRecipes -> true;
 
@@ -145,11 +154,14 @@ public class CTPPJeiPlugin implements IModPlugin {
             return addRecipeListConsumer(recipes -> CreateJEI.<T>consumeTypedRecipes(recipes::add, recipeType.get()));
         }
 
-        public CategoryBuilder<T> addTypedRecipes(Supplier<RecipeType<? extends T>> recipeType, Function<Recipe<?>, T> converter) {
-            return addRecipeListConsumer(recipes -> CreateJEI.<T>consumeTypedRecipes(recipe -> recipes.add(converter.apply(recipe)), recipeType.get()));
+        public CategoryBuilder<T> addTypedRecipes(Supplier<RecipeType<? extends T>> recipeType,
+                                                  Function<Recipe<?>, T> converter) {
+            return addRecipeListConsumer(recipes -> CreateJEI
+                    .<T>consumeTypedRecipes(recipe -> recipes.add(converter.apply(recipe)), recipeType.get()));
         }
 
-        public CategoryBuilder<T> addTypedRecipesIf(Supplier<RecipeType<? extends T>> recipeType, Predicate<Recipe<?>> pred) {
+        public CategoryBuilder<T> addTypedRecipesIf(Supplier<RecipeType<? extends T>> recipeType,
+                                                    Predicate<Recipe<?>> pred) {
             return addRecipeListConsumer(recipes -> CreateJEI.<T>consumeTypedRecipes(recipe -> {
                 if (pred.test(recipe)) {
                     recipes.add(recipe);
@@ -158,7 +170,7 @@ public class CTPPJeiPlugin implements IModPlugin {
         }
 
         public CategoryBuilder<T> addTypedRecipesExcluding(Supplier<RecipeType<? extends T>> recipeType,
-                                                                     Supplier<RecipeType<? extends T>> excluded) {
+                                                           Supplier<RecipeType<? extends T>> excluded) {
             return addRecipeListConsumer(recipes -> {
                 List<Recipe<?>> excludedRecipes = getTypedRecipes(excluded.get());
                 CreateJEI.<T>consumeTypedRecipes(recipe -> {

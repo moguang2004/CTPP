@@ -1,6 +1,5 @@
 package com.mo_guang.ctpp.dynamicPart.rotation;
 
-import com.mo_guang.ctpp.CTPPEntityTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -8,10 +7,12 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+
+import com.mo_guang.ctpp.CTPPEntityTypes;
 import com.simibubi.create.content.contraptions.Contraption;
-import tech.vixhentx.mcmod.ctnhlib.utils.ExtendNbtUtils;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
+import tech.vixhentx.mcmod.ctnhlib.utils.ExtendNbtUtils;
 
 /**
  * 固定轴旋转的装置实体，支持设定目标角度并自动旋转到该角度
@@ -20,16 +21,16 @@ import org.joml.Vector3f;
 public class FixedAxisRotatingContraptionEntity extends SimpleRotatingContraptionEntity {
 
     // 同步数据定义
-    private static final EntityDataAccessor<Vector3f> DATA_FIXED_AXIS =
-            SynchedEntityData.defineId(FixedAxisRotatingContraptionEntity.class, EntityDataSerializers.VECTOR3);
-    private static final EntityDataAccessor<Float> DATA_TARGET_ANGLE =
-            SynchedEntityData.defineId(FixedAxisRotatingContraptionEntity.class, EntityDataSerializers.FLOAT);
-    private static final EntityDataAccessor<Float> DATA_CURRENT_ANGLE =
-            SynchedEntityData.defineId(FixedAxisRotatingContraptionEntity.class, EntityDataSerializers.FLOAT);
-    private static final EntityDataAccessor<Float> DATA_ROTATE_SPEED =
-            SynchedEntityData.defineId(FixedAxisRotatingContraptionEntity.class, EntityDataSerializers.FLOAT);
-    private static final EntityDataAccessor<Boolean> DATA_IS_SEEKING_TARGET =
-            SynchedEntityData.defineId(FixedAxisRotatingContraptionEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Vector3f> DATA_FIXED_AXIS = SynchedEntityData
+            .defineId(FixedAxisRotatingContraptionEntity.class, EntityDataSerializers.VECTOR3);
+    private static final EntityDataAccessor<Float> DATA_TARGET_ANGLE = SynchedEntityData
+            .defineId(FixedAxisRotatingContraptionEntity.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Float> DATA_CURRENT_ANGLE = SynchedEntityData
+            .defineId(FixedAxisRotatingContraptionEntity.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Float> DATA_ROTATE_SPEED = SynchedEntityData
+            .defineId(FixedAxisRotatingContraptionEntity.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Boolean> DATA_IS_SEEKING_TARGET = SynchedEntityData
+            .defineId(FixedAxisRotatingContraptionEntity.class, EntityDataSerializers.BOOLEAN);
 
     // 核心属性
     public static Vec3 Yaxis = new Vec3(0, 1, 0);
@@ -45,19 +46,20 @@ public class FixedAxisRotatingContraptionEntity extends SimpleRotatingContraptio
 
     /**
      * 创建固定轴旋转实体的静态工厂方法
-     * @param world 世界对象
-     * @param contraption 装置实例
-     * @param controller 旋转控制器
-     * @param pivot 旋转基点
-     * @param fixedAxis 固定旋转轴（世界坐标系）
+     * 
+     * @param world        世界对象
+     * @param contraption  装置实例
+     * @param controller   旋转控制器
+     * @param pivot        旋转基点
+     * @param fixedAxis    固定旋转轴（世界坐标系）
      * @param initialAngle 初始角度（度）
      * @return 初始化后的固定轴旋转实体
      */
     public static FixedAxisRotatingContraptionEntity create(Level world, Contraption contraption,
                                                             IRotationMultiblock controller, Vec3 pivot,
                                                             Vec3 fixedAxis, float initialAngle) {
-        FixedAxisRotatingContraptionEntity entity =
-                new FixedAxisRotatingContraptionEntity(CTPPEntityTypes.SIMPLE_CONTRAPTION.get(), world);
+        FixedAxisRotatingContraptionEntity entity = new FixedAxisRotatingContraptionEntity(
+                CTPPEntityTypes.SIMPLE_CONTRAPTION.get(), world);
         entity.controllerPos = controller.getBlockPosition();
         entity.isRunning = true;
         entity.setContraption(contraption);
@@ -115,6 +117,7 @@ public class FixedAxisRotatingContraptionEntity extends SimpleRotatingContraptio
 
     /**
      * 设置固定旋转轴（世界坐标系）
+     * 
      * @param axis 旋转轴向量（会自动归一化）
      */
     public void setFixedRotationAxis(Vec3 axis) {
@@ -128,13 +131,13 @@ public class FixedAxisRotatingContraptionEntity extends SimpleRotatingContraptio
             entityData.set(DATA_FIXED_AXIS, new Vector3f(
                     (float) this.fixedRotationAxis.x,
                     (float) this.fixedRotationAxis.y,
-                    (float) this.fixedRotationAxis.z
-            ));
+                    (float) this.fixedRotationAxis.z));
         }
     }
 
     /**
      * 设置旋转目标角度
+     * 
      * @param angle 目标角度（度），会自动归一化到0-360度范围
      */
     public void setTargetAngle(float angle) {
@@ -149,6 +152,7 @@ public class FixedAxisRotatingContraptionEntity extends SimpleRotatingContraptio
 
     /**
      * 设置旋转速度（度/刻）
+     * 
      * @param speed 旋转速度，最小0.1度/刻
      */
     public void setRotateSpeed(float speed) {
@@ -185,6 +189,7 @@ public class FixedAxisRotatingContraptionEntity extends SimpleRotatingContraptio
 
     /**
      * 计算两个角度之间的最短旋转方向和差值
+     * 
      * @return 最短差值（带符号，正值为顺时针，负值为逆时针）
      */
     private float calculateShortestAngleDiff(float from, float to) {
@@ -247,8 +252,7 @@ public class FixedAxisRotatingContraptionEntity extends SimpleRotatingContraptio
                         (float) fixedRotationAxis.x,
                         (float) fixedRotationAxis.y,
                         (float) fixedRotationAxis.z,
-                        (float) Math.toRadians(currentAngle)
-                );
+                        (float) Math.toRadians(currentAngle));
 
         this.serverRotation = newRotation;
         syncRotationQuaternion();
@@ -273,8 +277,7 @@ public class FixedAxisRotatingContraptionEntity extends SimpleRotatingContraptio
             entityData.set(DATA_FIXED_AXIS, new Vector3f(
                     (float) fixedRotationAxis.x,
                     (float) fixedRotationAxis.y,
-                    (float) fixedRotationAxis.z
-            ));
+                    (float) fixedRotationAxis.z));
         }
     }
 

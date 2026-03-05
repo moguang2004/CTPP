@@ -1,7 +1,7 @@
 package com.mo_guang.ctpp.common.machine.multiblock.windmillController;
 
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -9,6 +9,8 @@ import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraftforge.event.server.ServerStoppingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.simibubi.create.content.contraptions.bearing.WindmillBearingBlockEntity;
 
 import java.util.*;
@@ -16,6 +18,7 @@ import java.util.concurrent.*;
 
 @Mod.EventBusSubscriber(modid = "ctpp")
 public class WindmillManager {
+
     private static final WindmillManager INSTANCE = new WindmillManager();
 
     private static final ThreadFactory THREAD_FACTORY = new ThreadFactoryBuilder()
@@ -46,9 +49,10 @@ public class WindmillManager {
 
     /**
      * 提交风车扫描任务
-     * @param serverLevel 服务端世界（必须非客户端）
+     * 
+     * @param serverLevel   服务端世界（必须非客户端）
      * @param controllerPos 风车控制中心位置
-     * @param scanRange 扫描半径（你的代码中是32，可传参灵活调整）
+     * @param scanRange     扫描半径（你的代码中是32，可传参灵活调整）
      * @param legalDistance 控制器冲突检测距离（你的代码中是64）
      */
     public void submitScanTask(ServerLevel serverLevel, BlockPos controllerPos, int scanRange, int legalDistance) {
@@ -94,7 +98,9 @@ public class WindmillManager {
         }
         return windmillPos;
     }
-    private void updateWindmillData(ServerLevel serverLevel, BlockPos controllerPos, Set<BlockPos> foundWindmills, int legalDistance) {
+
+    private void updateWindmillData(ServerLevel serverLevel, BlockPos controllerPos, Set<BlockPos> foundWindmills,
+                                    int legalDistance) {
         WindmillSavedData savedData = WindmillSavedData.get(serverLevel);
         // 1. 注册新发现的风车
         for (BlockPos foundWindmill : foundWindmills) {
@@ -107,7 +113,8 @@ public class WindmillManager {
         boolean hasConflict = savedData.hasConflictingController(controllerPos, legalDistance);
         // 3. 更新控制中心状态（严格判空，避免机器被破坏后空指针）
         BlockEntity be = serverLevel.getBlockEntity(controllerPos);
-        if (be instanceof IMachineBlockEntity machineBE && machineBE.getMetaMachine() instanceof WindMillControlMachine controller) {
+        if (be instanceof IMachineBlockEntity machineBE &&
+                machineBE.getMetaMachine() instanceof WindMillControlMachine controller) {
             controller.hasConflictingController = hasConflict;
             controller.windmillAround.clear();
             controller.windmillAround.addAll(foundWindmills);

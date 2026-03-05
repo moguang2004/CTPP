@@ -14,23 +14,26 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockDisplayText;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.widget.*;
+
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.entity.BlockEntity;
+
 import com.mo_guang.ctpp.api.StressRecipeCapability;
+import com.mo_guang.ctpp.common.blockentity.IKineticBlockEntityExtension;
 import com.mo_guang.ctpp.common.machine.NotifiableStressTrait;
 import com.mo_guang.ctpp.common.machine.multiblock.part.MechanicalUpgradePartMachine;
-import com.mo_guang.ctpp.common.blockentity.IKineticBlockEntityExtension;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import com.simibubi.create.content.processing.burner.BlazeBurnerBlock;
 import com.simibubi.create.content.processing.burner.BlazeBurnerBlockEntity;
 import it.unimi.dsi.fastutil.longs.LongSet;
 import it.unimi.dsi.fastutil.longs.LongSets;
 import lombok.Getter;
-import net.minecraft.ChatFormatting;
-import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.block.entity.BlockEntity;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -38,7 +41,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-public abstract class KineticMultiblockMachine extends WorkableMultiblockMachine implements IFancyUIMachine, IDisplayUIMachine {
+public abstract class KineticMultiblockMachine extends WorkableMultiblockMachine
+                                               implements IFancyUIMachine, IDisplayUIMachine {
+
     @Getter
     public LongSet rotateBlocks;
     @Getter
@@ -49,9 +54,11 @@ public abstract class KineticMultiblockMachine extends WorkableMultiblockMachine
     @Getter
     public float previousSpeed = 0;
     public int tier = 0;
-    public KineticMultiblockMachine(IMachineBlockEntity holder){
+
+    public KineticMultiblockMachine(IMachineBlockEntity holder) {
         super(holder);
     }
+
     @Override
     public void onStructureFormed() {
         super.onStructureFormed();
@@ -59,7 +66,7 @@ public abstract class KineticMultiblockMachine extends WorkableMultiblockMachine
         checkTier();
         rotateBlocks = getMultiblockState().getMatchContext().getOrDefault("roBlocks", LongSets.emptySet());
         blazeBlocks = getMultiblockState().getMatchContext().getOrDefault("bbBlocks", LongSets.emptySet());
-        for (var pos: rotateBlocks) {
+        for (var pos : rotateBlocks) {
             var blockEntity = getLevel().getBlockEntity(BlockPos.of(pos));
             if (blockEntity instanceof KineticBlockEntity kineticBlockEntity) {
                 IKineticBlockEntityExtension mixin = ((IKineticBlockEntityExtension) kineticBlockEntity);
@@ -72,7 +79,7 @@ public abstract class KineticMultiblockMachine extends WorkableMultiblockMachine
     @Override
     public void onStructureInvalid() {
         super.onStructureInvalid();
-        for (var pos: rotateBlocks) {
+        for (var pos : rotateBlocks) {
             var blockEntity = getLevel().getBlockEntity(BlockPos.of(pos));
             if (blockEntity instanceof KineticBlockEntity kineticBlockEntity) {
                 IKineticBlockEntityExtension mixin = ((IKineticBlockEntityExtension) kineticBlockEntity);
@@ -85,6 +92,7 @@ public abstract class KineticMultiblockMachine extends WorkableMultiblockMachine
     //////////////////////////////////////
 
     public void onTierChanged() {}
+
     @Override
     protected RecipeLogic createRecipeLogic(Object... args) {
         return new KineticRecipeLogic(this);
@@ -94,7 +102,6 @@ public abstract class KineticMultiblockMachine extends WorkableMultiblockMachine
     public KineticRecipeLogic getRecipeLogic() {
         return (KineticRecipeLogic) super.getRecipeLogic();
     }
-
 
     public void stopWorking() {
         getCapabilitiesFlat(IO.OUT, StressRecipeCapability.CAP).forEach(iRecipeHandler -> {
@@ -107,7 +114,7 @@ public abstract class KineticMultiblockMachine extends WorkableMultiblockMachine
     @Override
     public void notifyStatusChanged(RecipeLogic.Status oldStatus, RecipeLogic.Status newStatus) {
         super.notifyStatusChanged(oldStatus, newStatus);
-        if(newStatus != RecipeLogic.Status.WORKING) stopWorking();
+        if (newStatus != RecipeLogic.Status.WORKING) stopWorking();
     }
 
     @Override
@@ -120,6 +127,7 @@ public abstract class KineticMultiblockMachine extends WorkableMultiblockMachine
             throw new RuntimeException(e);
         }
     }
+
     public void checkTier() {
         for (IMultiPart multiPart : getParts()) {
             if (multiPart instanceof MechanicalUpgradePartMachine upgradePartMachine) {
@@ -127,15 +135,17 @@ public abstract class KineticMultiblockMachine extends WorkableMultiblockMachine
             }
         }
     }
-    public void updateRotateBlocks(boolean active){
+
+    public void updateRotateBlocks(boolean active) {
         if (rotateBlocks != null) {
             for (Long pos : rotateBlocks) {
                 var blockPos = BlockPos.of(pos);
                 var blockEntity = Objects.requireNonNull(getLevel()).getBlockEntity(blockPos);
-                updateRotateBlock(active,blockEntity);
+                updateRotateBlock(active, blockEntity);
             }
         }
     }
+
     public void updateRotateBlock(boolean active, BlockEntity blockEntity) {
         if (blockEntity instanceof KineticBlockEntity kineticBlockEntity) {
             if (active) {
@@ -143,17 +153,18 @@ public abstract class KineticMultiblockMachine extends WorkableMultiblockMachine
                 kineticBlockEntity.setSpeed(speed);
                 kineticBlockEntity.onSpeedChanged(currentSpeed);
                 kineticBlockEntity.sendData();
-            }
-            else {
+            } else {
                 kineticBlockEntity.setSpeed(0);
                 kineticBlockEntity.onSpeedChanged(kineticBlockEntity.getSpeed());
                 kineticBlockEntity.sendData();
             }
         }
     }
-    public void updateBlazeBlocks(boolean active) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        if(blazeBlocks != null){
-            for(Long pos : blazeBlocks) {
+
+    public void updateBlazeBlocks(boolean active) throws NoSuchMethodException, InvocationTargetException,
+                                                  IllegalAccessException {
+        if (blazeBlocks != null) {
+            for (Long pos : blazeBlocks) {
                 var blockPos = BlockPos.of(pos);
                 if (getLevel().getBlockEntity(blockPos) != null) {
                     var blockEntity = Objects.requireNonNull(getLevel()).getBlockEntity(blockPos);
@@ -168,9 +179,10 @@ public abstract class KineticMultiblockMachine extends WorkableMultiblockMachine
                         }
                     }
                     if (blockEntity instanceof BlazeBurnerBlockEntity blazeBurnerBlockEntity) {
-                            Method method = BlazeBurnerBlockEntity.class.getDeclaredMethod("setBlockHeat", BlazeBurnerBlock.HeatLevel.class);
-                            method.setAccessible(true);
-                            method.invoke(blazeBurnerBlockEntity, heat);
+                        Method method = BlazeBurnerBlockEntity.class.getDeclaredMethod("setBlockHeat",
+                                BlazeBurnerBlock.HeatLevel.class);
+                        method.setAccessible(true);
+                        method.invoke(blazeBurnerBlockEntity, heat);
                     }
                 }
             }
@@ -190,7 +202,8 @@ public abstract class KineticMultiblockMachine extends WorkableMultiblockMachine
             numParallels = parallelHatch.getCurrentParallel();
         }
         if (recipeLogic.isWaiting()) {
-            textList.add(Component.translatable("ctpp.multiblock.kinetic_multiblock.info.waiting").withStyle(ChatFormatting.RED));
+            textList.add(Component.translatable("ctpp.multiblock.kinetic_multiblock.info.waiting")
+                    .withStyle(ChatFormatting.RED));
             for (var reason : recipeLogic.getFancyTooltip()) {
                 textList.add(Component.literal(" - " + reason.getString()));
             }
@@ -236,12 +249,12 @@ public abstract class KineticMultiblockMachine extends WorkableMultiblockMachine
             part.attachFancyTooltipsToController(this, tooltipsPanel);
         }
     }
+
     public class KineticRecipeLogic extends RecipeLogic {
 
         public KineticRecipeLogic(IRecipeLogicMachine machine) {
             super(machine);
         }
-
 
         @Override
         public void inValid() {

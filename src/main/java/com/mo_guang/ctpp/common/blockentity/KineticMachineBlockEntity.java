@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.common.registry.GTRegistration;
+
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.syncdata.IManaged;
@@ -16,22 +17,7 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.syncdata.managed.MultiManagedStorage;
-import com.mo_guang.ctpp.api.IBlockStressValues;
-import com.mo_guang.ctpp.api.KineticMachineDefinition;
-import com.mo_guang.ctpp.client.KineticMachineBlockEntityRenderer;
-import com.mo_guang.ctpp.common.machine.IKineticMachine;
-import com.mo_guang.ctpp.common.machine.multiblock.part.KineticPartMachine;
-import com.simibubi.create.content.kinetics.KineticNetwork;
-import com.simibubi.create.content.kinetics.base.IRotate;
-import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
-import com.simibubi.create.content.kinetics.base.KineticEffectHandler;
-import com.simibubi.create.content.kinetics.base.SingleAxisRotatingVisual;
-import com.simibubi.create.foundation.utility.CreateLang;
-import com.simibubi.create.infrastructure.config.AllConfigs;
-import com.tterrag.registrate.util.OneTimeEventReceiver;
-import com.tterrag.registrate.util.nullness.NonNullSupplier;
-import dev.engine_room.flywheel.lib.visualization.SimpleBlockEntityVisualizer;
-import lombok.Getter;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.core.BlockPos;
@@ -47,6 +33,22 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+
+import com.mo_guang.ctpp.api.IBlockStressValues;
+import com.mo_guang.ctpp.api.KineticMachineDefinition;
+import com.mo_guang.ctpp.client.KineticMachineBlockEntityRenderer;
+import com.mo_guang.ctpp.common.machine.IKineticMachine;
+import com.mo_guang.ctpp.common.machine.multiblock.part.KineticPartMachine;
+import com.simibubi.create.content.kinetics.KineticNetwork;
+import com.simibubi.create.content.kinetics.base.IRotate;
+import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
+import com.simibubi.create.content.kinetics.base.KineticEffectHandler;
+import com.simibubi.create.content.kinetics.base.SingleAxisRotatingVisual;
+import com.simibubi.create.foundation.utility.CreateLang;
+import com.simibubi.create.infrastructure.config.AllConfigs;
+import com.tterrag.registrate.util.OneTimeEventReceiver;
+import dev.engine_room.flywheel.lib.visualization.SimpleBlockEntityVisualizer;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -55,8 +57,8 @@ import java.util.Set;
 
 public class KineticMachineBlockEntity extends KineticBlockEntity implements IMachineBlockEntity, IManaged {
 
-
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(KineticMachineBlockEntity.class);
+    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
+            KineticMachineBlockEntity.class);
     public final MultiManagedStorage managedStorage = new MultiManagedStorage();
 
     @Getter
@@ -73,7 +75,6 @@ public class KineticMachineBlockEntity extends KineticBlockEntity implements IMa
     @Persisted
     public float workingSpeed;
     public boolean reActivateSource;
-
 
     protected KineticMachineBlockEntity(BlockEntityType<?> typeIn, BlockPos pos, BlockState state) {
         super(typeIn, pos, state);
@@ -95,32 +96,29 @@ public class KineticMachineBlockEntity extends KineticBlockEntity implements IMa
 
     public static void onBlockEntityRegister(BlockEntityType<?> blockEntityType) {
         if (LDLib.isClient()) {
-            var type = (BlockEntityType<KineticMachineBlockEntity>)blockEntityType;
+            var type = (BlockEntityType<KineticMachineBlockEntity>) blockEntityType;
 
             DistExecutor.unsafeRunWhenOn(
                     Dist.CLIENT,
-                    () -> () ->
-                            OneTimeEventReceiver.addModListener(
-                                    GTRegistration.REGISTRATE,
-                                    FMLClientSetupEvent.class,
-                                    ($) -> {
-                                        SimpleBlockEntityVisualizer.builder(type)
-                                                .factory(SingleAxisRotatingVisual::shaft)
-                                                .skipVanillaRender((be) -> false)
-                                                .apply();
+                    () -> () -> OneTimeEventReceiver.addModListener(
+                            GTRegistration.REGISTRATE,
+                            FMLClientSetupEvent.class,
+                            ($) -> {
+                                SimpleBlockEntityVisualizer.builder(type)
+                                        .factory(SingleAxisRotatingVisual::shaft)
+                                        .skipVanillaRender((be) -> false)
+                                        .apply();
 
-                                        BlockEntityRenderers.register(type, KineticMachineBlockEntityRenderer::new);
-                                    }
-            ));
+                                BlockEntityRenderers.register(type, KineticMachineBlockEntityRenderer::new);
+                            }));
         }
     }
-
-
 
     @Override
     public KineticMachineDefinition getDefinition() {
         return (KineticMachineDefinition) IMachineBlockEntity.super.getDefinition();
     }
+
     @Override
     public void setRenderState(MachineRenderState state) {
         this.renderState = state;
@@ -162,7 +160,6 @@ public class KineticMachineBlockEntity extends KineticBlockEntity implements IMa
         metaMachine.onLoad();
     }
 
-
     @Override
     public MultiManagedStorage getRootStorage() {
         return managedStorage;
@@ -174,11 +171,11 @@ public class KineticMachineBlockEntity extends KineticBlockEntity implements IMa
         metaMachine.onUnload();
     }
 
-//    @Override
-//    public void clearRemoved() {
-//        super.clearRemoved();
-//        metaMachine.onLoad();
-//    }
+    // @Override
+    // public void clearRemoved() {
+    // super.clearRemoved();
+    // metaMachine.onLoad();
+    // }
 
     @Override
     public boolean shouldRenderGrid(Player player, BlockPos pos, BlockState state, ItemStack held,
@@ -196,7 +193,6 @@ public class KineticMachineBlockEntity extends KineticBlockEntity implements IMa
     // ********* Create *********//
     //////////////////////////////////////
 
-
     @Override
     public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap) {
         return super.getCapability(cap);
@@ -208,13 +204,14 @@ public class KineticMachineBlockEntity extends KineticBlockEntity implements IMa
 
     public float scheduleWorking(float su, boolean simulate) {
         if (getDefinition().isSource()) {
-            float speed = Math.min(AllConfigs.server().kinetics.maxRotationSpeed.get(), su / getDefinition().getTorque());
+            float speed = Math.min(AllConfigs.server().kinetics.maxRotationSpeed.get(),
+                    su / getDefinition().getTorque());
             if (!simulate) {
                 workingSpeed = speed;
                 reActivateSource = true;
-//                level.getServer().tell(
-//                        new TickTask(level.getServer().getTickCount() + 1, this::updateGeneratedRotation)
-//                );
+                // level.getServer().tell(
+                // new TickTask(level.getServer().getTickCount() + 1, this::updateGeneratedRotation)
+                // );
             }
             return speed * getDefinition().getTorque();
         }
@@ -268,8 +265,8 @@ public class KineticMachineBlockEntity extends KineticBlockEntity implements IMa
     }
 
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
-        if(getMetaMachine() instanceof IKineticMachine kineticMachine
-                && kineticMachine.addToGoggleTooltip(tooltip, isPlayerSneaking)){
+        if (getMetaMachine() instanceof IKineticMachine kineticMachine &&
+                kineticMachine.addToGoggleTooltip(tooltip, isPlayerSneaking)) {
             return true;
         }
 
@@ -322,15 +319,17 @@ public class KineticMachineBlockEntity extends KineticBlockEntity implements IMa
             this.sendData();
         }
     }
+
     @Override
     public float calculateStressApplied() {
         float impact = (float) IBlockStressValues.getImpact(this.getStressConfigKey());
         this.lastStressApplied = impact;
         return impact;
     }
+
     @Override
     public float calculateAddedStressCapacity() {
-        float capacity = (float)IBlockStressValues.getCapacity(this.getStressConfigKey());
+        float capacity = (float) IBlockStressValues.getCapacity(this.getStressConfigKey());
         this.lastCapacityProvided = capacity;
         return capacity;
     }
@@ -372,17 +371,17 @@ public class KineticMachineBlockEntity extends KineticBlockEntity implements IMa
         return this.worldPosition.asLong();
     }
 
-//    @Override
-//    protected void write(CompoundTag compound, boolean clientPacket) {
-//        super.write(compound, clientPacket);
-//        compound.putFloat("workingSpeed", workingSpeed);
-//    }
-//
-//    @Override
-//    protected void read(CompoundTag compound, boolean clientPacket) {
-//        super.read(compound, clientPacket);
-//        workingSpeed = compound.contains("workingSpeed") ? compound.getFloat("workingSpeed") : 0;
-//    }
+    // @Override
+    // protected void write(CompoundTag compound, boolean clientPacket) {
+    // super.write(compound, clientPacket);
+    // compound.putFloat("workingSpeed", workingSpeed);
+    // }
+    //
+    // @Override
+    // protected void read(CompoundTag compound, boolean clientPacket) {
+    // super.read(compound, clientPacket);
+    // workingSpeed = compound.contains("workingSpeed") ? compound.getFloat("workingSpeed") : 0;
+    // }
 
     @Override
     public ManagedFieldHolder getFieldHolder() {

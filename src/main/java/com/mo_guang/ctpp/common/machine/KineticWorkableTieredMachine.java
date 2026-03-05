@@ -1,17 +1,17 @@
 package com.mo_guang.ctpp.common.machine;
 
-import com.google.common.collect.Table;
-import com.google.common.collect.Tables;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.*;
 import com.gregtechceu.gtceu.api.machine.trait.*;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,8 +21,10 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 public class KineticWorkableTieredMachine extends TieredMachine implements IRecipeLogicMachine,
-        IMachineLife, IMufflableMachine{
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(KineticWorkableTieredMachine.class,
+                                          IMachineLife, IMufflableMachine {
+
+    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
+            KineticWorkableTieredMachine.class,
             TieredMachine.MANAGED_FIELD_HOLDER);
 
     @Getter
@@ -64,7 +66,9 @@ public class KineticWorkableTieredMachine extends TieredMachine implements IReci
     @Setter
     protected boolean isMuffled;
     protected boolean previouslyMuffled = true;
-    public KineticWorkableTieredMachine(IMachineBlockEntity holder, int tier, Int2IntFunction tankScalingFunction, Object... args){
+
+    public KineticWorkableTieredMachine(IMachineBlockEntity holder, int tier, Int2IntFunction tankScalingFunction,
+                                        Object... args) {
         super(holder, tier);
         this.recipeTypes = getDefinition().getRecipeTypes();
         this.activeRecipeType = 0;
@@ -80,6 +84,7 @@ public class KineticWorkableTieredMachine extends TieredMachine implements IReci
         this.importComputation = createImportComputationContainer(args);
         this.exportComputation = createExportComputationContainer(args);
     }
+
     //////////////////////////////////////
     // ***** Initialization ******//
     //////////////////////////////////////

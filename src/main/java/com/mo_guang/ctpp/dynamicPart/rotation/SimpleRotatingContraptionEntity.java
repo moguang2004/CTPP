@@ -1,14 +1,7 @@
 package com.mo_guang.ctpp.dynamicPart.rotation;
 
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.mo_guang.ctpp.CTPPEntityTypes;
-import com.mo_guang.ctpp.dynamicPart.QuaternionRotationState;
-import com.mojang.blaze3d.vertex.PoseStack;
 
-import com.simibubi.create.content.contraptions.*;
-import com.simibubi.create.foundation.collision.Matrix3d;
-import lombok.Getter;
-import net.createmod.catnip.math.AngleHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
@@ -17,20 +10,24 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
+import com.mo_guang.ctpp.CTPPEntityTypes;
+import com.mo_guang.ctpp.dynamicPart.QuaternionRotationState;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.simibubi.create.content.contraptions.*;
+import lombok.Getter;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import tech.vixhentx.mcmod.ctnhlib.utils.ExtendNbtUtils;
 
-import java.lang.reflect.Field;
-
 import static com.mo_guang.ctpp.util.MathUtil.*;
+
 /**
  * 一个可以被控制的绕着某个锚点自由旋转的装置实体
- * */
+ */
 public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity {
 
     public BlockPos controllerPos;
@@ -48,24 +45,24 @@ public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity {
 
     protected float clientRotationDiff = 0.0f;
 
-    protected static final EntityDataAccessor<Float> DATA_Q_W =
-            SynchedEntityData.defineId(SimpleRotatingContraptionEntity.class, EntityDataSerializers.FLOAT);
-    protected static final EntityDataAccessor<Float> DATA_Q_X =
-            SynchedEntityData.defineId(SimpleRotatingContraptionEntity.class, EntityDataSerializers.FLOAT);
-    protected static final EntityDataAccessor<Float> DATA_Q_Y =
-            SynchedEntityData.defineId(SimpleRotatingContraptionEntity.class, EntityDataSerializers.FLOAT);
-    protected static final EntityDataAccessor<Float> DATA_Q_Z =
-            SynchedEntityData.defineId(SimpleRotatingContraptionEntity.class, EntityDataSerializers.FLOAT);
-    protected static final EntityDataAccessor<Vector3f> DATA_ANGULAR_VEL =
-            SynchedEntityData.defineId(SimpleRotatingContraptionEntity.class, EntityDataSerializers.VECTOR3);
-    protected static final EntityDataAccessor<Vector3f> DATA_PIVOT =
-            SynchedEntityData.defineId(SimpleRotatingContraptionEntity.class, EntityDataSerializers.VECTOR3);
-    protected static final EntityDataAccessor<Boolean> DATA_IS_RUNNING =
-            SynchedEntityData.defineId(SimpleRotatingContraptionEntity.class, EntityDataSerializers.BOOLEAN);
+    protected static final EntityDataAccessor<Float> DATA_Q_W = SynchedEntityData
+            .defineId(SimpleRotatingContraptionEntity.class, EntityDataSerializers.FLOAT);
+    protected static final EntityDataAccessor<Float> DATA_Q_X = SynchedEntityData
+            .defineId(SimpleRotatingContraptionEntity.class, EntityDataSerializers.FLOAT);
+    protected static final EntityDataAccessor<Float> DATA_Q_Y = SynchedEntityData
+            .defineId(SimpleRotatingContraptionEntity.class, EntityDataSerializers.FLOAT);
+    protected static final EntityDataAccessor<Float> DATA_Q_Z = SynchedEntityData
+            .defineId(SimpleRotatingContraptionEntity.class, EntityDataSerializers.FLOAT);
+    protected static final EntityDataAccessor<Vector3f> DATA_ANGULAR_VEL = SynchedEntityData
+            .defineId(SimpleRotatingContraptionEntity.class, EntityDataSerializers.VECTOR3);
+    protected static final EntityDataAccessor<Vector3f> DATA_PIVOT = SynchedEntityData
+            .defineId(SimpleRotatingContraptionEntity.class, EntityDataSerializers.VECTOR3);
+    protected static final EntityDataAccessor<Boolean> DATA_IS_RUNNING = SynchedEntityData
+            .defineId(SimpleRotatingContraptionEntity.class, EntityDataSerializers.BOOLEAN);
 
     /**
-    * 同步服务端与客户端的四元数数据
-    * **/
+     * 同步服务端与客户端的四元数数据
+     **/
     @Override
     protected void defineSynchedData() {
         super.defineSynchedData();
@@ -78,7 +75,6 @@ public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity {
         entityData.define(DATA_IS_RUNNING, false);
     }
 
-
     /**
      * 旋转基点
      **/
@@ -89,9 +85,10 @@ public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity {
         super(type, world);
     }
 
-    public static SimpleRotatingContraptionEntity create(Level world, Contraption contraption, IRotationMultiblock controller, Vec3 pivot) {
-        SimpleRotatingContraptionEntity entity =
-                new SimpleRotatingContraptionEntity(CTPPEntityTypes.SIMPLE_CONTRAPTION.get(), world);
+    public static SimpleRotatingContraptionEntity create(Level world, Contraption contraption,
+                                                         IRotationMultiblock controller, Vec3 pivot) {
+        SimpleRotatingContraptionEntity entity = new SimpleRotatingContraptionEntity(
+                CTPPEntityTypes.SIMPLE_CONTRAPTION.get(), world);
         entity.controllerPos = controller.getBlockPosition();
         entity.isRunning = true;
         entity.setContraption(contraption);
@@ -126,8 +123,7 @@ public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity {
             Vector3f vec = new Vector3f(
                     (float) angularVelocity.x,
                     (float) angularVelocity.y,
-                    (float) angularVelocity.z
-            );
+                    (float) angularVelocity.z);
             entityData.set(DATA_ANGULAR_VEL, vec);
         }
     }
@@ -150,7 +146,6 @@ public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity {
             entityData.set(DATA_PIVOT, new Vector3f((float) pivot.x, (float) pivot.y, (float) pivot.z));
         }
     }
-
 
     @Override
     public void onSyncedDataUpdated(EntityDataAccessor<?> key) {
@@ -248,13 +243,11 @@ public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity {
     }
 
     @Override
-    public void teleportTo(double p_70634_1_, double p_70634_3_, double p_70634_5_) {
-    }
+    public void teleportTo(double p_70634_1_, double p_70634_3_, double p_70634_5_) {}
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void lerpTo(double x, double y, double z, float yw, float pt, int inc, boolean t) {
-    }
+    public void lerpTo(double x, double y, double z, float yw, float pt, int inc, boolean t) {}
 
     @Override
     public void tick() {
@@ -275,8 +268,7 @@ public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity {
                 Quaternionf delta = new Quaternionf()
                         .fromAxisAngleRad(
                                 (float) axis.x, (float) axis.y, (float) axis.z,
-                                (float) Math.toRadians(speed)
-                        );
+                                (float) Math.toRadians(speed));
 
                 serverRotation = delta.mul(serverRotation);
                 syncRotationQuaternion();
@@ -296,8 +288,7 @@ public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity {
                                     (float) axis.x,
                                     (float) axis.y,
                                     (float) axis.z,
-                                    angleRad
-                            );
+                                    angleRad);
 
                     // 应用本地预测旋转
                     clientRotation = delta.mul(clientRotation, new Quaternionf());
@@ -412,7 +403,6 @@ public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity {
         }
     }
 
-
     @Override
     protected StructureTransform makeStructureTransform() {
         BlockPos offset = net.minecraft.core.BlockPos.containing(pivot);
@@ -456,8 +446,8 @@ public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity {
         matrixStack.translate(0.5, 0.5, 0.5);
         matrixStack.mulPose(rotationQ);
         matrixStack.translate(-0.5, -0.5, -0.5);
-
     }
+
     @Override
     protected void writeAdditional(CompoundTag nbt, boolean spawnPacket) {
         // 先调用父类方法，保存父类的核心数据

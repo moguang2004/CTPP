@@ -4,13 +4,15 @@ import com.gregtechceu.gtceu.api.addon.GTAddon;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.addon.events.KJSRecipeKeyEvent;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
-import com.mo_guang.ctpp.api.StressRecipeCapability;
+
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.resources.ResourceLocation;
+
 import com.mo_guang.ctpp.api.CTPPRecipeCapabilities;
+import com.mo_guang.ctpp.api.StressRecipeCapability;
 import com.mo_guang.ctpp.common.data.recipe.CTPPRecipes;
 import com.mo_guang.ctpp.registry.CTPPBlocks;
 import com.mojang.datafixers.util.Pair;
-import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.resources.ResourceLocation;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -20,6 +22,7 @@ import static com.mo_guang.ctpp.integration.kjs.CTPPRecipeComponents.SU_OUT;
 
 @GTAddon
 public class CTPPGTAddon implements IGTAddon {
+
     @Override
     public GTRegistrate getRegistrate() {
         return CTPPRegistration.REGISTRATE;
@@ -49,15 +52,13 @@ public class CTPPGTAddon implements IGTAddon {
     public void registerRecipeKeys(KJSRecipeKeyEvent event) {
         event.registerKey(
                 StressRecipeCapability.CAP,
-                Pair.of(SU_IN, SU_OUT)
-        );
+                Pair.of(SU_IN, SU_OUT));
     }
 
     @Override
     public void removeRecipes(Consumer<ResourceLocation> consumer) {
         List<String> path = List.of(
-                "create_new_age:shaped/carbon_brushes"
-        );
+                "create_new_age:shaped/carbon_brushes");
 
         path.forEach(s -> consumer.accept(ResourceLocation.tryParse(s)));
     }

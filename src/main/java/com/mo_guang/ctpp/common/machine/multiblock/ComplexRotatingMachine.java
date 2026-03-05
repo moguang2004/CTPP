@@ -3,26 +3,29 @@ package com.mo_guang.ctpp.common.machine.multiblock;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
+
 import com.lowdragmc.lowdraglib.gui.util.ClickData;
 import com.lowdragmc.lowdraglib.gui.widget.ComponentPanelWidget;
 import com.lowdragmc.lowdraglib.utils.TrackedDummyWorld;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.RandomSource;
+
 import com.mo_guang.ctpp.api.pattern.StaticBlockPattern;
 import com.mo_guang.ctpp.dynamicPart.rotation.*;
 import com.simibubi.create.content.contraptions.AbstractContraptionEntity;
 import lombok.Getter;
 import lombok.Setter;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.network.chat.Component;
-import net.minecraft.util.Mth;
-import net.minecraft.util.RandomSource;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ComplexRotatingMachine extends WorkableElectricMultiblockMachine implements IRotationMultiblock<RubiksCubeContraptionEntity> {
+public class ComplexRotatingMachine extends WorkableElectricMultiblockMachine
+                                    implements IRotationMultiblock<RubiksCubeContraptionEntity> {
+
     @Getter
     @Setter
     public List<RubiksCubeContraptionEntity> rotatingEntity = new ArrayList<>();
@@ -30,6 +33,7 @@ public class ComplexRotatingMachine extends WorkableElectricMultiblockMachine im
     protected TickableSubscription rotatingSubs;
     public int count = 0;
     public String rotation = "STOP";
+
     public ComplexRotatingMachine(IMachineBlockEntity holder, Object... args) {
         super(holder, args);
     }
@@ -72,29 +76,31 @@ public class ComplexRotatingMachine extends WorkableElectricMultiblockMachine im
         button.append(ComponentPanelWidget.withButton(Component.literal("F"), "F"));
         textList.add(button);
     }
+
     @Override
     public void handleDisplayClick(String componentData, ClickData clickData) {
         if (!clickData.isRemote) {
             rotation = componentData;
         }
     }
+
     public void rotatingTick() {
-//        if (isFormed && rotatingEntity != null) {
-//            var halfTick = 90 / RubiksCubeContraptionEntity.ROTATE_SPEED;
-//            if (getOffsetTimer() % (2 * halfTick) == 0) {
-//                rotatingEntity.forEach(entity -> {
-//                    if(!(entity instanceof RubiksCubeContraptionEntity)) return;
-//                    entity.performStandardMove(rotation);
-//                });
-//                rotation = "STOP";
-//            }
-//            if (getOffsetTimer() % (2 * halfTick) == halfTick) {
-//                rotatingEntity.forEach(entity -> {
-//                    if(!(entity instanceof RubiksCubeContraptionEntity)) return;
-//                    entity.performStandardMove("STOP");
-//                });
-//            }
-//        }
+        // if (isFormed && rotatingEntity != null) {
+        // var halfTick = 90 / RubiksCubeContraptionEntity.ROTATE_SPEED;
+        // if (getOffsetTimer() % (2 * halfTick) == 0) {
+        // rotatingEntity.forEach(entity -> {
+        // if(!(entity instanceof RubiksCubeContraptionEntity)) return;
+        // entity.performStandardMove(rotation);
+        // });
+        // rotation = "STOP";
+        // }
+        // if (getOffsetTimer() % (2 * halfTick) == halfTick) {
+        // rotatingEntity.forEach(entity -> {
+        // if(!(entity instanceof RubiksCubeContraptionEntity)) return;
+        // entity.performStandardMove("STOP");
+        // });
+        // }
+        // }
         if (isFormed && rotatingEntity != null) {
             var halfTick = 90 / RubiksCubeContraptionEntity.ROTATE_SPEED;
             if (getOffsetTimer() % (2 * halfTick) == 0) {
@@ -125,7 +131,8 @@ public class ComplexRotatingMachine extends WorkableElectricMultiblockMachine im
                 SimpleRotatingContraption contraption = new SimpleRotatingContraption(part, pivot);
                 contraption.assemble(this.self().getLevel(), self().getPos());
                 contraption.removeBlocksFromWorld(this.self().getLevel(), BlockPos.ZERO);
-                RubiksCubeContraptionEntity contraptionEntity = RubiksCubeContraptionEntity.create(self().getLevel(), contraption, pivot.getCenter(), getFrontFacing(), pos, this);
+                RubiksCubeContraptionEntity contraptionEntity = RubiksCubeContraptionEntity.create(self().getLevel(),
+                        contraption, pivot.getCenter(), getFrontFacing(), pos, this);
                 contraptionEntity.setPos(pivot.getX(), pivot.getY(), pivot.getZ());
                 this.self().getLevel().addFreshEntity(contraptionEntity);
                 ce.put(group, contraptionEntity);

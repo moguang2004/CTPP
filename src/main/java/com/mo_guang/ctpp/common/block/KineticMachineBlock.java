@@ -3,11 +3,7 @@ package com.mo_guang.ctpp.common.block;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.mo_guang.ctpp.common.blockentity.KineticMachineBlockEntity;
-import com.mo_guang.ctpp.common.machine.IKineticMachine;
-import com.mo_guang.ctpp.api.KineticMachineDefinition;
-import com.simibubi.create.content.kinetics.base.IRotate;
-import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
@@ -18,8 +14,13 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.Nullable;
 
+import com.mo_guang.ctpp.api.KineticMachineDefinition;
+import com.mo_guang.ctpp.common.blockentity.KineticMachineBlockEntity;
+import com.mo_guang.ctpp.common.machine.IKineticMachine;
+import com.simibubi.create.content.kinetics.base.IRotate;
+import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
+import org.jetbrains.annotations.Nullable;
 
 public class KineticMachineBlock extends MetaMachineBlock implements IRotate {
 

@@ -1,16 +1,16 @@
 package com.mo_guang.ctpp.integration.jei.category;
 
 import com.gregtechceu.gtceu.common.data.GTMaterials;
+
+import net.createmod.catnip.gui.element.GuiGameElement;
+import net.minecraft.client.gui.GuiGraphics;
+
 import com.mo_guang.ctpp.common.kinetic.fan.acidwashing.AcidwashingRecipe;
 import com.simibubi.create.compat.jei.category.ProcessingViaFanCategory;
 import com.simibubi.create.compat.jei.category.animations.AnimatedKinetics;
-import net.createmod.catnip.gui.element.GuiGameElement;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.entity.SkullBlockEntity;
 
 public class FanAcidWashingCategory extends ProcessingViaFanCategory.MultiOutput<AcidwashingRecipe> {
+
     public FanAcidWashingCategory(Info<AcidwashingRecipe> info) {
         super(info);
     }

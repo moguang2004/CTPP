@@ -4,29 +4,32 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.WorkableTieredMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
+
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import com.mo_guang.ctpp.common.machine.IKineticMachine;
-import com.simibubi.create.content.kinetics.base.DirectionalKineticBlock;
-import com.simibubi.create.foundation.utility.CreateLang;
-import it.unimi.dsi.fastutil.ints.Int2IntFunction;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.entity.BlockEntity;
+
+import com.mo_guang.ctpp.common.machine.IKineticMachine;
+import com.simibubi.create.content.kinetics.base.DirectionalKineticBlock;
+import com.simibubi.create.foundation.utility.CreateLang;
+import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 import org.antarcticgardens.newage.content.generation.generatorcoil.GeneratorCoilBlock;
 import org.antarcticgardens.newage.content.generation.generatorcoil.GeneratorCoilBlockEntity;
-import org.antarcticgardens.newage.tools.StringFormattingTool;
 import org.apache.commons.lang3.mutable.MutableInt;
 
 import java.util.List;
 
 public class CarbonBrushesGeneratorMachine extends WorkableTieredMachine implements IKineticMachine {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(CarbonBrushesGeneratorMachine.class,
-        WorkableTieredMachine.MANAGED_FIELD_HOLDER);
+    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
+            CarbonBrushesGeneratorMachine.class,
+            WorkableTieredMachine.MANAGED_FIELD_HOLDER);
 
     @Persisted
     @DescSynced
@@ -34,7 +37,8 @@ public class CarbonBrushesGeneratorMachine extends WorkableTieredMachine impleme
 
     protected TickableSubscription generatorSub;
 
-    public CarbonBrushesGeneratorMachine(IMachineBlockEntity holder, int tier, Int2IntFunction tankScalingFunction, Object... args) {
+    public CarbonBrushesGeneratorMachine(IMachineBlockEntity holder, int tier, Int2IntFunction tankScalingFunction,
+                                         Object... args) {
         super(holder, tier, tankScalingFunction, args);
     }
 
@@ -52,7 +56,7 @@ public class CarbonBrushesGeneratorMachine extends WorkableTieredMachine impleme
     @Override
     public void onUnload() {
         super.onUnload();
-        if(generatorSub != null){
+        if (generatorSub != null) {
             generatorSub.unsubscribe();
             generatorSub = null;
         }
@@ -61,7 +65,8 @@ public class CarbonBrushesGeneratorMachine extends WorkableTieredMachine impleme
     @Override
     protected NotifiableEnergyContainer createEnergyContainer(Object... args) {
         var energyContainer = super.createEnergyContainer(args);
-        energyContainer.setSideOutputCondition(side -> side != getFrontFacing() && side != getFrontFacing().getOpposite());
+        energyContainer
+                .setSideOutputCondition(side -> side != getFrontFacing() && side != getFrontFacing().getOpposite());
         return energyContainer;
     }
 
@@ -76,7 +81,6 @@ public class CarbonBrushesGeneratorMachine extends WorkableTieredMachine impleme
     }
 
     public void tick() {
-
         if (getLevel() == null || getLevel().isClientSide)
             return;
 
@@ -124,5 +128,4 @@ public class CarbonBrushesGeneratorMachine extends WorkableTieredMachine impleme
 
         return generated;
     }
-
 }

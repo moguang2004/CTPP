@@ -11,7 +11,6 @@ import static tech.vixhentx.mcmod.ctnhlib.registrate.data.ProviderTypes.CNLANG;
 
 public class CTPPDatagen {
 
-
     public static void init() {
         CTPPRegistration.REGISTRATE.addDataGenerator(ProviderType.LANG, EnglishLangHandler::init);
         CTPPRegistration.REGISTRATE.addDataGenerator(CNLANG, ChineseLangHandler::init);

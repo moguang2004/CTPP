@@ -1,23 +1,21 @@
 package com.mo_guang.ctpp.lang;
 
-
-import com.mo_guang.ctpp.registry.CTPPItems;
-import com.mo_guang.ctpp.registry.CTPPMachines;
-import com.mo_guang.ctpp.registry.CTPPMultiblockMachines;
 import com.mo_guang.ctpp.registry.CTPPCreativeModeTabs;
 import tech.vixhentx.mcmod.ctnhlib.registrate.lang.RegistrateCNLangProvider;
 
 public class ChineseLangHandler {
-    public static void init(RegistrateCNLangProvider provider){
+
+    public static void init(RegistrateCNLangProvider provider) {
         provider.add("ctpp.common_tooltip.kinetic_overclock", "-输入配方所需的(N的平方)倍应力时，获得N并行");
         provider.add("ctpp.common_tooltip.input_speed", "*输入转速以等级最高的应力仓的转速为准");
-        provider.add("ctpp.common_tooltip.mechanical_tier", "*§n机械等级§r由§l机械升级仓§r中的物品决定：无(0)，§7基础构件(1)§r，§e精密构件(2)§r，\n§8钢铁构建或基础电子电路(3)§r，§b高级电子电路(4)§r，§6集成电路(5)§r");
+        provider.add("ctpp.common_tooltip.mechanical_tier",
+                "*§n机械等级§r由§l机械升级仓§r中的物品决定：无(0)，§7基础构件(1)§r，§e精密构件(2)§r，\n§8钢铁构建或基础电子电路(3)§r，§b高级电子电路(4)§r，§6集成电路(5)§r");
         provider.add("ctpp.common_tooltip.mechanical_tier_machine", "§n机械等级§r请详见§l机械升级仓§r的物品信息");
 
         provider.add("recipe.capability.su.name", "应力");
         provider.add("recipe.condition.rpm.tooltip", "转速: %d");
-        provider.add("ctpp.stress_input","应力输入：§b%s su§r");
-        provider.add("ctpp.stress_output","应力输出：§b%s su§r");
+        provider.add("ctpp.stress_input", "应力输入：§b%s su§r");
+        provider.add("ctpp.stress_output", "应力输出：§b%s su§r");
         provider.add("ctpp.mechanical_tier", "机械等级：%d(%s)");
 
         provider.add("ctpp.top.stress_production", "应力产出：");
@@ -39,12 +37,12 @@ public class ChineseLangHandler {
         provider.add("ctpp.multiblock.windmill_control_center.info.3", "总应力输出：§a%dsu§r");
         provider.add("ctpp.multiblock.windmill_control_center.button", "高亮显示");
 
-        provider.add("ctpp.multiblock.kinetic_workable_multiblock_machine.input_stress","输入应力：%dsu");
-        provider.add("ctpp.multiblock.kinetic_workable_multiblock_machine.parallel","并行数： %d");
-        provider.add("ctpp.multiblock.kinetic_workable_multiblock_machine.null","状态：无");
-        provider.add("ctpp.multiblock.kinetic_workable_multiblock_machine.reduction","状态：配方耗时减免x0.8");
-        provider.add("ctpp.multiblock.kinetic_workable_multiblock_machine.overclock","状态：超频");
-        provider.add("ctpp.multiblock.kinetic_workable_multiblock_machine.perfect_overclock","状态：无损超频");
+        provider.add("ctpp.multiblock.kinetic_workable_multiblock_machine.input_stress", "输入应力：%dsu");
+        provider.add("ctpp.multiblock.kinetic_workable_multiblock_machine.parallel", "并行数： %d");
+        provider.add("ctpp.multiblock.kinetic_workable_multiblock_machine.null", "状态：无");
+        provider.add("ctpp.multiblock.kinetic_workable_multiblock_machine.reduction", "状态：配方耗时减免x0.8");
+        provider.add("ctpp.multiblock.kinetic_workable_multiblock_machine.overclock", "状态：超频");
+        provider.add("ctpp.multiblock.kinetic_workable_multiblock_machine.perfect_overclock", "状态：无损超频");
 
         provider.add("ctpp.multiblock.mechanical_tier", "当前机械等级：%d(%s)");
         provider.add("ctpp.mechanical_tier.0", "无");
@@ -67,7 +65,8 @@ public class ChineseLangHandler {
         provider.add("ctpp.multiblock.kinetic_steam_turbine.tooltip.3", "运行效率会获得(1 + 机械等级/(机械等级 + 1))的效率加成");
 
         provider.add("ctpp.multiblock.windmill_control_center.tooltip.0", "风力总控！越多越强！");
-        provider.add("ctpp.multiblock.windmill_control_center.tooltip.1", "-会检测多方块周围半径32格内的风车轴承\n-总输出的应力为：周围的风车轴承数x(周围风车总应力输出 + 512)\n-§4最多控制(6 + 6 * 机械等级)个风车！§r");
+        provider.add("ctpp.multiblock.windmill_control_center.tooltip.1",
+                "-会检测多方块周围半径32格内的风车轴承\n-总输出的应力为：周围的风车轴承数x(周围风车总应力输出 + 512)\n-§4最多控制(6 + 6 * 机械等级)个风车！§r");
         provider.add("ctpp.multiblock.windmill_control_center.tooltip.2", "64格范围内存在其他风车控制中心会使得输出变为0");
 
         provider.add("ctpp.multiblock.boom_of_create.tooltip.0", "艺术就是爆炸！");
@@ -80,7 +79,6 @@ public class ChineseLangHandler {
         provider.add("ctpp.recipe.fan_acid_washing", "批量酸洗");
         provider.add("ctpp.recipe.acid_washing.fan", "在硫酸后放置鼓风机");
 
-
         provider.add("ctpp.copyright.info", "该机器由§6CT++§r添加");
 
         provider.add(CTPPCreativeModeTabs.MACHINE.get(), "CTPP机器");
@@ -89,7 +87,7 @@ public class ChineseLangHandler {
 
         provider.add("config.ctpp.option.gtmConfig", "GTM经典联动联动机器配置");
         provider.add("config.ctpp.option.ctnhConfig", "CTNH机器配置");
-      
+
         provider.add("config.ctpp.option.enableGTMKineticOutputBox", "是否启用GTM的应力输出仓");
         provider.add("config.ctpp.option.kineticInputBoxTorqueMultiplier", "应力输入仓的扭矩乘数");
         provider.add("config.ctpp.option.kineticOutputBoxTorqueMultiplier", "应力输出仓的扭矩乘数");
@@ -97,7 +95,7 @@ public class ChineseLangHandler {
         provider.add("config.ctpp.option.kineticCreateMixerSpeedMultiplier", "比起同等级的电动搅拌机，应力搅拌机的处理速度倍率");
         provider.add("config.ctpp.option.kineticCreateMixerRPMRequirement", "应力搅拌转速要求");
         provider.add("config.ctpp.option.enableGTMElectricGearBox", "是否启用GTM的电动齿轮箱");
-      
+
         provider.add("config.ctpp.option.enableSmashingFactory", "是否启用CTNH的粉碎工厂");
         provider.add("config.ctpp.option.smashingFactoryMaximumProcessingCapacity", "粉碎工厂的最大处理能力（用整数来表示电压级）");
         provider.add("config.ctpp.option.smashingFactorySpeedMultiplier", "比起同等级的粉碎机，粉碎工厂的处理速度倍率");

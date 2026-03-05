@@ -1,5 +1,8 @@
 package com.mo_guang.ctpp.client;
 
+import net.createmod.catnip.data.Iterate;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.Block;
 
 import com.mo_guang.ctpp.common.blockentity.KineticMachineBlockEntity;
 import com.mo_guang.ctpp.common.machine.IKineticMachine;
@@ -9,13 +12,8 @@ import com.simibubi.create.content.kinetics.base.KineticBlockEntityVisual;
 import com.simibubi.create.content.kinetics.base.RotatingInstance;
 import com.simibubi.create.foundation.render.AllInstanceTypes;
 import dev.engine_room.flywheel.api.instance.Instance;
-import dev.engine_room.flywheel.api.visual.BlockEntityVisual;
 import dev.engine_room.flywheel.api.visualization.VisualizationContext;
 import dev.engine_room.flywheel.lib.model.Models;
-import dev.engine_room.flywheel.lib.visualization.SimpleBlockEntityVisualizer;
-import net.createmod.catnip.data.Iterate;
-import net.minecraft.core.Direction;
-import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -39,11 +37,13 @@ public class SplitShaftVisual extends KineticBlockEntityVisual<KineticMachineBlo
 
         for (Direction dir : Iterate.directionsInAxis(rotationAxis())) {
 
-            RotatingInstance half = instancerProvider().instancer(AllInstanceTypes.ROTATING, Models.partial(AllPartialModels.SHAFT_HALF)).createInstance();
+            RotatingInstance half = instancerProvider()
+                    .instancer(AllInstanceTypes.ROTATING, Models.partial(AllPartialModels.SHAFT_HALF)).createInstance();
 
             float splitSpeed = speed * (blockEntity.getMetaMachine() instanceof IKineticMachine kineticMachine ?
                     kineticMachine.getRotationSpeedModifier(dir) : 1);
-            half.setup(blockEntity, splitSpeed).setPosition(getVisualPosition()).rotateToFace(Direction.SOUTH, dir).setChanged();
+            half.setup(blockEntity, splitSpeed).setPosition(getVisualPosition()).rotateToFace(Direction.SOUTH, dir)
+                    .setChanged();
             keys.add(half);
         }
     }
@@ -56,8 +56,12 @@ public class SplitShaftVisual extends KineticBlockEntityVisual<KineticMachineBlo
         Direction[] directions = Iterate.directionsInAxis(boxAxis);
 
         for (int i : Iterate.zeroAndOne) {
-            keys.get(i).setup(blockEntity, blockEntity.getSpeed() * (blockEntity.getMetaMachine() instanceof IKineticMachine kineticMachine ?
-                    kineticMachine.getRotationSpeedModifier(directions[i]) : 1)).setChanged();
+            keys.get(i)
+                    .setup(blockEntity,
+                            blockEntity.getSpeed() *
+                                    (blockEntity.getMetaMachine() instanceof IKineticMachine kineticMachine ?
+                                            kineticMachine.getRotationSpeedModifier(directions[i]) : 1))
+                    .setChanged();
         }
     }
 
@@ -66,7 +70,6 @@ public class SplitShaftVisual extends KineticBlockEntityVisual<KineticMachineBlo
         keys.forEach(RotatingInstance::delete);
         keys.clear();
     }
-
 
     @Override
     public void collectCrumblingInstances(Consumer<@Nullable Instance> consumer) {

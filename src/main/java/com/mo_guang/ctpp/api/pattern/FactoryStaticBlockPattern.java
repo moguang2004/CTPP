@@ -1,10 +1,10 @@
 package com.mo_guang.ctpp.api.pattern;
 
-import com.google.common.base.Joiner;
-import com.gregtechceu.gtceu.api.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.pattern.Predicates;
 import com.gregtechceu.gtceu.api.pattern.TraceabilityPredicate;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
+
+import com.google.common.base.Joiner;
 import it.unimi.dsi.fastutil.chars.Char2ObjectArrayMap;
 import it.unimi.dsi.fastutil.chars.Char2ObjectMap;
 import it.unimi.dsi.fastutil.chars.CharArrayList;
@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 public class FactoryStaticBlockPattern {
+
     private static final Joiner COMMA_JOIN = Joiner.on(",");
     private final List<String[]> depth;
     private final List<int[]> aisleRepetitions;
@@ -28,7 +29,8 @@ public class FactoryStaticBlockPattern {
     private int aisleHeight;
     private int rowWidth;
 
-    private FactoryStaticBlockPattern(RelativeDirection charDir, RelativeDirection stringDir, RelativeDirection aisleDir) {
+    private FactoryStaticBlockPattern(RelativeDirection charDir, RelativeDirection stringDir,
+                                      RelativeDirection aisleDir) {
         depth = new ArrayList<>();
         aisleRepetitions = new ArrayList<>();
         symbolMap = new Char2ObjectArrayMap<>();
@@ -117,23 +119,29 @@ public class FactoryStaticBlockPattern {
     }
 
     public static FactoryStaticBlockPattern start(RelativeDirection charDir, RelativeDirection stringDir,
-                                            RelativeDirection aisleDir) {
+                                                  RelativeDirection aisleDir) {
         return new FactoryStaticBlockPattern(charDir, stringDir, aisleDir);
     }
+
     public FactoryStaticBlockPattern where(String symbol, TraceabilityPredicate blockMatcher) {
         return this.where(symbol.charAt(0), blockMatcher, true);
     }
+
     public FactoryStaticBlockPattern where(String symbol, TraceabilityPredicate blockMatcher, boolean isStatic) {
         return this.where(symbol.charAt(0), blockMatcher, isStatic, 0);
     }
-    public FactoryStaticBlockPattern where(String symbol, TraceabilityPredicate blockMatcher, boolean isStatic, int group) {
+
+    public FactoryStaticBlockPattern where(String symbol, TraceabilityPredicate blockMatcher, boolean isStatic,
+                                           int group) {
         return this.where(symbol.charAt(0), blockMatcher, isStatic, group);
     }
+
     public FactoryStaticBlockPattern where(char symbol, TraceabilityPredicate blockMatcher, boolean isStatic) {
         return this.where(symbol, blockMatcher, isStatic, 0);
     }
 
-    public FactoryStaticBlockPattern where(char symbol, TraceabilityPredicate blockMatcher, boolean isStatic, int group) {
+    public FactoryStaticBlockPattern where(char symbol, TraceabilityPredicate blockMatcher, boolean isStatic,
+                                           int group) {
         if (blockMatcher.isAny() || blockMatcher.isAir()) {
             this.symbolMap.put(symbol, blockMatcher);
         } else {
@@ -162,10 +170,9 @@ public class FactoryStaticBlockPattern {
                 for (int k = 0; k < this.rowWidth; k++) {
                     staticPredicate[i][j][k] = true;
                     char symbol = this.depth.get(i)[j].charAt(k);
-                    if (!dynamicSymbolMap.containsKey(symbol)){
+                    if (!dynamicSymbolMap.containsKey(symbol)) {
                         staticPredicate[i][j][k] = true;
-                    }
-                    else {
+                    } else {
                         dynamicPredicate[i][j][k] = this.dynamicSymbolMap.get(symbol);
                         staticPredicate[i][j][k] = false;
                     }
@@ -177,7 +184,8 @@ public class FactoryStaticBlockPattern {
             }
         }
 
-        return new StaticBlockPattern(predicate, structureDir, aisleRepetitions, centerOffset, staticPredicate, dynamicPredicate);
+        return new StaticBlockPattern(predicate, structureDir, aisleRepetitions, centerOffset, staticPredicate,
+                dynamicPredicate);
     }
 
     private TraceabilityPredicate[][][] makePredicateArray() {

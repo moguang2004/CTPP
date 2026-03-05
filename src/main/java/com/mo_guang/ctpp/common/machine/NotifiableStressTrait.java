@@ -6,11 +6,14 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.trait.ICapabilityTrait;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableRecipeHandlerTrait;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+
+import net.minecraft.util.Mth;
+
 import com.mo_guang.ctpp.api.StressRecipeCapability;
 import lombok.Getter;
 import lombok.Setter;
-import net.minecraft.util.Mth;
 
 import java.util.Collections;
 import java.util.List;
@@ -80,7 +83,6 @@ public class NotifiableStressTrait extends NotifiableRecipeHandlerTrait<Float> i
     public double getTotalContentAmount() {
         return available;
     }
-
 
     public void stopWorking() {
         if (machine instanceof IKineticMachine kineticMachine) {

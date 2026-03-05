@@ -4,13 +4,15 @@ import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
+
+import net.minecraft.network.chat.Component;
+
 import com.mo_guang.ctpp.api.CTPPRecipeConditions;
 import com.mo_guang.ctpp.common.machine.IKineticMachine;
 import com.mo_guang.ctpp.common.machine.multiblock.KineticWorkableMultiblockMachine;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.NoArgsConstructor;
-import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 
 @NoArgsConstructor
@@ -64,31 +66,31 @@ public class RPMCondition extends RecipeCondition {
         return new RPMCondition();
     }
 
-//    @NotNull
-//    @Override
-//    public JsonObject serialize() {
-//        JsonObject config = super.serialize();
-//        config.addProperty("rpm", rpm);
-//        return config;
-//    }
-//
-//    @Override
-//    public RecipeCondition deserialize(@NotNull JsonObject config) {
-//        super.deserialize(config);
-//        rpm = GsonHelper.getAsFloat(config, "rpm", 0);
-//        return this;
-//    }
-//
-//    @Override
-//    public RecipeCondition fromNetwork(FriendlyByteBuf buf) {
-//        super.fromNetwork(buf);
-//        rpm = buf.readFloat();
-//        return this;
-//    }
-//
-//    @Override
-//    public void toNetwork(FriendlyByteBuf buf) {
-//        super.toNetwork(buf);
-//        buf.writeFloat(rpm);
-//    }
+    // @NotNull
+    // @Override
+    // public JsonObject serialize() {
+    // JsonObject config = super.serialize();
+    // config.addProperty("rpm", rpm);
+    // return config;
+    // }
+    //
+    // @Override
+    // public RecipeCondition deserialize(@NotNull JsonObject config) {
+    // super.deserialize(config);
+    // rpm = GsonHelper.getAsFloat(config, "rpm", 0);
+    // return this;
+    // }
+    //
+    // @Override
+    // public RecipeCondition fromNetwork(FriendlyByteBuf buf) {
+    // super.fromNetwork(buf);
+    // rpm = buf.readFloat();
+    // return this;
+    // }
+    //
+    // @Override
+    // public void toNetwork(FriendlyByteBuf buf) {
+    // super.toNetwork(buf);
+    // buf.writeFloat(rpm);
+    // }
 }
