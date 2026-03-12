@@ -120,7 +120,7 @@ public class CarbonBrushesGeneratorMachine extends WorkableTieredMachine impleme
             if (!axis.test(dir))
                 break;
 
-            int energy = coil.takeGeneratedEnergy();
+            int energy = coil.takeGeneratedEnergy() / 4;
             generated += energy;
 
             coilsLeft.subtract(1);
