@@ -53,6 +53,7 @@ public class KineticGeneratorRecipes {
                 .addData("stress", 32768 * STEAM_POWERED_BOOST)
                 .duration(10)
                 .save(provider);
+
         VanillaRecipeHelper.addShapedRecipe(provider, "kinetic_generator",
                 new ItemStack(CTPPMultiblockMachines.KINETIC_GENERATOR.getItem()),
                 "ABA",
