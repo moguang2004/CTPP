@@ -94,6 +94,7 @@ public class KineticGeneratorMachine extends KineticMultiblockMachine
                 this.rotatingEntity.forEach(AbstractContraptionEntity::disassemble);
             }
             this.rotatingEntity = new ArrayList<>();
+            b = 0;
         }
     }
 
@@ -121,8 +122,12 @@ public class KineticGeneratorMachine extends KineticMultiblockMachine
     public void updateRotateBlocks(boolean active) {
         super.updateRotateBlocks(active);
         if (active) {
-            float speed = MathUtil.rpm2rads(this.speed);
-            if (rotatingEntity != null) rotatingEntity.forEach(entity -> entity.setRotationSpeed(0, -speed, 0));
+            if (rotatingEntity != null)
+                rotatingEntity.forEach(entity -> {
+                    var facing = getFrontFacing().getNormal();
+                    Vec3 newF = new Vec3(facing.getX(), facing.getY(), facing.getZ());
+                    entity.setRotationSpeed(MathUtil.rotateByVec(newF, 90, new Vec3(0, -1, 0)), getInputSpeed());
+                });
         }
     }
 
