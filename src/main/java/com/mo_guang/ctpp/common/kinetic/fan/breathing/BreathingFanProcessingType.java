@@ -56,7 +56,7 @@ public class BreathingFanProcessingType implements FanProcessingType {
         RECIPE_WRAPPER.setItem(0, itemStack);
         Optional<BreathingRecipe> breathingRecipe = CTPPRecipeTypeInfo.BREATHING.find(RECIPE_WRAPPER, level);
         if (breathingRecipe.isPresent()) {
-            return RecipeApplier.applyRecipeOn(level, itemStack, breathingRecipe.get());
+            return RecipeApplier.applyRecipeOn(level, itemStack, breathingRecipe.get(), true);
         }
         return null;
     }

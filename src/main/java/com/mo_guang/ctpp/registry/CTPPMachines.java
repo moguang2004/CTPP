@@ -196,7 +196,7 @@ public class CTPPMachines {
                 KineticMachineBlockEntity::create)
                 .model((ctx, prov, builder) -> {
                     ModelFile parentModel = prov.models().getExistingFile(
-                            ResourceLocation.tryParse("create_new_age:block/generation/carbon_brushes"));
+                            ResourceLocation.tryParse("create_new_age:block/carbon_brushes/base"));
                     BlockModelBuilder model = prov.models().nested().parent(parentModel);
                     builder.forAllStatesModels(state -> model);
                 })

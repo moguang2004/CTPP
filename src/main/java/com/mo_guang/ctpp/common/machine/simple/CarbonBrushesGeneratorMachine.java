@@ -19,8 +19,8 @@ import com.mo_guang.ctpp.common.machine.IKineticMachine;
 import com.simibubi.create.content.kinetics.base.DirectionalKineticBlock;
 import com.simibubi.create.foundation.utility.CreateLang;
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
-import org.antarcticgardens.newage.content.generation.generatorcoil.GeneratorCoilBlock;
-import org.antarcticgardens.newage.content.generation.generatorcoil.GeneratorCoilBlockEntity;
+import org.antarcticgardens.cna.content.electricity.generation.coil.GeneratorCoilBlock;
+import org.antarcticgardens.cna.content.electricity.generation.coil.GeneratorCoilBlockEntity;
 import org.apache.commons.lang3.mutable.MutableInt;
 
 import java.util.List;

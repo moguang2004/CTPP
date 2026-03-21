@@ -55,7 +55,7 @@ public class AcidWashingProcessingType implements FanProcessingType {
         RECIPE_WRAPPER.setItem(0, itemStack);
         Optional<AcidwashingRecipe> acidwashingRecipe = CTPPRecipeTypeInfo.ACIDWASHING.find(RECIPE_WRAPPER, level);
         if (acidwashingRecipe.isPresent()) {
-            return RecipeApplier.applyRecipeOn(level, itemStack, acidwashingRecipe.get());
+            return RecipeApplier.applyRecipeOn(level, itemStack, acidwashingRecipe.get(), true);
         }
         return null;
     }
