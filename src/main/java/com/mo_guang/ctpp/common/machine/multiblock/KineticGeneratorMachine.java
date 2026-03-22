@@ -11,8 +11,14 @@ import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.common.block.CoilBlock;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
+
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.utils.TrackedDummyWorld;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.phys.Vec3;
+
 import com.mo_guang.ctpp.api.pattern.StaticBlockPattern;
 import com.mo_guang.ctpp.common.machine.multiblock.part.KineticPartMachine;
 import com.mo_guang.ctpp.config.MainConfig;
@@ -23,9 +29,6 @@ import com.mo_guang.ctpp.util.MathUtil;
 import com.simibubi.create.content.contraptions.AbstractContraptionEntity;
 import lombok.Getter;
 import lombok.Setter;
-import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.phys.Vec3;
 import org.antarcticgardens.newage.content.generation.magnets.ImplementedMagnetBlock;
 import org.jetbrains.annotations.Nullable;
 
@@ -35,7 +38,7 @@ import java.util.List;
 import java.util.Map;
 
 public class KineticGeneratorMachine extends KineticMultiblockMachine
-        implements IRotationMultiblock<SimpleRotatingContraptionEntity> {
+                                     implements IRotationMultiblock<SimpleRotatingContraptionEntity> {
 
     public static final float GENERATING_BOOST = MainConfig.INSTANCE.ctnhConfig.kineticGeneratorGeneratingBoost;
     @Getter
@@ -61,15 +64,16 @@ public class KineticGeneratorMachine extends KineticMultiblockMachine
         if (type instanceof ICoilType coil) {
             this.coilType = coil;
         }
-//        var type = getMultiblockState().getMatchContext().get("ImplementedMagnetBlock");
-//        if (type instanceof IMagneticBlock magnetite) {
-//            this.b = magnetite.getStrength();
-//        }
-        for (BlockPos pos:BlockPos.betweenClosed(MachineUtils.getOffset(this, 1, 2, 3),MachineUtils.getOffset(this, 3, -2, -1))) {
+        // var type = getMultiblockState().getMatchContext().get("ImplementedMagnetBlock");
+        // if (type instanceof IMagneticBlock magnetite) {
+        // this.b = magnetite.getStrength();
+        // }
+        for (BlockPos pos : BlockPos.betweenClosed(MachineUtils.getOffset(this, 1, 2, 3),
+                MachineUtils.getOffset(this, 3, -2, -1))) {
             Object block = getLevel().getBlockState(pos).getBlock();
-                    if (block instanceof ImplementedMagnetBlock magnetBlock) {
-                        b += magnetBlock.getStrength();
-                    }
+            if (block instanceof ImplementedMagnetBlock magnetBlock) {
+                b += magnetBlock.getStrength();
+            }
         }
         efficiency = (getCoilTier() * 0.1 + 1) * (b / (b + 36));
 
@@ -118,6 +122,7 @@ public class KineticGeneratorMachine extends KineticMultiblockMachine
         }
         return result;
     }
+
     @Override
     public void updateRotateBlocks(boolean active) {
         super.updateRotateBlocks(active);
@@ -165,9 +170,9 @@ public class KineticGeneratorMachine extends KineticMultiblockMachine
     }
 
     public float getInputSpeed() {
-            var kinetic = (KineticPartMachine) this.getParts().stream()
-                    .filter(part -> part instanceof KineticPartMachine).toList().get(0);
-                    return kinetic.getKineticHolder().getSpeed();
+        var kinetic = (KineticPartMachine) this.getParts().stream()
+                .filter(part -> part instanceof KineticPartMachine).toList().get(0);
+        return kinetic.getKineticHolder().getSpeed();
     }
 
     public int getCoilTier() {
@@ -203,5 +208,4 @@ public class KineticGeneratorMachine extends KineticMultiblockMachine
     public ManagedFieldHolder getFieldHolder() {
         return MANAGED_FIELD_HOLDER;
     }
-
 }

@@ -115,13 +115,16 @@ public class CTPPMultiblockMachines {
                                     .or(Predicates.blocks(LAYERED_MAGNET.get()))
                                     .or(Predicates.blocks(FLUXUATED_MAGNETITE.get()))
                                     .or(Predicates.blocks(NETHERITE_MAGNET.get())), false)
-                            .where("B", Predicates.blocks(CABLE_BLOCKS.get(TagPrefix.wireGtHex, GTMaterials.Copper).get()))
-                            .where("F", Predicates.blocks(MATERIAL_BLOCKS.get(TagPrefix.frameGt, GTMaterials.Steel).get()))
+                            .where("B",
+                                    Predicates.blocks(CABLE_BLOCKS.get(TagPrefix.wireGtHex, GTMaterials.Copper).get()))
+                            .where("F",
+                                    Predicates.blocks(MATERIAL_BLOCKS.get(TagPrefix.frameGt, GTMaterials.Steel).get()))
                             .where("D", Predicates.blocks(STEEL_HULL.get()))
                             .where("C", Predicates.blocks(CASING_STEEL_SOLID.get())
                                     .or(Predicates.abilities(PartAbility.MAINTENANCE).setExactLimit(1))
                                     .or(Predicates.abilities(PartAbility.IMPORT_FLUIDS).setExactLimit(1))
-                                    .or(Predicates.abilities(CTPPPartAbility.MECHANICAL_UPGRADE).setMaxGlobalLimited(1)))
+                                    .or(Predicates.abilities(CTPPPartAbility.MECHANICAL_UPGRADE)
+                                            .setMaxGlobalLimited(1)))
                             .where("K", Predicates.blocks(CASING_STEEL_SOLID.get())
                                     .or(Predicates.abilities(CTPPPartAbility.INPUT_KINETIC).setMinGlobalLimited(1)))
                             .where("E", Predicates.blocks(CASING_STEEL_SOLID.get())
@@ -326,7 +329,7 @@ public class CTPPMultiblockMachines {
                             Component.translatable("ctpp.multiblock.boom_of_create.tooltip.2"),
                             Component.translatable("ctpp.multiblock.boom_of_create.tooltip.3"))
                     .pattern(definition -> FactoryBlockPattern.start()
-                            .aisle( "######AAA######",
+                            .aisle("######AAA######",
                                     "######AAA######",
                                     "######AAA######",
                                     "######AAA######",
@@ -335,7 +338,7 @@ public class CTPPMultiblockMachines {
                                     "######AAA######",
                                     "######AAA######",
                                     "######AAA######")
-                            .aisle( "#AAA##AAA##AAA#",
+                            .aisle("#AAA##AAA##AAA#",
                                     "#AAA##AAA##AAA#",
                                     "#AAA##AAA##AAA#",
                                     "#AAA##AAA##AAA#",
@@ -344,7 +347,7 @@ public class CTPPMultiblockMachines {
                                     "#AAA##AAA##AAA#",
                                     "#AAA##AAA##AAA#",
                                     "#AAA##AAA##AAA#")
-                            .aisle( "#AAA##AAA##AAA#",
+                            .aisle("#AAA##AAA##AAA#",
                                     "#AAABBBBBBBAAA#",
                                     "#AAABBCCCBBAAA#",
                                     "#AAABBCCCBBAAA#",
@@ -353,7 +356,7 @@ public class CTPPMultiblockMachines {
                                     "#AAABBCCCBBAAA#",
                                     "#AAABBBBBBBAAA#",
                                     "#AAA##AAA##AAA#")
-                            .aisle( "#AAA#######AAA#",
+                            .aisle("#AAA#######AAA#",
                                     "#AABBBBBBBBBAA#",
                                     "#AABCCCCCCCBAA#",
                                     "#AABCC   CCBAA#",
@@ -362,7 +365,7 @@ public class CTPPMultiblockMachines {
                                     "#AABCCCCCCCBAA#",
                                     "#AABBBBBBBBBAA#",
                                     "#AAA#######AAA#")
-                            .aisle( "###############",
+                            .aisle("###############",
                                     "##BBBBBBBBBBB##",
                                     "##BCCCCCCCCCB##",
                                     "##BC       CB##",
@@ -371,7 +374,7 @@ public class CTPPMultiblockMachines {
                                     "##BCCCCCCCCCB##",
                                     "##BBBBBBBBBBB##",
                                     "###############")
-                            .aisle( "###############",
+                            .aisle("###############",
                                     "##BBBEEEEEBBB##",
                                     "##BCCEEEEECCB##",
                                     "##BC       CB##",
@@ -380,7 +383,7 @@ public class CTPPMultiblockMachines {
                                     "##BCCEEEEECCB##",
                                     "##BBBEEEEEBBB##",
                                     "###############")
-                            .aisle( "AAA#########AAA",
+                            .aisle("AAA#########AAA",
                                     "AABBBEGGGEBBBAA",
                                     "AACCCEDDDECCCAA",
                                     "AAC         CAA",
@@ -389,7 +392,7 @@ public class CTPPMultiblockMachines {
                                     "AACCCEDDDECCCAA",
                                     "AABBBEGGGEBBBAA",
                                     "AAA#########AAA")
-                            .aisle( "AAA#########AAA",
+                            .aisle("AAA#########AAA",
                                     "AABBBEGGGEBBBAA",
                                     "AACCCEDFDECCCAA",
                                     "AAC    F    CAA",
@@ -398,7 +401,7 @@ public class CTPPMultiblockMachines {
                                     "AACCCEDFDECCCAA",
                                     "AABBBEGGGEBBBAA",
                                     "AAA#########AAA")
-                            .aisle( "AAA#########AAA",
+                            .aisle("AAA#########AAA",
                                     "AABBBEGGGEBBBAA",
                                     "AACCCEDDDECCCAA",
                                     "AAC         CAA",
@@ -407,7 +410,7 @@ public class CTPPMultiblockMachines {
                                     "AACCCEDDDECCCAA",
                                     "AABBBEGGGEBBBAA",
                                     "AAA#########AAA")
-                            .aisle( "###############",
+                            .aisle("###############",
                                     "##BBBEEEEEBBB##",
                                     "##BCCEEEEECCB##",
                                     "##BC       CB##",
@@ -416,7 +419,7 @@ public class CTPPMultiblockMachines {
                                     "##BCCEEEEECCB##",
                                     "##BBBEEEEEBBB##",
                                     "###############")
-                            .aisle( "###############",
+                            .aisle("###############",
                                     "##BBBBBBBBBBB##",
                                     "##BCCCCCCCCCB##",
                                     "##BC       CB##",
@@ -425,7 +428,7 @@ public class CTPPMultiblockMachines {
                                     "##BCCCCCCCCCB##",
                                     "##BBBBBBBBBBB##",
                                     "###############")
-                            .aisle( "#AAA#######AAA#",
+                            .aisle("#AAA#######AAA#",
                                     "#AABBBBBBBBBAA#",
                                     "#AABCCCCCCCBAA#",
                                     "#AABCC   CCBAA#",
@@ -434,7 +437,7 @@ public class CTPPMultiblockMachines {
                                     "#AABCCCCCCCBAA#",
                                     "#AABBBBBBBBBAA#",
                                     "#AAA#######AAA#")
-                            .aisle( "#AAA##AAA##AAA#",
+                            .aisle("#AAA##AAA##AAA#",
                                     "#AAABBBBBBBAAA#",
                                     "#AAABBCCCBBAAA#",
                                     "#AAABBCCCBBAAA#",
@@ -443,7 +446,7 @@ public class CTPPMultiblockMachines {
                                     "#AAABBCCCBBAAA#",
                                     "#AAABBBBBBBAAA#",
                                     "#AAA##AAA##AAA#")
-                            .aisle( "#AAA##AAA##AAA#",
+                            .aisle("#AAA##AAA##AAA#",
                                     "#AAA##AAA##AAA#",
                                     "#AAA##AAA##AAA#",
                                     "#AAA##AAA##AAA#",
@@ -452,7 +455,7 @@ public class CTPPMultiblockMachines {
                                     "#AAA##AAA##AAA#",
                                     "#AAA##AAA##AAA#",
                                     "#AAA##AAA##AAA#")
-                            .aisle( "######AAA######",
+                            .aisle("######AAA######",
                                     "######A@A######",
                                     "######AAA######",
                                     "######AAA######",
@@ -488,7 +491,7 @@ public class CTPPMultiblockMachines {
             .noRecipeModifier()
             .appearanceBlock(() -> AllBlocks.INDUSTRIAL_IRON_BLOCK.get())
             .pattern(definition -> FactoryStaticBlockPattern.start()
-                    .aisle( "###########################################",
+                    .aisle("###########################################",
                             "###########################################",
                             "###########################################",
                             "###########################################",
@@ -505,7 +508,7 @@ public class CTPPMultiblockMachines {
                             "##B##B##B##B##B##B##B##B##B##B##B##B##B####",
                             "##FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF####",
                             "DDEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE####")
-                    .aisle( "BBB#####B#####B#####B#####B#####B#####B####",
+                    .aisle("BBB#####B#####B#####B#####B#####B#####B####",
                             "##B#####B#####B#####B#####B#####B#####B####",
                             "##B#####B#####B#####B#####B#####B#####B####",
                             "##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####",
@@ -522,7 +525,7 @@ public class CTPPMultiblockMachines {
                             "##BFFFFFBFFFFFBFFFFFBFFFFFBFFFFFBFFFFFB####",
                             "##FGGGGGFGGGGGFGGGGGFGGGGGFGGGGGFGGGGGF####",
                             "FFE#####E#####E#####E#####E#####E#####E####")
-                    .aisle( "BBB##B##B##B##B##B##B##B##B##B##B##B##B####",
+                    .aisle("BBB##B##B##B##B##B##B##B##B##B##B##B##B####",
                             "#DB##B##B##B##B##B##B##B##B##B##B##B##B####",
                             "#DBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####",
                             "#DBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####",
@@ -539,7 +542,7 @@ public class CTPPMultiblockMachines {
                             "#DB#####B#####B#####B#####B#####B#####B####",
                             "#DE#####E#####E#####E#####E#####E#####E####",
                             "DD#########################################")
-                    .aisle( "BBB##B##B##B##B##B##B##B##B##B##B##B##B####",
+                    .aisle("BBB##B##B##B##B##B##B##B##B##B##B##B##B####",
                             "##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####",
                             "##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####",
                             "##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####",
@@ -556,7 +559,7 @@ public class CTPPMultiblockMachines {
                             "##EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE####",
                             "###########################################",
                             "###########################################")
-                    .aisle( "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####",
+                    .aisle("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####",
                             "##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####",
                             "##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####",
                             "##B##B##B##B##B##B##B##B##B##B##B##B##B####",
@@ -573,7 +576,7 @@ public class CTPPMultiblockMachines {
                             "###########################################",
                             "###########################################",
                             "###########################################")
-                    .aisle( "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####",
+                    .aisle("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####",
                             "##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####",
                             "##B##B##B##B##B##B##B##B##B##B##B##B##B####",
                             "##B##B##B##B##B##B##B##B##B##B##B##B##B####",
@@ -590,7 +593,7 @@ public class CTPPMultiblockMachines {
                             "###########################################",
                             "###########################################",
                             "###########################################")
-                    .aisle( "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####",
+                    .aisle("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####",
                             "##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####",
                             "##B##B##B##B##B##B##B##B##B##B##B##B##B####",
                             "##B##B##B##B##B##B##B##B##B##B##B##B##B####",
@@ -607,7 +610,7 @@ public class CTPPMultiblockMachines {
                             "###########################################",
                             "###########################################",
                             "###########################################")
-                    .aisle( "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####",
+                    .aisle("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####",
                             "##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####",
                             "##B##B##B##B##B##B##B##B##B##B##B##B##B####",
                             "###########################################",
@@ -624,7 +627,7 @@ public class CTPPMultiblockMachines {
                             "###########################################",
                             "###########################################",
                             "###########################################")
-                    .aisle( "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####",
+                    .aisle("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####",
                             "##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####",
                             "##B##B##B##B##B##B##B##B##B##B##B##B##B####",
                             "###########################################",
@@ -641,7 +644,7 @@ public class CTPPMultiblockMachines {
                             "###########################################",
                             "###########################################",
                             "###########################################")
-                    .aisle( "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
+                    .aisle("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
                             "##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBD##D",
                             "##B##B##B##B##B##B##B##B##B##B##B##B##BD##D",
                             "###JJJJJ#JJJJJ#JJJJJ#JJJJJ#JJJJJ#JJJJJ#D##D",
@@ -658,7 +661,7 @@ public class CTPPMultiblockMachines {
                             "###########################################",
                             "###########################################",
                             "###########################################")
-                    .aisle( "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
+                    .aisle("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
                             "#DBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####",
                             "#DB##B##B##B##B##B##B##B##B##B##B##B##B####",
                             "#D#########################################",
@@ -675,7 +678,7 @@ public class CTPPMultiblockMachines {
                             "###########################################",
                             "###########################################",
                             "###########################################")
-                    .aisle( "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
+                    .aisle("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
                             "##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####",
                             "##HJJJJJHJJJJJHJJJJJHJJJJJHJJJJJHJJJJJH####",
                             "###JJJJJ#JJJJJ#JJJJJ#JJJJJ#JJJJJ#JJJJJ#####",
@@ -692,7 +695,7 @@ public class CTPPMultiblockMachines {
                             "###########################################",
                             "###########################################",
                             "###########################################")
-                    .aisle( "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
+                    .aisle("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
                             "##B##B##B##B##B##B##B##B##B##B##B##B##B####",
                             "##H#####H#####H#####H#####H#####H#####H####",
                             "##EJJ#JJEJJ#JJEJJ#JJEJJ#JJEJJ#JJEJJ#JJE####",
@@ -709,7 +712,7 @@ public class CTPPMultiblockMachines {
                             "###########################################",
                             "###########################################",
                             "###########################################")
-                    .aisle( "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
+                    .aisle("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
                             "##B##B##B##B##B##B##B##B##B##B##B##B##B####",
                             "##HJJJJJHJJJJJHJJJJJHJJJJJHJJJJJHJJJJJH####",
                             "##EJJJJJEJJJJJEJJJJJEJJJJJEJJJJJEJJJJJE####",
@@ -726,7 +729,7 @@ public class CTPPMultiblockMachines {
                             "###########################################",
                             "###########################################",
                             "###########################################")
-                    .aisle( "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
+                    .aisle("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
                             "#DB##B##B##B##B##B##B##B##B##B##B##B##B####",
                             "#DH##B##H##B##H##B##H##B##H##B##H##B##H####",
                             "#D#########################################",
@@ -743,7 +746,7 @@ public class CTPPMultiblockMachines {
                             "###########################################",
                             "###########################################",
                             "###########################################")
-                    .aisle( "##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
+                    .aisle("##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
                             "##B##B##B##B##B##B##B##B##B##B##B##B##BD##D",
                             "##B##B##B##B##B##B##B##B##B##B##B##B##BD##D",
                             "###JJJJJ#JJJJJ#JJJJJ#JJJJJ#JJJJJ#JJJJJ#DDDD",
@@ -760,7 +763,7 @@ public class CTPPMultiblockMachines {
                             "###########################################",
                             "###########################################",
                             "###########################################")
-                    .aisle( "##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
+                    .aisle("##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
                             "##B##B##B##B##B##B##B##B##B##B##B##B##B####",
                             "##B##B##B##B##B##B##B##B##B##B##B##B##B####",
                             "#######################################FFFF",
@@ -777,7 +780,7 @@ public class CTPPMultiblockMachines {
                             "###########################################",
                             "###########################################",
                             "###########################################")
-                    .aisle( "##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
+                    .aisle("##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
                             "##B##B##B##B##B##B##B##B##B##B##B##B##B####",
                             "##H##B##H##B##H##B##H##B##H##B##H##B##H####",
                             "##E#####E#####E#####E#####E#####E#####EFDDF",
@@ -794,7 +797,7 @@ public class CTPPMultiblockMachines {
                             "###########################################",
                             "###########################################",
                             "###########################################")
-                    .aisle( "##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
+                    .aisle("##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
                             "##B##B##B##B##B##B##B##B##B##B##B##B##B####",
                             "##H##B##H##B##H##B##H##B##H##B##H##B##H####",
                             "##H#####H#####H#####H#####H#####H#####HFDDF",
@@ -811,7 +814,7 @@ public class CTPPMultiblockMachines {
                             "###########################################",
                             "###########################################",
                             "###########################################")
-                    .aisle( "##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
+                    .aisle("##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
                             "##B##B##B##B##B##B##B##B##B##B##B##B##B####",
                             "##B##B##B##B##B##B##B##B##B##B##B##B##B####",
                             "##H#####H#####H#####H#####H#####H#####HFDDF",
@@ -828,7 +831,7 @@ public class CTPPMultiblockMachines {
                             "###########################################",
                             "###########################################",
                             "###########################################")
-                    .aisle( "##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
+                    .aisle("##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
                             "##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####",
                             "##B##B##B##B##B##B##B##B##B##B##B##B##B####",
                             "##B##B##B##B##B##B##B##B##B##B##B##B##BFFFF",
@@ -845,7 +848,7 @@ public class CTPPMultiblockMachines {
                             "###########################################",
                             "###########################################",
                             "###########################################")
-                    .aisle( "##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
+                    .aisle("##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
                             "##BBBBBBBBBBBBBBBBBB@BBBBBBBBBBBBBBBBBBD##D",
                             "##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBD##D",
                             "##B##B##B##B##B##B##B##B##B##B##B##B##BDDDD",
@@ -864,7 +867,9 @@ public class CTPPMultiblockMachines {
                             "###########################################")
                     .where("J", Predicates.blocks(TREATED_WOOD_PLANK.get()), false)
                     .where("C", Predicates.blocks(TREATED_WOOD_PLANK.get()), false)
-                    .where("K", Predicates.blocks(MATERIAL_BLOCKS.get(TagPrefix.block, CTPPMaterials.AndesiteAlloy).get()), false)
+                    .where("K",
+                            Predicates.blocks(MATERIAL_BLOCKS.get(TagPrefix.block, CTPPMaterials.AndesiteAlloy).get()),
+                            false)
 
                     .where("D", Predicates.frames(TreatedWood))
                     .where("F", Predicates.blocks(TREATED_WOOD_PLANK.get()))
