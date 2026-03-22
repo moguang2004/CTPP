@@ -21,6 +21,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import com.mo_guang.ctpp.CTPP;
 import com.mo_guang.ctpp.CTPPRegistration;
 import com.mo_guang.ctpp.api.CTPPPartAbility;
+import com.mo_guang.ctpp.api.CTPPPredicates;
 import com.mo_guang.ctpp.api.pattern.FactoryStaticBlockPattern;
 import com.mo_guang.ctpp.common.machine.multiblock.*;
 import com.mo_guang.ctpp.common.machine.multiblock.windmillController.WindMillControlMachine;
@@ -62,7 +63,7 @@ public class CTPPMultiblockMachines {
                                     .or(Predicates.autoAbilities(definition.getRecipeTypes()))
                                     .or(Predicates.abilities(CTPPPartAbility.INPUT_KINETIC))
                                     .or(Predicates.abilities(CTPPPartAbility.MECHANICAL_UPGRADE)
-                                            .setMaxGlobalLimited(1)))
+                                            .setExactLimit(1)))
                             .where("C", blocks(AllBlocks.CRUSHING_WHEEL.get()))
                             .where("@", Predicates.controller(blocks(definition.getBlock())))
                             .where(" ", Predicates.any())
@@ -110,11 +111,7 @@ public class CTPPMultiblockMachines {
                             .aisle("FFMMMGF", "ECTTTGK", "E@TTTGK", "ECTTTGK", "##MMMG#")
                             .aisle("DDDDDDD", "##MMMG#", "##MMMG#", "##MMMG#", "#######")
                             .where("G", Predicates.blocks(CASING_STEEL_SOLID.get()), false)
-                            .where("M", Predicates.blocks(MAGNETITE_BLOCK.get())
-                                    .or(Predicates.blocks(REDSTONE_MAGNET.get()))
-                                    .or(Predicates.blocks(LAYERED_MAGNET.get()))
-                                    .or(Predicates.blocks(FLUXUATED_MAGNETITE.get()))
-                                    .or(Predicates.blocks(NETHERITE_MAGNET.get())), false)
+                            .where("M", CTPPPredicates.magnetBlock(), false)
                             .where("B",
                                     Predicates.blocks(CABLE_BLOCKS.get(TagPrefix.wireGtHex, GTMaterials.Copper).get()))
                             .where("F",
@@ -124,7 +121,7 @@ public class CTPPMultiblockMachines {
                                     .or(Predicates.abilities(PartAbility.MAINTENANCE).setExactLimit(1))
                                     .or(Predicates.abilities(PartAbility.IMPORT_FLUIDS).setExactLimit(1))
                                     .or(Predicates.abilities(CTPPPartAbility.MECHANICAL_UPGRADE)
-                                            .setMaxGlobalLimited(1)))
+                                            .setExactLimit(1)))
                             .where("K", Predicates.blocks(CASING_STEEL_SOLID.get())
                                     .or(Predicates.abilities(CTPPPartAbility.INPUT_KINETIC).setMinGlobalLimited(1)))
                             .where("E", Predicates.blocks(CASING_STEEL_SOLID.get())

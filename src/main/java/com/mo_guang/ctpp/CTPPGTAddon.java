@@ -10,6 +10,7 @@ import net.minecraft.resources.ResourceLocation;
 
 import com.mo_guang.ctpp.api.CTPPRecipeCapabilities;
 import com.mo_guang.ctpp.api.StressRecipeCapability;
+import com.mo_guang.ctpp.api.pattern.CTPPBlockMaps;
 import com.mo_guang.ctpp.common.data.recipe.CTPPRecipes;
 import com.mo_guang.ctpp.registry.CTPPBlocks;
 import com.mojang.datafixers.util.Pair;
@@ -31,6 +32,7 @@ public class CTPPGTAddon implements IGTAddon {
     @Override
     public void initializeAddon() {
         CTPPBlocks.init();
+        CTPPBlockMaps.init();
     }
 
     @Override

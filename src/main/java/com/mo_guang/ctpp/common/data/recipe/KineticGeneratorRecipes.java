@@ -17,12 +17,12 @@ import org.antarcticgardens.newage.NewAgeBlocks;
 
 import java.util.function.Consumer;
 
-import static com.mo_guang.ctpp.common.machine.multiblock.KineticGeneratorMachine.GENERATING_BOOST;
 import static com.mo_guang.ctpp.registry.CTPPRecipeTypes.KINETIC_GENERATOR_RECIPES;
 import static com.mo_guang.ctpp.registry.CTPPRecipeTypes.KINETIC_STEAM_TURBINE_RECIPES;
 
 public class KineticGeneratorRecipes {
 
+    public static final float GENERATING_BOOST = MainConfig.INSTANCE.ctnhConfig.kineticGeneratorGeneratingBoost;
     public static final boolean REQUIRE_LUBRICANT = MainConfig.INSTANCE.ctnhConfig.kineticGeneratorGeneratingRequireLubricant;
     public static final int GENERATING_REQUIRE_LUBRICANT_AMOUNT = MainConfig.INSTANCE.ctnhConfig.kineticGeneratorGeneratingRequireLubricantAmount;
     public static final float STEAM_POWERED_BOOST = MainConfig.INSTANCE.ctnhConfig.steamPoweredKineticGeneratingBoost;
