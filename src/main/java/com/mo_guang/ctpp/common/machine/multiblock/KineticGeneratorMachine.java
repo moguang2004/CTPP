@@ -12,24 +12,39 @@ import com.gregtechceu.gtceu.common.block.CoilBlock;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
+import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import com.lowdragmc.lowdraglib.utils.TrackedDummyWorld;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.phys.Vec3;
 
+import com.mo_guang.ctpp.api.pattern.StaticBlockPattern;
+import com.mo_guang.ctpp.common.machine.multiblock.part.KineticPartMachine;
+import com.mo_guang.ctpp.dynamicPart.rotation.IRotationMultiblock;
+import com.mo_guang.ctpp.dynamicPart.rotation.SimpleRotatingContraption;
 import com.mo_guang.ctpp.dynamicPart.rotation.SimpleRotatingContraptionEntity;
+import com.mo_guang.ctpp.util.MathUtil;
+import com.simibubi.create.content.contraptions.AbstractContraptionEntity;
 import lombok.Getter;
 import lombok.Setter;
+import org.antarcticgardens.newage.content.generation.magnets.ImplementedMagnetBlock;
+import org.jetbrains.annotations.Nullable;
 import tech.vixhentx.mcmod.ctnhlib.langprovider.Lang;
 import tech.vixhentx.mcmod.ctnhlib.langprovider.annotation.CN;
 import tech.vixhentx.mcmod.ctnhlib.langprovider.annotation.EN;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.mo_guang.ctpp.common.data.recipe.KineticGeneratorRecipes.GENERATING_BOOST;
 
-public class KineticGeneratorMachine extends KineticWorkableMultiblockMachine {
+public class KineticGeneratorMachine extends KineticWorkableMultiblockMachine
+                                     implements IRotationMultiblock<SimpleRotatingContraptionEntity> {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
             KineticGeneratorMachine.class, KineticMultiblockMachine.MANAGED_FIELD_HOLDER);
@@ -39,7 +54,8 @@ public class KineticGeneratorMachine extends KineticWorkableMultiblockMachine {
     private ICoilType coilType = CoilBlock.CoilType.CUPRONICKEL;
     public float previousSpeed;
     public float speed;
-    public int magnetStrength;
+    @Persisted
+    public float magnetStrength;
     public double efficiency;
     public double outputEnergy = 0;
 
@@ -49,8 +65,10 @@ public class KineticGeneratorMachine extends KineticWorkableMultiblockMachine {
         efficiency = getEfficiency();
     }
 
-    public double getEfficiency() {
-        return (getCoilTier() * 0.1 + 0.9) * ((double) magnetStrength / (magnetStrength + 36));
+    @Override
+    public void onLoad() {
+        super.onLoad();
+        updateRotateBlocks(true);
     }
 
     @Override
@@ -60,8 +78,44 @@ public class KineticGeneratorMachine extends KineticWorkableMultiblockMachine {
         if (type instanceof ICoilType coil) {
             this.coilType = coil;
         }
-        this.magnetStrength = getMultiblockState().getMatchContext().get("MagnetStrength");
+        for (BlockPos pos : BlockPos.betweenClosed(MachineUtils.getOffset(this, -1, 2, 3),
+                MachineUtils.getOffset(this, -3, -2, -1))) {
+            Object block = getLevel().getBlockState(pos).getBlock();
+            if (block instanceof ImplementedMagnetBlock magnetBlock) {
+                magnetStrength += magnetBlock.getStrength();
+            }
+        }
         efficiency = getEfficiency();
+
+        if (rotatingEntity.isEmpty() && getLevel() != null && !getLevel().isClientSide) {
+            var rotatingEntities = assemble(MachineUtils.getOffset(this, 0, 0, 1));
+            if (rotatingEntities != null) {
+                this.rotatingEntity.addAll(rotatingEntities.values());
+            }
+        }
+    }
+
+    @Override
+    public void onStructureInvalid() {
+        super.onStructureInvalid();
+        if (getLevel() != null && !getLevel().isClientSide) {
+            if (!rotatingEntity.isEmpty()) {
+                this.rotatingEntity.forEach(AbstractContraptionEntity::disassemble);
+            }
+            this.rotatingEntity = new ArrayList<>();
+            magnetStrength = 0;
+        }
+    }
+
+    @Override
+    public boolean beforeWorking(@Nullable GTRecipe recipe) {
+        boolean result = super.beforeWorking(recipe);
+        previousSpeed = speed;
+        speed = getInputSpeed();
+        if (speed != previousSpeed) {
+            updateRotateBlocks(result);
+        }
+        return result;
     }
 
     @CN("产能功率：%d/%d EU/t (上限§4%d§r EU/t§)")
@@ -91,7 +145,7 @@ public class KineticGeneratorMachine extends KineticWorkableMultiblockMachine {
                     .withStyle(ChatFormatting.YELLOW));
             textList.add(textList.size(),
                     info2.translate(FormattingUtil.formatNumbers(magnetStrength),
-                            String.format("%.1f", ((float) magnetStrength) * 100 / (magnetStrength + 36)))
+                            String.format("%.1f", (float) (magnetStrength) * 100 / (magnetStrength + 36)))
                             .withStyle(ChatFormatting.AQUA));
             textList.add(textList.size(), info3.translate(String.format("%.1f", getEfficiency() * 100)));
         }
@@ -115,8 +169,59 @@ public class KineticGeneratorMachine extends KineticWorkableMultiblockMachine {
         return false;
     }
 
+    @Override
+    public void updateRotateBlocks(boolean active) {
+        super.updateRotateBlocks(active);
+        if (active) {
+            if (rotatingEntity != null)
+                rotatingEntity.forEach(entity -> {
+                    var facing = getFrontFacing().getNormal();
+                    Vec3 newF = new Vec3(facing.getX(), facing.getY(), facing.getZ());
+                    entity.setRotationSpeed(MathUtil.rotateByVec(newF, 90, new Vec3(0, 1, 0)), getInputSpeed());
+                });
+        }
+    }
+
     public int getCoilTier() {
         return coilType.getTier();
+    }
+
+    public double getEfficiency() {
+        return (getCoilTier() * 0.1 + 1) * ((double) magnetStrength / (magnetStrength + 36));
+    }
+
+    public float getInputSpeed() {
+        var kineticParts = this.getParts().stream()
+                .filter(part -> part instanceof KineticPartMachine)
+                .toList();
+        if (kineticParts.isEmpty()) {
+            return 0f;
+        }
+        return ((KineticPartMachine) kineticParts.get(0)).getKineticHolder().getSpeed();
+    }
+
+    public Map<Integer, SimpleRotatingContraptionEntity> assemble(BlockPos pivot) {
+        if (self().getLevel() instanceof TrackedDummyWorld) return null;
+        if (self().getLevel().isClientSide) return null;
+        Map<Integer, SimpleRotatingContraptionEntity> ce = new HashMap<>();
+        var pattern = self().getDefinition().getPatternFactory().get();
+        if (pattern instanceof StaticBlockPattern staticBlockPattern) {
+            Map<Integer, List<BlockPos>> dymanicPart = staticBlockPattern.getDynamicPart(self().getMultiblockState());
+            for (var entry : dymanicPart.entrySet()) {
+                int group = entry.getKey();
+                var part = entry.getValue();
+                SimpleRotatingContraption contraption = new SimpleRotatingContraption(part, pivot);
+                contraption.assemble(this.self().getLevel(), self().getPos()); // 第二个参数无用
+                contraption.removeBlocksFromWorld(this.self().getLevel(), BlockPos.ZERO);
+                SimpleRotatingContraptionEntity contraptionEntity = SimpleRotatingContraptionEntity
+                        .create(self().getLevel(), contraption, this, pivot.getCenter());
+                contraptionEntity.setPos(pivot.getX(), pivot.getY(), pivot.getZ());
+                this.self().getLevel().addFreshEntity(contraptionEntity);
+                ce.put(group, contraptionEntity);
+            }
+            return ce;
+        }
+        return null;
     }
 
     @Override
