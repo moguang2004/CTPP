@@ -24,9 +24,6 @@ public class ChineseLangHandler {
         // Multiblock UI info
         provider.add("ctpp.multiblock.kinetic_multiblock.info.waiting", "暂停中：");
 
-        provider.add("ctpp.multiblock.kinetic_generator.info.0", "产能功率：%d/%d EU/t");
-        provider.add("ctpp.multiblock.kinetic_generator.info.1", "线圈效率：%d%%");
-
         provider.add("ctpp.multiblock.kinetic_steam_turbine.info.0", "涡轮总效率：%d%%");
         provider.add("ctpp.multiblock.kinetic_steam_turbine.info.1", "应力输出：%dsu");
 
@@ -54,10 +51,11 @@ public class ChineseLangHandler {
 
         // Multiblock Tooltip
         provider.add("ctpp.multiblock.kinetic_generator.tooltip.0", "能量守恒");
-        provider.add("ctpp.multiblock.kinetic_generator.tooltip.1", "应力转化EU的基础效率为160：1");
+        provider.add("ctpp.multiblock.kinetic_generator.tooltip.1", "应力转化EU的基础效率为128：1");
         provider.add("ctpp.multiblock.kinetic_generator.tooltip.2", "需要至少512su以启动机器");
         provider.add("ctpp.multiblock.kinetic_generator.tooltip.3", "线圈等级每升高一级，总效率提高§a10%§r（初始为90%）");
-        provider.add("ctpp.multiblock.kinetic_generator.tooltip.4", "若使用石墨烯块作为核心,则效率会再提高§a10%§r");
+        provider.add("ctpp.multiblock.kinetic_generator.tooltip.4", "同时更高级的磁铁意味着更高的能量转化效率");
+        provider.add("ctpp.multiblock.kinetic_generator.tooltip.5", "发电上限受到机械等级的影响，机械等级每升高一级，发电上限提高§a4倍§r");
 
         provider.add("ctpp.multiblock.kinetic_steam_turbine.tooltip.0", "一个输出应力的机器");
         provider.add("ctpp.multiblock.kinetic_steam_turbine.tooltip.1", "转子支架每升高一级,涡轮效率增加§610%§r");

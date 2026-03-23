@@ -28,9 +28,6 @@ public class EnglishLangHandler {
         // Multiblock UI info
         provider.add("ctpp.multiblock.kinetic_multiblock.info.waiting", "Waiting：");
 
-        provider.add("ctpp.multiblock.kinetic_generator.info.0", "Generator Rate：%d/%d EU/t");
-        provider.add("ctpp.multiblock.kinetic_generator.info.1", "Coil Efficiency：%d%%");
-
         provider.add("ctpp.multiblock.kinetic_steam_turbine.info.0", "Total Turbine Efficiency：%d%%");
         provider.add("ctpp.multiblock.kinetic_steam_turbine.info.1", "Kinetic Output：%dsu");
 
@@ -61,12 +58,14 @@ public class EnglishLangHandler {
         // Multiblock Tooltip info
         provider.add("ctpp.multiblock.kinetic_generator.tooltip.0", "Energy Conversation");
         provider.add("ctpp.multiblock.kinetic_generator.tooltip.1",
-                "The base conversion efficiency from stress to EU is 160:1");
-        provider.add("ctpp.multiblock.kinetic_generator.tooltip.2",
-                "Using a Block of Graphene as the core increases efficiency by §a10%§r");
-        provider.add("ctpp.multiblock.kinetic_generator.tooltip.3", "Requires at least 512 SU to activate the machine");
+                "The base conversion efficiency from stress to EU is 128:1");
         provider.add("ctpp.multiblock.kinetic_generator.tooltip.4",
+                "At the same time, higher-tier magnets mean higher energy conversion efficiency");
+        provider.add("ctpp.multiblock.kinetic_generator.tooltip.2", "Requires at least 512 SU to activate the machine");
+        provider.add("ctpp.multiblock.kinetic_generator.tooltip.3",
                 "Each level of coil tier improves total efficiency by §a10%§r (initial value: 90%)");
+        provider.add("ctpp.multiblock.kinetic_generator.tooltip.5",
+                "The generation limit is affected by the mechanical tier, and each level of mechanical tier increases the generation limit by §a4 times§r");
 
         provider.add("ctpp.multiblock.kinetic_steam_turbine.tooltip.0", "A machine that can output kinetic");
         provider.add("ctpp.multiblock.kinetic_steam_turbine.tooltip.1",

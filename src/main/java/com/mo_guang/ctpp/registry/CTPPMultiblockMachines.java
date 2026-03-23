@@ -21,6 +21,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import com.mo_guang.ctpp.CTPP;
 import com.mo_guang.ctpp.CTPPRegistration;
 import com.mo_guang.ctpp.api.CTPPPartAbility;
+import com.mo_guang.ctpp.api.CTPPPredicates;
 import com.mo_guang.ctpp.api.pattern.FactoryStaticBlockPattern;
 import com.mo_guang.ctpp.common.machine.multiblock.*;
 import com.mo_guang.ctpp.common.machine.multiblock.windmillController.WindMillControlMachine;
@@ -29,12 +30,14 @@ import com.simibubi.create.AllBlocks;
 
 import static com.gregtechceu.gtceu.api.pattern.Predicates.blocks;
 import static com.gregtechceu.gtceu.common.data.GTBlocks.*;
+import static com.gregtechceu.gtceu.common.data.GTMaterialBlocks.CABLE_BLOCKS;
 import static com.gregtechceu.gtceu.common.data.GTMaterialBlocks.MATERIAL_BLOCKS;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.TreatedWood;
 import static com.mo_guang.ctpp.CTPPRegistration.REGISTRATE;
 import static com.mo_guang.ctpp.config.ConfigUtils.*;
 import static net.minecraft.world.level.block.Blocks.*;
 import static net.minecraft.world.level.block.Blocks.STONE_BRICKS;
+import static org.antarcticgardens.newage.NewAgeBlocks.*;
 
 public class CTPPMultiblockMachines {
 
@@ -60,7 +63,7 @@ public class CTPPMultiblockMachines {
                                     .or(Predicates.autoAbilities(definition.getRecipeTypes()))
                                     .or(Predicates.abilities(CTPPPartAbility.INPUT_KINETIC))
                                     .or(Predicates.abilities(CTPPPartAbility.MECHANICAL_UPGRADE)
-                                            .setMaxGlobalLimited(1)))
+                                            .setExactLimit(1)))
                             .where("C", blocks(AllBlocks.CRUSHING_WHEEL.get()))
                             .where("@", Predicates.controller(blocks(definition.getBlock())))
                             .where(" ", Predicates.any())
@@ -89,9 +92,11 @@ public class CTPPMultiblockMachines {
             () -> REGISTRATE.multiblock("kinetic_generator", KineticGeneratorMachine::new)
                     .cnLangValue("应力发电机")
                     .rotationState(RotationState.NON_Y_AXIS)
+                    .allowExtendedFacing(false)
                     .recipeType(CTPPRecipeTypes.KINETIC_GENERATOR_RECIPES)
                     .appearanceBlock(CASING_STEEL_SOLID)
                     .generator(true)
+                    .recipeModifier(KineticGeneratorMachine::recipeModifier, true)
                     .tooltips(
                             Component.translatable("ctpp.multiblock.kinetic_generator.tooltip.0")
                                     .withStyle(ChatFormatting.GRAY),
@@ -99,30 +104,32 @@ public class CTPPMultiblockMachines {
                             Component.translatable("ctpp.multiblock.kinetic_generator.tooltip.2"),
                             Component.translatable("ctpp.multiblock.kinetic_generator.tooltip.3"),
                             Component.translatable("ctpp.multiblock.kinetic_generator.tooltip.4"))
-                    .recipeModifier(KineticGeneratorMachine::recipeModifier, true)
-                    .pattern(definition -> FactoryBlockPattern.start()
-                            .aisle("CCTP", "CCTP", "  TP")
-                            .aisle("CCTP", "EAGK", "CCTP")
-                            .aisle("CCTP", "CSTP", "  TP")
-                            .where("S", Predicates.controller(Predicates.blocks(definition.get())))
-                            .where("G", Predicates.blocks(GTBlocks.CASING_STEEL_GEARBOX.get()))
-                            .where("A",
-                                    Predicates
-                                            .blocks(GTMaterialBlocks.MATERIAL_BLOCKS
-                                                    .get(TagPrefix.block, GTMaterials.Coke).get())
-                                            .or(Predicates.blocks(GTMaterialBlocks.MATERIAL_BLOCKS
-                                                    .get(TagPrefix.block, GTMaterials.Graphene).get())))
+                    .pattern(definition -> FactoryStaticBlockPattern.start()
+                            .aisle("DDDDDDD", "##MMMG#", "##MMMG#", "##MMMG#", "#######")
+                            .aisle("FFMMMGF", "ECTTTGK", "ECTTTGK", "ECTTTGK", "##MMMG#")
+                            .aisle("FFMMMGF", "ECTTTGK", "EBBBBGK", "ECTTTGK", "##MMMG#")
+                            .aisle("FFMMMGF", "ECTTTGK", "E@TTTGK", "ECTTTGK", "##MMMG#")
+                            .aisle("DDDDDDD", "##MMMG#", "##MMMG#", "##MMMG#", "#######")
+                            .where("G", Predicates.blocks(CASING_STEEL_SOLID.get()), false)
+                            .where("M", CTPPPredicates.magnetBlock(), false)
+                            .where("B",
+                                    Predicates.blocks(CABLE_BLOCKS.get(TagPrefix.wireGtHex, GTMaterials.Copper).get()))
+                            .where("F",
+                                    Predicates.blocks(MATERIAL_BLOCKS.get(TagPrefix.frameGt, GTMaterials.Steel).get()))
+                            .where("D", Predicates.blocks(STEEL_HULL.get()))
                             .where("C", Predicates.blocks(CASING_STEEL_SOLID.get())
                                     .or(Predicates.abilities(PartAbility.MAINTENANCE).setExactLimit(1))
+                                    .or(Predicates.abilities(PartAbility.IMPORT_FLUIDS).setExactLimit(1))
                                     .or(Predicates.abilities(CTPPPartAbility.MECHANICAL_UPGRADE)
-                                            .setMaxGlobalLimited(1)))
-                            .where("P", Predicates.blocks(CASING_STEEL_SOLID.get())
-                                    .or(Predicates.abilities(PartAbility.IMPORT_FLUIDS).setExactLimit(1)))
-                            .where("K", Predicates.abilities(CTPPPartAbility.INPUT_KINETIC).setExactLimit(1))
-                            .where("E", Predicates.abilities(PartAbility.OUTPUT_ENERGY).setExactLimit(1))
+                                            .setExactLimit(1)))
+                            .where("K", Predicates.blocks(CASING_STEEL_SOLID.get())
+                                    .or(Predicates.abilities(CTPPPartAbility.INPUT_KINETIC).setMinGlobalLimited(1)))
+                            .where("E", Predicates.blocks(CASING_STEEL_SOLID.get())
+                                    .or(Predicates.abilities(PartAbility.OUTPUT_ENERGY).setMinGlobalLimited(1)))
                             .where("T", Predicates.heatingCoils())
+                            .where("#", Predicates.any())
+                            .where("@", Predicates.controller(Predicates.blocks(definition.get())))
                             .build())
-
                     .workableCasingModel(GTCEu.id("block/casings/solid/machine_casing_solid_steel"),
                             GTCEu.id("block/multiblock/generator/large_steam_turbine"))
                     .register());
@@ -132,7 +139,7 @@ public class CTPPMultiblockMachines {
                     .cnLangValue("机械蒸汽涡轮")
                     .rotationState(RotationState.NON_Y_AXIS)
                     .recipeType(CTPPRecipeTypes.KINETIC_STEAM_TURBINE_RECIPES)
-                    .appearanceBlock(GTBlocks.CASING_BRONZE_BRICKS)
+                    .appearanceBlock(CASING_BRONZE_BRICKS)
                     .tooltips(Component.translatable("ctpp.multiblock.kinetic_steam_turbine.tooltip.0"),
                             Component.translatable("ctpp.multiblock.kinetic_steam_turbine.tooltip.1"),
                             Component.translatable("ctpp.multiblock.kinetic_steam_turbine.tooltip.2")
@@ -142,13 +149,11 @@ public class CTPPMultiblockMachines {
                     .recipeModifiers(KineticTurbineMachine::recipeModifier)
                     .pattern(definition -> FactoryBlockPattern.start()
                             .aisle("AAAAAAAA", "BBBBCC##", "BBBBBB##", "BBBB####", "########")
-                            .aisle("BBBBAAAA", "#B##BBCC", "#B####BF", "#B##BB##", "BBBB####")
-                            .aisle("BBBBBBAA", "#B####BF", "#DEEEEEF", "#B####BF", "BBBBBB##")
-                            .aisle("BBBBAAAA", "#B##BBCC", "#B####BF", "#B##BB##", "BBBB####")
+                            .aisle("BBBBAAAA", " B##BBCC", " B####BF", " B##BB##", "BBBB####")
+                            .aisle("BBBBBBAA", " B####BF", " DEEEEEF", " B####BF", "BBBBBB##")
+                            .aisle("BBBBAAAA", " B##BBCC", " B####BF", " B##BB##", "BBBB####")
                             .aisle("AAAAAAAA", "BBBB@C##", "BBBBBB##", "BBBB####", "########")
                             .where("B", Predicates.blocks(GTBlocks.CASING_BRONZE_BRICKS.get()))
-                            .where("@", Predicates.controller(Predicates.blocks(definition.get())))
-                            .where("#", Predicates.any())
                             .where("E", Predicates.blocks(CASING_BRONZE_GEARBOX.get()))
                             .where("A", Predicates.blocks(BRONZE_BRICKS_HULL.get()))
                             .where("F", Predicates.blocks(GTBlocks.CASING_BRONZE_BRICKS.get())
@@ -158,6 +163,8 @@ public class CTPPMultiblockMachines {
                                     .or(Predicates.abilities(PartAbility.MAINTENANCE).setExactLimit(1))
                                     .or(Predicates.abilities(PartAbility.MUFFLER).setExactLimit(1)))
                             .where("D", Predicates.abilities(PartAbility.ROTOR_HOLDER).setExactLimit(1))
+                            .where("#", Predicates.any())
+                            .where("@", Predicates.controller(Predicates.blocks(definition.get())))
                             .build())
                     .workableCasingModel(GTCEu.id("block/casings/solid/machine_casing_bronze_plated_bricks"),
                             GTCEu.id("block/multiblock/generator/large_steam_turbine"))
@@ -280,18 +287,17 @@ public class CTPPMultiblockMachines {
                                     "###########", "###########", "####E######", "####EE#####", "#####EE####",
                                     "######E####", "###########", "###########", "####E######", "####EE#####",
                                     "#####EEE###")
+                            .where("E", Predicates.blocks(Blocks.YELLOW_WOOL), false)
+                            .where("J", Predicates.blocks(AllBlocks.LINEAR_CHASSIS.get()), false)
+                            .where("K", Predicates.blocks(Blocks.WHITE_WOOL), false)
                             .where("A", Predicates.blocks(CASING_BRONZE_BRICKS.get()))
                             .where("B", Predicates.blocks(BRONZE_BRICKS_HULL.get()))
                             .where("C", Predicates.blocks(AllBlocks.BRASS_CASING.get()))
-                            .where("#", Predicates.any())
                             .where("D", Predicates.blocks(CASING_TEMPERED_GLASS.get()))
-                            .where("E", Predicates.blocks(Blocks.YELLOW_WOOL), false)
                             .where("F", Predicates.blocks(AllBlocks.RAILWAY_CASING.get()))
                             .where("G", Predicates.blocks(AllBlocks.METAL_GIRDER.get()))
                             .where("H", Predicates.blocks(AllBlocks.METAL_GIRDER.get()))
                             .where("I", Predicates.blocks(AllBlocks.ROSE_QUARTZ_LAMP.get()))
-                            .where("J", Predicates.blocks(AllBlocks.LINEAR_CHASSIS.get()), false)
-                            .where("K", Predicates.blocks(Blocks.WHITE_WOOL), false)
                             .where("L", Predicates.blocks(CASING_BRONZE_GEARBOX.get()))
                             .where("M", Predicates.blocks(CASING_BRONZE_PIPE.get()))
                             .where("N", Predicates.blocks(GCYMBlocks.CASING_INDUSTRIAL_STEAM.get()))
@@ -300,6 +306,7 @@ public class CTPPMultiblockMachines {
                                     .or(Predicates.autoAbilities(definition.getRecipeTypes()))
                                     .or(Predicates.abilities(CTPPPartAbility.OUTPUT_KINETIC))
                                     .or(Predicates.abilities(CTPPPartAbility.MECHANICAL_UPGRADE)))
+                            .where("#", Predicates.any())
                             .where("@", Predicates.controller(Predicates.blocks(definition.get())))
                             .build())
                     .workableCasingModel(CTPP.id("block/create/brass_casing"), GTCEu.id("block/machines/miner"))
@@ -319,50 +326,140 @@ public class CTPPMultiblockMachines {
                             Component.translatable("ctpp.multiblock.boom_of_create.tooltip.2"),
                             Component.translatable("ctpp.multiblock.boom_of_create.tooltip.3"))
                     .pattern(definition -> FactoryBlockPattern.start()
-                            .aisle("######AAA######", "######AAA######", "######AAA######", "######AAA######",
-                                    "######AAA######", "######AAA######", "######AAA######", "######AAA######",
+                            .aisle("######AAA######",
+                                    "######AAA######",
+                                    "######AAA######",
+                                    "######AAA######",
+                                    "######AAA######",
+                                    "######AAA######",
+                                    "######AAA######",
+                                    "######AAA######",
                                     "######AAA######")
-                            .aisle("#AAA##AAA##AAA#", "#AAA##AAA##AAA#", "#AAA##AAA##AAA#", "#AAA##AAA##AAA#",
-                                    "#AAA##AAA##AAA#", "#AAA##AAA##AAA#", "#AAA##AAA##AAA#", "#AAA##AAA##AAA#",
+                            .aisle("#AAA##AAA##AAA#",
+                                    "#AAA##AAA##AAA#",
+                                    "#AAA##AAA##AAA#",
+                                    "#AAA##AAA##AAA#",
+                                    "#AAA##AAA##AAA#",
+                                    "#AAA##AAA##AAA#",
+                                    "#AAA##AAA##AAA#",
+                                    "#AAA##AAA##AAA#",
                                     "#AAA##AAA##AAA#")
-                            .aisle("#AAA##AAA##AAA#", "#AAABBBBBBBAAA#", "#AAABBCCCBBAAA#", "#AAABBCCCBBAAA#",
-                                    "#AAABBCCCBBAAA#", "#AAABBCCCBBAAA#", "#AAABBCCCBBAAA#", "#AAABBBBBBBAAA#",
+                            .aisle("#AAA##AAA##AAA#",
+                                    "#AAABBBBBBBAAA#",
+                                    "#AAABBCCCBBAAA#",
+                                    "#AAABBCCCBBAAA#",
+                                    "#AAABBCCCBBAAA#",
+                                    "#AAABBCCCBBAAA#",
+                                    "#AAABBCCCBBAAA#",
+                                    "#AAABBBBBBBAAA#",
                                     "#AAA##AAA##AAA#")
-                            .aisle("#AAA#######AAA#", "#AABBBBBBBBBAA#", "#AABCCCCCCCBAA#", "#AABCC   CCBAA#",
-                                    "#AABCC   CCBAA#", "#AABCC   CCBAA#", "#AABCCCCCCCBAA#", "#AABBBBBBBBBAA#",
+                            .aisle("#AAA#######AAA#",
+                                    "#AABBBBBBBBBAA#",
+                                    "#AABCCCCCCCBAA#",
+                                    "#AABCC   CCBAA#",
+                                    "#AABCC   CCBAA#",
+                                    "#AABCC   CCBAA#",
+                                    "#AABCCCCCCCBAA#",
+                                    "#AABBBBBBBBBAA#",
                                     "#AAA#######AAA#")
-                            .aisle("###############", "##BBBBBBBBBBB##", "##BCCCCCCCCCB##", "##BC       CB##",
-                                    "##BC   D   CB##", "##BC       CB##", "##BCCCCCCCCCB##", "##BBBBBBBBBBB##",
+                            .aisle("###############",
+                                    "##BBBBBBBBBBB##",
+                                    "##BCCCCCCCCCB##",
+                                    "##BC       CB##",
+                                    "##BC   D   CB##",
+                                    "##BC       CB##",
+                                    "##BCCCCCCCCCB##",
+                                    "##BBBBBBBBBBB##",
                                     "###############")
-                            .aisle("###############", "##BBBEEEEEBBB##", "##BCCEEEEECCB##", "##BC       CB##",
-                                    "##BC   D   CB##", "##BC       CB##", "##BCCEEEEECCB##", "##BBBEEEEEBBB##",
+                            .aisle("###############",
+                                    "##BBBEEEEEBBB##",
+                                    "##BCCEEEEECCB##",
+                                    "##BC       CB##",
+                                    "##BC   D   CB##",
+                                    "##BC       CB##",
+                                    "##BCCEEEEECCB##",
+                                    "##BBBEEEEEBBB##",
                                     "###############")
-                            .aisle("AAA#########AAA", "AABBBEGGGEBBBAA", "AACCCEDDDECCCAA", "AAC         CAA",
-                                    "AAC    D    CAA", "AAC         CAA", "AACCCEDDDECCCAA", "AABBBEGGGEBBBAA",
+                            .aisle("AAA#########AAA",
+                                    "AABBBEGGGEBBBAA",
+                                    "AACCCEDDDECCCAA",
+                                    "AAC         CAA",
+                                    "AAC    D    CAA",
+                                    "AAC         CAA",
+                                    "AACCCEDDDECCCAA",
+                                    "AABBBEGGGEBBBAA",
                                     "AAA#########AAA")
-                            .aisle("AAA#########AAA", "AABBBEGGGEBBBAA", "AACCCEDFDECCCAA", "AAC    F    CAA",
-                                    "AAC DDDFDDD CAA", "AAC    F    CAA", "AACCCEDFDECCCAA", "AABBBEGGGEBBBAA",
+                            .aisle("AAA#########AAA",
+                                    "AABBBEGGGEBBBAA",
+                                    "AACCCEDFDECCCAA",
+                                    "AAC    F    CAA",
+                                    "AAC DDDFDDD CAA",
+                                    "AAC    F    CAA",
+                                    "AACCCEDFDECCCAA",
+                                    "AABBBEGGGEBBBAA",
                                     "AAA#########AAA")
-                            .aisle("AAA#########AAA", "AABBBEGGGEBBBAA", "AACCCEDDDECCCAA", "AAC         CAA",
-                                    "AAC    D    CAA", "AAC         CAA", "AACCCEDDDECCCAA", "AABBBEGGGEBBBAA",
+                            .aisle("AAA#########AAA",
+                                    "AABBBEGGGEBBBAA",
+                                    "AACCCEDDDECCCAA",
+                                    "AAC         CAA",
+                                    "AAC    D    CAA",
+                                    "AAC         CAA",
+                                    "AACCCEDDDECCCAA",
+                                    "AABBBEGGGEBBBAA",
                                     "AAA#########AAA")
-                            .aisle("###############", "##BBBEEEEEBBB##", "##BCCEEEEECCB##", "##BC       CB##",
-                                    "##BC   D   CB##", "##BC       CB##", "##BCCEEEEECCB##", "##BBBEEEEEBBB##",
+                            .aisle("###############",
+                                    "##BBBEEEEEBBB##",
+                                    "##BCCEEEEECCB##",
+                                    "##BC       CB##",
+                                    "##BC   D   CB##",
+                                    "##BC       CB##",
+                                    "##BCCEEEEECCB##",
+                                    "##BBBEEEEEBBB##",
                                     "###############")
-                            .aisle("###############", "##BBBBBBBBBBB##", "##BCCCCCCCCCB##", "##BC       CB##",
-                                    "##BC   D   CB##", "##BC       CB##", "##BCCCCCCCCCB##", "##BBBBBBBBBBB##",
+                            .aisle("###############",
+                                    "##BBBBBBBBBBB##",
+                                    "##BCCCCCCCCCB##",
+                                    "##BC       CB##",
+                                    "##BC   D   CB##",
+                                    "##BC       CB##",
+                                    "##BCCCCCCCCCB##",
+                                    "##BBBBBBBBBBB##",
                                     "###############")
-                            .aisle("#AAA#######AAA#", "#AABBBBBBBBBAA#", "#AABCCCCCCCBAA#", "#AABCC   CCBAA#",
-                                    "#AABCC   CCBAA#", "#AABCC   CCBAA#", "#AABCCCCCCCBAA#", "#AABBBBBBBBBAA#",
+                            .aisle("#AAA#######AAA#",
+                                    "#AABBBBBBBBBAA#",
+                                    "#AABCCCCCCCBAA#",
+                                    "#AABCC   CCBAA#",
+                                    "#AABCC   CCBAA#",
+                                    "#AABCC   CCBAA#",
+                                    "#AABCCCCCCCBAA#",
+                                    "#AABBBBBBBBBAA#",
                                     "#AAA#######AAA#")
-                            .aisle("#AAA##AAA##AAA#", "#AAABBBBBBBAAA#", "#AAABBCCCBBAAA#", "#AAABBCCCBBAAA#",
-                                    "#AAABBCCCBBAAA#", "#AAABBCCCBBAAA#", "#AAABBCCCBBAAA#", "#AAABBBBBBBAAA#",
+                            .aisle("#AAA##AAA##AAA#",
+                                    "#AAABBBBBBBAAA#",
+                                    "#AAABBCCCBBAAA#",
+                                    "#AAABBCCCBBAAA#",
+                                    "#AAABBCCCBBAAA#",
+                                    "#AAABBCCCBBAAA#",
+                                    "#AAABBCCCBBAAA#",
+                                    "#AAABBBBBBBAAA#",
                                     "#AAA##AAA##AAA#")
-                            .aisle("#AAA##AAA##AAA#", "#AAA##AAA##AAA#", "#AAA##AAA##AAA#", "#AAA##AAA##AAA#",
-                                    "#AAA##AAA##AAA#", "#AAA##AAA##AAA#", "#AAA##AAA##AAA#", "#AAA##AAA##AAA#",
+                            .aisle("#AAA##AAA##AAA#",
+                                    "#AAA##AAA##AAA#",
+                                    "#AAA##AAA##AAA#",
+                                    "#AAA##AAA##AAA#",
+                                    "#AAA##AAA##AAA#",
+                                    "#AAA##AAA##AAA#",
+                                    "#AAA##AAA##AAA#",
+                                    "#AAA##AAA##AAA#",
                                     "#AAA##AAA##AAA#")
-                            .aisle("######AAA######", "######A@A######", "######AAA######", "######AAA######",
-                                    "######AAA######", "######AAA######", "######AAA######", "######AAA######",
+                            .aisle("######AAA######",
+                                    "######A@A######",
+                                    "######AAA######",
+                                    "######AAA######",
+                                    "######AAA######",
+                                    "######AAA######",
+                                    "######AAA######",
+                                    "######AAA######",
                                     "######AAA######")
                             .where("A", Predicates.blocks(CASING_STEEL_SOLID.get())
                                     .or(Predicates.autoAbilities(definition.getRecipeTypes()))
@@ -389,9 +486,10 @@ public class CTPPMultiblockMachines {
             .allowExtendedFacing(false)
             .recipeType(CTPPRecipeTypes.BIG_DAM)
             .noRecipeModifier()
-            .appearanceBlock(() -> Blocks.STONE_BRICKS)
+            .appearanceBlock(() -> AllBlocks.INDUSTRIAL_IRON_BLOCK.get())
             .pattern(definition -> FactoryStaticBlockPattern.start()
-                    .aisle("###########################################", "###########################################",
+                    .aisle("###########################################",
+                            "###########################################",
                             "###########################################",
                             "###########################################",
                             "###########################################",
@@ -404,11 +502,12 @@ public class CTPPMultiblockMachines {
                             "###########################################",
                             "###########################################",
                             "##A##A##A##A##A##A##A##A##A##A##A##A##A####",
-                            "#AB##B##B##B##B##B##B##B##B##B##B##B##B####",
-                            "#DBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####",
+                            "##B##B##B##B##B##B##B##B##B##B##B##B##B####",
+                            "##FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF####",
                             "DDEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE####")
-                    .aisle("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####", "##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####",
-                            "##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####",
+                    .aisle("BBB#####B#####B#####B#####B#####B#####B####",
+                            "##B#####B#####B#####B#####B#####B#####B####",
+                            "##B#####B#####B#####B#####B#####B#####B####",
                             "##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####",
                             "##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####",
                             "FFBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####",
@@ -420,10 +519,11 @@ public class CTPPMultiblockMachines {
                             "##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####",
                             "##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####",
                             "##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####",
-                            "##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####",
-                            "##BGGGGGBGGGGGBGGGGGBGGGGGBGGGGGBGGGGGB####",
+                            "##BFFFFFBFFFFFBFFFFFBFFFFFBFFFFFBFFFFFB####",
+                            "##FGGGGGFGGGGGFGGGGGFGGGGGFGGGGGFGGGGGF####",
                             "FFE#####E#####E#####E#####E#####E#####E####")
-                    .aisle("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####", "#DBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####",
+                    .aisle("BBB##B##B##B##B##B##B##B##B##B##B##B##B####",
+                            "#DB##B##B##B##B##B##B##B##B##B##B##B##B####",
                             "#DBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####",
                             "#DBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####",
                             "#DBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####",
@@ -439,7 +539,8 @@ public class CTPPMultiblockMachines {
                             "#DB#####B#####B#####B#####B#####B#####B####",
                             "#DE#####E#####E#####E#####E#####E#####E####",
                             "DD#########################################")
-                    .aisle("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####", "##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####",
+                    .aisle("BBB##B##B##B##B##B##B##B##B##B##B##B##B####",
+                            "##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####",
                             "##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####",
                             "##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####",
                             "##B##B##B##B##B##B##B##B##B##B##B##B##B####",
@@ -455,7 +556,8 @@ public class CTPPMultiblockMachines {
                             "##EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE####",
                             "###########################################",
                             "###########################################")
-                    .aisle("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####", "##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####",
+                    .aisle("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####",
+                            "##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####",
                             "##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####",
                             "##B##B##B##B##B##B##B##B##B##B##B##B##B####",
                             "##B##B##B##B##B##B##B##B##B##B##B##B##B####",
@@ -471,7 +573,8 @@ public class CTPPMultiblockMachines {
                             "###########################################",
                             "###########################################",
                             "###########################################")
-                    .aisle("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####", "##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####",
+                    .aisle("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####",
+                            "##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####",
                             "##B##B##B##B##B##B##B##B##B##B##B##B##B####",
                             "##B##B##B##B##B##B##B##B##B##B##B##B##B####",
                             "##B##B##B##B##B##B##B##B##B##B##B##B##B####",
@@ -487,7 +590,8 @@ public class CTPPMultiblockMachines {
                             "###########################################",
                             "###########################################",
                             "###########################################")
-                    .aisle("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####", "##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####",
+                    .aisle("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####",
+                            "##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####",
                             "##B##B##B##B##B##B##B##B##B##B##B##B##B####",
                             "##B##B##B##B##B##B##B##B##B##B##B##B##B####",
                             "###########################################",
@@ -503,14 +607,15 @@ public class CTPPMultiblockMachines {
                             "###########################################",
                             "###########################################",
                             "###########################################")
-                    .aisle("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####", "##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####",
+                    .aisle("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####",
+                            "##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####",
                             "##B##B##B##B##B##B##B##B##B##B##B##B##B####",
                             "###########################################",
                             "###########################################",
                             "FF#########################################",
-                            "##ICC#CCICC#CCICC#CCICC#CCICC#CCICC#CCI####",
-                            "###CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#####",
-                            "##ICC#CCICC#CCICC#CCICC#CCICC#CCICC#CCI####",
+                            "##IJJJJJIJJJJJIJJJJJIJJJJJIJJJJJIJJJJJI####",
+                            "###########################################",
+                            "##IJJJJJIJJJJJIJJJJJIJJJJJIJJJJJIJJJJJI####",
                             "###########################################",
                             "###########################################",
                             "###########################################",
@@ -519,158 +624,168 @@ public class CTPPMultiblockMachines {
                             "###########################################",
                             "###########################################",
                             "###########################################")
-                    .aisle("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####", "##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####",
+                    .aisle("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####",
+                            "##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####",
                             "##B##B##B##B##B##B##B##B##B##B##B##B##B####",
                             "###########################################",
-                            "###CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#####",
-                            "FF#CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#####",
-                            "##IJJ#JJIJJ#JJIJJ#JJIJJ#JJIJJ#JJIJJ#JJI####",
+                            "###JJJJJ#JJJJJ#JJJJJ#JJJJJ#JJJJJ#JJJJJ#####",
+                            "FF#########################################",
+                            "##IJJJJJIJJJJJIJJJJJIJJJJJIJJJJJIJJJJJI####",
                             "###JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#####",
-                            "##IJJ#JJIJJ#JJIJJ#JJIJJ#JJIJJ#JJIJJ#JJI####",
-                            "###CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#####",
-                            "###CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#####",
+                            "##IJJJJJIJJJJJIJJJJJIJJJJJIJJJJJIJJJJJI####",
+                            "###########################################",
+                            "###JJJJJ#JJJJJ#JJJJJ#JJJJJ#JJJJJ#JJJJJ#####",
                             "###########################################",
                             "###########################################",
                             "###########################################",
                             "###########################################",
                             "###########################################",
                             "###########################################")
-                    .aisle("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB", "##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBD##D",
+                    .aisle("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
+                            "##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBD##D",
                             "##B##B##B##B##B##B##B##B##B##B##B##B##BD##D",
-                            "###CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#D##D",
-                            "###JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#DDDD",
+                            "###JJJJJ#JJJJJ#JJJJJ#JJJJJ#JJJJJ#JJJJJ#D##D",
+                            "###JJJJJ#JJJJJ#JJJJJ#JJJJJ#JJJJJ#JJJJJ#DDDD",
                             "FF#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#####",
                             "##I#####I#####I#####I#####I#####I#####I####",
-                            "###C###C#C###C#C###C#C###C#C###C#C###C#####",
+                            "####C#C###C#C###C#C###C#C###C#C###C#C######",
                             "##I#####I#####I#####I#####I#####I#####I####",
                             "###JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#####",
-                            "###JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#####",
-                            "###CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#####",
+                            "###JJJJJ#JJJJJ#JJJJJ#JJJJJ#JJJJJ#JJJJJ#####",
+                            "###JJJJJ#JJJJJ#JJJJJ#JJJJJ#JJJJJ#JJJJJ#####",
                             "###########################################",
                             "###########################################",
                             "###########################################",
                             "###########################################",
                             "###########################################")
-                    .aisle("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB", "#DBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####",
+                    .aisle("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
+                            "#DBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####",
                             "#DB##B##B##B##B##B##B##B##B##B##B##B##B####",
-                            "#D#CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#####",
+                            "#D#########################################",
                             "#D#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#FFFF",
                             "DD##C#C###C#C###C#C###C#C###C#C###C#C######",
                             "##I#####I#####I#####I#####I#####I#####I####",
-                            "###C###C#C###C#C###C#C###C#C###C#C###C#####",
+                            "####C#C###C#C###C#C###C#C###C#C###C#C######",
                             "##I#####I#####I#####I#####I#####I#####I####",
                             "####C#C###C#C###C#C###C#C###C#C###C#C######",
                             "###JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#####",
-                            "###CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#####",
+                            "###########################################",
                             "###########################################",
                             "###########################################",
                             "###########################################",
                             "###########################################",
                             "###########################################")
-                    .aisle("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB", "##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####",
-                            "##HCCBCCHCCBCCHCCBCCHCCBCCHCCBCCHCCBCCH####",
-                            "###JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#####",
+                    .aisle("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
+                            "##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####",
+                            "##HJJJJJHJJJJJHJJJJJHJJJJJHJJJJJHJJJJJH####",
+                            "###JJJJJ#JJJJJ#JJJJJ#JJJJJ#JJJJJ#JJJJJ#####",
                             "#######################################FDDF",
                             "FF#####################################I###",
-                            "##HCCHCCHCCHCCHCCHCCHCCHCCHCCHCCHCCHCCHH###",
-                            "##HCCHCCHCCHCCHCCHCCHCCHCCHCCHCCHCCHCCHH###",
-                            "##HCCHCCHCCHCCHCCHCCHCCHCCHCCHCCHCCHCCHH###",
+                            "##H#CHC#H#CHC#H#CHC#H#CHC#H#CHC#H#CHC#HH###",
+                            "##H#CHC#H#CHC#H#CHC#H#CHC#H#CHC#H#CHC#HH###",
+                            "##H#CHC#H#CHC#H#CHC#H#CHC#H#CHC#H#CHC#HH###",
                             "###########################################",
                             "###########################################",
-                            "###JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#####",
-                            "###CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#####",
-                            "###########################################",
-                            "###########################################",
-                            "###########################################",
-                            "###########################################")
-                    .aisle("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB", "##B##B##B##B##B##B##B##B##B##B##B##B##B####",
-                            "##HCCBCCHCCBCCHCCBCCHCCBCCHCCBCCHCCBCCH####",
-                            "##EJJ#JJEJJ#JJEJJ#JJEJJ#JJEJJ#JJEJJ#JJE####",
-                            "##EC###CEC###CEC###CEC###CEC###CEC###CEFDDF",
-                            "FFEC###CEC###CEC###CEC###CEC###CEC###CE####",
-                            "##HCCHCJHCCHCJHCCHCJHCCHCJHCCHCJHCCHCJHH###",
-                            "##KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKL###",
-                            "##HCCHCCHCCHCCHCCHCCHCCHCCHCCHCCHCCHCCHH###",
-                            "###C###C#C###C#C###C#C###C#C###C#C###C#####",
-                            "###C###C#C###C#C###C#C###C#C###C#C###C#####",
-                            "###JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#####",
-                            "###CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#####",
+                            "###JJJJJ#JJJJJ#JJJJJ#JJJJJ#JJJJJ#JJJJJ#####",
+                            "###JJJJJ#JJJJJ#JJJJJ#JJJJJ#JJJJJ#JJJJJ#####",
                             "###########################################",
                             "###########################################",
                             "###########################################",
                             "###########################################")
-                    .aisle("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB", "##B##B##B##B##B##B##B##B##B##B##B##B##B####",
-                            "##HCCBCCHCCBCCHCCBCCHCCBCCHCCBCCHCCBCCH####",
+                    .aisle("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
+                            "##B##B##B##B##B##B##B##B##B##B##B##B##B####",
+                            "##H#####H#####H#####H#####H#####H#####H####",
                             "##EJJ#JJEJJ#JJEJJ#JJEJJ#JJEJJ#JJEJJ#JJE####",
+                            "##E#C#C#E#C#C#E#C#C#E#C#C#E#C#C#E#C#C#EFDDF",
+                            "FFE#C#C#E#C#C#E#C#C#E#C#C#E#C#C#E#C#C#E####",
+                            "##H#CHC#H#CHC#H#CHC#H#CHC#H#CHC#H#CHC#HH###",
+                            "##KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKH###",
+                            "##H#CHC#H#CHC#H#CHC#H#CHC#H#CHC#H#CHC#HH###",
+                            "####C#C###C#C###C#C###C#C###C#C###C#C######",
+                            "####C#C###C#C###C#C###C#C###C#C###C#C######",
+                            "###JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#####",
+                            "###########################################",
+                            "###########################################",
+                            "###########################################",
+                            "###########################################",
+                            "###########################################")
+                    .aisle("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
+                            "##B##B##B##B##B##B##B##B##B##B##B##B##B####",
+                            "##HJJJJJHJJJJJHJJJJJHJJJJJHJJJJJHJJJJJH####",
+                            "##EJJJJJEJJJJJEJJJJJEJJJJJEJJJJJEJJJJJE####",
                             "##E#####E#####E#####E#####E#####E#####EFDDF",
                             "FFE#####E#####E#####E#####E#####E#####EI###",
-                            "##HCCHCCHCCHCCHCCHCCHCCHCCHCCHCCHCCHCCHH###",
-                            "##HCCHCCHCCHCCHCCHCCHCCHCCHCCHCCHCCHCCHH###",
-                            "##HCCHCCHCCHCCHCCHCCHCCHCCHCCHCCHCCHCCHH###",
+                            "##H#CHC#H#CHC#H#CHC#H#CHC#H#CHC#H#CHC#HH###",
+                            "##H#CHC#H#CHC#H#CHC#H#CHC#H#CHC#H#CHC#HH###",
+                            "##H#CHC#H#CHC#H#CHC#H#CHC#H#CHC#H#CHC#HH###",
                             "###########################################",
                             "###########################################",
-                            "###JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#####",
-                            "###CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#####",
+                            "###JJJJJ#JJJJJ#JJJJJ#JJJJJ#JJJJJ#JJJJJ#####",
+                            "###JJJJJ#JJJJJ#JJJJJ#JJJJJ#JJJJJ#JJJJJ#####",
                             "###########################################",
                             "###########################################",
                             "###########################################",
                             "###########################################")
-                    .aisle("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB", "#DB##B##B##B##B##B##B##B##B##B##B##B##B####",
+                    .aisle("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
+                            "#DB##B##B##B##B##B##B##B##B##B##B##B##B####",
                             "#DH##B##H##B##H##B##H##B##H##B##H##B##H####",
-                            "#D#CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#####",
+                            "#D#########################################",
                             "#D#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#FFFF",
                             "DD##C#C###C#C###C#C###C#C###C#C###C#C######",
                             "##E#####E#####E#####E#####E#####E#####E####",
-                            "##EC###CEC###CEC###CEC###CEC###CEC###CE####",
+                            "##E#C#C#E#C#C#E#C#C#E#C#C#E#C#C#E#C#C#E####",
                             "##E#####E#####E#####E#####E#####E#####E####",
                             "####C#C###C#C###C#C###C#C###C#C###C#C######",
                             "###JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#####",
-                            "###CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#####",
+                            "###########################################",
                             "###########################################",
                             "###########################################",
                             "###########################################",
                             "###########################################",
                             "###########################################")
-                    .aisle("##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB", "##B##B##B##B##B##B##B##B##B##B##B##B##BD##D",
+                    .aisle("##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
                             "##B##B##B##B##B##B##B##B##B##B##B##B##BD##D",
-                            "###CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#DDDD",
-                            "###JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#DDDD",
+                            "##B##B##B##B##B##B##B##B##B##B##B##B##BD##D",
+                            "###JJJJJ#JJJJJ#JJJJJ#JJJJJ#JJJJJ#JJJJJ#DDDD",
+                            "###JJJJJ#JJJJJ#JJJJJ#JJJJJ#JJJJJ#JJJJJ#DDDD",
                             "##EJJ#JJEJJ#JJEJJ#JJEJJ#JJEJJ#JJEJJ#JJE####",
                             "##E#####E#####E#####E#####E#####E#####E####",
-                            "##EC###CEC###CEC###CEC###CEC###CEC###CE####",
+                            "##E#C#C#E#C#C#E#C#C#E#C#C#E#C#C#E#C#C#E####",
                             "###########################################",
                             "###JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#####",
-                            "###JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#####",
-                            "###CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#####",
+                            "###JJJJJ#JJJJJ#JJJJJ#JJJJJ#JJJJJ#JJJJJ#####",
+                            "###JJJJJ#JJJJJ#JJJJJ#JJJJJ#JJJJJ#JJJJJ#####",
                             "###########################################",
                             "###########################################",
                             "###########################################",
                             "###########################################",
                             "###########################################")
-                    .aisle("##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB", "##B##B##B##B##B##B##B##B##B##B##B##B##B####",
+                    .aisle("##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
+                            "##B##B##B##B##B##B##B##B##B##B##B##B##B####",
                             "##B##B##B##B##B##B##B##B##B##B##B##B##B####",
                             "#######################################FFFF",
-                            "##ECC#CCECC#CCECC#CCECC#CCECC#CCECC#CCE####",
-                            "##ECC#CCECC#CCECC#CCECC#CCECC#CCECC#CCE####",
-                            "##EJJ#JJEJJ#JJEJJ#JJEJJ#JJEJJ#JJEJJ#JJE####",
+                            "##EJJJJJEJJJJJEJJJJJEJJJJJEJJJJJEJJJJJE####",
+                            "##E#####E#####E#####E#####E#####E#####E####",
+                            "##EJJJJJEJJJJJEJJ#JJEJJJJJEJJJJJEJJJJJE####",
                             "###JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#####",
-                            "###JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#####",
-                            "###CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#####",
-                            "###CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#####",
+                            "###JJJJJ#JJJJJ#JJJJJ#JJJJJ#JJJJJ#JJJJJ#####",
+                            "###########################################",
+                            "###JJJJJ#JJJJJ#JJJJJ#JJJJJ#JJJJJ#JJJJJ#####",
                             "###########################################",
                             "###########################################",
                             "###########################################",
                             "###########################################",
                             "###########################################",
                             "###########################################")
-                    .aisle("##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB", "##B##B##B##B##B##B##B##B##B##B##B##B##B####",
+                    .aisle("##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
+                            "##B##B##B##B##B##B##B##B##B##B##B##B##B####",
                             "##H##B##H##B##H##B##H##B##H##B##H##B##H####",
                             "##E#####E#####E#####E#####E#####E#####EFDDF",
                             "##E#####E#####E#####E#####E#####E#####E####",
                             "##E#####E#####E#####E#####E#####E#####E####",
-                            "###CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#####",
-                            "###CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#####",
-                            "###CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#CC#####",
+                            "###JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#####",
+                            "###########################################",
+                            "###JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#JJ#####",
                             "###########################################",
                             "###########################################",
                             "###########################################",
@@ -679,7 +794,8 @@ public class CTPPMultiblockMachines {
                             "###########################################",
                             "###########################################",
                             "###########################################")
-                    .aisle("##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB", "##B##B##B##B##B##B##B##B##B##B##B##B##B####",
+                    .aisle("##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
+                            "##B##B##B##B##B##B##B##B##B##B##B##B##B####",
                             "##H##B##H##B##H##B##H##B##H##B##H##B##H####",
                             "##H#####H#####H#####H#####H#####H#####HFDDF",
                             "##E#####E#####E#####E#####E#####E#####E####",
@@ -695,7 +811,8 @@ public class CTPPMultiblockMachines {
                             "###########################################",
                             "###########################################",
                             "###########################################")
-                    .aisle("##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB", "##B##B##B##B##B##B##B##B##B##B##B##B##B####",
+                    .aisle("##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
+                            "##B##B##B##B##B##B##B##B##B##B##B##B##B####",
                             "##B##B##B##B##B##B##B##B##B##B##B##B##B####",
                             "##H#####H#####H#####H#####H#####H#####HFDDF",
                             "##H#####H#####H#####H#####H#####H#####H####",
@@ -711,7 +828,8 @@ public class CTPPMultiblockMachines {
                             "###########################################",
                             "###########################################",
                             "###########################################")
-                    .aisle("##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB", "##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####",
+                    .aisle("##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
+                            "##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB####",
                             "##B##B##B##B##B##B##B##B##B##B##B##B##B####",
                             "##B##B##B##B##B##B##B##B##B##B##B##B##BFFFF",
                             "###########################################",
@@ -727,7 +845,8 @@ public class CTPPMultiblockMachines {
                             "###########################################",
                             "###########################################",
                             "###########################################")
-                    .aisle("##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB", "##BBBBBBBBBBBBBBBBBB@BBBBBBBBBBBBBBBBBBD##D",
+                    .aisle("##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
+                            "##BBBBBBBBBBBBBBBBBB@BBBBBBBBBBBBBBBBBBD##D",
                             "##BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBD##D",
                             "##B##B##B##B##B##B##B##B##B##B##B##B##BDDDD",
                             "###########################################",
@@ -743,22 +862,23 @@ public class CTPPMultiblockMachines {
                             "###########################################",
                             "###########################################",
                             "###########################################")
-                    .where("D", Predicates.frames(TreatedWood))
                     .where("J", Predicates.blocks(TREATED_WOOD_PLANK.get()), false)
+                    .where("C", Predicates.blocks(TREATED_WOOD_PLANK.get()), false)
+                    .where("K",
+                            Predicates.blocks(MATERIAL_BLOCKS.get(TagPrefix.block, CTPPMaterials.AndesiteAlloy).get()),
+                            false)
+
+                    .where("D", Predicates.frames(TreatedWood))
+                    .where("F", Predicates.blocks(TREATED_WOOD_PLANK.get()))
                     .where("G", Predicates.blocks(WATER))
                     .where("I", Predicates.blocks(AllBlocks.METAL_GIRDER.get()))
-                    .where("#", Predicates.any())
                     .where("E", Predicates.blocks(AllBlocks.ANDESITE_CASING.get()))
                     .where("A", Predicates.blocks(STONE_BRICK_WALL))
-                    .where("K",
-                            Predicates.blocks(MATERIAL_BLOCKS.get(TagPrefix.block, CTPPMaterials.AndesiteAlloy).get()))
-                    .where("H", Predicates.blocks(AllBlocks.INDUSTRIAL_IRON_BLOCK.get()))
-                    .where("L", Predicates.blocks(AllBlocks.ITEM_VAULT.get()))
-                    .where("C", Predicates.blocks(TREATED_WOOD_PLANK.get()), false)
-                    .where("B", Predicates.blocks(STONE_BRICKS)
+                    .where("B", Predicates.blocks(STONE_BRICKS))
+                    .where("H", Predicates.blocks(AllBlocks.INDUSTRIAL_IRON_BLOCK.get())
                             .or(Predicates.autoAbilities(definition.getRecipeTypes()))
                             .or(Predicates.abilities(CTPPPartAbility.OUTPUT_KINETIC)).setMinGlobalLimited(1))
-                    .where("F", Predicates.blocks(TREATED_WOOD_PLANK.get()))
+                    .where("#", Predicates.any())
                     .where("@", Predicates.controller(Predicates.blocks(definition.get())))
                     .build())
             .workableCasingModel(ResourceLocation.tryParse("minecraft:block/stone_bricks"),
