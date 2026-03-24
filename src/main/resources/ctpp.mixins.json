@@ -22,6 +22,7 @@
   ],
   "client": [
     "create.fix.DeployerApplicationRecipeMixin",
+    "create.fix.SequencedAssemblyCategoryMixin",
     "create.fix.DeployerApplicationRecipeMixin$StockTickerBlockEntityMixin"
   ],
   "minVersion": "0.8"
