@@ -17,12 +17,12 @@ import org.antarcticgardens.cna.CNABlocks;
 
 import java.util.function.Consumer;
 
-import static com.mo_guang.ctpp.common.machine.multiblock.KineticGeneratorMachine.GENERATING_BOOST;
 import static com.mo_guang.ctpp.registry.CTPPRecipeTypes.KINETIC_GENERATOR_RECIPES;
 import static com.mo_guang.ctpp.registry.CTPPRecipeTypes.KINETIC_STEAM_TURBINE_RECIPES;
 
 public class KineticGeneratorRecipes {
 
+    public static final float GENERATING_BOOST = MainConfig.INSTANCE.ctnhConfig.kineticGeneratorGeneratingBoost;
     public static final boolean REQUIRE_LUBRICANT = MainConfig.INSTANCE.ctnhConfig.kineticGeneratorGeneratingRequireLubricant;
     public static final int GENERATING_REQUIRE_LUBRICANT_AMOUNT = MainConfig.INSTANCE.ctnhConfig.kineticGeneratorGeneratingRequireLubricantAmount;
     public static final float STEAM_POWERED_BOOST = MainConfig.INSTANCE.ctnhConfig.steamPoweredKineticGeneratingBoost;
@@ -53,6 +53,7 @@ public class KineticGeneratorRecipes {
                 .addData("stress", 32768 * STEAM_POWERED_BOOST)
                 .duration(10)
                 .save(provider);
+
         VanillaRecipeHelper.addShapedRecipe(provider, "kinetic_generator",
                 new ItemStack(CTPPMultiblockMachines.KINETIC_GENERATOR.getItem()),
                 "ABA",

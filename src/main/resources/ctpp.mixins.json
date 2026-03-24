@@ -22,6 +22,8 @@
   ],
   "client": [
     "create.fix.DeployerApplicationRecipeMixin",
+    "create.fix.ArmInteractionPointModeMixin",
+    "create.fix.SequencedAssemblyCategoryMixin",
     "create.fix.DeployerApplicationRecipeMixin$StockTickerBlockEntityMixin"
   ],
   "minVersion": "0.8"

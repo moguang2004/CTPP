@@ -6,23 +6,26 @@ import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
 
+import net.minecraft.core.Registry;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 import com.mo_guang.ctpp.CTPPRegistration;
 import com.mo_guang.ctpp.api.CTPPRecipeConditions;
+import com.mo_guang.ctpp.common.data.GTArmInteractionPointTypes;
 import com.mo_guang.ctpp.common.data.recipe.builder.CTPPRecipeProvider;
 import com.mo_guang.ctpp.common.data.recipe.fan_processing.CTPPFanProcessingTypes;
 import com.mo_guang.ctpp.common.data.recipe.fan_processing.CTPPRecipeTypeInfo;
 import com.mo_guang.ctpp.config.MainConfig;
 import com.mo_guang.ctpp.data.CTPPDatagen;
 import com.mo_guang.ctpp.registry.*;
-import com.mo_guang.ctpp.registry.GTMaterialAddon;
+import com.simibubi.create.api.registry.CreateBuiltInRegistries;
 
 @SuppressWarnings("removal")
 public class CommonProxy {
@@ -32,6 +35,7 @@ public class CommonProxy {
         MainConfig.init();
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.addListener(this::addMaterialFlag);
+        modEventBus.addListener(this::commonSetup);
         modEventBus.register(this);
     }
 
@@ -46,6 +50,15 @@ public class CommonProxy {
         modEventBus.addGenericListener(MachineDefinition.class, this::registerMachines);
         modEventBus.addGenericListener(RecipeConditionType.class, this::registerRecipeConditions);
         modEventBus.addGenericListener(GTRecipeType.class, this::registerRecipeTypes);
+    }
+
+    private void commonSetup(final FMLCommonSetupEvent event) {
+        event.enqueueWork(() -> {
+            Registry.register(
+                    CreateBuiltInRegistries.ARM_INTERACTION_POINT_TYPE,
+                    new ResourceLocation("ctpp", "gt_machine"),
+                    new GTArmInteractionPointTypes.GTMachineType());
+        });
     }
 
     public void addMaterialFlag(MaterialEvent event) {
