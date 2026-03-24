@@ -87,7 +87,7 @@
   "ctpp.common_tooltip.mechanical_tier": "*§n机械等级§r由§l机械升级仓§r中的物品决定：无(0)，§7基础构件(1)§r，§e精密构件(2)§r，\n§8钢铁构建或基础电子电路(3)§r，§b高级电子电路(4)§r，§6集成电路(5)§r",
   "ctpp.common_tooltip.mechanical_tier_machine": "§n机械等级§r请详见§l机械升级仓§r的物品信息",
   "ctpp.copyright.info": "该机器由§6CT++§r添加",
-  "ctpp.info0": "产能功率：%d/%d EU/t (上限%d EU/t)",
+  "ctpp.info0": "产能功率：%d/%d EU/t (上限§4%d§r EU/t)",
   "ctpp.info1": "线圈效率：%d%%",
   "ctpp.info2": "磁场强度：%d(%d%% 能量转化率)",
   "ctpp.info3": "总效率：%d%%",

@@ -64,7 +64,7 @@ public class KineticGeneratorMachine extends KineticWorkableMultiblockMachine {
         efficiency = getEfficiency();
     }
 
-    @CN("产能功率：%d/%d EU/t (上限§4%d§r EU/t§)")
+    @CN("产能功率：%d/%d EU/t (上限§4%d§r EU/t)")
     @EN("Generator Rate：%d/%d EU/t (Limit %d EU/t)")
     static Lang info0;
 
