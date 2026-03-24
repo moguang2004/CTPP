@@ -29,7 +29,7 @@ public class BoomOfCreateRecipes {
                 "BAB",
                 'A', GTItems.CONVEYOR_MODULE_IV,
                 'B', CustomTags.IV_CIRCUITS,
-                'C', GTMachines.HULL[GTValues.IV],
+                'C', GTMachines.HULL[GTValues.IV].asStack(),
                 'D', GTItems.ELECTRIC_PUMP_IV,
                 'E', CTPPMultiblockMachines.BIG_DAM.get());
         CTPPRecipeBuilder.of(CTPP.id("boom_of_create1"), CTPPRecipeTypes.BOOM_OF_CREATE)
