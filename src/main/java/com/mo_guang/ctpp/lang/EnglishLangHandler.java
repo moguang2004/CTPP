@@ -11,7 +11,7 @@ public class EnglishLangHandler {
         provider.add("ctpp.common_tooltip.input_speed",
                 "*The input speed is based on the highest-speed stress chamber.");
         provider.add("ctpp.common_tooltip.mechanical_tier",
-                "*§nMechanical Tier§r is determined by items in the Mechanical Upgrade Bus: None (0), §7Basic Components (1)§r, §ePrecision Components (2)§r,\n§8Steel Structures or Basic Electronic Circuits (3)§r, §bAdvanced Electronic Circuits (4)§r, §6Integrated Circuits (5)§r");
+                "§nMechanical Tier§r is determined by items in the Mechanical Upgrade Bus: None (0), §7Basic Components (1)§r, §ePrecision Components (2)§r,\n§8Steel Structures or Basic Electronic Circuits (3)§r, §bAdvanced Electronic Circuits (4)§r, §6Integrated Circuits (5)§r");
         provider.add("ctpp.common_tooltip.mechanical_tier_machine",
                 "§nMechanical Tier§r please be seen in the Tooltip of §lMechanical upgrade bus§r");
 
