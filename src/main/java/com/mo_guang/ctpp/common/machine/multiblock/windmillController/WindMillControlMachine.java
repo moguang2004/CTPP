@@ -17,6 +17,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
+import net.minecraft.world.phys.Vec3;
 
 import com.mo_guang.ctpp.api.pattern.StaticBlockPattern;
 import com.mo_guang.ctpp.common.machine.multiblock.KineticOutputMachine;
@@ -30,7 +31,6 @@ import com.simibubi.create.content.contraptions.bearing.WindmillBearingBlockEnti
 import com.simibubi.create.infrastructure.config.AllConfigs;
 import lombok.Getter;
 import lombok.Setter;
-import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tech.vixhentx.mcmod.ctnhlib.client.render.ColorData;
@@ -75,8 +75,7 @@ public class WindMillControlMachine extends KineticOutputMachine
                     serverLevel,
                     controllerPos,
                     32,
-                    LEGAL_DISTANCE
-            );
+                    LEGAL_DISTANCE);
         }
     }
 
@@ -170,7 +169,8 @@ public class WindMillControlMachine extends KineticOutputMachine
         super.updateRotateBlocks(active);
         if (active) {
             float speed = MathUtil.rpm2rads(this.speed);
-            if (rotatingEntity != null) rotatingEntity.forEach(entity -> entity.setRotationSpeedRPM(new Vec3(0, -1, 0), speed));
+            if (rotatingEntity != null)
+                rotatingEntity.forEach(entity -> entity.setRotationSpeedRPM(new Vec3(0, -1, 0), speed));
         }
     }
 

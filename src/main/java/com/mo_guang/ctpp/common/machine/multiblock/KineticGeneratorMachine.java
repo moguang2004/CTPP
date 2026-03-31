@@ -14,21 +14,21 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-
 import com.lowdragmc.lowdraglib.utils.TrackedDummyWorld;
-import com.mo_guang.ctpp.api.pattern.StaticBlockPattern;
-import com.mo_guang.ctpp.dynamicPart.rotation.IRotationMultiblock;
-import com.mo_guang.ctpp.dynamicPart.rotation.SimpleRotatingContraption;
-import com.mo_guang.ctpp.util.MathUtil;
-import com.simibubi.create.content.contraptions.AbstractContraptionEntity;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.phys.Vec3;
 
+import com.mo_guang.ctpp.api.pattern.StaticBlockPattern;
+import com.mo_guang.ctpp.dynamicPart.rotation.IRotationMultiblock;
+import com.mo_guang.ctpp.dynamicPart.rotation.SimpleRotatingContraption;
 import com.mo_guang.ctpp.dynamicPart.rotation.SimpleRotatingContraptionEntity;
+import com.mo_guang.ctpp.util.MathUtil;
+import com.simibubi.create.content.contraptions.AbstractContraptionEntity;
 import lombok.Getter;
 import lombok.Setter;
-import net.minecraft.world.phys.Vec3;
 import tech.vixhentx.mcmod.ctnhlib.langprovider.Lang;
 import tech.vixhentx.mcmod.ctnhlib.langprovider.annotation.CN;
 import tech.vixhentx.mcmod.ctnhlib.langprovider.annotation.EN;
@@ -40,7 +40,8 @@ import java.util.Map;
 
 import static com.mo_guang.ctpp.common.data.recipe.KineticGeneratorRecipes.GENERATING_BOOST;
 
-public class KineticGeneratorMachine extends KineticWorkableMultiblockMachine implements IRotationMultiblock<SimpleRotatingContraptionEntity> {
+public class KineticGeneratorMachine extends KineticWorkableMultiblockMachine
+                                     implements IRotationMultiblock<SimpleRotatingContraptionEntity> {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
             KineticGeneratorMachine.class, KineticMultiblockMachine.MANAGED_FIELD_HOLDER);
@@ -81,6 +82,7 @@ public class KineticGeneratorMachine extends KineticWorkableMultiblockMachine im
             }
         }
     }
+
     @Override
     public void onStructureInvalid() {
         super.onStructureInvalid();
@@ -113,11 +115,10 @@ public class KineticGeneratorMachine extends KineticWorkableMultiblockMachine im
                 rotatingEntity.forEach(entity -> {
                     var facing = getFrontFacing().getNormal();
                     Vec3 newF = new Vec3(facing.getX(), facing.getY(), facing.getZ());
-                    entity.setRotationSpeedRPM(MathUtil.rotateByVec(newF, 90, new Vec3(0, -1, 0)), Math.min(speed,64));
+                    entity.setRotationSpeedRPM(MathUtil.rotateByVec(newF, 90, new Vec3(0, -1, 0)), Math.min(speed, 64));
                 });
         }
     }
-
 
     @CN("产能功率：%d/%d EU/t (上限§4%d§r EU/t)")
     @EN("Generator Rate：%d/%d EU/t (Limit %d EU/t)")
@@ -197,6 +198,7 @@ public class KineticGeneratorMachine extends KineticWorkableMultiblockMachine im
         }
         return null;
     }
+
     @Override
     public ManagedFieldHolder getFieldHolder() {
         return MANAGED_FIELD_HOLDER;
