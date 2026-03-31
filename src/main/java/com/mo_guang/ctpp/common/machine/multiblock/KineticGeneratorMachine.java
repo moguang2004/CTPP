@@ -12,24 +12,35 @@ import com.gregtechceu.gtceu.common.block.CoilBlock;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
+import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
+import com.lowdragmc.lowdraglib.utils.TrackedDummyWorld;
+import com.mo_guang.ctpp.api.pattern.StaticBlockPattern;
+import com.mo_guang.ctpp.dynamicPart.rotation.IRotationMultiblock;
+import com.mo_guang.ctpp.dynamicPart.rotation.SimpleRotatingContraption;
+import com.mo_guang.ctpp.util.MathUtil;
+import com.simibubi.create.content.contraptions.AbstractContraptionEntity;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 
 import com.mo_guang.ctpp.dynamicPart.rotation.SimpleRotatingContraptionEntity;
 import lombok.Getter;
 import lombok.Setter;
+import net.minecraft.world.phys.Vec3;
 import tech.vixhentx.mcmod.ctnhlib.langprovider.Lang;
 import tech.vixhentx.mcmod.ctnhlib.langprovider.annotation.CN;
 import tech.vixhentx.mcmod.ctnhlib.langprovider.annotation.EN;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.mo_guang.ctpp.common.data.recipe.KineticGeneratorRecipes.GENERATING_BOOST;
 
-public class KineticGeneratorMachine extends KineticWorkableMultiblockMachine {
+public class KineticGeneratorMachine extends KineticWorkableMultiblockMachine implements IRotationMultiblock<SimpleRotatingContraptionEntity> {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
             KineticGeneratorMachine.class, KineticMultiblockMachine.MANAGED_FIELD_HOLDER);
@@ -37,8 +48,7 @@ public class KineticGeneratorMachine extends KineticWorkableMultiblockMachine {
     @Setter
     List<SimpleRotatingContraptionEntity> rotatingEntity = new ArrayList<>();
     private ICoilType coilType = CoilBlock.CoilType.CUPRONICKEL;
-    public float previousSpeed;
-    public float speed;
+    @Persisted
     public int magnetStrength;
     public double efficiency;
     public double outputEnergy = 0;
@@ -60,9 +70,54 @@ public class KineticGeneratorMachine extends KineticWorkableMultiblockMachine {
         if (type instanceof ICoilType coil) {
             this.coilType = coil;
         }
-        this.magnetStrength = getMultiblockState().getMatchContext().get("MagnetStrength");
+        if (getMultiblockState().getMatchContext().get("MagnetStrength") != null) {
+            this.magnetStrength = getMultiblockState().getMatchContext().get("MagnetStrength");
+        }
         efficiency = getEfficiency();
+        if (rotatingEntity.isEmpty() && getLevel() != null && !getLevel().isClientSide) {
+            var rotatingEntities = assemble(MachineUtils.getOffset(this, 2, 0, 1));
+            if (rotatingEntities != null) {
+                this.rotatingEntity.addAll(rotatingEntities.values());
+            }
+        }
     }
+    @Override
+    public void onStructureInvalid() {
+        super.onStructureInvalid();
+        if (getLevel() != null && !getLevel().isClientSide) {
+            if (!rotatingEntity.isEmpty()) {
+                this.rotatingEntity.forEach(AbstractContraptionEntity::disassemble);
+            }
+            this.rotatingEntity = new ArrayList<>();
+            magnetStrength = 0;
+        }
+    }
+
+    @Override
+    public void updateMachineSpeed() {
+        super.updateMachineSpeed();
+        if (!rotatingEntity.isEmpty() && isFormed) {
+            rotatingEntity.forEach(entity -> {
+                var facing = getFrontFacing().getNormal();
+                Vec3 newF = new Vec3(facing.getX(), facing.getY(), facing.getZ());
+                entity.setRotationSpeedRPM(MathUtil.rotateByVec(newF, 90, new Vec3(0, -1, 0)), Math.min(speed, 64));
+            });
+        }
+    }
+
+    @Override
+    public void updateRotateBlocks(boolean active) {
+        super.updateRotateBlocks(active);
+        if (active) {
+            if (rotatingEntity != null)
+                rotatingEntity.forEach(entity -> {
+                    var facing = getFrontFacing().getNormal();
+                    Vec3 newF = new Vec3(facing.getX(), facing.getY(), facing.getZ());
+                    entity.setRotationSpeedRPM(MathUtil.rotateByVec(newF, 90, new Vec3(0, -1, 0)), Math.min(speed,64));
+                });
+        }
+    }
+
 
     @CN("产能功率：%d/%d EU/t (上限§4%d§r EU/t)")
     @EN("Generator Rate：%d/%d EU/t (Limit %d EU/t)")
@@ -119,6 +174,29 @@ public class KineticGeneratorMachine extends KineticWorkableMultiblockMachine {
         return coilType.getTier();
     }
 
+    public Map<Integer, SimpleRotatingContraptionEntity> assemble(BlockPos pivot) {
+        if (self().getLevel() instanceof TrackedDummyWorld) return null;
+        if (self().getLevel().isClientSide) return null;
+        Map<Integer, SimpleRotatingContraptionEntity> ce = new HashMap<>();
+        var pattern = self().getDefinition().getPatternFactory().get();
+        if (pattern instanceof StaticBlockPattern staticBlockPattern) {
+            Map<Integer, List<BlockPos>> dymanicPart = staticBlockPattern.getDynamicPart(self().getMultiblockState());
+            for (var entry : dymanicPart.entrySet()) {
+                int group = entry.getKey();
+                var part = entry.getValue();
+                SimpleRotatingContraption contraption = new SimpleRotatingContraption(part, pivot);
+                contraption.assemble(this.self().getLevel(), self().getPos()); // 第二个参数无用
+                contraption.removeBlocksFromWorld(this.self().getLevel(), BlockPos.ZERO);
+                SimpleRotatingContraptionEntity contraptionEntity = SimpleRotatingContraptionEntity
+                        .create(self().getLevel(), contraption, this, pivot.getCenter());
+                contraptionEntity.setPos(pivot.getX(), pivot.getY(), pivot.getZ());
+                this.self().getLevel().addFreshEntity(contraptionEntity);
+                ce.put(group, contraptionEntity);
+            }
+            return ce;
+        }
+        return null;
+    }
     @Override
     public ManagedFieldHolder getFieldHolder() {
         return MANAGED_FIELD_HOLDER;

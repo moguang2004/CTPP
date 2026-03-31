@@ -128,6 +128,11 @@ public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity {
         }
     }
 
+    public void setRotationSpeedRPM(Vec3 worldAxis, float rpm) {
+        float degPerTick = rpm * 360f / (20f * 60); // 1转=360度，1秒20tick，60秒1分钟
+        setRotationSpeed(worldAxis, degPerTick);
+    }
+
     public void setRunning(boolean running) {
         this.isRunning = running;
         if (!level().isClientSide()) {
