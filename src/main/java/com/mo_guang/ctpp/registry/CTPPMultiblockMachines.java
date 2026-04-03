@@ -37,7 +37,7 @@ import static com.mo_guang.ctpp.CTPPRegistration.REGISTRATE;
 import static com.mo_guang.ctpp.config.ConfigUtils.*;
 import static net.minecraft.world.level.block.Blocks.*;
 import static net.minecraft.world.level.block.Blocks.STONE_BRICKS;
-import static org.antarcticgardens.newage.NewAgeBlocks.*;
+import static org.antarcticgardens.cna.CNABlocks.*;
 
 public class CTPPMultiblockMachines {
 
