@@ -17,6 +17,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
+import net.minecraft.world.phys.Vec3;
 
 import com.mo_guang.ctpp.api.pattern.StaticBlockPattern;
 import com.mo_guang.ctpp.common.machine.multiblock.KineticOutputMachine;
@@ -73,9 +74,8 @@ public class WindMillControlMachine extends KineticOutputMachine
             WindmillManager.getInstance().submitScanTask(
                     serverLevel,
                     controllerPos,
-                    32, // 你的原代码中扫描半径是32
-                    LEGAL_DISTANCE // 64，控制器冲突检测距离
-            );
+                    32,
+                    LEGAL_DISTANCE);
         }
     }
 
@@ -169,7 +169,8 @@ public class WindMillControlMachine extends KineticOutputMachine
         super.updateRotateBlocks(active);
         if (active) {
             float speed = MathUtil.rpm2rads(this.speed);
-            if (rotatingEntity != null) rotatingEntity.forEach(entity -> entity.setRotationSpeed(0, -speed, 0));
+            if (rotatingEntity != null)
+                rotatingEntity.forEach(entity -> entity.setRotationSpeedRPM(new Vec3(0, -1, 0), speed));
         }
     }
 
@@ -180,7 +181,6 @@ public class WindMillControlMachine extends KineticOutputMachine
             if (hasConflictingController) {
                 textList.add(Component.translatable("ctpp.multiblock.windmill_control_center.conflict")
                         .withStyle(ChatFormatting.RED, ChatFormatting.BOLD));
-                // 冲突时直接返回，不显示正常数据（或按需保留，标记为无效）
                 return;
             }
             var button = ComponentPanelWidget.withButton(Component

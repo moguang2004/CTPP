@@ -9,7 +9,7 @@ public class ChineseLangHandler {
         provider.add("ctpp.common_tooltip.kinetic_overclock", "-输入配方所需的(N的平方)倍应力时，获得N并行");
         provider.add("ctpp.common_tooltip.input_speed", "*输入转速以等级最高的应力仓的转速为准");
         provider.add("ctpp.common_tooltip.mechanical_tier",
-                "*§n机械等级§r由§l机械升级仓§r中的物品决定：无(0)，§7基础构件(1)§r，§e精密构件(2)§r，\n§8钢铁构建或基础电子电路(3)§r，§b高级电子电路(4)§r，§6集成电路(5)§r");
+                "§n机械等级§r由§l机械升级仓§r中的物品决定：无(0)，§7基础构件(1)§r，§e精密构件(2)§r，\n§8钢铁构建/基础电子电路(3)§r，§b优质电子电路(4)§r，§6进阶集成电路(5)§r");
         provider.add("ctpp.common_tooltip.mechanical_tier_machine", "§n机械等级§r请详见§l机械升级仓§r的物品信息");
 
         provider.add("recipe.capability.su.name", "应力");
