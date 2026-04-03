@@ -5,7 +5,7 @@
   "variants": {
     "": {
       "model": {
-        "parent": "create_new_age:block/generation/carbon_brushes"
+        "parent": "create_new_age:block/carbon_brushes/base"
       }
     }
   }

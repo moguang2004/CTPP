@@ -9,7 +9,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
 import com.mo_guang.ctpp.api.pattern.CTPPBlockMaps;
-import org.antarcticgardens.newage.content.generation.magnets.ImplementedMagnetBlock;
+import org.antarcticgardens.cna.content.electricity.generation.magnet.ImplementedMagnetBlock;
 
 import java.util.ArrayList;
 import java.util.List;

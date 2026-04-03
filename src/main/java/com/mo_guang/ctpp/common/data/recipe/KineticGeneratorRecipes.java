@@ -13,7 +13,7 @@ import com.mo_guang.ctpp.common.data.recipe.builder.CTPPRecipeBuilder;
 import com.mo_guang.ctpp.config.MainConfig;
 import com.mo_guang.ctpp.registry.CTPPBlocks;
 import com.mo_guang.ctpp.registry.CTPPMultiblockMachines;
-import org.antarcticgardens.newage.NewAgeBlocks;
+import org.antarcticgardens.cna.CNABlocks;
 
 import java.util.function.Consumer;
 
@@ -62,6 +62,6 @@ public class KineticGeneratorRecipes {
                 'A', CTPPBlocks.HEAVY_MACHINERY_CASING,
                 'B', GTBlocks.CASING_STEEL_SOLID,
                 'C', CustomTags.MV_CIRCUITS,
-                'D', NewAgeBlocks.GENERATOR_COIL.asStack());
+                'D', CNABlocks.GENERATOR_COIL.asStack());
     }
 }
