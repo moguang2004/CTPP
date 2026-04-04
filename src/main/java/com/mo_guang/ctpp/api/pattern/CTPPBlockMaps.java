@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
-import static org.antarcticgardens.cna.CNABlocks.*;
+import static org.antarcticgardens.newage.NewAgeBlocks.*;
 
 public class CTPPBlockMaps {
 

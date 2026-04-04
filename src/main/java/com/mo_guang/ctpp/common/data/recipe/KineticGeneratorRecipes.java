@@ -4,21 +4,19 @@ import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
-
-import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.world.item.ItemStack;
-
 import com.mo_guang.ctpp.CTPP;
 import com.mo_guang.ctpp.common.data.recipe.builder.CTPPRecipeBuilder;
 import com.mo_guang.ctpp.config.MainConfig;
 import com.mo_guang.ctpp.registry.CTPPBlocks;
 import com.mo_guang.ctpp.registry.CTPPMultiblockMachines;
-import org.antarcticgardens.cna.CNABlocks;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.function.Consumer;
 
 import static com.mo_guang.ctpp.registry.CTPPRecipeTypes.KINETIC_GENERATOR_RECIPES;
 import static com.mo_guang.ctpp.registry.CTPPRecipeTypes.KINETIC_STEAM_TURBINE_RECIPES;
+import static org.antarcticgardens.newage.NewAgeBlocks.GENERATOR_COIL;
 
 public class KineticGeneratorRecipes {
 
@@ -62,6 +60,6 @@ public class KineticGeneratorRecipes {
                 'A', CTPPBlocks.HEAVY_MACHINERY_CASING,
                 'B', GTBlocks.CASING_STEEL_SOLID,
                 'C', CustomTags.MV_CIRCUITS,
-                'D', CNABlocks.GENERATOR_COIL.asStack());
+                'D', GENERATOR_COIL.asStack());
     }
 }

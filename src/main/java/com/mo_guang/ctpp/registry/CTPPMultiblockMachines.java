@@ -9,15 +9,10 @@ import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
 import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.pattern.Predicates;
-import com.gregtechceu.gtceu.common.data.*;
-
-import net.minecraft.ChatFormatting;
-import net.minecraft.core.Direction;
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-
+import com.gregtechceu.gtceu.common.data.GCYMBlocks;
+import com.gregtechceu.gtceu.common.data.GTBlocks;
+import com.gregtechceu.gtceu.common.data.GTMachines;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.mo_guang.ctpp.CTPP;
 import com.mo_guang.ctpp.CTPPRegistration;
 import com.mo_guang.ctpp.api.CTPPPartAbility;
@@ -27,6 +22,12 @@ import com.mo_guang.ctpp.common.machine.multiblock.*;
 import com.mo_guang.ctpp.common.machine.multiblock.windmillController.WindMillControlMachine;
 import com.mo_guang.ctpp.util.CommonTooltips;
 import com.simibubi.create.AllBlocks;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
 import static com.gregtechceu.gtceu.api.pattern.Predicates.blocks;
 import static com.gregtechceu.gtceu.common.data.GTBlocks.*;
@@ -34,10 +35,8 @@ import static com.gregtechceu.gtceu.common.data.GTMaterialBlocks.CABLE_BLOCKS;
 import static com.gregtechceu.gtceu.common.data.GTMaterialBlocks.MATERIAL_BLOCKS;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.TreatedWood;
 import static com.mo_guang.ctpp.CTPPRegistration.REGISTRATE;
-import static com.mo_guang.ctpp.config.ConfigUtils.*;
+import static com.mo_guang.ctpp.config.ConfigUtils.ctnhEnabled;
 import static net.minecraft.world.level.block.Blocks.*;
-import static net.minecraft.world.level.block.Blocks.STONE_BRICKS;
-import static org.antarcticgardens.cna.CNABlocks.*;
 
 public class CTPPMultiblockMachines {
 

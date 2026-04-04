@@ -1,15 +1,12 @@
 package com.mo_guang.ctpp.api;
 
 import com.gregtechceu.gtceu.api.pattern.TraceabilityPredicate;
-
 import com.lowdragmc.lowdraglib.utils.BlockInfo;
-
+import com.mo_guang.ctpp.api.pattern.CTPPBlockMaps;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-
-import com.mo_guang.ctpp.api.pattern.CTPPBlockMaps;
-import org.antarcticgardens.cna.content.electricity.generation.magnet.ImplementedMagnetBlock;
+import org.antarcticgardens.newage.content.generation.magnets.ImplementedMagnetBlock;
 
 import java.util.ArrayList;
 import java.util.List;
