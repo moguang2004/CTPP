@@ -1,7 +1,10 @@
 package com.mo_guang.ctpp.common.machine.multiblock.part;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.TickableSubscription;
+import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 
@@ -19,6 +22,7 @@ import com.mo_guang.ctpp.common.machine.NotifiableStressTrait;
 import com.mo_guang.ctpp.common.machine.multiblock.KineticMultiblockMachine;
 import lombok.Getter;
 
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
@@ -31,6 +35,9 @@ public class KineticPartMachine extends TieredIOPartMachine implements IKineticM
     @Getter
     @Persisted
     protected final NotifiableStressTrait stressTrait;
+
+    @Nullable
+    protected TickableSubscription selfCheckSubs;
 
     public KineticPartMachine(IMachineBlockEntity holder, int tier, IO io, Object... args) {
         super(holder, tier, io);
@@ -89,6 +96,33 @@ public class KineticPartMachine extends TieredIOPartMachine implements IKineticM
             getKineticHolder().stopWorking();
         }
         super.setWorkingEnabled(workingEnabled);
+    }
+
+    void checkWorking() {
+        if (getOffsetTimer() % 100 == 0 && !GTCEu.isClientSide()) {
+            if (!isFormed() || getControllers().isEmpty() ||
+                    !(getControllers().first() instanceof IRecipeLogicMachine recipeLogicMachine) ||
+                    !recipeLogicMachine.isActive()) {
+                getKineticHolder().stopWorking();
+            }
+        }
+    }
+
+    @Override
+    public void onLoad() {
+        super.onLoad();
+        if (selfCheckSubs == null) {
+            selfCheckSubs = subscribeServerTick(this::checkWorking);
+        }
+    }
+
+    @Override
+    public void onUnload() {
+        super.onUnload();
+        if (selfCheckSubs != null) {
+            selfCheckSubs.unsubscribe();
+            selfCheckSubs = null;
+        }
     }
 
     //////////////////////////////////////

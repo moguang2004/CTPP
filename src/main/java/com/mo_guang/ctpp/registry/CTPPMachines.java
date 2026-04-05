@@ -9,7 +9,6 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
-import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
@@ -36,6 +35,7 @@ import tech.vixhentx.mcmod.ctnhlib.langprovider.Lang;
 import tech.vixhentx.mcmod.ctnhlib.langprovider.annotation.CN;
 import tech.vixhentx.mcmod.ctnhlib.langprovider.annotation.EN;
 import tech.vixhentx.mcmod.ctnhlib.langprovider.annotation.Prefix;
+import tech.vixhentx.mcmod.ctnhlib.registrate.builders.CTNHMachineBuilder;
 
 import java.util.List;
 import java.util.Locale;
@@ -110,7 +110,7 @@ public class CTPPMachines {
                                                                            String cnname,
                                                                            BiFunction<Integer, ResourceLocation, KineticMachineDefinition> definitionFactory,
                                                                            BiFunction<IMachineBlockEntity, Integer, MetaMachine> factory,
-                                                                           BiFunction<Integer, MachineBuilder<KineticMachineDefinition>, KineticMachineDefinition> builder,
+                                                                           BiFunction<Integer, CTNHMachineBuilder<KineticMachineDefinition>, KineticMachineDefinition> builder,
                                                                            int... tiers) {
         KineticMachineDefinition[] definitions = new KineticMachineDefinition[GTValues.TIER_COUNT];
         for (int tier : tiers) {
