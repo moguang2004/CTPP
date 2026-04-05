@@ -16,6 +16,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 
+import com.mo_guang.ctpp.api.CTPPModifierFunction;
 import com.mo_guang.ctpp.common.machine.IKineticMachine;
 import org.jetbrains.annotations.Nullable;
 
@@ -110,9 +111,9 @@ public class KineticTurbineMachine extends KineticOutputMachine implements ITier
             if (tier > GTValues.HV) {
                 kmachine.lossrate = Math.max(0.5, 1 - (tier - GTValues.HV) * 0.1);
             }
-            var contentModifier = ContentModifier.multiplier(
-                    holderEfficiency * boostRate * boostRate * kmachine.lossrate * kmachine.getMechanicalEfficiency());
-            ModifierFunction modifiedByRotor = ModifierFunction.builder().outputModifier(contentModifier).build();
+            var stressModifier = holderEfficiency * boostRate * boostRate * kmachine.lossrate *
+                    kmachine.getMechanicalEfficiency();
+            ModifierFunction modifiedByRotor = CTPPModifierFunction.outputStressMultiplier(stressModifier);
             return modifiedByRotor.compose(modifiedByKinetic);
         }
         return ModifierFunction.NULL;
