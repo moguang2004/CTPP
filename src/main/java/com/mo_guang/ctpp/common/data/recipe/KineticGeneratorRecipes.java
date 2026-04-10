@@ -49,8 +49,8 @@ public class KineticGeneratorRecipes {
         CTPPRecipeBuilder.of(CTPP.id("steam"), KINETIC_STEAM_TURBINE_RECIPES)
                 .inputFluids(GTMaterials.Steam.getFluid(640))
                 .outputFluids(GTMaterials.DistilledWater.getFluid(4))
-                .outputStress(32768 * STEAM_POWERED_BOOST)
-                .addData("stress", 32768 * STEAM_POWERED_BOOST)
+                .outputStress(4194304 * STEAM_POWERED_BOOST)
+                .addData("stress", 4194304 * STEAM_POWERED_BOOST)
                 .duration(10)
                 .save(provider);
 
