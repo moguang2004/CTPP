@@ -47,11 +47,11 @@ public class KineticGeneratorRecipes {
         }
 
         CTPPRecipeBuilder.of(CTPP.id("steam"), KINETIC_STEAM_TURBINE_RECIPES)
-                .inputFluids(GTMaterials.Steam.getFluid(640))
-                .outputFluids(GTMaterials.DistilledWater.getFluid(4))
-                .outputStress(4194304 * STEAM_POWERED_BOOST)
-                .addData("stress", 4194304 * STEAM_POWERED_BOOST)
-                .duration(10)
+                .inputFluids(GTMaterials.Steam.getFluid(160))
+                .outputFluids(GTMaterials.DistilledWater.getFluid(1))
+                .outputStress(32768 * STEAM_POWERED_BOOST)
+                .addData("stress", 32768 * STEAM_POWERED_BOOST)
+                .duration(20)
                 .save(provider);
 
         VanillaRecipeHelper.addShapedRecipe(provider, "kinetic_generator",

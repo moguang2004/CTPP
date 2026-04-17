@@ -17,12 +17,12 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 
 import com.mo_guang.ctpp.api.CTPPModifierFunction;
-import com.mo_guang.ctpp.common.machine.IKineticMachine;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
 import static com.gregtechceu.gtceu.common.machine.multiblock.generator.LargeTurbineMachine.MIN_DURABILITY_TO_WARN;
+import static java.lang.Math.pow;
 
 public class KineticTurbineMachine extends KineticOutputMachine implements ITieredMachine {
 
@@ -30,21 +30,6 @@ public class KineticTurbineMachine extends KineticOutputMachine implements ITier
 
     public KineticTurbineMachine(IMachineBlockEntity holder) {
         super(holder);
-    }
-
-    @Override
-    public int getTier() {
-        if (getKineticPart() != null) return getKineticPart().self().getDefinition().getTier();
-        return 1;
-    }
-
-    private IKineticMachine getKineticPart() {
-        for (IMultiPart part : getParts()) {
-            if (part instanceof IKineticMachine kineticMachine) {
-                return kineticMachine;
-            }
-        }
-        return null;
     }
 
     @Nullable
@@ -96,7 +81,7 @@ public class KineticTurbineMachine extends KineticOutputMachine implements ITier
     public static ModifierFunction recipeModifier(MetaMachine machine, GTRecipe recipe) {
         if (machine instanceof KineticTurbineMachine kmachine) {
             var parallelResult = ParallelLogic.getParallelAmountFast(kmachine, recipe,
-                    GTValues.VH[kmachine.getTier()] / 4);
+                    (int) pow(4, kmachine.tier - 3) * 5);
             ModifierFunction modifiedByKinetic = ModifierFunction.builder()
                     .inputModifier(ContentModifier.multiplier(parallelResult))
                     .outputModifier(ContentModifier.multiplier(parallelResult)).build();
@@ -107,7 +92,7 @@ public class KineticTurbineMachine extends KineticOutputMachine implements ITier
             double holderEfficiency = rotorHolder.getTotalEfficiency() / 100.0;
             double boostRate = rotorHolder.getRotorSpeed() < rotorHolder.getMaxRotorHolderSpeed() ?
                     (double) rotorHolder.getRotorSpeed() / rotorHolder.getMaxRotorHolderSpeed() : 1.0;
-            var tier = Math.max(kmachine.getTier(), rotorHolder.self().getDefinition().getTier());
+            var tier = Math.max(kmachine.tier, rotorHolder.self().getDefinition().getTier());
             if (tier > GTValues.HV) {
                 kmachine.lossrate = Math.max(0.5, 1 - (tier - GTValues.HV) * 0.1);
             }

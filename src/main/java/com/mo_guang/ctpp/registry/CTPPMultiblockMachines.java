@@ -9,7 +9,10 @@ import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
 import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.pattern.Predicates;
-import com.gregtechceu.gtceu.common.data.*;
+import com.gregtechceu.gtceu.common.data.GCYMBlocks;
+import com.gregtechceu.gtceu.common.data.GTBlocks;
+import com.gregtechceu.gtceu.common.data.GTMachines;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
@@ -34,10 +37,8 @@ import static com.gregtechceu.gtceu.common.data.GTMaterialBlocks.CABLE_BLOCKS;
 import static com.gregtechceu.gtceu.common.data.GTMaterialBlocks.MATERIAL_BLOCKS;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.TreatedWood;
 import static com.mo_guang.ctpp.CTPPRegistration.REGISTRATE;
-import static com.mo_guang.ctpp.config.ConfigUtils.*;
+import static com.mo_guang.ctpp.config.ConfigUtils.ctnhEnabled;
 import static net.minecraft.world.level.block.Blocks.*;
-import static net.minecraft.world.level.block.Blocks.STONE_BRICKS;
-import static org.antarcticgardens.cna.CNABlocks.*;
 
 public class CTPPMultiblockMachines {
 
@@ -131,7 +132,7 @@ public class CTPPMultiblockMachines {
                             .where("@", Predicates.controller(Predicates.blocks(definition.get())))
                             .build())
                     .workableCasingModel(GTCEu.id("block/casings/solid/machine_casing_solid_steel"),
-                            GTCEu.id("block/multiblock/generator/large_steam_turbine"))
+                            CTPP.id("block/multiblock/windmill_control_center/overlay_front"))
                     .register());
     public static MultiblockMachineDefinition KINETIC_STEAM_TURBINE = CTPPRegistration.conditionalRegistration(
             ctnhEnabled("KineticSteamTurbine"),
@@ -161,7 +162,9 @@ public class CTPPMultiblockMachines {
                             .where("C", Predicates.blocks(GTBlocks.CASING_BRONZE_BRICKS.get())
                                     .or(Predicates.autoAbilities(definition.getRecipeTypes()))
                                     .or(Predicates.abilities(PartAbility.MAINTENANCE).setExactLimit(1))
-                                    .or(Predicates.abilities(PartAbility.MUFFLER).setExactLimit(1)))
+                                    .or(Predicates.abilities(PartAbility.MUFFLER).setExactLimit(1))
+                                    .or(Predicates.abilities(CTPPPartAbility.MECHANICAL_UPGRADE)
+                                            .setExactLimit(1)))
                             .where("D", Predicates.abilities(PartAbility.ROTOR_HOLDER).setExactLimit(1))
                             .where("#", Predicates.any())
                             .where("@", Predicates.controller(Predicates.blocks(definition.get())))
