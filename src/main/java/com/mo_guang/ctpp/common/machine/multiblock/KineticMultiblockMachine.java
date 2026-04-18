@@ -39,7 +39,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 public abstract class KineticMultiblockMachine extends WorkableMultiblockMachine
                                                implements IFancyUIMachine, IDisplayUIMachine {
@@ -194,12 +193,24 @@ public abstract class KineticMultiblockMachine extends WorkableMultiblockMachine
 
     @Override
     public void addDisplayText(List<Component> textList) {
-        int numParallels = 0;
-        Optional<IParallelHatch> optional = this.getParts().stream().filter(IParallelHatch.class::isInstance)
-                .map(IParallelHatch.class::cast).findAny();
-        if (optional.isPresent()) {
-            IParallelHatch parallelHatch = optional.get();
-            numParallels = parallelHatch.getCurrentParallel();
+        int numParallels;
+        int subtickParallels;
+        int batchParallels;
+        int totalRuns;
+        boolean exact = false;
+        if (recipeLogic.isActive() && recipeLogic.getLastRecipe() != null) {
+            numParallels = recipeLogic.getLastRecipe().parallels;
+            subtickParallels = recipeLogic.getLastRecipe().subtickParallels;
+            batchParallels = recipeLogic.getLastRecipe().batchParallels;
+            totalRuns = recipeLogic.getLastRecipe().getTotalRuns();
+            exact = true;
+        } else {
+            numParallels = getParallelHatch()
+                    .map(IParallelHatch::getCurrentParallel)
+                    .orElse(0);
+            subtickParallels = 0;
+            batchParallels = 0;
+            totalRuns = 0;
         }
         if (recipeLogic.isWaiting()) {
             textList.add(Component.translatable("ctpp.multiblock.kinetic_multiblock.info.waiting")
@@ -211,7 +222,10 @@ public abstract class KineticMultiblockMachine extends WorkableMultiblockMachine
         MultiblockDisplayText.builder(textList, isFormed())
                 .setWorkingStatus(recipeLogic.isWorkingEnabled(), recipeLogic.isActive())
                 .addMachineModeLine(getRecipeType(), getRecipeTypes().length > 1)
-                .addParallelsLine(numParallels)
+                .addTotalRunsLine(totalRuns)
+                .addParallelsLine(numParallels, exact)
+                .addSubtickParallelsLine(subtickParallels)
+                .addBatchModeLine(isBatchEnabled(), batchParallels)
                 .addWorkingStatusLine()
                 .addProgressLine(recipeLogic.getProgress(), recipeLogic.getMaxProgress(),
                         recipeLogic.getProgressPercent())

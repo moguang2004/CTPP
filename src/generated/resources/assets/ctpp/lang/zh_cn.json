@@ -119,7 +119,7 @@
   "ctpp.multiblock.kinetic_steam_turbine.tooltip.0": "一个输出应力的机器",
   "ctpp.multiblock.kinetic_steam_turbine.tooltip.1": "转子支架每升高一级,涡轮效率增加§610%§r",
   "ctpp.multiblock.kinetic_steam_turbine.tooltip.2": "蒸汽类型的机器在电压等级高于§6HV§r时,每一级发电效率会减少10%",
-  "ctpp.multiblock.kinetic_steam_turbine.tooltip.3": "运行效率会获得(1 + 机械等级/(机械等级 + 1))的效率加成",
+  "ctpp.multiblock.kinetic_steam_turbine.tooltip.3": "运行效率会获得1 + (机械等级/(机械等级 + 1))的效率加成",
   "ctpp.multiblock.kinetic_workable_multiblock_machine.input_stress": "输入应力：%dsu",
   "ctpp.multiblock.kinetic_workable_multiblock_machine.null": "状态：无",
   "ctpp.multiblock.kinetic_workable_multiblock_machine.overclock": "状态：超频",

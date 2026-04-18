@@ -115,7 +115,7 @@
   "ctpp.multiblock.kinetic_steam_turbine.tooltip.0": "A machine that can output kinetic",
   "ctpp.multiblock.kinetic_steam_turbine.tooltip.1": "Each level of the rotor holder upgrade increases turbine efficiency by §610%§r",
   "ctpp.multiblock.kinetic_steam_turbine.tooltip.2": "Steam-type machines lose 10% efficiency for each voltage tier above §6HV§r",
-  "ctpp.multiblock.kinetic_steam_turbine.tooltip.3": "Running efficiency will gain an addition of (1 + tier/(tier + 1))",
+  "ctpp.multiblock.kinetic_steam_turbine.tooltip.3": "Running efficiency will gain an addition of 1 + (tier/(tier + 1))",
   "ctpp.multiblock.kinetic_workable_multiblock_machine.input_stress": "Input stress: %dsu",
   "ctpp.multiblock.kinetic_workable_multiblock_machine.null": "Status: None",
   "ctpp.multiblock.kinetic_workable_multiblock_machine.overclock": "Status: Overclocked",

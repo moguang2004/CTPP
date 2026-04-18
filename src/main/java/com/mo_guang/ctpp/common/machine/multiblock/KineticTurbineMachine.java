@@ -54,15 +54,6 @@ public class KineticTurbineMachine extends KineticOutputMachine implements ITier
                         FormattingUtil.formatNumbers(rotorHolder.getMaxRotorHolderSpeed())));
                 textList.add(Component.translatable("ctpp.multiblock.kinetic_steam_turbine.info.0",
                         FormattingUtil.formatNumbers(rotorHolder.getTotalEfficiency() * lossrate)));
-                // if (isActive()) {
-                // double output = 0;
-                // if(recipeLogic.getLastRecipe() != null){
-                // output =
-                // recipeLogic.getLastRecipe().outputs.get(StressRecipeCapability.CAP).stream().map(Content::getContent).mapToDouble(StressRecipeCapability.CAP::of).sum();
-                // }
-                // textList.add(Component.translatable("ctpp.multiblock.kinetic_steam_turbine.info.1",FormattingUtil.formatNumbers(output)));
-                // }
-
                 int rotorDurability = rotorHolder.getRotorDurabilityPercent();
                 if (rotorDurability > MIN_DURABILITY_TO_WARN) {
                     textList.add(Component.translatable("gtceu.multiblock.turbine.rotor_durability", rotorDurability));
@@ -84,7 +75,8 @@ public class KineticTurbineMachine extends KineticOutputMachine implements ITier
                     (int) pow(4, kmachine.tier - 3) * 5);
             ModifierFunction modifiedByKinetic = ModifierFunction.builder()
                     .inputModifier(ContentModifier.multiplier(parallelResult))
-                    .outputModifier(ContentModifier.multiplier(parallelResult)).build();
+                    .outputModifier(ContentModifier.multiplier(parallelResult))
+                    .parallels(parallelResult).build();
             var rotorHolder = kmachine.getRotorHolder();
             if (!rotorHolder.hasRotor()) {
                 return ModifierFunction.NULL;

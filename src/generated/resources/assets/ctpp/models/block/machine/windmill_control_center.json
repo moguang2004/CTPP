@@ -11,10 +11,7 @@
         "parent": "gtceu:block/machine/template/cube_all/sided",
         "textures": {
           "all": "ctpp:block/create/brass_casing",
-          "overlay_back": "gtceu:block/machines/miner/overlay_back",
-          "overlay_front": "gtceu:block/machines/miner/overlay_front",
-          "overlay_side": "gtceu:block/machines/miner/overlay_side",
-          "overlay_top": "gtceu:block/machines/miner/overlay_top"
+          "overlay_front": "ctpp:block/multiblock/windmill_control_center/overlay_front"
         }
       }
     },
@@ -23,10 +20,7 @@
         "parent": "gtceu:block/machine/template/cube_all/sided",
         "textures": {
           "all": "ctpp:block/create/brass_casing",
-          "overlay_back": "gtceu:block/machines/miner/overlay_back",
-          "overlay_front": "gtceu:block/machines/miner/overlay_front",
-          "overlay_side": "gtceu:block/machines/miner/overlay_side",
-          "overlay_top": "gtceu:block/machines/miner/overlay_top"
+          "overlay_front": "ctpp:block/multiblock/windmill_control_center/overlay_front"
         }
       }
     },
@@ -35,10 +29,7 @@
         "parent": "gtceu:block/machine/template/cube_all/sided",
         "textures": {
           "all": "ctpp:block/create/brass_casing",
-          "overlay_back": "gtceu:block/machines/miner/overlay_back",
-          "overlay_front": "gtceu:block/machines/miner/overlay_front",
-          "overlay_side": "gtceu:block/machines/miner/overlay_side",
-          "overlay_top": "gtceu:block/machines/miner/overlay_top"
+          "overlay_front": "ctpp:block/multiblock/windmill_control_center/overlay_front_active"
         }
       }
     },
@@ -47,10 +38,7 @@
         "parent": "gtceu:block/machine/template/cube_all/sided",
         "textures": {
           "all": "ctpp:block/create/brass_casing",
-          "overlay_back": "gtceu:block/machines/miner/overlay_back",
-          "overlay_front": "gtceu:block/machines/miner/overlay_front",
-          "overlay_side": "gtceu:block/machines/miner/overlay_side",
-          "overlay_top": "gtceu:block/machines/miner/overlay_top"
+          "overlay_front": "ctpp:block/multiblock/windmill_control_center/overlay_front_active"
         }
       }
     },
@@ -59,10 +47,7 @@
         "parent": "gtceu:block/machine/template/cube_all/sided",
         "textures": {
           "all": "ctpp:block/create/brass_casing",
-          "overlay_back": "gtceu:block/machines/miner/overlay_back",
-          "overlay_front": "gtceu:block/machines/miner/overlay_front",
-          "overlay_side": "gtceu:block/machines/miner/overlay_side",
-          "overlay_top": "gtceu:block/machines/miner/overlay_top"
+          "overlay_front": "ctpp:block/multiblock/windmill_control_center/overlay_front"
         }
       }
     },
@@ -71,10 +56,7 @@
         "parent": "gtceu:block/machine/template/cube_all/sided",
         "textures": {
           "all": "ctpp:block/create/brass_casing",
-          "overlay_back": "gtceu:block/machines/miner/overlay_back",
-          "overlay_front": "gtceu:block/machines/miner/overlay_front",
-          "overlay_side": "gtceu:block/machines/miner/overlay_side",
-          "overlay_top": "gtceu:block/machines/miner/overlay_top"
+          "overlay_front": "ctpp:block/multiblock/windmill_control_center/overlay_front"
         }
       }
     },
@@ -83,10 +65,7 @@
         "parent": "gtceu:block/machine/template/cube_all/sided",
         "textures": {
           "all": "ctpp:block/create/brass_casing",
-          "overlay_back": "gtceu:block/machines/miner/overlay_back",
-          "overlay_front": "gtceu:block/machines/miner/overlay_front",
-          "overlay_side": "gtceu:block/machines/miner/overlay_side",
-          "overlay_top": "gtceu:block/machines/miner/overlay_top"
+          "overlay_front": "ctpp:block/multiblock/windmill_control_center/overlay_front_active"
         }
       }
     },
@@ -95,10 +74,7 @@
         "parent": "gtceu:block/machine/template/cube_all/sided",
         "textures": {
           "all": "ctpp:block/create/brass_casing",
-          "overlay_back": "gtceu:block/machines/miner/overlay_back",
-          "overlay_front": "gtceu:block/machines/miner/overlay_front",
-          "overlay_side": "gtceu:block/machines/miner/overlay_side",
-          "overlay_top": "gtceu:block/machines/miner/overlay_top"
+          "overlay_front": "ctpp:block/multiblock/windmill_control_center/overlay_front_active"
         }
       }
     }

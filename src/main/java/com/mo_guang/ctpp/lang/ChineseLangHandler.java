@@ -60,7 +60,7 @@ public class ChineseLangHandler {
         provider.add("ctpp.multiblock.kinetic_steam_turbine.tooltip.0", "一个输出应力的机器");
         provider.add("ctpp.multiblock.kinetic_steam_turbine.tooltip.1", "转子支架每升高一级,涡轮效率增加§610%§r");
         provider.add("ctpp.multiblock.kinetic_steam_turbine.tooltip.2", "蒸汽类型的机器在电压等级高于§6HV§r时,每一级发电效率会减少10%");
-        provider.add("ctpp.multiblock.kinetic_steam_turbine.tooltip.3", "运行效率会获得(1 + 机械等级/(机械等级 + 1))的效率加成");
+        provider.add("ctpp.multiblock.kinetic_steam_turbine.tooltip.3", "运行效率会获得1 + (机械等级/(机械等级 + 1))的效率加成");
 
         provider.add("ctpp.multiblock.windmill_control_center.tooltip.0", "风力总控！越多越强！");
         provider.add("ctpp.multiblock.windmill_control_center.tooltip.1",

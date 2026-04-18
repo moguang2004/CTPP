@@ -132,7 +132,7 @@ public class CTPPMultiblockMachines {
                             .where("@", Predicates.controller(Predicates.blocks(definition.get())))
                             .build())
                     .workableCasingModel(GTCEu.id("block/casings/solid/machine_casing_solid_steel"),
-                            CTPP.id("block/multiblock/windmill_control_center/overlay_front"))
+                            GTCEu.id("block/multiblock/generator/large_steam_turbine"))
                     .register());
     public static MultiblockMachineDefinition KINETIC_STEAM_TURBINE = CTPPRegistration.conditionalRegistration(
             ctnhEnabled("KineticSteamTurbine"),
@@ -312,7 +312,8 @@ public class CTPPMultiblockMachines {
                             .where("#", Predicates.any())
                             .where("@", Predicates.controller(Predicates.blocks(definition.get())))
                             .build())
-                    .workableCasingModel(CTPP.id("block/create/brass_casing"), GTCEu.id("block/machines/miner"))
+                    .workableCasingModel(CTPP.id("block/create/brass_casing"),
+                            CTPP.id("block/multiblock/windmill_control_center"))
                     .register());
     public static MultiblockMachineDefinition BOOM_OF_CREATE = CTPPRegistration.conditionalRegistration(
             ctnhEnabled("BoomOfCreate"),
