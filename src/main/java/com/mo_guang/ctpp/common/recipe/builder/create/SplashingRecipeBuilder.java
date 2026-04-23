@@ -21,59 +21,82 @@ import java.util.function.Consumer;
 
 import javax.annotation.Nonnull;
 
-public class MillingRecipeBuilder {
+public class SplashingRecipeBuilder {
 
     private final ResourceLocation id;
     private final List<Ingredient> ingredients = new ArrayList<>();
-    private final List<ItemStack> results = new ArrayList<>();
+    private final List<JsonObject> results = new ArrayList<>();
 
-    public MillingRecipeBuilder(String name) {
+    public SplashingRecipeBuilder(String name) {
         this.id = CTPP.id(name);
     }
 
-    public static MillingRecipeBuilder builder(String name) {
-        return new MillingRecipeBuilder(name);
+    public static SplashingRecipeBuilder builder(String name) {
+        return new SplashingRecipeBuilder(name);
     }
 
-    public MillingRecipeBuilder input(ItemStack stack) {
+    public SplashingRecipeBuilder input(ItemStack stack) {
         return input(Ingredient.of(stack));
     }
 
-    public MillingRecipeBuilder input(Item item) {
+    public SplashingRecipeBuilder input(Item item) {
         return input(Ingredient.of(new ItemStack(item, 1)));
     }
 
-    public MillingRecipeBuilder input(TagKey<Item> tag) {
+    public SplashingRecipeBuilder input(TagKey<Item> tag) {
         return input(Ingredient.of(tag));
     }
 
-    public MillingRecipeBuilder input(Ingredient ingredient) {
+    public SplashingRecipeBuilder input(Ingredient ingredient) {
         this.ingredients.add(ingredient);
         return this;
     }
 
-    public MillingRecipeBuilder result(ItemStack stack) {
-        this.results.add(stack.copy());
+    public SplashingRecipeBuilder result(ItemStack stack) {
+        return result(stack, null);
+    }
+
+    public SplashingRecipeBuilder result(ItemStack stack, Double chance) {
+        JsonObject obj = new JsonObject();
+        obj.addProperty("item", Objects.requireNonNull(ForgeRegistries.ITEMS.getKey(stack.getItem())).toString());
+        if (stack.getCount() != 1) obj.addProperty("count", stack.getCount());
+        if (chance != null) obj.addProperty("chance", chance);
+        this.results.add(obj);
         return this;
     }
 
-    public MillingRecipeBuilder output(ItemStack stack) {
-        return result(stack);
+    public SplashingRecipeBuilder result(String id, int count, Double chance) {
+        JsonObject obj = new JsonObject();
+        if (id.startsWith("#")) obj.addProperty("tag", id.substring(1));
+        else obj.addProperty("item", id);
+        if (count > 1) obj.addProperty("count", count);
+        if (chance != null) obj.addProperty("chance", chance);
+        this.results.add(obj);
+        return this;
+    }
+
+    public SplashingRecipeBuilder resultTag(TagKey<Item> tag, int count, Double chance) {
+        JsonObject obj = new JsonObject();
+        if (tag != null) obj.addProperty("tag", tag.location().toString());
+        if (count > 1) obj.addProperty("count", count);
+        if (chance != null) obj.addProperty("chance", chance);
+        this.results.add(obj);
+        return this;
     }
 
     public void toJson(JsonObject json) {
         if (ingredients.isEmpty() || results.isEmpty()) {
-            throw new IllegalStateException("Milling recipe missing required fields");
+            throw new IllegalStateException("Splashing recipe missing required fields");
         }
 
-        json.addProperty("type", "create:milling");
+        json.addProperty("type", "create:splashing");
 
         JsonArray ingredientsJson = new JsonArray();
         ingredients.forEach(ing -> ingredientsJson.add(ing.toJson()));
         json.add("ingredients", ingredientsJson);
 
         JsonArray resultsJson = new JsonArray();
-        results.forEach(stack -> resultsJson.add(serializeItemStack(stack)));
+        results.forEach(resultsJson::add);
         json.add("results", resultsJson);
     }
 
@@ -82,20 +105,20 @@ public class MillingRecipeBuilder {
 
             @Override
             public void serializeRecipeData(@Nonnull JsonObject pJson) {
-                MillingRecipeBuilder.this.toJson(pJson);
+                SplashingRecipeBuilder.this.toJson(pJson);
             }
 
             @Nonnull
             @Override
             public ResourceLocation getId() {
-                return ResourceLocation.fromNamespaceAndPath(id.getNamespace(), "milling/" + id.getPath());
+                return ResourceLocation.fromNamespaceAndPath(id.getNamespace(), "splashing/" + id.getPath());
             }
 
             @Nonnull
             @Override
             public RecipeSerializer<?> getType() {
                 return Objects.requireNonNull(ForgeRegistries.RECIPE_SERIALIZERS.getValue(
-                        ResourceLocation.tryParse("create:milling")), "Create milling serializer not found");
+                        ResourceLocation.tryParse("create:splashing")), "Create splashing serializer not found");
             }
 
             @Nullable
@@ -114,13 +137,5 @@ public class MillingRecipeBuilder {
 
     public void save(Consumer<FinishedRecipe> consumer) {
         consumer.accept(build());
-    }
-
-    private static JsonObject serializeItemStack(ItemStack stack) {
-        JsonObject json = new JsonObject();
-        json.addProperty("item", Objects.requireNonNull(ForgeRegistries.ITEMS.getKey(stack.getItem())).toString());
-        if (stack.getCount() != 1) json.addProperty("count", stack.getCount());
-        if (stack.hasTag()) json.addProperty("nbt", String.valueOf(stack.getTag()));
-        return json;
     }
 }

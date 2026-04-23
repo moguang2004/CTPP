@@ -1,8 +1,5 @@
 package com.mo_guang.ctpp.common.recipe.builder.create;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.mo_guang.ctpp.CTPP;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -11,8 +8,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraftforge.registries.ForgeRegistries;
-import org.jetbrains.annotations.Nullable;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.mo_guang.ctpp.CTPP;
 import com.simibubi.create.AllRecipeTypes;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,182 +24,219 @@ import javax.annotation.Nonnull;
 
 public class SequencedAssemblyRecipeBuilder {
 
-	private Ingredient ingredient;
-	private ItemStack transitionalItem;
-	private final List<ItemStack> results = new ArrayList<>();
-	private final List<JsonObject> sequence = new ArrayList<>();
-	private final ResourceLocation id;
-	private int loops = 1;
+    private Ingredient ingredient;
+    private ItemStack transitionalItem;
+    private final List<ItemStack> results = new ArrayList<>();
+    private final List<JsonObject> sequence = new ArrayList<>();
+    private final ResourceLocation id;
+    private int loops = 1;
 
-	public SequencedAssemblyRecipeBuilder(String name) {
-		this.id = CTPP.id(name);
-	}
+    public SequencedAssemblyRecipeBuilder(String name) {
+        this.id = CTPP.id(name);
+    }
 
-	public static SequencedAssemblyRecipeBuilder builder(String name) {
-		return new SequencedAssemblyRecipeBuilder(name);
-	}
+    public static SequencedAssemblyRecipeBuilder builder(String name) {
+        return new SequencedAssemblyRecipeBuilder(name);
+    }
 
-	public SequencedAssemblyRecipeBuilder input(ItemStack itemStack) {
-		return ingredient(Ingredient.of(itemStack));
-	}
+    public SequencedAssemblyRecipeBuilder input(ItemStack itemStack) {
+        return ingredient(Ingredient.of(itemStack));
+    }
 
-	public SequencedAssemblyRecipeBuilder input(Item item) {
-		return ingredient(Ingredient.of(new ItemStack(item, 1)));
-	}
+    public SequencedAssemblyRecipeBuilder input(Item item) {
+        return ingredient(Ingredient.of(new ItemStack(item, 1)));
+    }
 
-	public SequencedAssemblyRecipeBuilder input(TagKey<Item> tagKey) {
-		return ingredient(Ingredient.of(tagKey));
-	}
+    public SequencedAssemblyRecipeBuilder input(TagKey<Item> tagKey) {
+        return ingredient(Ingredient.of(tagKey));
+    }
 
-	public SequencedAssemblyRecipeBuilder input(Ingredient ingredient) {
-		return ingredient(ingredient);
-	}
+    public SequencedAssemblyRecipeBuilder input(Ingredient ingredient) {
+        return ingredient(ingredient);
+    }
 
-	public SequencedAssemblyRecipeBuilder ingredient(Ingredient ingredient) {
-		this.ingredient = ingredient;
-		return this;
-	}
+    public SequencedAssemblyRecipeBuilder ingredient(Ingredient ingredient) {
+        this.ingredient = ingredient;
+        return this;
+    }
 
-	public SequencedAssemblyRecipeBuilder transitional(ItemStack itemStack) {
-		this.transitionalItem = itemStack.copy();
-		return this;
-	}
+    public SequencedAssemblyRecipeBuilder transitional(ItemStack itemStack) {
+        this.transitionalItem = itemStack.copy();
+        return this;
+    }
 
-	public SequencedAssemblyRecipeBuilder transitional(Item item) {
-		return transitional(new ItemStack(item, 1));
-	}
+    public SequencedAssemblyRecipeBuilder transitional(Item item) {
+        return transitional(new ItemStack(item, 1));
+    }
 
-	public SequencedAssemblyRecipeBuilder output(ItemStack itemStack) {
-		return result(itemStack);
-	}
+    public SequencedAssemblyRecipeBuilder output(ItemStack itemStack) {
+        return result(itemStack);
+    }
 
-	public SequencedAssemblyRecipeBuilder result(ItemStack itemStack) {
-		this.results.add(itemStack.copy());
-		return this;
-	}
+    public SequencedAssemblyRecipeBuilder result(ItemStack itemStack) {
+        this.results.add(itemStack.copy());
+        return this;
+    }
 
-	public SequencedAssemblyRecipeBuilder loops(int loops) {
-		this.loops = Math.max(1, loops);
-		return this;
-	}
+    public SequencedAssemblyRecipeBuilder loops(int loops) {
+        this.loops = Math.max(1, loops);
+        return this;
+    }
 
-	public SequencedAssemblyRecipeBuilder filling(ItemStack itemStack, String fluidId) {
-		return filling(itemStack, fluidId, 1000);
-	}
+    public SequencedAssemblyRecipeBuilder filling(ItemStack itemStack, String fluidId) {
+        return filling(itemStack, fluidId, 1000);
+    }
 
-	public SequencedAssemblyRecipeBuilder filling(ItemStack itemStack, String fluidId, int amount) {
-		return step("create:filling", json -> json.add("ingredients", ingredients(
-				itemIngredient(itemStack),
-				fluidIngredient(fluidId, amount))));
-	}
+    public SequencedAssemblyRecipeBuilder filling(ItemStack itemStack, String fluidId, int amount) {
+        return step("create:filling", json -> json.add("ingredients", ingredients(
+                itemIngredient(itemStack),
+                fluidIngredient(fluidId, amount))));
+    }
 
-	public SequencedAssemblyRecipeBuilder pressing() {
-		return step("create:pressing", json -> {
-		});
-	}
+    public SequencedAssemblyRecipeBuilder pressing() {
+        return step("create:pressing", json -> {});
+    }
 
-	public SequencedAssemblyRecipeBuilder step(ResourceLocation type, java.util.function.Consumer<JsonObject> config) {
-		JsonObject json = new JsonObject();
-		json.addProperty("type", type.toString());
-		config.accept(json);
-		this.sequence.add(json);
-		return this;
-	}
+    public SequencedAssemblyRecipeBuilder deploying(ItemStack addition) {
+        return step("create:deploying", json -> {
+            json.add("ingredients", ingredients(
+                    itemIngredient(transitionalItem),
+                    itemIngredient(addition)));
+            json.add("results", ingredients(itemIngredient(transitionalItem)));
+        });
+    }
 
-	public SequencedAssemblyRecipeBuilder step(String type, java.util.function.Consumer<JsonObject> config) {
-		ResourceLocation id = Objects.requireNonNull(ResourceLocation.tryParse(type), "Invalid sequenced assembly step type: " + type);
-		return step(id, config);
-	}
+    public SequencedAssemblyRecipeBuilder deploying(Item addition) {
+        return deploying(new ItemStack(addition));
+    }
 
-	public SequencedAssemblyRecipeBuilder step(JsonObject json) {
-		this.sequence.add(json);
-		return this;
-	}
+    public SequencedAssemblyRecipeBuilder deploying(TagKey<Item> tag) {
+        return step("create:deploying", json -> {
+            JsonArray arr = new JsonArray();
+            arr.add(itemIngredient(transitionalItem));
+            arr.add(tagIngredient(tag));
+            json.add("ingredients", arr);
+            json.add("results", ingredients(itemIngredient(transitionalItem)));
+        });
+    }
 
-	public void toJson(JsonObject json) {
-		if (ingredient == null || transitionalItem == null || results.isEmpty() || sequence.isEmpty()) {
-			throw new IllegalStateException("Sequenced assembly recipe missing required fields");
-		}
+    public SequencedAssemblyRecipeBuilder cutting() {
+        return step("create:cutting", json -> {
+            json.add("ingredients", ingredients(itemIngredient(transitionalItem)));
+            json.add("results", ingredients(itemIngredient(transitionalItem)));
+        });
+    }
 
-		json.add("ingredient", ingredient.toJson());
-		json.add("transitionalItem", serializeItemStack(transitionalItem));
-		json.addProperty("loops", loops);
+    public SequencedAssemblyRecipeBuilder step(ResourceLocation type, java.util.function.Consumer<JsonObject> config) {
+        JsonObject json = new JsonObject();
+        json.addProperty("type", type.toString());
+        config.accept(json);
+        this.sequence.add(json);
+        return this;
+    }
 
-		JsonArray sequenceJson = new JsonArray();
-		sequence.forEach(sequenceJson::add);
-		json.add("sequence", sequenceJson);
+    public SequencedAssemblyRecipeBuilder step(String type, java.util.function.Consumer<JsonObject> config) {
+        ResourceLocation id = Objects.requireNonNull(ResourceLocation.tryParse(type),
+                "Invalid sequenced assembly step type: " + type);
+        return step(id, config);
+    }
 
-		JsonArray resultsJson = new JsonArray();
-		results.forEach(stack -> resultsJson.add(serializeItemStack(stack)));
-		json.add("results", resultsJson);
-		json.add("result", serializeItemStack(results.get(0)));
-	}
+    public SequencedAssemblyRecipeBuilder step(JsonObject json) {
+        this.sequence.add(json);
+        return this;
+    }
 
-	public FinishedRecipe build() {
-		return new FinishedRecipe() {
-			@Override
-			public void serializeRecipeData(@Nonnull JsonObject pJson) {
-				SequencedAssemblyRecipeBuilder.this.toJson(pJson);
-			}
+    public void toJson(JsonObject json) {
+        if (ingredient == null || transitionalItem == null || results.isEmpty() || sequence.isEmpty()) {
+            throw new IllegalStateException("Sequenced assembly recipe missing required fields");
+        }
 
-			@Nonnull
-			@Override
-			public ResourceLocation getId() {
-				return ResourceLocation.fromNamespaceAndPath(id.getNamespace(), "sequenced_assembly/" + id.getPath());
-			}
+        json.add("ingredient", ingredient.toJson());
+        json.add("transitionalItem", serializeItemStack(transitionalItem));
+        json.addProperty("loops", loops);
 
-			@Nonnull
-			@Override
-			public RecipeSerializer<?> getType() {
-				return AllRecipeTypes.SEQUENCED_ASSEMBLY.getSerializer();
-			}
+        JsonArray sequenceJson = new JsonArray();
+        sequence.forEach(sequenceJson::add);
+        json.add("sequence", sequenceJson);
 
-			@Nullable
-			@Override
-			public JsonObject serializeAdvancement() {
-				return null;
-			}
+        JsonArray resultsJson = new JsonArray();
+        results.forEach(stack -> resultsJson.add(serializeItemStack(stack)));
+        json.add("results", resultsJson);
+        json.add("result", serializeItemStack(results.get(0)));
+    }
 
-			@Nullable
-			@Override
-			public ResourceLocation getAdvancementId() {
-				return null;
-			}
-		};
-	}
+    public FinishedRecipe build() {
+        return new FinishedRecipe() {
 
-	public void save(Consumer<FinishedRecipe> consumer) {
-		consumer.accept(build());
-	}
+            @Override
+            public void serializeRecipeData(@Nonnull JsonObject pJson) {
+                SequencedAssemblyRecipeBuilder.this.toJson(pJson);
+            }
 
-	private static JsonObject serializeItemStack(ItemStack stack) {
-		JsonObject json = new JsonObject();
-		json.addProperty("item", Objects.requireNonNull(ForgeRegistries.ITEMS.getKey(stack.getItem())).toString());
-		if (stack.getCount() != 1) {
-			json.addProperty("count", stack.getCount());
-		}
-		if (stack.hasTag()) {
-			json.addProperty("nbt", String.valueOf(stack.getTag()));
-		}
-		return json;
-	}
+            @Nonnull
+            @Override
+            public ResourceLocation getId() {
+                return ResourceLocation.fromNamespaceAndPath(id.getNamespace(), "sequenced_assembly/" + id.getPath());
+            }
 
-	private static JsonArray ingredients(JsonObject... ingredients) {
-		JsonArray array = new JsonArray();
-		for (JsonObject ingredient : ingredients) {
-			array.add(ingredient);
-		}
-		return array;
-	}
+            @Nonnull
+            @Override
+            public RecipeSerializer<?> getType() {
+                return AllRecipeTypes.SEQUENCED_ASSEMBLY.getSerializer();
+            }
 
-	private static JsonObject itemIngredient(ItemStack stack) {
-		return serializeItemStack(stack);
-	}
+            @Nullable
+            @Override
+            public JsonObject serializeAdvancement() {
+                return null;
+            }
 
-	private static JsonObject fluidIngredient(String fluidId, int amount) {
-		JsonObject json = new JsonObject();
-		json.addProperty("fluid", fluidId);
-		json.addProperty("amount", amount);
-		return json;
-	}
+            @Nullable
+            @Override
+            public ResourceLocation getAdvancementId() {
+                return null;
+            }
+        };
+    }
+
+    public void save(Consumer<FinishedRecipe> consumer) {
+        consumer.accept(build());
+    }
+
+    private static JsonObject serializeItemStack(ItemStack stack) {
+        JsonObject json = new JsonObject();
+        json.addProperty("item", Objects.requireNonNull(ForgeRegistries.ITEMS.getKey(stack.getItem())).toString());
+        if (stack.getCount() != 1) {
+            json.addProperty("count", stack.getCount());
+        }
+        if (stack.hasTag()) {
+            json.addProperty("nbt", String.valueOf(stack.getTag()));
+        }
+        return json;
+    }
+
+    private static JsonArray ingredients(JsonObject... ingredients) {
+        JsonArray array = new JsonArray();
+        for (JsonObject ingredient : ingredients) {
+            array.add(ingredient);
+        }
+        return array;
+    }
+
+    private static JsonObject itemIngredient(ItemStack stack) {
+        return serializeItemStack(stack);
+    }
+
+    private static JsonObject tagIngredient(TagKey<Item> tagKey) {
+        JsonObject json = new JsonObject();
+        if (tagKey != null) json.addProperty("tag", tagKey.location().toString());
+        return json;
+    }
+
+    private static JsonObject fluidIngredient(String fluidId, int amount) {
+        JsonObject json = new JsonObject();
+        json.addProperty("fluid", fluidId);
+        json.addProperty("amount", amount);
+        return json;
+    }
 }

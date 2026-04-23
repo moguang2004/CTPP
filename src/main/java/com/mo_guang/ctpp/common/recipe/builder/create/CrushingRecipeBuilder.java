@@ -1,8 +1,5 @@
 package com.mo_guang.ctpp.common.recipe.builder.create;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.mo_guang.ctpp.CTPP;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -11,6 +8,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraftforge.registries.ForgeRegistries;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.mo_guang.ctpp.CTPP;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -78,6 +79,7 @@ public class CrushingRecipeBuilder {
 
     public FinishedRecipe build() {
         return new FinishedRecipe() {
+
             @Override
             public void serializeRecipeData(@Nonnull JsonObject pJson) {
                 CrushingRecipeBuilder.this.toJson(pJson);
@@ -122,4 +124,3 @@ public class CrushingRecipeBuilder {
         return json;
     }
 }
-

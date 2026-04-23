@@ -1,8 +1,5 @@
 package com.mo_guang.ctpp.common.recipe.builder.create;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.mo_guang.ctpp.CTPP;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -11,6 +8,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraftforge.registries.ForgeRegistries;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.mo_guang.ctpp.CTPP;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -22,105 +23,104 @@ import javax.annotation.Nonnull;
 
 public class CuttingRecipeBuilder {
 
-	private final ResourceLocation id;
-	private final List<Ingredient> ingredients = new ArrayList<>();
-	private final List<ItemStack> results = new ArrayList<>();
+    private final ResourceLocation id;
+    private final List<Ingredient> ingredients = new ArrayList<>();
+    private final List<ItemStack> results = new ArrayList<>();
 
-	public CuttingRecipeBuilder(String name) {
-		this.id = CTPP.id(name);
-	}
+    public CuttingRecipeBuilder(String name) {
+        this.id = CTPP.id(name);
+    }
 
-	public static CuttingRecipeBuilder builder(String name) {
-		return new CuttingRecipeBuilder(name);
-	}
+    public static CuttingRecipeBuilder builder(String name) {
+        return new CuttingRecipeBuilder(name);
+    }
 
-	public CuttingRecipeBuilder input(ItemStack stack) {
-		return input(Ingredient.of(stack));
-	}
+    public CuttingRecipeBuilder input(ItemStack stack) {
+        return input(Ingredient.of(stack));
+    }
 
-	public CuttingRecipeBuilder input(Item item) {
-		return input(Ingredient.of(new ItemStack(item, 1)));
-	}
+    public CuttingRecipeBuilder input(Item item) {
+        return input(Ingredient.of(new ItemStack(item, 1)));
+    }
 
-	public CuttingRecipeBuilder input(TagKey<Item> tag) {
-		return input(Ingredient.of(tag));
-	}
+    public CuttingRecipeBuilder input(TagKey<Item> tag) {
+        return input(Ingredient.of(tag));
+    }
 
-	public CuttingRecipeBuilder input(Ingredient ingredient) {
-		this.ingredients.add(ingredient);
-		return this;
-	}
+    public CuttingRecipeBuilder input(Ingredient ingredient) {
+        this.ingredients.add(ingredient);
+        return this;
+    }
 
-	public CuttingRecipeBuilder result(ItemStack stack) {
-		this.results.add(stack.copy());
-		return this;
-	}
+    public CuttingRecipeBuilder result(ItemStack stack) {
+        this.results.add(stack.copy());
+        return this;
+    }
 
-	public CuttingRecipeBuilder output(ItemStack stack) {
-		return result(stack);
-	}
+    public CuttingRecipeBuilder output(ItemStack stack) {
+        return result(stack);
+    }
 
-	public void toJson(JsonObject json) {
-		if (ingredients.isEmpty() || results.isEmpty()) {
-			throw new IllegalStateException("Cutting recipe missing required fields");
-		}
+    public void toJson(JsonObject json) {
+        if (ingredients.isEmpty() || results.isEmpty()) {
+            throw new IllegalStateException("Cutting recipe missing required fields");
+        }
 
-		json.addProperty("type", "create:cutting");
+        json.addProperty("type", "create:cutting");
 
-		JsonArray ingredientsJson = new JsonArray();
-		ingredients.forEach(ing -> ingredientsJson.add(ing.toJson()));
-		json.add("ingredients", ingredientsJson);
+        JsonArray ingredientsJson = new JsonArray();
+        ingredients.forEach(ing -> ingredientsJson.add(ing.toJson()));
+        json.add("ingredients", ingredientsJson);
 
-		JsonArray resultsJson = new JsonArray();
-		results.forEach(stack -> resultsJson.add(serializeItemStack(stack)));
-		json.add("results", resultsJson);
-	}
+        JsonArray resultsJson = new JsonArray();
+        results.forEach(stack -> resultsJson.add(serializeItemStack(stack)));
+        json.add("results", resultsJson);
+    }
 
-	public FinishedRecipe build() {
-		return new FinishedRecipe() {
-			@Override
-			public void serializeRecipeData(@Nonnull JsonObject pJson) {
-				CuttingRecipeBuilder.this.toJson(pJson);
-			}
+    public FinishedRecipe build() {
+        return new FinishedRecipe() {
 
-			@Nonnull
-			@Override
-			public ResourceLocation getId() {
-				return ResourceLocation.fromNamespaceAndPath(id.getNamespace(), "cutting/" + id.getPath());
-			}
+            @Override
+            public void serializeRecipeData(@Nonnull JsonObject pJson) {
+                CuttingRecipeBuilder.this.toJson(pJson);
+            }
 
-			@Nonnull
-			@Override
-			public RecipeSerializer<?> getType() {
-				return Objects.requireNonNull(ForgeRegistries.RECIPE_SERIALIZERS.getValue(
-						ResourceLocation.tryParse("create:cutting")), "Create cutting serializer not found");
-			}
+            @Nonnull
+            @Override
+            public ResourceLocation getId() {
+                return ResourceLocation.fromNamespaceAndPath(id.getNamespace(), "cutting/" + id.getPath());
+            }
 
-			@Nullable
-			@Override
-			public JsonObject serializeAdvancement() {
-				return null;
-			}
+            @Nonnull
+            @Override
+            public RecipeSerializer<?> getType() {
+                return Objects.requireNonNull(ForgeRegistries.RECIPE_SERIALIZERS.getValue(
+                        ResourceLocation.tryParse("create:cutting")), "Create cutting serializer not found");
+            }
 
-			@Nullable
-			@Override
-			public ResourceLocation getAdvancementId() {
-				return null;
-			}
-		};
-	}
+            @Nullable
+            @Override
+            public JsonObject serializeAdvancement() {
+                return null;
+            }
 
-	public void save(Consumer<FinishedRecipe> consumer) {
-		consumer.accept(build());
-	}
+            @Nullable
+            @Override
+            public ResourceLocation getAdvancementId() {
+                return null;
+            }
+        };
+    }
 
-	private static JsonObject serializeItemStack(ItemStack stack) {
-		JsonObject json = new JsonObject();
-		json.addProperty("item", Objects.requireNonNull(ForgeRegistries.ITEMS.getKey(stack.getItem())).toString());
-		if (stack.getCount() != 1) json.addProperty("count", stack.getCount());
-		if (stack.hasTag()) json.addProperty("nbt", String.valueOf(stack.getTag()));
-		return json;
-	}
+    public void save(Consumer<FinishedRecipe> consumer) {
+        consumer.accept(build());
+    }
+
+    private static JsonObject serializeItemStack(ItemStack stack) {
+        JsonObject json = new JsonObject();
+        json.addProperty("item", Objects.requireNonNull(ForgeRegistries.ITEMS.getKey(stack.getItem())).toString());
+        if (stack.getCount() != 1) json.addProperty("count", stack.getCount());
+        if (stack.hasTag()) json.addProperty("nbt", String.valueOf(stack.getTag()));
+        return json;
+    }
 }
-
-
