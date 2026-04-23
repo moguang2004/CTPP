@@ -198,7 +198,11 @@ public class CTPPMachines {
                     ModelFile parentModel = prov.models().getExistingFile(
                             ResourceLocation.tryParse("create_new_age:block/carbon_brushes/base"));
                     BlockModelBuilder model = prov.models().nested().parent(parentModel);
-                    builder.forAllStatesModels(state -> model);
+                    // Apply a 90° Y rotation so the model matches CreateNewAge's orientation
+                    builder.forAllStates(state -> net.minecraftforge.client.model.generators.ConfiguredModel.builder()
+                            .modelFile(model)
+                            .rotationX(90)
+                            .build());
                 })
                 .rotationState(RotationState.ALL)
                 .recipeType(GTRecipeTypes.DUMMY_RECIPES)
