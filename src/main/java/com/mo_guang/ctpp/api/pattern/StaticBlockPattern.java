@@ -66,6 +66,9 @@ public class StaticBlockPattern extends BlockPattern {
         BlockPos centerPos = controller.self().getPos();
         Direction frontFacing = controller.self().getFrontFacing();
         Direction upwardsFacing = controller.self().getUpwardsFacing();
+        // determine whether the structure is mirrored. Prefer the pattern match result
+        // (worldState.neededFlip) but fall back to controller state if present.
+        boolean isFlipped = worldState.isNeededFlip() || controller.self().isFlipped();
         Map<Integer, List<BlockPos>> parts = new HashMap<>();
         for (int c = 0; c < this.fingerLength; c++) {
             for (int b = 0; b < this.thumbLength; b++) {
@@ -74,8 +77,8 @@ public class StaticBlockPattern extends BlockPattern {
                     int relativeX = a - centerOffset[0];
                     int relativeY = b - centerOffset[1];
                     int relativeZ = c - centerOffset[2];
-                    var position = setActualRelativeOffset(relativeX, relativeY, relativeZ, frontFacing, upwardsFacing,
-                            false)
+                    var position = setActualRelativeOffset(relativeX, relativeY, relativeZ, frontFacing,
+                            upwardsFacing, isFlipped)
                             .offset(centerPos.getX(), centerPos.getY(), centerPos.getZ());
                     parts.computeIfAbsent(dynamicBlockMatches[c][b][a], k -> new ArrayList<>()).add(position);
                 }
