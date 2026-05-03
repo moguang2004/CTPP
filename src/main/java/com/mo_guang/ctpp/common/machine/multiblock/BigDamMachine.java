@@ -38,12 +38,8 @@ public class BigDamMachine extends KineticOutputMachine
     @Override
     public void onStructureFormed() {
         super.onStructureFormed();
-        if (rotatingEntity.isEmpty() && !getLevel().isClientSide) {
-            var rotatingEntities = assemble(MachineUtils.getOffset(this, 0, 6, 9));
-            if (rotatingEntities != null) {
-                this.rotatingEntity.addAll(rotatingEntities.values());
-            }
-        }
+        // assemble rotating entities using interface helper
+        createAndAttachRotatingEntities(MachineUtils.getOffset(this, 0, 6, 9));
         rotatingEntity.forEach(entity -> {
             var facing = getFrontFacing().getNormal();
             Vec3 newF = new Vec3(facing.getX(), facing.getY(), facing.getZ());
@@ -55,10 +51,8 @@ public class BigDamMachine extends KineticOutputMachine
     public void onStructureInvalid() {
         super.onStructureInvalid();
         if (!getLevel().isClientSide) {
-            if (!rotatingEntity.isEmpty()) {
-                this.rotatingEntity.forEach(AbstractContraptionEntity::disassemble);
-            }
-            this.rotatingEntity = new ArrayList<>();
+                    // disassemble and clear using helper
+                    clearAndDisassembleRotatingEntities();
         }
     }
 
@@ -74,27 +68,7 @@ public class BigDamMachine extends KineticOutputMachine
 
     @Override
     public Map<Integer, SimpleRotatingContraptionEntity> assemble(BlockPos pivot) {
-        if (self().getLevel() instanceof TrackedDummyWorld) return null;
-        if (self().getLevel().isClientSide) return null;
-        Map<Integer, SimpleRotatingContraptionEntity> ce = new HashMap<>();
-        var pattern = self().getDefinition().getPatternFactory().get();
-        if (pattern instanceof StaticBlockPattern staticBlockPattern) {
-            Map<Integer, List<BlockPos>> dymanicPart = staticBlockPattern.getDynamicPart(self().getMultiblockState());
-            for (var entry : dymanicPart.entrySet()) {
-                int group = entry.getKey();
-                var part = entry.getValue();
-                SimpleRotatingContraption contraption = new SimpleRotatingContraption(part, pivot);
-                contraption.assemble(this.self().getLevel(), self().getPos()); // 第二个参数无用
-                contraption.removeBlocksFromWorld(this.self().getLevel(), BlockPos.ZERO);
-                SimpleRotatingContraptionEntity contraptionEntity = SimpleRotatingContraptionEntity
-                        .create(self().getLevel(), contraption, this, pivot.getCenter());
-                contraptionEntity.setPos(pivot.getX(), pivot.getY(), pivot.getZ());
-                this.self().getLevel().addFreshEntity(contraptionEntity);
-                ce.put(group, contraptionEntity);
-            }
-            return ce;
-        }
-        return null;
+        return assembleFromPattern(pivot);
     }
 
     @Override

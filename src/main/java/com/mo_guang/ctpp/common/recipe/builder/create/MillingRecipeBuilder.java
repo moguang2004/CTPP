@@ -25,7 +25,19 @@ public class MillingRecipeBuilder {
 
     private final ResourceLocation id;
     private final List<Ingredient> ingredients = new ArrayList<>();
-    private final List<ItemStack> results = new ArrayList<>();
+
+    private static class ResultEntry {
+
+        final ItemStack stack;
+        final Double chance; // null => no chance field
+
+        ResultEntry(ItemStack stack, Double chance) {
+            this.stack = stack.copy();
+            this.chance = chance;
+        }
+    }
+
+    private final List<ResultEntry> results = new ArrayList<>();
 
     public MillingRecipeBuilder(String name) {
         this.id = CTPP.id(name);
@@ -53,7 +65,13 @@ public class MillingRecipeBuilder {
     }
 
     public MillingRecipeBuilder result(ItemStack stack) {
-        this.results.add(stack.copy());
+        this.results.add(new ResultEntry(stack, null));
+        return this;
+    }
+
+    /** Add a result with a probability chance (0.0 - 1.0). */
+    public MillingRecipeBuilder result(ItemStack stack, double chance) {
+        this.results.add(new ResultEntry(stack, chance));
         return this;
     }
 
@@ -73,7 +91,7 @@ public class MillingRecipeBuilder {
         json.add("ingredients", ingredientsJson);
 
         JsonArray resultsJson = new JsonArray();
-        results.forEach(stack -> resultsJson.add(serializeItemStack(stack)));
+        results.forEach(entry -> resultsJson.add(serializeResultEntry(entry)));
         json.add("results", resultsJson);
     }
 
@@ -116,11 +134,13 @@ public class MillingRecipeBuilder {
         consumer.accept(build());
     }
 
-    private static JsonObject serializeItemStack(ItemStack stack) {
+    private static JsonObject serializeResultEntry(ResultEntry entry) {
+        ItemStack stack = entry.stack;
         JsonObject json = new JsonObject();
         json.addProperty("item", Objects.requireNonNull(ForgeRegistries.ITEMS.getKey(stack.getItem())).toString());
         if (stack.getCount() != 1) json.addProperty("count", stack.getCount());
         if (stack.hasTag()) json.addProperty("nbt", String.valueOf(stack.getTag()));
+        if (entry.chance != null) json.addProperty("chance", entry.chance);
         return json;
     }
 }

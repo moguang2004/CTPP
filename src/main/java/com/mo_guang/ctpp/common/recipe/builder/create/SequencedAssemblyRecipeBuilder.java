@@ -7,6 +7,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import com.google.gson.JsonArray;
@@ -14,6 +15,8 @@ import com.google.gson.JsonObject;
 import com.mo_guang.ctpp.CTPP;
 import com.simibubi.create.AllRecipeTypes;
 import org.jetbrains.annotations.Nullable;
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import net.minecraft.world.level.material.Fluid;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,9 +91,36 @@ public class SequencedAssemblyRecipeBuilder {
     }
 
     public SequencedAssemblyRecipeBuilder filling(ItemStack itemStack, String fluidId, int amount) {
+        // If the fluid id is invalid or not registered in this environment, skip adding the filling step
+        if (fluidId == null || fluidId.isEmpty()) return this;
+        ResourceLocation rl = ResourceLocation.tryParse(fluidId);
+        if (rl == null) return this;
+        if (ForgeRegistries.FLUIDS.getValue(rl) == null) return this;
         return step("create:filling", json -> json.add("ingredients", ingredients(
                 itemIngredient(itemStack),
                 fluidIngredient(fluidId, amount))));
+    }
+
+    public SequencedAssemblyRecipeBuilder filling(ItemStack itemStack, FluidStack fluid) {
+        return step("create:filling", json -> json.add("ingredients", ingredients(
+                itemIngredient(itemStack),
+                fluidIngredient(ForgeRegistries.FLUIDS.getKey(fluid.getFluid()).toString(), fluid.getAmount()))));
+    }
+
+    /**
+     * Use a GregTech Material's fluid for filling steps. The Material must have a fluid property.
+     */
+    public SequencedAssemblyRecipeBuilder filling(ItemStack itemStack, Material material) {
+        return filling(itemStack, material, 1000);
+    }
+
+    /**
+     * Use a GregTech Material's fluid for filling steps with explicit amount.
+     */
+    public SequencedAssemblyRecipeBuilder filling(ItemStack itemStack, Material material, int amount) {
+        ResourceLocation rl = ForgeRegistries.FLUIDS.getKey(material.getFluid());
+        if (rl == null) return this;
+        return filling(itemStack, rl.toString(), amount);
     }
 
     public SequencedAssemblyRecipeBuilder pressing() {

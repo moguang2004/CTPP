@@ -21,78 +21,58 @@ import java.util.function.Consumer;
 
 import javax.annotation.Nonnull;
 
-public class CrushingRecipeBuilder {
+public class ItemApplicationRecipeBuilder {
 
     private final ResourceLocation id;
     private final List<Ingredient> ingredients = new ArrayList<>();
+    private ItemStack result;
 
-    private static class ResultEntry {
-
-        final ItemStack stack;
-        final Double chance; // null => no chance field
-
-        ResultEntry(ItemStack stack, Double chance) {
-            this.stack = stack.copy();
-            this.chance = chance;
-        }
-    }
-
-    private final List<ResultEntry> results = new ArrayList<>();
-
-    public CrushingRecipeBuilder(String name) {
+    public ItemApplicationRecipeBuilder(String name) {
         this.id = CTPP.id(name);
     }
 
-    public static CrushingRecipeBuilder builder(String name) {
-        return new CrushingRecipeBuilder(name);
+    public static ItemApplicationRecipeBuilder builder(String name) {
+        return new ItemApplicationRecipeBuilder(name);
     }
 
-    public CrushingRecipeBuilder input(ItemStack stack) {
+    public ItemApplicationRecipeBuilder input(ItemStack stack) {
         return input(Ingredient.of(stack));
     }
 
-    public CrushingRecipeBuilder input(Item item) {
+    public ItemApplicationRecipeBuilder input(Item item) {
         return input(Ingredient.of(new ItemStack(item, 1)));
     }
 
-    public CrushingRecipeBuilder input(TagKey<Item> tag) {
+    public ItemApplicationRecipeBuilder input(TagKey<Item> tag) {
         return input(Ingredient.of(tag));
     }
 
-    public CrushingRecipeBuilder input(Ingredient ingredient) {
+    public ItemApplicationRecipeBuilder input(Ingredient ingredient) {
         this.ingredients.add(ingredient);
         return this;
     }
 
-    public CrushingRecipeBuilder result(ItemStack stack) {
-        this.results.add(new ResultEntry(stack, null));
+    public ItemApplicationRecipeBuilder result(ItemStack stack) {
+        this.result = stack.copy();
         return this;
     }
 
-    /** Add a result with a probability chance (0.0 - 1.0). */
-    public CrushingRecipeBuilder result(ItemStack stack, double chance) {
-        this.results.add(new ResultEntry(stack, chance));
-        return this;
-    }
-
-    public CrushingRecipeBuilder output(ItemStack stack) {
+    public ItemApplicationRecipeBuilder output(ItemStack stack) {
         return result(stack);
     }
 
     public void toJson(JsonObject json) {
-        if (ingredients.isEmpty() || results.isEmpty()) {
-            throw new IllegalStateException("Crushing recipe missing required fields");
+        if (ingredients.isEmpty() || result == null) {
+            throw new IllegalStateException("Item application recipe missing required fields");
         }
 
-        json.addProperty("type", "create:crushing");
+        json.addProperty("type", "create:item_application");
 
-        JsonArray ingredientsJson = new JsonArray();
-        ingredients.forEach(ing -> ingredientsJson.add(ing.toJson()));
-        json.add("ingredients", ingredientsJson);
+        JsonArray ingr = new JsonArray();
+        ingredients.forEach(i -> ingr.add(i.toJson()));
+        json.add("ingredients", ingr);
 
-        JsonArray resultsJson = new JsonArray();
-        results.forEach(entry -> resultsJson.add(serializeResultEntry(entry)));
-        json.add("results", resultsJson);
+        json.add("result", serializeItemStack(result));
     }
 
     public FinishedRecipe build() {
@@ -100,20 +80,21 @@ public class CrushingRecipeBuilder {
 
             @Override
             public void serializeRecipeData(@Nonnull JsonObject pJson) {
-                CrushingRecipeBuilder.this.toJson(pJson);
+                ItemApplicationRecipeBuilder.this.toJson(pJson);
             }
 
             @Nonnull
             @Override
             public ResourceLocation getId() {
-                return ResourceLocation.fromNamespaceAndPath(id.getNamespace(), "crushing/" + id.getPath());
+                return ResourceLocation.fromNamespaceAndPath(id.getNamespace(), "item_application/" + id.getPath());
             }
 
             @Nonnull
             @Override
             public RecipeSerializer<?> getType() {
                 return Objects.requireNonNull(ForgeRegistries.RECIPE_SERIALIZERS.getValue(
-                        ResourceLocation.tryParse("create:crushing")), "Create crushing serializer not found");
+                        ResourceLocation.tryParse("create:item_application")),
+                        "Create item_application serializer not found");
             }
 
             @Nullable
@@ -134,13 +115,11 @@ public class CrushingRecipeBuilder {
         consumer.accept(build());
     }
 
-    private static JsonObject serializeResultEntry(ResultEntry entry) {
-        ItemStack stack = entry.stack;
+    private static JsonObject serializeItemStack(ItemStack stack) {
         JsonObject json = new JsonObject();
         json.addProperty("item", Objects.requireNonNull(ForgeRegistries.ITEMS.getKey(stack.getItem())).toString());
         if (stack.getCount() != 1) json.addProperty("count", stack.getCount());
         if (stack.hasTag()) json.addProperty("nbt", String.valueOf(stack.getTag()));
-        if (entry.chance != null) json.addProperty("chance", entry.chance);
         return json;
     }
 }

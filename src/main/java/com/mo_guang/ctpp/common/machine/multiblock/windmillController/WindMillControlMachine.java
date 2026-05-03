@@ -88,12 +88,8 @@ public class WindMillControlMachine extends KineticOutputMachine
             WindmillSavedData windmillData = WindmillSavedData.get(serverLevel);
             windmillData.registerFormedController(this.getPos());
         }
-        if (rotatingEntity.isEmpty() && !getLevel().isClientSide) {
-            var rotatingEntities = assemble(MachineUtils.getOffset(this, 0, 5, 5));
-            if (rotatingEntities != null) {
-                this.rotatingEntity.addAll(rotatingEntities.values());
-            }
-        }
+        // assemble rotating entities (use interface helper)
+        createAndAttachRotatingEntities(MachineUtils.getOffset(this, 0, 5, 5));
     }
 
     @Override
@@ -105,10 +101,8 @@ public class WindMillControlMachine extends KineticOutputMachine
             windmillData.unregisterFormedController(this.getPos());
             windmillData.notifyAllControllersRefresh(serverLevel, getPos());
         }
-        if (!rotatingEntity.isEmpty() && !getLevel().isClientSide) {
-            this.rotatingEntity.forEach(AbstractContraptionEntity::disassemble);
-        }
-        this.rotatingEntity = new ArrayList<>();
+        // clear and disassemble rotating entities (use interface helper)
+        clearAndDisassembleRotatingEntities();
     }
 
     @Override
@@ -138,27 +132,7 @@ public class WindMillControlMachine extends KineticOutputMachine
 
     @Override
     public Map<Integer, SimpleRotatingContraptionEntity> assemble(BlockPos pivot) {
-        if (self().getLevel() instanceof TrackedDummyWorld) return null;
-        if (self().getLevel().isClientSide) return null;
-        Map<Integer, SimpleRotatingContraptionEntity> ce = new HashMap<>();
-        var pattern = self().getDefinition().getPatternFactory().get();
-        if (pattern instanceof StaticBlockPattern staticBlockPattern) {
-            Map<Integer, List<BlockPos>> dymanicPart = staticBlockPattern.getDynamicPart(self().getMultiblockState());
-            for (var entry : dymanicPart.entrySet()) {
-                int group = entry.getKey();
-                var part = entry.getValue();
-                SimpleRotatingContraption contraption = new SimpleRotatingContraption(part, pivot);
-                contraption.assemble(this.self().getLevel(), self().getPos()); // 第二个参数无用
-                contraption.removeBlocksFromWorld(this.self().getLevel(), BlockPos.ZERO);
-                SimpleRotatingContraptionEntity contraptionEntity = SimpleRotatingContraptionEntity
-                        .create(self().getLevel(), contraption, this, pivot.getCenter());
-                contraptionEntity.setPos(pivot.getX(), pivot.getY(), pivot.getZ());
-                this.self().getLevel().addFreshEntity(contraptionEntity);
-                ce.put(group, contraptionEntity);
-            }
-            return ce;
-        }
-        return null;
+        return assembleFromPattern(pivot);
     }
 
     //////////////////////////////////////

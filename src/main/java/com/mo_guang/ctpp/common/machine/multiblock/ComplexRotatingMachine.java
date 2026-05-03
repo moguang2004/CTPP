@@ -53,10 +53,8 @@ public class ComplexRotatingMachine extends WorkableElectricMultiblockMachine
     @Override
     public void onStructureInvalid() {
         super.onStructureInvalid();
-        if (!rotatingEntity.isEmpty()) {
-            this.rotatingEntity.forEach(AbstractContraptionEntity::disassemble);
-        }
-        this.rotatingEntity.clear();
+        // disassemble and clear using interface helper
+        clearAndDisassembleRotatingEntities();
         if (rotatingSubs != null) {
             unsubscribe(rotatingSubs);
         }

@@ -26,6 +26,10 @@ public class MixingRecipeBuilder {
     private final ResourceLocation id;
     private final List<Ingredient> ingredients = new ArrayList<>();
     private final List<ItemStack> results = new ArrayList<>();
+    private final List<JsonObject> resultObjects = new ArrayList<>();
+    // optional fluid result support
+    private JsonObject fluidResult = null;
+    private final List<JsonObject> fluidIngredients = new ArrayList<>();
 
     public MixingRecipeBuilder(String name) {
         this.id = CTPP.id(name);
@@ -52,8 +56,41 @@ public class MixingRecipeBuilder {
         return this;
     }
 
+    /**
+     * Add a fluid as an ingredient to the mixing recipe.
+     */
+    public MixingRecipeBuilder inputFluid(String fluidId, int amount) {
+        JsonObject json = new JsonObject();
+        json.addProperty("fluid", fluidId);
+        json.addProperty("amount", amount);
+        this.fluidIngredients.add(json);
+        return this;
+    }
+
     public MixingRecipeBuilder result(ItemStack stack) {
         this.results.add(stack.copy());
+        return this;
+    }
+
+    /**
+     * Add a result with an optional chance.
+     * If chance is null, result is guaranteed.
+     */
+    public MixingRecipeBuilder result(ItemStack stack, Double chance) {
+        JsonObject j = serializeItemStack(stack);
+        if (chance != null) j.addProperty("chance", chance);
+        this.resultObjects.add(j);
+        return this;
+    }
+
+    /**
+     * Produce a fluid result from mixing (e.g., concrete fluid). Only one fluid result is supported.
+     */
+    public MixingRecipeBuilder resultFluid(String fluidId, int amount) {
+        JsonObject json = new JsonObject();
+        json.addProperty("fluid", fluidId);
+        json.addProperty("amount", amount);
+        this.fluidResult = json;
         return this;
     }
 
@@ -62,7 +99,7 @@ public class MixingRecipeBuilder {
     }
 
     public void toJson(JsonObject json) {
-        if (ingredients.isEmpty() || results.isEmpty()) {
+        if (ingredients.isEmpty() || (results.isEmpty() && fluidResult == null)) {
             throw new IllegalStateException("Mixing recipe missing required fields");
         }
 
@@ -70,10 +107,14 @@ public class MixingRecipeBuilder {
 
         JsonArray ingredientsJson = new JsonArray();
         ingredients.forEach(ing -> ingredientsJson.add(ing.toJson()));
+        // append fluid ingredients if present
+        fluidIngredients.forEach(fi -> ingredientsJson.add(fi));
         json.add("ingredients", ingredientsJson);
 
         JsonArray resultsJson = new JsonArray();
         results.forEach(stack -> resultsJson.add(serializeItemStack(stack)));
+        resultObjects.forEach(resultsJson::add);
+        if (fluidResult != null) resultsJson.add(fluidResult);
         json.add("results", resultsJson);
     }
 
