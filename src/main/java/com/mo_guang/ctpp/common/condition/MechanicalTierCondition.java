@@ -15,9 +15,9 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import tech.vixhentx.mcmod.ctnhlib.langprovider.Lang;
-import tech.vixhentx.mcmod.ctnhlib.langprovider.annotation.CN;
-import tech.vixhentx.mcmod.ctnhlib.langprovider.annotation.EN;
-import tech.vixhentx.mcmod.ctnhlib.langprovider.annotation.Prefix;
+import com.ctnhlang.CN;
+import com.ctnhlang.EN;
+import com.ctnhlang.Prefix;
 
 @NoArgsConstructor
 @Prefix("recipe.condition")

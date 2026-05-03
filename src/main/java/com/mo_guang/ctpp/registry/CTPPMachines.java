@@ -32,9 +32,9 @@ import com.mo_guang.ctpp.config.MainConfig;
 import com.mo_guang.ctpp.util.CommonTooltips;
 import com.mo_guang.ctpp.util.ItemAxisBuilder;
 import tech.vixhentx.mcmod.ctnhlib.langprovider.Lang;
-import tech.vixhentx.mcmod.ctnhlib.langprovider.annotation.CN;
-import tech.vixhentx.mcmod.ctnhlib.langprovider.annotation.EN;
-import tech.vixhentx.mcmod.ctnhlib.langprovider.annotation.Prefix;
+import com.ctnhlang.CN;
+import com.ctnhlang.EN;
+import com.ctnhlang.Prefix;
 import tech.vixhentx.mcmod.ctnhlib.registrate.builders.CTNHMachineBuilder;
 
 import java.util.List;

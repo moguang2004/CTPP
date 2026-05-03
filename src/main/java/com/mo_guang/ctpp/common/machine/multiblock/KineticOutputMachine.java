@@ -15,9 +15,9 @@ import com.mo_guang.ctpp.common.machine.multiblock.part.KineticPartMachine;
 import com.simibubi.create.infrastructure.config.AllConfigs;
 import lombok.Getter;
 import tech.vixhentx.mcmod.ctnhlib.langprovider.Lang;
-import tech.vixhentx.mcmod.ctnhlib.langprovider.annotation.CN;
-import tech.vixhentx.mcmod.ctnhlib.langprovider.annotation.EN;
-import tech.vixhentx.mcmod.ctnhlib.langprovider.annotation.Suffix;
+import com.ctnhlang.CN;
+import com.ctnhlang.EN;
+import com.ctnhlang.Suffix;
 
 import java.util.List;
 

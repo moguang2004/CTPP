@@ -30,8 +30,8 @@ import com.simibubi.create.content.contraptions.AbstractContraptionEntity;
 import lombok.Getter;
 import lombok.Setter;
 import tech.vixhentx.mcmod.ctnhlib.langprovider.Lang;
-import tech.vixhentx.mcmod.ctnhlib.langprovider.annotation.CN;
-import tech.vixhentx.mcmod.ctnhlib.langprovider.annotation.EN;
+import com.ctnhlang.CN;
+import com.ctnhlang.EN;
 
 import java.util.ArrayList;
 import java.util.HashMap;
