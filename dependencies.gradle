@@ -4,6 +4,7 @@ dependencies {
 
     modImplementation(ctnh.botarium)
     modImplementation(ctnh.createnewage)
+    modImplementation(ctnh.creatediesel)
     
     modCompileOnly(variantOf(ctnh.curios) { classifier("api") })
 

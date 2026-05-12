@@ -1,8 +1,14 @@
 package com.mo_guang.ctpp.registry;
 
+import com.gregtechceu.gtceu.api.item.ComponentItem;
+import com.gregtechceu.gtceu.api.item.component.FoodStats;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
 
 import com.tterrag.registrate.util.entry.ItemEntry;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import static com.mo_guang.ctpp.CTPPRegistration.REGISTRATE;
 
@@ -14,7 +20,28 @@ public class CTPPItems {
             .register();
     public static ItemEntry<Item> INCOMPLETE_BASIC_MECHANISM = REGISTRATE.item("incomplete_basic_mechanism", Item::new)
             .cnlang("未完成的基础构件").register();
+    public static ItemEntry<Item> INCOMPLETE_STEEL_MECHANISM = REGISTRATE
+            .item("incomplete_steel_mechanism", Item::new)
+            .cnlang("未完成的钢铁构件")
+            .lang("Incomplete Steel Mechanism")
+            .register();
     public static ItemEntry<Item> STEEL_MECHANISM = REGISTRATE.item("steel_mechanism", Item::new).cnlang("钢铁构件")
+            .register();
+    public static ItemEntry<ComponentItem> DOUBLE_BLAZE_CAKE = REGISTRATE
+            .item("double_blaze_cake", ComponentItem::create)
+            .cnlang("???烈焰蛋糕???")
+            .lang("Double Blaze Cake")
+            .onRegister(item -> {
+                item.attachComponents(new FoodStats(new FoodProperties.Builder()
+                        .alwaysEat()
+                        .effect(() -> {
+                            var effect = ForgeRegistries.MOB_EFFECTS.getValue(
+                                    ResourceLocation.tryBuild("legendarysurvivaloverhaul", "cold_immunity"));
+                            return effect != null ? new MobEffectInstance(effect, 36000, 10) : null;
+                        }, 1.0f)
+                        .build()));
+                item.burnTime(30000);
+            })
             .register();
     // public static ItemEntry<RotationWandItem> ROTATION_WAND = REGISTRATE.item("rotation_wand", p -> new
     // RotationWandItem(p)).register();

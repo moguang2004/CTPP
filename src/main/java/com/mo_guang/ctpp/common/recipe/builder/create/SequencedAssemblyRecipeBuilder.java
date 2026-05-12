@@ -16,7 +16,6 @@ import com.mo_guang.ctpp.CTPP;
 import com.simibubi.create.AllRecipeTypes;
 import org.jetbrains.annotations.Nullable;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import net.minecraft.world.level.material.Fluid;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -96,15 +95,27 @@ public class SequencedAssemblyRecipeBuilder {
         ResourceLocation rl = ResourceLocation.tryParse(fluidId);
         if (rl == null) return this;
         if (ForgeRegistries.FLUIDS.getValue(rl) == null) return this;
-        return step("create:filling", json -> json.add("ingredients", ingredients(
-                itemIngredient(itemStack),
-                fluidIngredient(fluidId, amount))));
+        // Use the transitional item as the primary ingredient for the filling step when available.
+        ItemStack primary = this.transitionalItem != null ? this.transitionalItem : itemStack;
+        return step("create:filling", json -> {
+            json.add("ingredients", ingredients(
+                    itemIngredient(primary),
+                    fluidIngredient(fluidId, amount)));
+            // The filling step should also produce the transitional item as a result
+            json.add("results", ingredients(itemIngredient(primary)));
+        });
     }
 
     public SequencedAssemblyRecipeBuilder filling(ItemStack itemStack, FluidStack fluid) {
-        return step("create:filling", json -> json.add("ingredients", ingredients(
-                itemIngredient(itemStack),
-                fluidIngredient(ForgeRegistries.FLUIDS.getKey(fluid.getFluid()).toString(), fluid.getAmount()))));
+        ItemStack primary = this.transitionalItem != null ? this.transitionalItem : itemStack;
+        ResourceLocation rl = ForgeRegistries.FLUIDS.getKey(fluid.getFluid());
+        if (rl == null) return this;
+        return step("create:filling", json -> {
+            json.add("ingredients", ingredients(
+                    itemIngredient(primary),
+                    fluidIngredient(rl.toString(), fluid.getAmount())));
+            json.add("results", ingredients(itemIngredient(primary)));
+        });
     }
 
     /**
@@ -124,7 +135,13 @@ public class SequencedAssemblyRecipeBuilder {
     }
 
     public SequencedAssemblyRecipeBuilder pressing() {
-        return step("create:pressing", json -> {});
+        if (this.transitionalItem == null) {
+            throw new IllegalStateException("Transitional item must be set before adding a pressing step");
+        }
+        return step("create:pressing", json -> {
+            json.add("ingredients", ingredients(itemIngredient(transitionalItem)));
+            json.add("results", ingredients(itemIngredient(transitionalItem)));
+        });
     }
 
     public SequencedAssemblyRecipeBuilder deploying(ItemStack addition) {
