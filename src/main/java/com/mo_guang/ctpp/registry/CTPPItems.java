@@ -2,13 +2,14 @@ package com.mo_guang.ctpp.registry;
 
 import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.api.item.component.FoodStats;
+
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import com.tterrag.registrate.util.entry.ItemEntry;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import static com.mo_guang.ctpp.CTPPRegistration.REGISTRATE;
 

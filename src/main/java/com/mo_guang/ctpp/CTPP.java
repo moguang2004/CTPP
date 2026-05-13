@@ -9,7 +9,6 @@ import com.mo_guang.ctpp.common.CommonProxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 @Mod(CTPP.MODID)
 @SuppressWarnings("removal")
 public class CTPP {
@@ -18,7 +17,6 @@ public class CTPP {
     public static final Logger LOGGER = LoggerFactory.getLogger(MODID);
 
     public CTPP() {
-
         DistExecutor.unsafeRunForDist(() -> ClientProxy::new, () -> CommonProxy::new);
         CTPPEntityTypes.init();
     }

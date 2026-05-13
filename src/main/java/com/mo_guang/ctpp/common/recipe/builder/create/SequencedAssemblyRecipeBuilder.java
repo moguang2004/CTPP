@@ -1,5 +1,7 @@
 package com.mo_guang.ctpp.common.recipe.builder.create;
 
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -15,7 +17,6 @@ import com.google.gson.JsonObject;
 import com.mo_guang.ctpp.CTPP;
 import com.simibubi.create.AllRecipeTypes;
 import org.jetbrains.annotations.Nullable;
-import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 
 import java.util.ArrayList;
 import java.util.List;

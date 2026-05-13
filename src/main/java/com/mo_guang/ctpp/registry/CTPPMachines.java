@@ -18,6 +18,9 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraftforge.client.model.generators.BlockModelBuilder;
 import net.minecraftforge.client.model.generators.ModelFile;
 
+import com.ctnhlang.CN;
+import com.ctnhlang.EN;
+import com.ctnhlang.Prefix;
 import com.mo_guang.ctpp.CTPP;
 import com.mo_guang.ctpp.CTPPRegistration;
 import com.mo_guang.ctpp.api.CTPPPartAbility;
@@ -32,9 +35,6 @@ import com.mo_guang.ctpp.config.MainConfig;
 import com.mo_guang.ctpp.util.CommonTooltips;
 import com.mo_guang.ctpp.util.ItemAxisBuilder;
 import tech.vixhentx.mcmod.ctnhlib.langprovider.Lang;
-import com.ctnhlang.CN;
-import com.ctnhlang.EN;
-import com.ctnhlang.Prefix;
 import tech.vixhentx.mcmod.ctnhlib.registrate.builders.CTNHMachineBuilder;
 
 import java.util.List;

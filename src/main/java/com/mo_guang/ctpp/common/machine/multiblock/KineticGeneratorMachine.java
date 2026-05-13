@@ -14,27 +14,22 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import com.lowdragmc.lowdraglib.utils.TrackedDummyWorld;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.phys.Vec3;
 
-import com.mo_guang.ctpp.api.pattern.StaticBlockPattern;
+import com.ctnhlang.CN;
+import com.ctnhlang.EN;
 import com.mo_guang.ctpp.dynamicPart.rotation.IRotationMultiblock;
-import com.mo_guang.ctpp.dynamicPart.rotation.SimpleRotatingContraption;
 import com.mo_guang.ctpp.dynamicPart.rotation.SimpleRotatingContraptionEntity;
 import com.mo_guang.ctpp.util.MathUtil;
-import com.simibubi.create.content.contraptions.AbstractContraptionEntity;
 import lombok.Getter;
 import lombok.Setter;
 import tech.vixhentx.mcmod.ctnhlib.langprovider.Lang;
-import com.ctnhlang.CN;
-import com.ctnhlang.EN;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 

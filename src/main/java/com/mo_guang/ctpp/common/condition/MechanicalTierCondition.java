@@ -7,6 +7,9 @@ import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
 
 import net.minecraft.network.chat.Component;
 
+import com.ctnhlang.CN;
+import com.ctnhlang.EN;
+import com.ctnhlang.Prefix;
 import com.mo_guang.ctpp.api.CTPPRecipeConditions;
 import com.mo_guang.ctpp.common.machine.multiblock.KineticMultiblockMachine;
 import com.mo_guang.ctpp.util.CTPPValues;
@@ -15,9 +18,6 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import tech.vixhentx.mcmod.ctnhlib.langprovider.Lang;
-import com.ctnhlang.CN;
-import com.ctnhlang.EN;
-import com.ctnhlang.Prefix;
 
 @NoArgsConstructor
 @Prefix("recipe.condition")

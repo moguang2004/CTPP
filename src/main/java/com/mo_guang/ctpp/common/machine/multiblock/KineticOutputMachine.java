@@ -9,15 +9,15 @@ import com.gregtechceu.gtceu.utils.FormattingUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 
+import com.ctnhlang.CN;
+import com.ctnhlang.EN;
+import com.ctnhlang.Suffix;
 import com.mo_guang.ctpp.api.StressRecipeCapability;
 import com.mo_guang.ctpp.common.data.recipe.builder.CTPPRecipeHelper;
 import com.mo_guang.ctpp.common.machine.multiblock.part.KineticPartMachine;
 import com.simibubi.create.infrastructure.config.AllConfigs;
 import lombok.Getter;
 import tech.vixhentx.mcmod.ctnhlib.langprovider.Lang;
-import com.ctnhlang.CN;
-import com.ctnhlang.EN;
-import com.ctnhlang.Suffix;
 
 import java.util.List;
 

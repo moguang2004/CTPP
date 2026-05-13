@@ -14,7 +14,6 @@ import net.minecraft.util.RandomSource;
 
 import com.mo_guang.ctpp.api.pattern.StaticBlockPattern;
 import com.mo_guang.ctpp.dynamicPart.rotation.*;
-import com.simibubi.create.content.contraptions.AbstractContraptionEntity;
 import lombok.Getter;
 import lombok.Setter;
 

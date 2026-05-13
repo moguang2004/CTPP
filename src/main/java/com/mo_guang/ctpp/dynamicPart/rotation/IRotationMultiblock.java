@@ -1,11 +1,13 @@
 package com.mo_guang.ctpp.dynamicPart.rotation;
 
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
+
 import com.lowdragmc.lowdraglib.utils.TrackedDummyWorld;
-import com.mo_guang.ctpp.api.pattern.StaticBlockPattern;
-import com.simibubi.create.content.contraptions.AbstractContraptionEntity;
 
 import net.minecraft.core.BlockPos;
+
+import com.mo_guang.ctpp.api.pattern.StaticBlockPattern;
+import com.simibubi.create.content.contraptions.AbstractContraptionEntity;
 
 import java.util.*;
 

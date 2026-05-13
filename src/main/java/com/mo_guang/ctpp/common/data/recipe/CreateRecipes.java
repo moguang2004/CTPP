@@ -1,18 +1,14 @@
 package com.mo_guang.ctpp.common.data.recipe;
 
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
-import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.common.data.GCYMBlocks;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 
-import com.mo_guang.ctpp.registry.CTPPItems;
-import com.mo_guang.ctpp.registry.CTPPBlocks;
-import com.simibubi.create.AllBlocks;
-import com.simibubi.create.AllItems;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
@@ -24,7 +20,11 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import com.mo_guang.ctpp.common.recipe.builder.create.*;
+import com.mo_guang.ctpp.registry.CTPPBlocks;
+import com.mo_guang.ctpp.registry.CTPPItems;
 import com.mo_guang.ctpp.registry.CTPPMaterials;
+import com.simibubi.create.AllBlocks;
+import com.simibubi.create.AllItems;
 
 import java.util.function.Consumer;
 
@@ -187,7 +187,8 @@ public class CreateRecipes {
                 .output(new ItemStack(AllBlocks.LARGE_WATER_WHEEL.asItem())).save(provider);
 
         // portal block (from server_scripts create.js)
-        ItemStack doubleShadowSteelPlate = item("gtceu:double_shadow_steel_plate") == null ? ItemStack.EMPTY : new ItemStack(item("gtceu:double_shadow_steel_plate"));
+        ItemStack doubleShadowSteelPlate = item("gtceu:double_shadow_steel_plate") == null ? ItemStack.EMPTY :
+                new ItemStack(item("gtceu:double_shadow_steel_plate"));
         if (!doubleShadowSteelPlate.isEmpty()) {
             MechanicalCraftingRecipeBuilder.builder("javd_portal_block")
                     .pattern("AAAAA", "ABCBA", "ACDCA", "ABCBA", "AAAAA")
@@ -199,8 +200,10 @@ public class CreateRecipes {
         }
 
         // martial morality eye (7x7 pattern from server_scripts create.js)
-        ItemStack drillingMachine = item("createoreexcavation:drilling_machine") == null ? ItemStack.EMPTY : new ItemStack(item("createoreexcavation:drilling_machine"));
-        ItemStack martialMoralityEye = item("ctnhcore:martial_morality_eye") == null ? ItemStack.EMPTY : new ItemStack(item("ctnhcore:martial_morality_eye"));
+        ItemStack drillingMachine = item("createoreexcavation:drilling_machine") == null ? ItemStack.EMPTY :
+                new ItemStack(item("createoreexcavation:drilling_machine"));
+        ItemStack martialMoralityEye = item("ctnhcore:martial_morality_eye") == null ? ItemStack.EMPTY :
+                new ItemStack(item("ctnhcore:martial_morality_eye"));
         if (!drillingMachine.isEmpty() && !martialMoralityEye.isEmpty()) {
             MechanicalCraftingRecipeBuilder.builder("martial_morality_eye")
                     .pattern("ABCCCBA", "BADCDAB", "BADCDAB", "BAAEAAB", "BADCDAB", "BADCDAB", "ABCCCBA")
@@ -279,10 +282,11 @@ public class CreateRecipes {
         }
 
         // rose quartz from rose quartz chunk + water
-        ItemStack roseChunk = item("biomesoplenty:rose_quartz_chunk") == null ? ItemStack.EMPTY : new ItemStack(item("biomesoplenty:rose_quartz_chunk"));
+        ItemStack roseChunk = item("biomesoplenty:rose_quartz_chunk") == null ? ItemStack.EMPTY :
+                new ItemStack(item("biomesoplenty:rose_quartz_chunk"));
         if (!roseChunk.isEmpty() && !roseQuartz.isEmpty()) {
             MixingRecipeBuilder.builder("rose_quartz_from_chunk_and_water")
-                        .result(roseQuartz)
+                    .result(roseQuartz)
                     .input(roseChunk)
                     .inputFluid("minecraft:water", 100)
                     .save(provider);
@@ -309,7 +313,8 @@ public class CreateRecipes {
         MixingRecipeBuilder.builder("stem_cells_from_growth_medium")
                 .result(GTItems.STEM_CELLS.asStack())
                 .inputFluid("gtceu:simple_growth_medium", 144)
-                .input(item("ctnhcore:animal_excreta") == null ? ItemStack.EMPTY : new ItemStack(item("ctnhcore:animal_excreta")))
+                .input(item("ctnhcore:animal_excreta") == null ? ItemStack.EMPTY :
+                        new ItemStack(item("ctnhcore:animal_excreta")))
                 .save(provider);
 
         // treated wood planks from creosote + planks tag
@@ -335,18 +340,19 @@ public class CreateRecipes {
                 .save(provider);
 
         // steel precursor mixing (wrought iron + coke or charcoal) - simplified as two recipes
-        ItemStack steelPrecursorDust = item("gtceu:steel_precursor_dust") == null ? ItemStack.EMPTY : new ItemStack(item("gtceu:steel_precursor_dust"));
+        ItemStack steelPrecursorDust = item("gtceu:steel_precursor_dust") == null ? ItemStack.EMPTY :
+                new ItemStack(item("gtceu:steel_precursor_dust"));
         if (!steelPrecursorDust.isEmpty()) {
-        MixingRecipeBuilder.builder("steel_precursor_from_wrought_and_coke")
-                .result(new ItemStack(steelPrecursorDust.getItem(), 8))
-                .input(new ItemStack(ChemicalHelper.get(TagPrefix.dust, GTMaterials.WroughtIron).getItem(), 8))
-                .input(new ItemStack(ChemicalHelper.get(TagPrefix.dust, GTMaterials.Coke).getItem(), 3))
-                .save(provider);
-        MixingRecipeBuilder.builder("steel_precursor_from_wrought_and_charcoal")
-                .result(new ItemStack(steelPrecursorDust.getItem(), 8))
-                .input(new ItemStack(ChemicalHelper.get(TagPrefix.dust, GTMaterials.WroughtIron).getItem(), 8))
-                .input(tag("forge:dusts/charcoal"))
-                .save(provider);
+            MixingRecipeBuilder.builder("steel_precursor_from_wrought_and_coke")
+                    .result(new ItemStack(steelPrecursorDust.getItem(), 8))
+                    .input(new ItemStack(ChemicalHelper.get(TagPrefix.dust, GTMaterials.WroughtIron).getItem(), 8))
+                    .input(new ItemStack(ChemicalHelper.get(TagPrefix.dust, GTMaterials.Coke).getItem(), 3))
+                    .save(provider);
+            MixingRecipeBuilder.builder("steel_precursor_from_wrought_and_charcoal")
+                    .result(new ItemStack(steelPrecursorDust.getItem(), 8))
+                    .input(new ItemStack(ChemicalHelper.get(TagPrefix.dust, GTMaterials.WroughtIron).getItem(), 8))
+                    .input(tag("forge:dusts/charcoal"))
+                    .save(provider);
         }
 
         // bronze dust
@@ -358,13 +364,17 @@ public class CreateRecipes {
 
         // alexscaves magnets
         MixingRecipeBuilder.builder("scarlet_neodymium_ingot")
-                .result(item("alexscaves:scarlet_neodymium_ingot") == null ? ItemStack.EMPTY : new ItemStack(item("alexscaves:scarlet_neodymium_ingot"), 2))
-                .input(item("alexscaves:raw_scarlet_neodymium") == null ? ItemStack.EMPTY : new ItemStack(item("alexscaves:raw_scarlet_neodymium")))
+                .result(item("alexscaves:scarlet_neodymium_ingot") == null ? ItemStack.EMPTY :
+                        new ItemStack(item("alexscaves:scarlet_neodymium_ingot"), 2))
+                .input(item("alexscaves:raw_scarlet_neodymium") == null ? ItemStack.EMPTY :
+                        new ItemStack(item("alexscaves:raw_scarlet_neodymium")))
                 .input(ChemicalHelper.get(TagPrefix.ingot, GTMaterials.Iron))
                 .save(provider);
         MixingRecipeBuilder.builder("azure_neodymium_ingot")
-                .result(item("alexscaves:azure_neodymium_ingot") == null ? ItemStack.EMPTY : new ItemStack(item("alexscaves:azure_neodymium_ingot"), 2))
-                .input(item("alexscaves:raw_azure_neodymium") == null ? ItemStack.EMPTY : new ItemStack(item("alexscaves:raw_azure_neodymium")))
+                .result(item("alexscaves:azure_neodymium_ingot") == null ? ItemStack.EMPTY :
+                        new ItemStack(item("alexscaves:azure_neodymium_ingot"), 2))
+                .input(item("alexscaves:raw_azure_neodymium") == null ? ItemStack.EMPTY :
+                        new ItemStack(item("alexscaves:raw_azure_neodymium")))
                 .input(ChemicalHelper.get(TagPrefix.ingot, GTMaterials.Iron))
                 .save(provider);
 
@@ -373,7 +383,8 @@ public class CreateRecipes {
         // item_application: shadow steel casing
         ItemApplicationRecipeBuilder.builder("shadow_steel_casing_item_application")
                 .input(Items.OBSIDIAN)
-                .input(item("gtceu:shadow_steel_plate") == null ? ItemStack.EMPTY : new ItemStack(item("gtceu:shadow_steel_plate")))
+                .input(item("gtceu:shadow_steel_plate") == null ? ItemStack.EMPTY :
+                        new ItemStack(item("gtceu:shadow_steel_plate")))
                 .result(AllBlocks.SHADOW_STEEL_CASING.asStack())
                 .save(provider);
 
@@ -390,11 +401,13 @@ public class CreateRecipes {
         MixingRecipeBuilder.builder("gold_nuggets_from_aqua_regia")
                 .result(new ItemStack(ChemicalHelper.get(TagPrefix.nugget, GTMaterials.Gold).getItem(), 5))
                 .inputFluid("gtceu:aqua_regia", 500)
-                .input(item("gtceu:ochrum_dust") == null ? ItemStack.EMPTY : new ItemStack(item("gtceu:ochrum_dust"), 2))
+                .input(item("gtceu:ochrum_dust") == null ? ItemStack.EMPTY :
+                        new ItemStack(item("gtceu:ochrum_dust"), 2))
                 .save(provider);
 
         // splashing series (ores -> outputs)
-        ItemStack asurineIn = item("gtceu:asurine_dust") == null ? ItemStack.EMPTY : new ItemStack(item("gtceu:asurine_dust"));
+        ItemStack asurineIn = item("gtceu:asurine_dust") == null ? ItemStack.EMPTY :
+                new ItemStack(item("gtceu:asurine_dust"));
         ItemStack asurineSil = ChemicalHelper.get(TagPrefix.dust, GTMaterials.SiliconDioxide);
         ItemStack asurineZn = ChemicalHelper.get(TagPrefix.nugget, GTMaterials.Zinc);
         if (!asurineIn.isEmpty() && !asurineSil.isEmpty()) {
@@ -405,7 +418,8 @@ public class CreateRecipes {
                     .save(provider);
         }
 
-        ItemStack crimsiteIn = item("gtceu:crimsite_dust") == null ? ItemStack.EMPTY : new ItemStack(item("gtceu:crimsite_dust"));
+        ItemStack crimsiteIn = item("gtceu:crimsite_dust") == null ? ItemStack.EMPTY :
+                new ItemStack(item("gtceu:crimsite_dust"));
         ItemStack crimsiteSil = ChemicalHelper.get(TagPrefix.dust, GTMaterials.SiliconDioxide);
         ItemStack crimsiteIron = ChemicalHelper.get(TagPrefix.nugget, GTMaterials.Iron);
         if (!crimsiteIn.isEmpty() && !crimsiteSil.isEmpty()) {
@@ -416,7 +430,8 @@ public class CreateRecipes {
                     .save(provider);
         }
 
-        ItemStack ochrumIn = item("gtceu:ochrum_dust") == null ? ItemStack.EMPTY : new ItemStack(item("gtceu:ochrum_dust"));
+        ItemStack ochrumIn = item("gtceu:ochrum_dust") == null ? ItemStack.EMPTY :
+                new ItemStack(item("gtceu:ochrum_dust"));
         ItemStack ochrumSil = ChemicalHelper.get(TagPrefix.dust, GTMaterials.SiliconDioxide);
         ItemStack ochrumPrec = ChemicalHelper.get(TagPrefix.nugget, GTMaterials.Gold);
         if (!ochrumIn.isEmpty() && !ochrumSil.isEmpty()) {
@@ -427,7 +442,8 @@ public class CreateRecipes {
                     .save(provider);
         }
 
-        ItemStack veridiumIn = item("gtceu:veridium_dust") == null ? ItemStack.EMPTY : new ItemStack(item("gtceu:veridium_dust"));
+        ItemStack veridiumIn = item("gtceu:veridium_dust") == null ? ItemStack.EMPTY :
+                new ItemStack(item("gtceu:veridium_dust"));
         ItemStack veridiumSil = ChemicalHelper.get(TagPrefix.dust, GTMaterials.SiliconDioxide);
         ItemStack veridiumCu = ChemicalHelper.get(TagPrefix.nugget, GTMaterials.Copper);
         if (!veridiumIn.isEmpty() && !veridiumSil.isEmpty()) {
@@ -482,7 +498,8 @@ public class CreateRecipes {
         // recipes (skip)
 
         // item_application/mixing/splashing for precious alloy dust -> gold nuggets
-        ItemStack preciousIn = item("gtceu:precious_alloy_dust") == null ? ItemStack.EMPTY : new ItemStack(item("gtceu:precious_alloy_dust"));
+        ItemStack preciousIn = item("gtceu:precious_alloy_dust") == null ? ItemStack.EMPTY :
+                new ItemStack(item("gtceu:precious_alloy_dust"));
         if (!preciousIn.isEmpty()) {
             SplashingRecipeBuilder splash = SplashingRecipeBuilder
                     .builder("splashing_precious_alloy_gold").input(preciousIn);
@@ -498,10 +515,10 @@ public class CreateRecipes {
         }
 
         // milling with chance: obsidian -> obsidian_dust (0.75)
-            MillingRecipeBuilder.builder("milling_obsidian_chance")
-                    .input(Blocks.OBSIDIAN.asItem())
-                    .result(ChemicalHelper.get(TagPrefix.dust, GTMaterials.Obsidian), 0.75)
-                    .save(provider);
+        MillingRecipeBuilder.builder("milling_obsidian_chance")
+                .input(Blocks.OBSIDIAN.asItem())
+                .result(ChemicalHelper.get(TagPrefix.dust, GTMaterials.Obsidian), 0.75)
+                .save(provider);
 
         // basic mechanism from wooden slabs -> ctpp:basic_mechanism
         ItemStack incompleteBasic = CTPPItems.INCOMPLETE_BASIC_MECHANISM.asStack();
@@ -628,8 +645,10 @@ public class CreateRecipes {
         }
 
         // high strength concrete -> sintering kiln
-        ItemStack highConcrete = item("ctnhcore:high_strength_concrete") == null ? ItemStack.EMPTY : new ItemStack(item("ctnhcore:high_strength_concrete"));
-        ItemStack sinteringKiln = item("ctnhcore:sintering_kiln") == null ? ItemStack.EMPTY : new ItemStack(item("ctnhcore:sintering_kiln"));
+        ItemStack highConcrete = item("ctnhcore:high_strength_concrete") == null ? ItemStack.EMPTY :
+                new ItemStack(item("ctnhcore:high_strength_concrete"));
+        ItemStack sinteringKiln = item("ctnhcore:sintering_kiln") == null ? ItemStack.EMPTY :
+                new ItemStack(item("ctnhcore:sintering_kiln"));
         ItemStack steelFirebox = GTBlocks.FIREBOX_STEEL.asStack();
         if (!highConcrete.isEmpty() && !sinteringKiln.isEmpty() && !steelFirebox.isEmpty()) {
             SequencedAssemblyRecipeBuilder.builder("high_strength_concrete_to_sintering_kiln")
@@ -637,7 +656,8 @@ public class CreateRecipes {
                     .transitional(highConcrete)
                     .result(sinteringKiln)
                     .deploying(ChemicalHelper.get(TagPrefix.block, GTMaterials.Steel))
-                    .deploying(item("ctnhcore:advanced_coke_oven") == null ? ItemStack.EMPTY : new ItemStack(item("ctnhcore:advanced_coke_oven")))
+                    .deploying(item("ctnhcore:advanced_coke_oven") == null ? ItemStack.EMPTY :
+                            new ItemStack(item("ctnhcore:advanced_coke_oven")))
                     .deploying(GTBlocks.CASING_PRIMITIVE_BRICKS.asStack())
                     .filling(highConcrete, GTMaterials.Creosote.getFluid(1000))
                     .loops(1)
@@ -646,13 +666,15 @@ public class CreateRecipes {
 
         // orange stained glass -> bronze framed glass
         ItemStack orangeGlass = new ItemStack(Blocks.ORANGE_STAINED_GLASS.asItem());
-        ItemStack bronzeFramed = item("ctnhcore:bronze_framed_glass") == null ? ItemStack.EMPTY : new ItemStack(item("ctnhcore:bronze_framed_glass"));
+        ItemStack bronzeFramed = item("ctnhcore:bronze_framed_glass") == null ? ItemStack.EMPTY :
+                new ItemStack(item("ctnhcore:bronze_framed_glass"));
         if (!orangeGlass.isEmpty() && !bronzeFramed.isEmpty()) {
             SequencedAssemblyRecipeBuilder.builder("orange_glass_to_bronze_framed")
                     .input(new ItemStack(Blocks.GLASS.asItem()))
                     .transitional(orangeGlass)
                     .result(bronzeFramed)
-                    .deploying(item("gtceu:bronze_tiny_fluid_pipe") == null ? ItemStack.EMPTY : new ItemStack(item("gtceu:bronze_tiny_fluid_pipe")))
+                    .deploying(item("gtceu:bronze_tiny_fluid_pipe") == null ? ItemStack.EMPTY :
+                            new ItemStack(item("gtceu:bronze_tiny_fluid_pipe")))
                     .deploying(ChemicalHelper.get(TagPrefix.rod, GTMaterials.Bronze))
                     .deploying(ChemicalHelper.get(TagPrefix.rod, GTMaterials.Bronze))
                     .loops(2)
@@ -788,7 +810,6 @@ public class CreateRecipes {
         if (rl == null) return null;
         return ForgeRegistries.ITEMS.getValue(rl);
     }
-
 
     private static TagKey<Item> tag(String id) {
         if (id == null || id.isEmpty()) return null;

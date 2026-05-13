@@ -1,6 +1,5 @@
 package com.mo_guang.ctpp.data;
 
-import com.mo_guang.ctpp.CTPPRegistration;
 import com.mo_guang.ctpp.data.tags.BlockTags;
 import com.mo_guang.ctpp.data.tags.FluidTags;
 import com.mo_guang.ctpp.lang.ChineseLangHandler;

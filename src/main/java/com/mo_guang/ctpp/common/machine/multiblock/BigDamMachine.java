@@ -3,22 +3,17 @@ package com.mo_guang.ctpp.common.machine.multiblock;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import com.lowdragmc.lowdraglib.utils.TrackedDummyWorld;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.Vec3;
 
-import com.mo_guang.ctpp.api.pattern.StaticBlockPattern;
 import com.mo_guang.ctpp.dynamicPart.rotation.IRotationMultiblock;
-import com.mo_guang.ctpp.dynamicPart.rotation.SimpleRotatingContraption;
 import com.mo_guang.ctpp.dynamicPart.rotation.SimpleRotatingContraptionEntity;
 import com.mo_guang.ctpp.util.MathUtil;
-import com.simibubi.create.content.contraptions.AbstractContraptionEntity;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -51,8 +46,8 @@ public class BigDamMachine extends KineticOutputMachine
     public void onStructureInvalid() {
         super.onStructureInvalid();
         if (!getLevel().isClientSide) {
-                    // disassemble and clear using helper
-                    clearAndDisassembleRotatingEntities();
+            // disassemble and clear using helper
+            clearAndDisassembleRotatingEntities();
         }
     }
 

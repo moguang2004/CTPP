@@ -9,7 +9,6 @@ import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.lowdragmc.lowdraglib.gui.util.ClickData;
 import com.lowdragmc.lowdraglib.gui.widget.ComponentPanelWidget;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import com.lowdragmc.lowdraglib.utils.TrackedDummyWorld;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -19,14 +18,11 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 
-import com.mo_guang.ctpp.api.pattern.StaticBlockPattern;
 import com.mo_guang.ctpp.common.machine.multiblock.KineticOutputMachine;
 import com.mo_guang.ctpp.common.machine.multiblock.MachineUtils;
 import com.mo_guang.ctpp.dynamicPart.rotation.IRotationMultiblock;
-import com.mo_guang.ctpp.dynamicPart.rotation.SimpleRotatingContraption;
 import com.mo_guang.ctpp.dynamicPart.rotation.SimpleRotatingContraptionEntity;
 import com.mo_guang.ctpp.util.MathUtil;
-import com.simibubi.create.content.contraptions.AbstractContraptionEntity;
 import com.simibubi.create.content.contraptions.bearing.WindmillBearingBlockEntity;
 import com.simibubi.create.infrastructure.config.AllConfigs;
 import lombok.Getter;
@@ -37,7 +33,6 @@ import tech.vixhentx.mcmod.ctnhlib.client.render.ColorData;
 import tech.vixhentx.mcmod.ctnhlib.client.render.highlight.HighlightHandler;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
