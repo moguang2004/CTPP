@@ -7,6 +7,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import com.google.gson.JsonArray;
@@ -54,6 +56,12 @@ public class MixingRecipeBuilder {
     public MixingRecipeBuilder input(Ingredient ingredient) {
         this.ingredients.add(ingredient);
         return this;
+    }
+    public MixingRecipeBuilder inputFluid(Fluid fluid, int amount) {
+        return inputFluid(fluid.toString(), amount);
+    }
+    public MixingRecipeBuilder inputFluid(FluidStack fluidStack) {
+        return inputFluid(fluidStack.getFluid(), fluidStack.getAmount());
     }
 
     /**
