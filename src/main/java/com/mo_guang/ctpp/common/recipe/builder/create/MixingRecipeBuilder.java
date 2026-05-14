@@ -57,9 +57,11 @@ public class MixingRecipeBuilder {
         this.ingredients.add(ingredient);
         return this;
     }
+
     public MixingRecipeBuilder inputFluid(Fluid fluid, int amount) {
         return inputFluid(fluid.toString(), amount);
     }
+
     public MixingRecipeBuilder inputFluid(FluidStack fluidStack) {
         return inputFluid(fluidStack.getFluid(), fluidStack.getAmount());
     }
