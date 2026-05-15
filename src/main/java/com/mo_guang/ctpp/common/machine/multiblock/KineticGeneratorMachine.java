@@ -13,7 +13,7 @@ import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -38,8 +38,7 @@ import static com.mo_guang.ctpp.common.data.recipe.KineticGeneratorRecipes.GENER
 public class KineticGeneratorMachine extends KineticWorkableMultiblockMachine
                                      implements IRotationMultiblock<SimpleRotatingContraptionEntity> {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
-            KineticGeneratorMachine.class, KineticMultiblockMachine.MANAGED_FIELD_HOLDER);
+
     @Getter
     @Setter
     List<SimpleRotatingContraptionEntity> rotatingEntity = new ArrayList<>();
@@ -167,8 +166,4 @@ public class KineticGeneratorMachine extends KineticWorkableMultiblockMachine
         return assembleFromPattern(pivot);
     }
 
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
 }

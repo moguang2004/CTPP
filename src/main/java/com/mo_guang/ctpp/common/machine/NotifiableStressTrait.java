@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.api.machine.trait.ICapabilityTrait;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableRecipeHandlerTrait;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+
 
 import net.minecraft.util.Mth;
 
@@ -20,8 +20,6 @@ import java.util.List;
 
 public class NotifiableStressTrait extends NotifiableRecipeHandlerTrait<Float> implements ICapabilityTrait {
 
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(NotifiableStressTrait.class,
-            NotifiableRecipeHandlerTrait.MANAGED_FIELD_HOLDER);
 
     @Getter
     @Setter
@@ -98,8 +96,4 @@ public class NotifiableStressTrait extends NotifiableRecipeHandlerTrait<Float> i
         return StressRecipeCapability.CAP;
     }
 
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
 }

@@ -10,7 +10,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+
 
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 import lombok.Getter;
@@ -23,9 +23,6 @@ import java.util.*;
 public class KineticWorkableTieredMachine extends TieredMachine implements IRecipeLogicMachine,
                                           IMachineLife, IMufflableMachine {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
-            KineticWorkableTieredMachine.class,
-            TieredMachine.MANAGED_FIELD_HOLDER);
 
     @Getter
     @Persisted
@@ -88,11 +85,6 @@ public class KineticWorkableTieredMachine extends TieredMachine implements IReci
     //////////////////////////////////////
     // ***** Initialization ******//
     //////////////////////////////////////
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
-
     protected NotifiableItemStackHandler createImportItemHandler(Object... args) {
         return new NotifiableItemStackHandler(this, getRecipeType().getMaxInputs(ItemRecipeCapability.CAP), IO.IN);
     }

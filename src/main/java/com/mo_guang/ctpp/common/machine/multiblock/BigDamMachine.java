@@ -2,7 +2,7 @@ package com.mo_guang.ctpp.common.machine.multiblock;
 
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.Vec3;
@@ -20,8 +20,6 @@ import java.util.Map;
 public class BigDamMachine extends KineticOutputMachine
                            implements IRotationMultiblock<SimpleRotatingContraptionEntity> {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
-            BigDamMachine.class, KineticOutputMachine.MANAGED_FIELD_HOLDER);
     @Getter
     @Setter
     List<SimpleRotatingContraptionEntity> rotatingEntity = new ArrayList<>();
@@ -66,8 +64,4 @@ public class BigDamMachine extends KineticOutputMachine
         return assembleFromPattern(pivot);
     }
 
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
 }

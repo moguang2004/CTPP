@@ -8,7 +8,7 @@ import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 
 import com.lowdragmc.lowdraglib.gui.util.ClickData;
 import com.lowdragmc.lowdraglib.gui.widget.ComponentPanelWidget;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -39,8 +39,7 @@ import java.util.Map;
 public class WindMillControlMachine extends KineticOutputMachine
                                     implements IRotationMultiblock<SimpleRotatingContraptionEntity> {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
-            WindMillControlMachine.class, KineticOutputMachine.MANAGED_FIELD_HOLDER);
+
     public static int LEGAL_DISTANCE = 64;
     public List<BlockPos> windmillAround = new ArrayList<>();
     public int efficiency = 0;
@@ -232,11 +231,6 @@ public class WindMillControlMachine extends KineticOutputMachine
             }
             efficiency = Math.min(windmillAround.size(), 6 + tier * 6);
         }
-    }
-
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
     }
 
     @Override

@@ -9,7 +9,7 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
@@ -29,8 +29,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class KineticPartMachine extends TieredIOPartMachine implements IKineticMachine {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(KineticPartMachine.class,
-            TieredIOPartMachine.MANAGED_FIELD_HOLDER);
 
     @Getter
     @Persisted
@@ -51,11 +49,6 @@ public class KineticPartMachine extends TieredIOPartMachine implements IKineticM
     //////////////////////////////////////
     // ***** Initialization *****//
     //////////////////////////////////////
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
-
     protected NotifiableStressTrait createStressTrait(Object... args) {
         return new NotifiableStressTrait(this, this.io, this.io);
     }

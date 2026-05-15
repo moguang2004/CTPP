@@ -17,7 +17,7 @@ import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
@@ -32,8 +32,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class ElectricGearBoxMachine extends TieredEnergyMachine implements IKineticMachine, IFancyUIMachine {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
-            ElectricGearBoxMachine.class, TieredEnergyMachine.MANAGED_FIELD_HOLDER);
+
     public final int maxAmps;
     @Getter
     @Persisted
@@ -49,11 +48,6 @@ public class ElectricGearBoxMachine extends TieredEnergyMachine implements IKine
     //////////////////////////////////////
     // ***** Initialization *****//
     //////////////////////////////////////
-
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
 
     @Override
     protected NotifiableEnergyContainer createEnergyContainer(Object... args) {

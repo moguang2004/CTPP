@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -27,9 +27,6 @@ import java.util.List;
 
 public class CarbonBrushesGeneratorMachine extends WorkableTieredMachine implements IKineticMachine {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
-            CarbonBrushesGeneratorMachine.class,
-            WorkableTieredMachine.MANAGED_FIELD_HOLDER);
 
     @Persisted
     @DescSynced
@@ -40,11 +37,6 @@ public class CarbonBrushesGeneratorMachine extends WorkableTieredMachine impleme
     public CarbonBrushesGeneratorMachine(IMachineBlockEntity holder, int tier, Int2IntFunction tankScalingFunction,
                                          Object... args) {
         super(holder, tier, tankScalingFunction, args);
-    }
-
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
     }
 
     @Override

@@ -16,7 +16,7 @@ import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.jei.IngredientIO;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
@@ -40,9 +40,6 @@ public class MechanicalUpgradePartMachine extends TieredIOPartMachine implements
     @Persisted
     public int tier = 0;
     public static Map<Item, Integer> tierMap = new HashMap<>();
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
-            MechanicalUpgradePartMachine.class,
-            TieredIOPartMachine.MANAGED_FIELD_HOLDER);
 
     public MechanicalUpgradePartMachine(IMachineBlockEntity holder) {
         super(holder, GTValues.ULV, IO.IN);
@@ -139,8 +136,4 @@ public class MechanicalUpgradePartMachine extends TieredIOPartMachine implements
         return false;
     }
 
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
 }

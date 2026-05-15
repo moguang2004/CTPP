@@ -16,6 +16,7 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import com.gregtechceu.gtceu.utils.ManagedFieldHolderMap;
 import com.lowdragmc.lowdraglib.syncdata.managed.MultiManagedStorage;
 
 import net.minecraft.ChatFormatting;
@@ -57,7 +58,7 @@ import java.util.Set;
 
 public class KineticMachineBlockEntity extends KineticBlockEntity implements IMachineBlockEntity, IManaged {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
+    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = ManagedFieldHolderMap.createManagedFieldHolder(
             KineticMachineBlockEntity.class);
     public final MultiManagedStorage managedStorage = new MultiManagedStorage();
 
@@ -385,7 +386,7 @@ public class KineticMachineBlockEntity extends KineticBlockEntity implements IMa
 
     @Override
     public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
+        return ManagedFieldHolderMap.getManagedFieldHolder(getClass());
     }
 
     @Override
