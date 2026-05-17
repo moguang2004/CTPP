@@ -14,7 +14,6 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -37,7 +36,6 @@ import static com.mo_guang.ctpp.common.data.recipe.KineticGeneratorRecipes.GENER
 
 public class KineticGeneratorMachine extends KineticWorkableMultiblockMachine
                                      implements IRotationMultiblock<SimpleRotatingContraptionEntity> {
-
 
     @Getter
     @Setter
@@ -165,5 +163,4 @@ public class KineticGeneratorMachine extends KineticWorkableMultiblockMachine
     public Map<Integer, SimpleRotatingContraptionEntity> assemble(BlockPos pivot) {
         return assembleFromPattern(pivot);
     }
-
 }

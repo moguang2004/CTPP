@@ -2,8 +2,6 @@ package com.mo_guang.ctpp.common.machine.multiblock;
 
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 
-
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.Vec3;
 
@@ -63,5 +61,4 @@ public class BigDamMachine extends KineticOutputMachine
     public Map<Integer, SimpleRotatingContraptionEntity> assemble(BlockPos pivot) {
         return assembleFromPattern(pivot);
     }
-
 }

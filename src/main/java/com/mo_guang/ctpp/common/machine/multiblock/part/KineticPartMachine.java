@@ -10,7 +10,6 @@ import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 
-
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
@@ -28,7 +27,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class KineticPartMachine extends TieredIOPartMachine implements IKineticMachine {
-
 
     @Getter
     @Persisted

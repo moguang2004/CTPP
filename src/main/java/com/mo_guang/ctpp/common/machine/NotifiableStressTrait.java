@@ -7,8 +7,6 @@ import com.gregtechceu.gtceu.api.machine.trait.ICapabilityTrait;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableRecipeHandlerTrait;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 
-
-
 import net.minecraft.util.Mth;
 
 import com.mo_guang.ctpp.api.StressRecipeCapability;
@@ -19,7 +17,6 @@ import java.util.Collections;
 import java.util.List;
 
 public class NotifiableStressTrait extends NotifiableRecipeHandlerTrait<Float> implements ICapabilityTrait {
-
 
     @Getter
     @Setter
@@ -95,5 +92,4 @@ public class NotifiableStressTrait extends NotifiableRecipeHandlerTrait<Float> i
     public RecipeCapability<Float> getCapability() {
         return StressRecipeCapability.CAP;
     }
-
 }

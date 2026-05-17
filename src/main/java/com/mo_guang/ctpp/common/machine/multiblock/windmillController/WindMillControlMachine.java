@@ -9,7 +9,6 @@ import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.lowdragmc.lowdraglib.gui.util.ClickData;
 import com.lowdragmc.lowdraglib.gui.widget.ComponentPanelWidget;
 
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -38,7 +37,6 @@ import java.util.Map;
 
 public class WindMillControlMachine extends KineticOutputMachine
                                     implements IRotationMultiblock<SimpleRotatingContraptionEntity> {
-
 
     public static int LEGAL_DISTANCE = 64;
     public List<BlockPos> windmillAround = new ArrayList<>();

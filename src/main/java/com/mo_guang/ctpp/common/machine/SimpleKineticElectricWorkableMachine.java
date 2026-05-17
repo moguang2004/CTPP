@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 
-
 import net.minecraft.core.Direction;
 
 import com.mojang.blaze3d.MethodsReturnNonnullByDefault;
@@ -19,7 +18,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class SimpleKineticElectricWorkableMachine extends SimpleTieredMachine implements IKineticMachine {
-
 
     @Getter
     @Persisted

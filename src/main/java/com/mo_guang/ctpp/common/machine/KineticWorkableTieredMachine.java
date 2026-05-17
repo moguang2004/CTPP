@@ -11,7 +11,6 @@ import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 
-
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,7 +21,6 @@ import java.util.*;
 
 public class KineticWorkableTieredMachine extends TieredMachine implements IRecipeLogicMachine,
                                           IMachineLife, IMufflableMachine {
-
 
     @Getter
     @Persisted

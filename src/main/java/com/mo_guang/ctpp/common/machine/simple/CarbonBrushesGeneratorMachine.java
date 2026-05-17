@@ -8,7 +8,6 @@ import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -26,7 +25,6 @@ import org.apache.commons.lang3.mutable.MutableInt;
 import java.util.List;
 
 public class CarbonBrushesGeneratorMachine extends WorkableTieredMachine implements IKineticMachine {
-
 
     @Persisted
     @DescSynced

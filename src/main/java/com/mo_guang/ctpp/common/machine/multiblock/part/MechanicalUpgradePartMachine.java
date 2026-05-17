@@ -17,7 +17,6 @@ import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.jei.IngredientIO;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 
-
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -135,5 +134,4 @@ public class MechanicalUpgradePartMachine extends TieredIOPartMachine implements
     public boolean canShared() {
         return false;
     }
-
 }
