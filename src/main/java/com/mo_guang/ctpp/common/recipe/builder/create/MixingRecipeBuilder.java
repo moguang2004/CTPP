@@ -59,7 +59,7 @@ public class MixingRecipeBuilder {
     }
 
     public MixingRecipeBuilder inputFluid(Fluid fluid, int amount) {
-        return inputFluid(fluid.toString(), amount);
+        return inputFluid(ForgeRegistries.FLUIDS.getKey(fluid).toString(), amount);
     }
 
     public MixingRecipeBuilder inputFluid(FluidStack fluidStack) {
@@ -105,7 +105,7 @@ public class MixingRecipeBuilder {
     }
 
     public MixingRecipeBuilder resultFluid(Fluid fluid, int amount) {
-        return resultFluid(fluid.toString(), amount);
+        return resultFluid(ForgeRegistries.FLUIDS.getKey(fluid).toString(), amount);
     }
 
     public MixingRecipeBuilder resultFluid(FluidStack fluidStack) {
