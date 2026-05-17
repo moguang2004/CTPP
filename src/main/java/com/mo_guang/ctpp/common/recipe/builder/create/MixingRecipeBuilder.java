@@ -104,6 +104,14 @@ public class MixingRecipeBuilder {
         return this;
     }
 
+    public MixingRecipeBuilder resultFluid(Fluid fluid, int amount) {
+        return resultFluid(fluid.toString(), amount);
+    }
+
+    public MixingRecipeBuilder resultFluid(FluidStack fluidStack) {
+        return resultFluid(fluidStack.getFluid(), fluidStack.getAmount());
+    }
+
     public MixingRecipeBuilder output(ItemStack stack) {
         return result(stack);
     }

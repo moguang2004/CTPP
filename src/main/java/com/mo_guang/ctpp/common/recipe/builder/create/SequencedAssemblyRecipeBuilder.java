@@ -263,6 +263,14 @@ public class SequencedAssemblyRecipeBuilder {
         return json;
     }
 
+    public static JsonArray ingredients(ItemStack... itemStacks) {
+        JsonArray json = new JsonArray();
+        for (ItemStack itemstack : itemStacks) {
+            json.add(itemIngredient(itemstack));
+        }
+        return json;
+    }
+
     private static JsonArray ingredients(JsonObject... ingredients) {
         JsonArray array = new JsonArray();
         for (JsonObject ingredient : ingredients) {
