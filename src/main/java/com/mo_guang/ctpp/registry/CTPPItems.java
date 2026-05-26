@@ -31,7 +31,7 @@ public class CTPPItems {
     public static ItemEntry<ComponentItem> DOUBLE_BLAZE_CAKE = REGISTRATE
             .item("double_blaze_cake", ComponentItem::create)
             .cnlang("双层烈焰蛋糕")
-            .lang("DoubleBlazeCake")
+            .lang("Double Blaze Cake")
             .onRegister(item -> {
                 var builder = new FoodProperties.Builder().alwaysEat();
                 var effect = ForgeRegistries.MOB_EFFECTS.getValue(
