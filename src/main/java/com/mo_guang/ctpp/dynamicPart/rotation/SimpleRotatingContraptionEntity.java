@@ -257,13 +257,21 @@ public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity {
     @Override
     public void tick() {
         super.tick();
-        if (!isRunning) {
+        // Always try to find and reattach to controller, even if isRunning=false
+        // This handles chunk reload scenarios where the entity loads before the controller
+        IRotationMultiblock controller = getController();
+        if (controller == null) {
+            // Controller not available yet (chunk might not be loaded).
+            // Don't discard — wait for it on next tick.
             return;
         }
-        IRotationMultiblock controller = getController();
-        if (controller == null || !controller.isAttachedTo(this)) {
-            setRunning(false);
-            return;
+        if (!isRunning || !controller.isAttachedTo(this)) {
+            // Try to reattach: if already attached, tickContraption handles this too,
+            // but we also try here to cover edge cases.
+            if (!controller.isAttachedTo(this)) {
+                controller.attach(this);
+            }
+            setRunning(true);
         }
         if (!level().isClientSide) {
             if (!angularVelocity.equals(Vec3.ZERO)) {
@@ -303,8 +311,6 @@ public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity {
             // 3. 检查是否需要强制同步（纠正预测）
             checkAndCorrectRotation();
         }
-        // TODO: fix this
-        setPos(contraption.anchor.getX(), contraption.anchor.getY(), contraption.anchor.getZ());
     }
 
     /**
@@ -396,8 +402,9 @@ public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity {
             return;
         IRotationMultiblock controller = getController();
         if (controller == null) {
-            setRunning(false);
-            disassemble();
+            // Controller chunk loaded but machine not found.
+            // Don't discard immediately — the machine might still be initializing.
+            // Will be cleaned up if machine truly gone (structure invalid will handle it).
             return;
         }
         if (!controller.isAttachedTo(this)) {
@@ -502,9 +509,8 @@ public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity {
             entityData.set(DATA_Q_X, this.serverRotation.x());
             entityData.set(DATA_Q_Y, this.serverRotation.y());
             entityData.set(DATA_Q_Z, this.serverRotation.z());
-            this.isRunning = false;
-            entityData.set(DATA_IS_RUNNING, false);
-            // 角速度同步为零，绑定后由控制器分配
+            entityData.set(DATA_IS_RUNNING, this.isRunning);
+            // 角速度从 NBT 恢复，之后由控制器重新设置
             this.angularVelocity = Vec3.ZERO;
             entityData.set(DATA_ANGULAR_VEL, new Vector3f(0, 0, 0));
         }
@@ -512,7 +518,6 @@ public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity {
         if (this.level().isClientSide()) {
             this.clientRotation = new Quaternionf(this.serverRotation);
             this.prevClientRotation = new Quaternionf(this.serverRotation);
-            this.isRunning = false;
             this.clientRotationDiff = quaternionAngleDifference(this.clientRotation, this.serverRotation);
             this.angularVelocity = Vec3.ZERO;
         }

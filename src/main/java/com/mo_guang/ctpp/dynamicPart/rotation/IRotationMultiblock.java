@@ -5,6 +5,8 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.lowdragmc.lowdraglib.utils.TrackedDummyWorld;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.phys.AABB;
 
 import com.mo_guang.ctpp.api.pattern.StaticBlockPattern;
 import com.simibubi.create.content.contraptions.AbstractContraptionEntity;
@@ -36,6 +38,33 @@ public interface IRotationMultiblock<T extends SimpleRotatingContraptionEntity> 
 
     default BlockPos getBlockPosition() {
         return self().getPos();
+    }
+
+    /**
+     * After chunk reload, find existing entities that belong to this controller
+     * and reattach them. This handles the case where the entity list was lost
+     * during unload.
+     */
+    @SuppressWarnings("unchecked")
+    default void findAndReattachEntities() {
+        if (self().getLevel() == null || self().getLevel().isClientSide) return;
+        if (getRotatingEntity() == null) setRotatingEntity(new ArrayList<>());
+        // Only search if the list is empty — otherwise entities are already tracked
+        if (!getRotatingEntity().isEmpty()) return;
+
+        BlockPos pos = self().getPos();
+        // Search in a 32-block radius for entities that reference this controller
+        AABB searchBox = new AABB(pos).inflate(32);
+        for (Entity entity : self().getLevel().getEntitiesOfClass(SimpleRotatingContraptionEntity.class, searchBox)) {
+            T srEntity = (T) entity;
+            if (srEntity.controllerPos != null && srEntity.controllerPos.equals(pos)) {
+                // Found an entity that belongs to us — reattach
+                getRotatingEntity().add(srEntity);
+                if (!srEntity.isRunning()) {
+                    srEntity.setRunning(true);
+                }
+            }
+        }
     }
 
     /**

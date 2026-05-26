@@ -50,6 +50,8 @@ public class WindMillControlMachine extends KineticOutputMachine
 
     public WindMillControlMachine(IMachineBlockEntity holder) {
         super(holder);
+        // 避免结构/配方恢复阶段先使用默认转速导致动态结构短暂快转
+        this.speed = 0;
     }
 
     //////////////////////////////////////
@@ -75,6 +77,15 @@ public class WindMillControlMachine extends KineticOutputMachine
     public void onStructureFormed() {
         super.onStructureFormed();
         calculateWindmillAround();
+        // 结构刚恢复时尽快同步真实转速，避免沿用默认值 64
+        float currentSpeed = getOutputSpeed();
+        if (this.speed != currentSpeed) {
+            this.previousSpeed = this.speed;
+            this.speed = currentSpeed;
+        }
+        if (getRecipeLogic().isWorking()) {
+            updateRotateBlocks(true);
+        }
         if (!getLevel().isClientSide()) {
             ServerLevel serverLevel = (ServerLevel) getLevel();
             WindmillSavedData windmillData = WindmillSavedData.get(serverLevel);
