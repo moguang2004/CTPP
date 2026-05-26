@@ -397,7 +397,7 @@ public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity {
         IRotationMultiblock controller = getController();
         if (controller == null) {
             setRunning(false);
-            discard();
+            disassemble();
             return;
         }
         if (!controller.isAttachedTo(this)) {
