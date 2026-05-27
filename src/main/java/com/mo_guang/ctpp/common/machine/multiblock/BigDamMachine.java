@@ -50,11 +50,15 @@ public class BigDamMachine extends KineticOutputMachine
     @Override
     public void onLoad() {
         super.onLoad();
-        rotatingEntity.forEach(entity -> {
-            var facing = getFrontFacing().getNormal();
-            Vec3 newF = new Vec3(facing.getX(), facing.getY(), facing.getZ());
-            entity.setRotationSpeed(MathUtil.rotateByVec(newF, 90, new Vec3(0, -1, 0)), 2);
-        });
+        // After reload, find existing entities and reapply rotation
+        if (!getLevel().isClientSide) {
+            findAndReattachEntities();
+            rotatingEntity.forEach(entity -> {
+                var facing = getFrontFacing().getNormal();
+                Vec3 newF = new Vec3(facing.getX(), facing.getY(), facing.getZ());
+                entity.setRotationSpeed(MathUtil.rotateByVec(newF, 90, new Vec3(0, -1, 0)), 2);
+            });
+        }
     }
 
     @Override

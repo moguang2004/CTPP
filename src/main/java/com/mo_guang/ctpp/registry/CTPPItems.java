@@ -30,17 +30,16 @@ public class CTPPItems {
             .register();
     public static ItemEntry<ComponentItem> DOUBLE_BLAZE_CAKE = REGISTRATE
             .item("double_blaze_cake", ComponentItem::create)
-            .cnlang("???烈焰蛋糕???")
+            .cnlang("双层烈焰蛋糕")
             .lang("Double Blaze Cake")
             .onRegister(item -> {
-                item.attachComponents(new FoodStats(new FoodProperties.Builder()
-                        .alwaysEat()
-                        .effect(() -> {
-                            var effect = ForgeRegistries.MOB_EFFECTS.getValue(
-                                    ResourceLocation.tryBuild("legendarysurvivaloverhaul", "cold_immunity"));
-                            return effect != null ? new MobEffectInstance(effect, 36000, 10) : null;
-                        }, 1.0f)
-                        .build()));
+                var builder = new FoodProperties.Builder().alwaysEat();
+                var effect = ForgeRegistries.MOB_EFFECTS.getValue(
+                        ResourceLocation.tryBuild("legendarysurvivaloverhaul", "cold_immunity"));
+                if (effect != null) {
+                    builder.effect(() -> new MobEffectInstance(effect, 36000, 10), 1.0f);
+                }
+                item.attachComponents(new FoodStats(builder.build()));
                 item.burnTime(30000);
             })
             .register();
