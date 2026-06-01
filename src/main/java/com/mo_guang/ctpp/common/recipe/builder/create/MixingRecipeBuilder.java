@@ -27,11 +27,13 @@ public class MixingRecipeBuilder {
 
     private final ResourceLocation id;
     private final List<Ingredient> ingredients = new ArrayList<>();
+    private final List<Integer> ingredientCounts = new ArrayList<>();
     private final List<ItemStack> results = new ArrayList<>();
     private final List<JsonObject> resultObjects = new ArrayList<>();
     // optional fluid result support
     private JsonObject fluidResult = null;
     private final List<JsonObject> fluidIngredients = new ArrayList<>();
+    private String heatRequirement = null;
 
     public MixingRecipeBuilder(String name) {
         this.id = CTPP.id(name);
@@ -42,19 +44,32 @@ public class MixingRecipeBuilder {
     }
 
     public MixingRecipeBuilder input(ItemStack stack) {
-        return input(Ingredient.of(stack));
+        return input(Ingredient.of(stack), stack.getCount());
     }
 
     public MixingRecipeBuilder input(Item item) {
-        return input(Ingredient.of(new ItemStack(item, 1)));
+        return input(Ingredient.of(new ItemStack(item, 1)), 1);
+    }
+
+    public MixingRecipeBuilder input(Item item, int count) {
+        return input(Ingredient.of(new ItemStack(item, count)), count);
     }
 
     public MixingRecipeBuilder input(TagKey<Item> tag) {
-        return input(Ingredient.of(tag));
+        return input(Ingredient.of(tag), 1);
     }
 
     public MixingRecipeBuilder input(Ingredient ingredient) {
+        return input(ingredient, 1);
+    }
+
+    public MixingRecipeBuilder input(TagKey<Item> tag, int count) {
+        return input(Ingredient.of(tag), count);
+    }
+
+    public MixingRecipeBuilder input(Ingredient ingredient, int count) {
         this.ingredients.add(ingredient);
+        this.ingredientCounts.add(count);
         return this;
     }
 
@@ -116,15 +131,33 @@ public class MixingRecipeBuilder {
         return result(stack);
     }
 
+    public MixingRecipeBuilder heated() {
+        this.heatRequirement = "heated";
+        return this;
+    }
+
+    public MixingRecipeBuilder superHeated() {
+        this.heatRequirement = "superheated";
+        return this;
+    }
+
     public void toJson(JsonObject json) {
-        if (ingredients.isEmpty() || (results.isEmpty() && fluidResult == null)) {
+        if ((ingredients.isEmpty() && fluidIngredients.isEmpty()) ||
+                (results.isEmpty() && resultObjects.isEmpty() && fluidResult == null)) {
             throw new IllegalStateException("Mixing recipe missing required fields");
         }
 
         json.addProperty("type", "create:mixing");
-
+        
+        // TODO: 这里如果使用count键的话配方不识别，暂时使用重复多次解决，但是不本质。
         JsonArray ingredientsJson = new JsonArray();
-        ingredients.forEach(ing -> ingredientsJson.add(ing.toJson()));
+        for (int i = 0; i < ingredients.size(); i++) {
+            JsonObject ingJson = ingredients.get(i).toJson().getAsJsonObject();
+            int count = ingredientCounts.get(i);
+            for (int j = 0; j < count; j++) {
+                ingredientsJson.add(ingJson.deepCopy());
+            }
+        }
         // append fluid ingredients if present
         fluidIngredients.forEach(fi -> ingredientsJson.add(fi));
         json.add("ingredients", ingredientsJson);
@@ -134,6 +167,10 @@ public class MixingRecipeBuilder {
         resultObjects.forEach(resultsJson::add);
         if (fluidResult != null) resultsJson.add(fluidResult);
         json.add("results", resultsJson);
+
+        if (heatRequirement != null) {
+            json.addProperty("heatRequirement", heatRequirement);
+        }
     }
 
     public FinishedRecipe build() {

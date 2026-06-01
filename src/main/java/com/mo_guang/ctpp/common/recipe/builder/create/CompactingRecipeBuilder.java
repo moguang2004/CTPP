@@ -7,6 +7,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import com.google.gson.JsonArray;
@@ -25,7 +26,10 @@ public class CompactingRecipeBuilder {
 
     private final ResourceLocation id;
     private final List<Ingredient> ingredients = new ArrayList<>();
+    private final List<Integer> ingredientCounts = new ArrayList<>();
+    private final List<FluidStack> fluidStacks = new ArrayList<>();
     private final List<ItemStack> results = new ArrayList<>();
+    private String heatRequirement = null;
 
     public CompactingRecipeBuilder(String name) {
         this.id = CTPP.id(name);
@@ -36,19 +40,37 @@ public class CompactingRecipeBuilder {
     }
 
     public CompactingRecipeBuilder input(ItemStack stack) {
-        return input(Ingredient.of(stack));
+        return input(Ingredient.of(stack), stack.getCount());
     }
 
     public CompactingRecipeBuilder input(Item item) {
-        return input(Ingredient.of(new ItemStack(item, 1)));
+        return input(Ingredient.of(new ItemStack(item, 1)), 1);
+    }
+
+    public CompactingRecipeBuilder input(Item item, int count) {
+        return input(Ingredient.of(new ItemStack(item, count)), count);
     }
 
     public CompactingRecipeBuilder input(TagKey<Item> tag) {
-        return input(Ingredient.of(tag));
+        return input(Ingredient.of(tag), 1);
     }
 
     public CompactingRecipeBuilder input(Ingredient ingredient) {
+        return input(ingredient, 1);
+    }
+
+    public CompactingRecipeBuilder input(TagKey<Item> tag, int count) {
+        return input(Ingredient.of(tag), count);
+    }
+
+    public CompactingRecipeBuilder input(Ingredient ingredient, int count) {
         this.ingredients.add(ingredient);
+        this.ingredientCounts.add(count);
+        return this;
+    }
+
+    public CompactingRecipeBuilder input(FluidStack fluid) {
+        this.fluidStacks.add(fluid.copy());
         return this;
     }
 
@@ -61,20 +83,48 @@ public class CompactingRecipeBuilder {
         return result(stack);
     }
 
+    public CompactingRecipeBuilder heated() {
+        this.heatRequirement = "heated";
+        return this;
+    }
+
+    public CompactingRecipeBuilder superHeated() {
+        this.heatRequirement = "superheated";
+        return this;
+    }
+
     public void toJson(JsonObject json) {
-        if (ingredients.isEmpty() || results.isEmpty()) {
+        if ((ingredients.isEmpty() && fluidStacks.isEmpty()) || results.isEmpty()) {
             throw new IllegalStateException("Compacting recipe missing required fields");
         }
 
         json.addProperty("type", "create:compacting");
 
+        // TODO: 这里如果使用count键的话配方不识别，暂时使用重复多次解决，但是不本质。
         JsonArray ingredientsJson = new JsonArray();
-        ingredients.forEach(ing -> ingredientsJson.add(ing.toJson()));
+        for (int i = 0; i < ingredients.size(); i++) {
+            JsonObject ingJson = ingredients.get(i).toJson().getAsJsonObject();
+            int count = ingredientCounts.get(i);
+            for (int j = 0; j < count; j++) {
+                ingredientsJson.add(ingJson.deepCopy());
+            }
+        }
+        fluidStacks.forEach(fluid -> {
+            JsonObject fluidJson = new JsonObject();
+            fluidJson.addProperty("fluid",
+                    Objects.requireNonNull(ForgeRegistries.FLUIDS.getKey(fluid.getFluid())).toString());
+            fluidJson.addProperty("amount", fluid.getAmount());
+            ingredientsJson.add(fluidJson);
+        });
         json.add("ingredients", ingredientsJson);
 
         JsonArray resultsJson = new JsonArray();
         results.forEach(stack -> resultsJson.add(serializeItemStack(stack)));
         json.add("results", resultsJson);
+
+        if (heatRequirement != null) {
+            json.addProperty("heatRequirement", heatRequirement);
+        }
     }
 
     public FinishedRecipe build() {
