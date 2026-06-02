@@ -14,6 +14,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.mo_guang.ctpp.CTPP;
+import com.simibubi.create.content.processing.recipe.HeatCondition;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -26,19 +27,34 @@ import javax.annotation.Nonnull;
 public class MixingRecipeBuilder {
 
     private final ResourceLocation id;
+    private final boolean exactId;
     private final List<Ingredient> ingredients = new ArrayList<>();
     private final List<ItemStack> results = new ArrayList<>();
     private final List<JsonObject> resultObjects = new ArrayList<>();
     // optional fluid result support
     private JsonObject fluidResult = null;
     private final List<JsonObject> fluidIngredients = new ArrayList<>();
+    private HeatCondition heatRequirement = HeatCondition.NONE;
 
     public MixingRecipeBuilder(String name) {
-        this.id = CTPP.id(name);
+        this(CTPP.id(name), false);
+    }
+
+    public MixingRecipeBuilder(ResourceLocation id) {
+        this(id, true);
+    }
+
+    private MixingRecipeBuilder(ResourceLocation id, boolean exactId) {
+        this.id = id;
+        this.exactId = exactId;
     }
 
     public static MixingRecipeBuilder builder(String name) {
         return new MixingRecipeBuilder(name);
+    }
+
+    public static MixingRecipeBuilder builder(ResourceLocation id) {
+        return new MixingRecipeBuilder(id);
     }
 
     public MixingRecipeBuilder input(ItemStack stack) {
@@ -116,6 +132,15 @@ public class MixingRecipeBuilder {
         return result(stack);
     }
 
+    public MixingRecipeBuilder heatRequirement(HeatCondition heatCondition) {
+        this.heatRequirement = heatCondition;
+        return this;
+    }
+
+    public MixingRecipeBuilder heatRequirement(String heatRequirement) {
+        return heatRequirement(HeatCondition.deserialize(heatRequirement));
+    }
+
     public void toJson(JsonObject json) {
         if (ingredients.isEmpty() || (results.isEmpty() && fluidResult == null)) {
             throw new IllegalStateException("Mixing recipe missing required fields");
@@ -134,6 +159,7 @@ public class MixingRecipeBuilder {
         resultObjects.forEach(resultsJson::add);
         if (fluidResult != null) resultsJson.add(fluidResult);
         json.add("results", resultsJson);
+        if (heatRequirement != HeatCondition.NONE) json.addProperty("heatRequirement", heatRequirement.serialize());
     }
 
     public FinishedRecipe build() {
@@ -147,7 +173,8 @@ public class MixingRecipeBuilder {
             @Nonnull
             @Override
             public ResourceLocation getId() {
-                return ResourceLocation.fromNamespaceAndPath(id.getNamespace(), "mixing/" + id.getPath());
+                return exactId ? id :
+                        ResourceLocation.fromNamespaceAndPath(id.getNamespace(), "mixing/" + id.getPath());
             }
 
             @Nonnull
