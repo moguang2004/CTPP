@@ -28,6 +28,7 @@ import javax.annotation.Nonnull;
 public class MechanicalCraftingRecipeBuilder {
 
     private final ResourceLocation id;
+    private final boolean exactId;
     private final List<Ingredient> ingredients = new ArrayList<>();
     private final List<ItemStack> results = new ArrayList<>();
     // optional pattern support (Create's mechanical_crafting supports a pattern + key mapping)
@@ -35,11 +36,24 @@ public class MechanicalCraftingRecipeBuilder {
     private final Map<Character, Ingredient> key = new HashMap<>();
 
     public MechanicalCraftingRecipeBuilder(String name) {
-        this.id = CTPP.id(name);
+        this(CTPP.id(name), false);
+    }
+
+    public MechanicalCraftingRecipeBuilder(ResourceLocation id) {
+        this(id, true);
+    }
+
+    private MechanicalCraftingRecipeBuilder(ResourceLocation id, boolean exactId) {
+        this.id = id;
+        this.exactId = exactId;
     }
 
     public static MechanicalCraftingRecipeBuilder builder(String name) {
         return new MechanicalCraftingRecipeBuilder(name);
+    }
+
+    public static MechanicalCraftingRecipeBuilder builder(ResourceLocation id) {
+        return new MechanicalCraftingRecipeBuilder(id);
     }
 
     public MechanicalCraftingRecipeBuilder input(ItemStack stack) {
@@ -187,6 +201,7 @@ public class MechanicalCraftingRecipeBuilder {
             @Nonnull
             @Override
             public ResourceLocation getId() {
+                if (exactId) return id;
                 return ResourceLocation.fromNamespaceAndPath(id.getNamespace(), "mechanical_crafting/" + id.getPath());
             }
 
@@ -194,7 +209,7 @@ public class MechanicalCraftingRecipeBuilder {
             @Override
             public RecipeSerializer<?> getType() {
                 return Objects.requireNonNull(ForgeRegistries.RECIPE_SERIALIZERS.getValue(
-                        ResourceLocation.tryParse("create:mechanical_crafting")),
+                                ResourceLocation.tryParse("create:mechanical_crafting")),
                         "Create mechanical_crafting serializer not found");
             }
 

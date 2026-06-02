@@ -32,14 +32,28 @@ public class SequencedAssemblyRecipeBuilder {
     private final List<ItemStack> results = new ArrayList<>();
     private final List<JsonObject> sequence = new ArrayList<>();
     private final ResourceLocation id;
+    private final boolean exactId;
     private int loops = 1;
 
     public SequencedAssemblyRecipeBuilder(String name) {
-        this.id = CTPP.id(name);
+        this(CTPP.id(name), false);
+    }
+
+    public SequencedAssemblyRecipeBuilder(ResourceLocation id) {
+        this(id, true);
+    }
+
+    private SequencedAssemblyRecipeBuilder(ResourceLocation id, boolean exactId) {
+        this.id = id;
+        this.exactId = exactId;
     }
 
     public static SequencedAssemblyRecipeBuilder builder(String name) {
         return new SequencedAssemblyRecipeBuilder(name);
+    }
+
+    public static SequencedAssemblyRecipeBuilder builder(ResourceLocation id) {
+        return new SequencedAssemblyRecipeBuilder(id);
     }
 
     public SequencedAssemblyRecipeBuilder input(ItemStack itemStack) {
@@ -175,6 +189,14 @@ public class SequencedAssemblyRecipeBuilder {
         });
     }
 
+    public SequencedAssemblyRecipeBuilder vintageCurving(ItemStack head) {
+        return step("vintageimprovements:curving", json -> {
+            json.add("ingredients", ingredients(itemIngredient(transitionalItem)));
+            json.add("results", ingredients(itemIngredient(transitionalItem)));
+            json.addProperty("head", Objects.requireNonNull(ForgeRegistries.ITEMS.getKey(head.getItem())).toString());
+        });
+    }
+
     public SequencedAssemblyRecipeBuilder step(ResourceLocation type, java.util.function.Consumer<JsonObject> config) {
         JsonObject json = new JsonObject();
         json.addProperty("type", type.toString());
@@ -224,6 +246,7 @@ public class SequencedAssemblyRecipeBuilder {
             @Nonnull
             @Override
             public ResourceLocation getId() {
+                if (exactId) return id;
                 return ResourceLocation.fromNamespaceAndPath(id.getNamespace(), "sequenced_assembly/" + id.getPath());
             }
 
