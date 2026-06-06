@@ -188,13 +188,14 @@ public class BasinFermentingRecipeBuilder {
     }
 
     private BasinFermentingRecipe recipe() {
-        ProcessingRecipeBuilder<BasinFermentingRecipe> builder =
-                new ProcessingRecipeBuilder<>(BasinFermentingRecipe::new, recipeId());
+        ProcessingRecipeBuilder<BasinFermentingRecipe> builder = new ProcessingRecipeBuilder<>(
+                BasinFermentingRecipe::new, recipeId());
         steps.forEach(step -> step.accept(builder));
         return builder.build();
     }
 
     private ResourceLocation recipeId() {
-        return exactId ? id : ResourceLocation.fromNamespaceAndPath(id.getNamespace(), "basin_fermenting/" + id.getPath());
+        return exactId ? id :
+                ResourceLocation.fromNamespaceAndPath(id.getNamespace(), "basin_fermenting/" + id.getPath());
     }
 }

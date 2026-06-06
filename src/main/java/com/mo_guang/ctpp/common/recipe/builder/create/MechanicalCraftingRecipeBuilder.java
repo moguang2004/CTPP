@@ -209,7 +209,7 @@ public class MechanicalCraftingRecipeBuilder {
             @Override
             public RecipeSerializer<?> getType() {
                 return Objects.requireNonNull(ForgeRegistries.RECIPE_SERIALIZERS.getValue(
-                                ResourceLocation.tryParse("create:mechanical_crafting")),
+                        ResourceLocation.tryParse("create:mechanical_crafting")),
                         "Create mechanical_crafting serializer not found");
             }
 

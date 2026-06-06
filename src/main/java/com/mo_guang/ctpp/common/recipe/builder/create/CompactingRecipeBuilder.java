@@ -174,7 +174,8 @@ public class CompactingRecipeBuilder {
             @Nonnull
             @Override
             public ResourceLocation getId() {
-                return exactId ? id : ResourceLocation.fromNamespaceAndPath(id.getNamespace(), "compacting/" + id.getPath());
+                return exactId ? id :
+                        ResourceLocation.fromNamespaceAndPath(id.getNamespace(), "compacting/" + id.getPath());
             }
 
             @Nonnull
