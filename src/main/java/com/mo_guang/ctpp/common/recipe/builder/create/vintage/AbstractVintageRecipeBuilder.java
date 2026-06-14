@@ -166,7 +166,8 @@ public abstract class AbstractVintageRecipeBuilder<T extends AbstractVintageReci
             @Override
             public ResourceLocation getId() {
                 if (exactId) return id;
-                return ResourceLocation.fromNamespaceAndPath(id.getNamespace(), recipe.getId().getPath() + "/" + id.getPath());
+                return ResourceLocation.fromNamespaceAndPath(id.getNamespace(),
+                        recipe.getId().getPath() + "/" + id.getPath());
             }
 
             @Nonnull
@@ -193,8 +194,7 @@ public abstract class AbstractVintageRecipeBuilder<T extends AbstractVintageReci
         consumer.accept(build());
     }
 
-    protected void addExtraJson(JsonObject json) {
-    }
+    protected void addExtraJson(JsonObject json) {}
 
     @SuppressWarnings("unchecked")
     private T self() {

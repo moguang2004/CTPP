@@ -160,8 +160,8 @@ public class DistillationRecipeBuilder {
     }
 
     private DistillationRecipe recipe() {
-        ProcessingRecipeBuilder<DistillationRecipe> builder =
-                new ProcessingRecipeBuilder<>(DistillationRecipe::new, recipeId());
+        ProcessingRecipeBuilder<DistillationRecipe> builder = new ProcessingRecipeBuilder<>(DistillationRecipe::new,
+                recipeId());
         steps.forEach(step -> step.accept(builder));
         return builder.build();
     }

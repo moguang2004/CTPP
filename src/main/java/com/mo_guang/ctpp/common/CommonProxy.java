@@ -18,6 +18,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 import com.mo_guang.ctpp.CTPPRegistration;
 import com.mo_guang.ctpp.api.CTPPRecipeConditions;
+import com.mo_guang.ctpp.client.ponder.CTPPPonderPlugin;
 import com.mo_guang.ctpp.common.data.GTArmInteractionPointTypes;
 import com.mo_guang.ctpp.common.data.recipe.builder.CTPPRecipeProvider;
 import com.mo_guang.ctpp.common.data.recipe.fan_processing.CTPPFanProcessingTypes;
@@ -26,6 +27,7 @@ import com.mo_guang.ctpp.config.MainConfig;
 import com.mo_guang.ctpp.data.CTPPDatagen;
 import com.mo_guang.ctpp.registry.*;
 import com.simibubi.create.api.registry.CreateBuiltInRegistries;
+import tech.vixhentx.mcmod.ctnhlib.client.ponder.CTNHPonderLang;
 
 @SuppressWarnings("removal")
 public class CommonProxy {
@@ -85,6 +87,9 @@ public class CommonProxy {
         PackOutput output = generator.getPackOutput();
         if (event.includeServer()) {
             CTPPRecipeProvider.registerAllProcessing(generator, output);
+        }
+        if (event.includeClient()) {
+            CTNHPonderLang.init(new CTPPPonderPlugin());
         }
     }
 

@@ -12,7 +12,6 @@ import net.minecraftforge.fluids.FluidStack;
 
 import com.simibubi.create.content.processing.recipe.HeatCondition;
 import com.simibubi.create.content.processing.recipe.ProcessingRecipeBuilder;
-
 import fr.lucreeper74.createmetallurgy.content.blocks.foundry_lid.MeltingRecipe;
 
 import java.util.function.Consumer;

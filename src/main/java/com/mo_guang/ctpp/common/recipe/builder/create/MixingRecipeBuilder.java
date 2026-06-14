@@ -162,7 +162,7 @@ public class MixingRecipeBuilder {
         }
 
         json.addProperty("type", "create:mixing");
-        
+
         // TODO: 这里如果使用count键的话配方不识别，暂时使用重复多次解决，但是不本质。
         JsonArray ingredientsJson = new JsonArray();
         for (int i = 0; i < ingredients.size(); i++) {
