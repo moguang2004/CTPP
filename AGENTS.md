@@ -8,19 +8,27 @@ CTPP (`CT++`) is the Create/GregTech compatibility module. It defines kinetic/el
 - GT addon: `src/main/java/com/mo_guang/ctpp/CTPPGTAddon.java`. GTCEu integration.
 - Registrate: `src/main/java/com/mo_guang/ctpp/CTPPRegistrate.java`, `CTPPRegistration.java`. Core registration helpers.
 - API: `src/main/java/com/mo_guang/ctpp/api/`. Recipe capabilities, multiblock builder, predicates, parallel logic.
+- Dynamic contraptions: `src/main/java/com/mo_guang/ctpp/dynamicPart/`. Rotation wand, moving/rotating contraption entities, renderers, and rotation state helpers.
+- KubeJS integration: `src/main/java/com/mo_guang/ctpp/integration/kjs/`. Kinetic machine builder and stress recipe components.
 - Recipes/datagen: `src/main/java/com/mo_guang/ctpp/common/data/recipe/`. Recipe builders/providers.
 - Models: `src/main/java/com/mo_guang/ctpp/common/data/model/`. Machine model generation.
+- Ponder/client: `src/main/java/com/mo_guang/ctpp/client/ponder/`. CTPP Ponder plugin/scenes/tags, including Carbon Brushes.
+- Mixins: `src/main/java/com/mo_guang/ctpp/mixin/`, `src/main/resources/ctpp.mixins.json`. Create rotation/kinetic fixes, deployer/sequenced assembly fixes, GT bucket and multiblock-state hooks.
 - Generated resources: `src/generated/resources/data/ctpp/recipes/`. Fan catalyst and machine recipe output.
 - Static resources: `src/main/resources/assets/ctpp/`. Hand-authored models/assets.
 
 ## REGISTRATION ENTRYPOINTS
 - Registrate/root: `CTPPRegistration.java`, `CTPPRegistrate.java`; mod/addon entrypoints are `CTPP.java` and `CTPPGTAddon.java`.
+- Mod entry hook: `CTPP.java` initializes client/common proxy through `DistExecutor` and calls `CTPPEntityTypes.init()`.
+- Common proxy: `common/CommonProxy.java` initializes config, creative tabs, registrate, datagen, fan-processing deferred registers, machine/recipe listeners, Create arm interaction point type, materials, and client Ponder lang extraction.
+- GT addon hooks: `CTPPGTAddon.initializeAddon()` initializes `CTPPBlocks` and `CTPPBlockMaps`; `registerRecipeCapabilities()` initializes stress capabilities; `registerRecipeKeys()` exposes KubeJS `SU_IN` / `SU_OUT`; `registerMultiblockPreviewHighlighters()` adds kinetic/upgrade ability colors.
 - Items/blocks/entities: `registry/CTPPItems.java`, `registry/CTPPBlocks.java`, `CTPPEntityTypes.java`.
 - Machines/multiblocks: `registry/CTPPMachines.java`, `registry/CTPPMultiblockMachines.java`, builder support in `api/CTPPMultiblockBuilder.java`.
 - Materials: `registry/CTPPMaterials.java`, `registry/GTMaterialAddon.java`.
 - Recipe types/modifiers/capabilities/conditions: `registry/CTPPRecipeTypes.java`, `CTPPRecipeModifiers.java`, `api/CTPPRecipeCapabilities.java`, `api/CTPPRecipeConditions.java`.
 - Recipe generation: `CTPPGTAddon.addRecipes()` calls `common/data/recipe/CTPPRecipes.java`; specific Create/kinetic recipes live under `common/data/recipe/` and `common/data/recipe/builder/`.
 - Datagen/fan processing: `data/CTPPDatagen.java`, `common/data/recipe/fan_processing/`.
+- Recipe removals: `CTPPGTAddon.removeRecipes()` currently removes `create_new_age:shaped/carbon_brushes`.
 
 ## RECIPE TYPES
 CTPP defines two recipe-type families: GT-style `GTRecipeType` for kinetic/electric machines, and Create-style `ProcessingRecipe` for fan catalyst processing.
@@ -96,6 +104,7 @@ CTPP wraps Create and addon recipe types with datagen-friendly builders. These a
 
 ### Custom recipe infrastructure
 - **Capability** `StressRecipeCapability` (`"su"` key, Float) — kinetic stress I/O for GT recipes; drives parallel calculation in `KineticWorkableMultiblockMachine` / `KineticOutputMachine`.
+- **KubeJS keys** `CTPPGTAddon.SU_IN` / `SU_OUT` — script-facing stress recipe components registered by `registerRecipeKeys()`.
 - **Conditions** `RPMCondition` (`"rpm"`) and `MechanicalTierCondition` (`"mechanical_tier"`) — RPM/tier requirements on kinetic recipes.
 - **Modifiers** `KINETIC_PARALLEL` (stress-multiplier + accurate parallel) and `KINETIC_PERFECT_PARALLEL` (perfect parallel variant) — both target `KineticWorkableMultiblockMachine`.
 - **Recipe builder** `CTPPRecipeBuilder` extends `GTRecipeBuilder` with `.rpm(float)`, `.tier(int)`, `.inputStress(float)`, `.outputStress(float)`, `.noEUt()`.
@@ -104,6 +113,7 @@ CTPP wraps Create and addon recipe types with datagen-friendly builders. These a
 - Namespace is `com.mo_guang.ctpp`; class prefixes use `CTPP`.
 - `src/generated/resources` contains many Create/Forge/Minecraft tag outputs from datagen.
 - Static machine part models also exist under `src/main/resources`; check path before regenerating or editing.
+- Create kinetic behavior is patched through mixins and dynamic contraption classes; inspect both when changing rotation or moving-block behavior.
 
 ## COMMANDS
 ```bash
@@ -115,3 +125,4 @@ CTPP wraps Create and addon recipe types with datagen-friendly builders. These a
 ## ANTI-PATTERNS
 - Do not treat all recipe JSON as equivalent: fan catalyst/generated outputs and static assets live in different source roots.
 - Do not change kinetic/electric machine tiers without checking both registry code and generated models/recipes.
+- Do not add stress I/O by raw JSON keys alone; use `StressRecipeCapability`, KubeJS recipe keys, and `CTPPRecipeBuilder` together.
