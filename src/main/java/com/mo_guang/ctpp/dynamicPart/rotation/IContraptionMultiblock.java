@@ -13,25 +13,25 @@ import com.simibubi.create.content.contraptions.AbstractContraptionEntity;
 
 import java.util.*;
 
-public interface IRotationMultiblock<T extends SimpleRotatingContraptionEntity> extends IMultiController {
+public interface IContraptionMultiblock<T extends SimpleRotatingContraptionEntity> extends IMultiController {
 
     Map<Integer, T> assemble(BlockPos pivot);
 
-    List<T> getRotatingEntity();
+    List<T> getContraptionEntity();
 
-    void setRotatingEntity(List<T> entities);
+    void setContraptionEntity(List<T> entities);
 
     default boolean isAttachedTo(AbstractContraptionEntity contraption) {
-        return getRotatingEntity() != null && getRotatingEntity().contains(contraption);
+        return getContraptionEntity() != null && getContraptionEntity().contains(contraption);
     }
 
     default void attach(T contraption) {
-        if (getRotatingEntity().isEmpty()) {
-            setRotatingEntity(List.of(contraption));
+        if (getContraptionEntity().isEmpty()) {
+            setContraptionEntity(List.of(contraption));
         } else {
-            List<T> rotatingEntity = new ArrayList<>(getRotatingEntity());
+            List<T> rotatingEntity = new ArrayList<>(getContraptionEntity());
             rotatingEntity.add(contraption);
-            setRotatingEntity(rotatingEntity);
+            setContraptionEntity(rotatingEntity);
         }
         self().holder.notifyBlockUpdate();
     }
@@ -48,9 +48,9 @@ public interface IRotationMultiblock<T extends SimpleRotatingContraptionEntity> 
     @SuppressWarnings("unchecked")
     default void findAndReattachEntities() {
         if (self().getLevel() == null || self().getLevel().isClientSide) return;
-        if (getRotatingEntity() == null) setRotatingEntity(new ArrayList<>());
+        if (getContraptionEntity() == null) setContraptionEntity(new ArrayList<>());
         // Only search if the list is empty — otherwise entities are already tracked
-        if (!getRotatingEntity().isEmpty()) return;
+        if (!getContraptionEntity().isEmpty()) return;
 
         BlockPos pos = self().getPos();
         // Search in a 32-block radius for entities that reference this controller
@@ -59,7 +59,7 @@ public interface IRotationMultiblock<T extends SimpleRotatingContraptionEntity> 
             T srEntity = (T) entity;
             if (srEntity.controllerPos != null && srEntity.controllerPos.equals(pos)) {
                 // Found an entity that belongs to us — reattach
-                getRotatingEntity().add(srEntity);
+                getContraptionEntity().add(srEntity);
                 if (!srEntity.isRunning()) {
                     srEntity.setRunning(true);
                 }
@@ -81,7 +81,10 @@ public interface IRotationMultiblock<T extends SimpleRotatingContraptionEntity> 
             Map<Integer, List<BlockPos>> dynamicPart = staticBlockPattern.getDynamicPart(self().getMultiblockState());
             for (var entry : dynamicPart.entrySet()) {
                 int group = entry.getKey();
-                var part = entry.getValue();
+                var part = entry.getValue().stream()
+                        .filter(pos -> !self().getLevel().getBlockState(pos).isAir())
+                        .toList();
+                if (part.isEmpty()) continue;
                 SimpleRotatingContraption contraption = new SimpleRotatingContraption(part, pivot);
                 contraption.assemble(this.self().getLevel(), self().getPos());
                 contraption.removeBlocksFromWorld(this.self().getLevel(), BlockPos.ZERO);
@@ -103,11 +106,11 @@ public interface IRotationMultiblock<T extends SimpleRotatingContraptionEntity> 
     default void createAndAttachRotatingEntities(BlockPos pivot) {
         if (self().getLevel() instanceof TrackedDummyWorld) return;
         if (self().getLevel().isClientSide) return;
-        if (getRotatingEntity() == null) setRotatingEntity(new ArrayList<>());
-        if (!getRotatingEntity().isEmpty()) return;
+        if (getContraptionEntity() == null) setContraptionEntity(new ArrayList<>());
+        if (!getContraptionEntity().isEmpty()) return;
         Map<Integer, T> map = assembleFromPattern(pivot);
         if (map != null && !map.isEmpty()) {
-            setRotatingEntity(new ArrayList<>(map.values()));
+            setContraptionEntity(new ArrayList<>(map.values()));
         }
     }
 
@@ -115,11 +118,11 @@ public interface IRotationMultiblock<T extends SimpleRotatingContraptionEntity> 
      * Helper: disassemble and clear all attached rotating entities.
      */
     default void clearAndDisassembleRotatingEntities() {
-        if (getRotatingEntity() != null && !getRotatingEntity().isEmpty()) {
-            getRotatingEntity().forEach(entity -> {
+        if (getContraptionEntity() != null && !getContraptionEntity().isEmpty()) {
+            getContraptionEntity().forEach(entity -> {
                 if (entity != null) entity.disassemble();
             });
         }
-        setRotatingEntity(new ArrayList<>());
+        setContraptionEntity(new ArrayList<>());
     }
 }

@@ -10,7 +10,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import com.mo_guang.ctpp.api.pattern.StaticBlockPattern;
 import com.mo_guang.ctpp.common.machine.multiblock.KineticMultiblockMachine;
-import com.mo_guang.ctpp.dynamicPart.rotation.IRotationMultiblock;
+import com.mo_guang.ctpp.dynamicPart.rotation.IContraptionMultiblock;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -39,7 +39,7 @@ public class MultiblockStateMixin {
             }
         }
         if (controller.isFormed() &&
-                controller instanceof IRotationMultiblock &&
+                controller instanceof IContraptionMultiblock<?> &&
                 controller.getPattern() instanceof StaticBlockPattern staticBlockPattern) {
             var dynamicParts = staticBlockPattern.getDynamicPart(controller.getMultiblockState()).values();
             for (var dynamicPart : dynamicParts) {

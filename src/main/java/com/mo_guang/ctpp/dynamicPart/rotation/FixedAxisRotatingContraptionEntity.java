@@ -56,7 +56,7 @@ public class FixedAxisRotatingContraptionEntity extends SimpleRotatingContraptio
      * @return 初始化后的固定轴旋转实体
      */
     public static FixedAxisRotatingContraptionEntity create(Level world, Contraption contraption,
-                                                            IRotationMultiblock controller, Vec3 pivot,
+                                                            IContraptionMultiblock controller, Vec3 pivot,
                                                             Vec3 fixedAxis, float initialAngle) {
         FixedAxisRotatingContraptionEntity entity = new FixedAxisRotatingContraptionEntity(
                 CTPPEntityTypes.SIMPLE_CONTRAPTION.get(), world);

@@ -142,12 +142,12 @@ public class FactoryStaticBlockPattern {
 
     public FactoryStaticBlockPattern where(char symbol, TraceabilityPredicate blockMatcher, boolean isStatic,
                                            int group) {
+        if (!isStatic) {
+            this.dynamicSymbolMap.putIfAbsent(symbol, group);
+        }
         if (blockMatcher.isAny() || blockMatcher.isAir()) {
             this.symbolMap.put(symbol, blockMatcher);
         } else {
-            if (!isStatic) {
-                this.dynamicSymbolMap.putIfAbsent(symbol, group);
-            }
             this.symbolMap.put(symbol, new TraceabilityPredicate(blockMatcher).sort());
         }
         return this;

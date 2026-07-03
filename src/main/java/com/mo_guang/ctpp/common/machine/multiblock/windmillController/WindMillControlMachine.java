@@ -19,7 +19,7 @@ import net.minecraft.world.phys.Vec3;
 
 import com.mo_guang.ctpp.common.machine.multiblock.KineticOutputMachine;
 import com.mo_guang.ctpp.common.machine.multiblock.MachineUtils;
-import com.mo_guang.ctpp.dynamicPart.rotation.IRotationMultiblock;
+import com.mo_guang.ctpp.dynamicPart.rotation.IContraptionMultiblock;
 import com.mo_guang.ctpp.dynamicPart.rotation.SimpleRotatingContraptionEntity;
 import com.mo_guang.ctpp.util.MathUtil;
 import com.simibubi.create.content.contraptions.bearing.WindmillBearingBlockEntity;
@@ -36,7 +36,7 @@ import java.util.List;
 import java.util.Map;
 
 public class WindMillControlMachine extends KineticOutputMachine
-                                    implements IRotationMultiblock<SimpleRotatingContraptionEntity> {
+                                    implements IContraptionMultiblock<SimpleRotatingContraptionEntity> {
 
     public static int LEGAL_DISTANCE = 64;
     public List<BlockPos> windmillAround = new ArrayList<>();
@@ -44,7 +44,7 @@ public class WindMillControlMachine extends KineticOutputMachine
     public float TotalOutput = 0;
     @Getter
     @Setter
-    List<SimpleRotatingContraptionEntity> rotatingEntity = new ArrayList<>();
+    List<SimpleRotatingContraptionEntity> contraptionEntity = new ArrayList<>();
     public boolean willTick = false;
     public boolean hasConflictingController = false;
 
@@ -146,8 +146,8 @@ public class WindMillControlMachine extends KineticOutputMachine
         super.updateRotateBlocks(active);
         if (active) {
             float speed = MathUtil.rpm2rads(this.speed);
-            if (rotatingEntity != null)
-                rotatingEntity.forEach(entity -> entity.setRotationSpeedRPM(new Vec3(0, -1, 0), speed));
+            if (contraptionEntity != null)
+                contraptionEntity.forEach(entity -> entity.setRotationSpeedRPM(new Vec3(0, -1, 0), speed));
         }
     }
 

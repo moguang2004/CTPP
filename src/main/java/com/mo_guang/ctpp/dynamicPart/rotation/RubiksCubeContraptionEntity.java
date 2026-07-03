@@ -34,7 +34,7 @@ public class RubiksCubeContraptionEntity extends SimpleRotatingContraptionEntity
 
     public static RubiksCubeContraptionEntity create(Level world, Contraption contraption, Vec3 pivot,
                                                      Direction frontFacing, BlockPos pos,
-                                                     IRotationMultiblock controller) {
+                                                     IContraptionMultiblock controller) {
         RubiksCubeContraptionEntity entity = new RubiksCubeContraptionEntity(
                 CTPPEntityTypes.RUBIKS_CUBE_CONTRAPTION.get(), world);
         entity.controllerPos = controller.getBlockPosition();

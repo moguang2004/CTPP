@@ -23,11 +23,11 @@ import java.util.List;
 import java.util.Map;
 
 public class ComplexRotatingMachine extends WorkableElectricMultiblockMachine
-                                    implements IRotationMultiblock<RubiksCubeContraptionEntity> {
+                                    implements IContraptionMultiblock<RubiksCubeContraptionEntity> {
 
     @Getter
     @Setter
-    public List<RubiksCubeContraptionEntity> rotatingEntity = new ArrayList<>();
+    public List<RubiksCubeContraptionEntity> contraptionEntity = new ArrayList<>();
     public List<String> avalibleMoving = List.of("U", "U'", "D", "D'", "L", "L'", "R", "R'", "F", "F'", "B", "B'");
     protected TickableSubscription rotatingSubs;
     public int count = 0;
@@ -40,10 +40,10 @@ public class ComplexRotatingMachine extends WorkableElectricMultiblockMachine
     @Override
     public void onStructureFormed() {
         super.onStructureFormed();
-        if (rotatingEntity.isEmpty()) {
+        if (contraptionEntity.isEmpty()) {
             var rotatingEntities = assemble(MachineUtils.getOffset(this, 0, 0, 1));
             if (rotatingEntities != null) {
-                this.rotatingEntity.addAll(rotatingEntities.values());
+                this.contraptionEntity.addAll(rotatingEntities.values());
             }
         }
         this.rotatingSubs = this.subscribeServerTick(this::rotatingTick);
@@ -98,14 +98,14 @@ public class ComplexRotatingMachine extends WorkableElectricMultiblockMachine
         // });
         // }
         // }
-        if (isFormed && rotatingEntity != null) {
+        if (isFormed && contraptionEntity != null) {
             var halfTick = 90 / RubiksCubeContraptionEntity.ROTATE_SPEED;
             if (getOffsetTimer() % (2 * halfTick) == 0) {
                 int index = RandomSource.create().nextInt(avalibleMoving.size());
-                rotatingEntity.forEach(entity -> entity.performStandardMove(avalibleMoving.get(index)));
+                contraptionEntity.forEach(entity -> entity.performStandardMove(avalibleMoving.get(index)));
             }
             if (getOffsetTimer() % (2 * halfTick) == halfTick) {
-                rotatingEntity.forEach(entity -> entity.performStandardMove("STOP"));
+                contraptionEntity.forEach(entity -> entity.performStandardMove("STOP"));
             }
         }
     }

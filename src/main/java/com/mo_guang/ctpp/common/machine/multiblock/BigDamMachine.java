@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.Vec3;
 
-import com.mo_guang.ctpp.dynamicPart.rotation.IRotationMultiblock;
+import com.mo_guang.ctpp.dynamicPart.rotation.IContraptionMultiblock;
 import com.mo_guang.ctpp.dynamicPart.rotation.SimpleRotatingContraptionEntity;
 import com.mo_guang.ctpp.util.MathUtil;
 import lombok.Getter;
@@ -16,11 +16,11 @@ import java.util.List;
 import java.util.Map;
 
 public class BigDamMachine extends KineticOutputMachine
-                           implements IRotationMultiblock<SimpleRotatingContraptionEntity> {
+                           implements IContraptionMultiblock<SimpleRotatingContraptionEntity> {
 
     @Getter
     @Setter
-    List<SimpleRotatingContraptionEntity> rotatingEntity = new ArrayList<>();
+    List<SimpleRotatingContraptionEntity> contraptionEntity = new ArrayList<>();
 
     public BigDamMachine(IMachineBlockEntity holder) {
         super(holder);
@@ -31,7 +31,7 @@ public class BigDamMachine extends KineticOutputMachine
         super.onStructureFormed();
         // assemble rotating entities using interface helper
         createAndAttachRotatingEntities(MachineUtils.getOffset(this, 0, 6, 9));
-        rotatingEntity.forEach(entity -> {
+        contraptionEntity.forEach(entity -> {
             var facing = getFrontFacing().getNormal();
             Vec3 newF = new Vec3(facing.getX(), facing.getY(), facing.getZ());
             entity.setRotationSpeed(MathUtil.rotateByVec(newF, 90, new Vec3(0, -1, 0)), 2);
@@ -53,7 +53,7 @@ public class BigDamMachine extends KineticOutputMachine
         // After reload, find existing entities and reapply rotation
         if (!getLevel().isClientSide) {
             findAndReattachEntities();
-            rotatingEntity.forEach(entity -> {
+            contraptionEntity.forEach(entity -> {
                 var facing = getFrontFacing().getNormal();
                 Vec3 newF = new Vec3(facing.getX(), facing.getY(), facing.getZ());
                 entity.setRotationSpeed(MathUtil.rotateByVec(newF, 90, new Vec3(0, -1, 0)), 2);

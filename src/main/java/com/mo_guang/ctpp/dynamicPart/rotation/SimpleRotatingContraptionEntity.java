@@ -86,7 +86,7 @@ public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity {
     }
 
     public static SimpleRotatingContraptionEntity create(Level world, Contraption contraption,
-                                                         IRotationMultiblock controller, Vec3 pivot) {
+                                                         IContraptionMultiblock controller, Vec3 pivot) {
         SimpleRotatingContraptionEntity entity = new SimpleRotatingContraptionEntity(
                 CTPPEntityTypes.SIMPLE_CONTRAPTION.get(), world);
         entity.controllerPos = controller.getBlockPosition();
@@ -259,7 +259,7 @@ public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity {
         super.tick();
         // Always try to find and reattach to controller, even if isRunning=false
         // This handles chunk reload scenarios where the entity loads before the controller
-        IRotationMultiblock controller = getController();
+        IContraptionMultiblock controller = getController();
         if (controller == null) {
             // Controller not available yet (chunk might not be loaded).
             // Don't discard — wait for it on next tick.
@@ -382,15 +382,15 @@ public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity {
         }
     }
 
-    protected IRotationMultiblock getController() {
+    protected IContraptionMultiblock getController() {
         if (controllerPos == null)
             return null;
         if (!level().isLoaded(controllerPos))
             return null;
         var controller = MetaMachine.getMachine(level(), controllerPos);
-        if (!(controller instanceof IRotationMultiblock))
+        if (!(controller instanceof IContraptionMultiblock))
             return null;
-        return (IRotationMultiblock) controller;
+        return (IContraptionMultiblock) controller;
     }
 
     @Override
@@ -400,7 +400,7 @@ public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity {
             return;
         if (!level().isLoaded(controllerPos))
             return;
-        IRotationMultiblock controller = getController();
+        IContraptionMultiblock controller = getController();
         if (controller == null) {
             // Controller chunk loaded but machine not found.
             // Don't discard immediately — the machine might still be initializing.

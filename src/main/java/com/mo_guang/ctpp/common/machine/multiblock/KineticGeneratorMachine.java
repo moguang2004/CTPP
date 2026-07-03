@@ -21,7 +21,7 @@ import net.minecraft.world.phys.Vec3;
 
 import com.ctnhlang.CN;
 import com.ctnhlang.EN;
-import com.mo_guang.ctpp.dynamicPart.rotation.IRotationMultiblock;
+import com.mo_guang.ctpp.dynamicPart.rotation.IContraptionMultiblock;
 import com.mo_guang.ctpp.dynamicPart.rotation.SimpleRotatingContraptionEntity;
 import com.mo_guang.ctpp.util.MathUtil;
 import lombok.Getter;
@@ -35,11 +35,11 @@ import java.util.Map;
 import static com.mo_guang.ctpp.common.data.recipe.KineticGeneratorRecipes.GENERATING_BOOST;
 
 public class KineticGeneratorMachine extends KineticWorkableMultiblockMachine
-                                     implements IRotationMultiblock<SimpleRotatingContraptionEntity> {
+                                     implements IContraptionMultiblock<SimpleRotatingContraptionEntity> {
 
     @Getter
     @Setter
-    List<SimpleRotatingContraptionEntity> rotatingEntity = new ArrayList<>();
+    List<SimpleRotatingContraptionEntity> contraptionEntity = new ArrayList<>();
     private ICoilType coilType = CoilBlock.CoilType.CUPRONICKEL;
     @Persisted
     public int magnetStrength;
@@ -83,8 +83,8 @@ public class KineticGeneratorMachine extends KineticWorkableMultiblockMachine
     @Override
     public void updateMachineSpeed() {
         super.updateMachineSpeed();
-        if (!rotatingEntity.isEmpty() && isFormed) {
-            rotatingEntity.forEach(entity -> {
+        if (!contraptionEntity.isEmpty() && isFormed) {
+            contraptionEntity.forEach(entity -> {
                 var facing = getFrontFacing().getNormal();
                 Vec3 newF = new Vec3(facing.getX(), facing.getY(), facing.getZ());
                 entity.setRotationSpeedRPM(MathUtil.rotateByVec(newF, 90, new Vec3(0, -1, 0)), Math.min(speed, 64));
@@ -96,8 +96,8 @@ public class KineticGeneratorMachine extends KineticWorkableMultiblockMachine
     public void updateRotateBlocks(boolean active) {
         super.updateRotateBlocks(active);
         if (active) {
-            if (rotatingEntity != null)
-                rotatingEntity.forEach(entity -> {
+            if (contraptionEntity != null)
+                contraptionEntity.forEach(entity -> {
                     var facing = getFrontFacing().getNormal();
                     Vec3 newF = new Vec3(facing.getX(), facing.getY(), facing.getZ());
                     entity.setRotationSpeedRPM(MathUtil.rotateByVec(newF, 90, new Vec3(0, -1, 0)), Math.min(speed, 64));
