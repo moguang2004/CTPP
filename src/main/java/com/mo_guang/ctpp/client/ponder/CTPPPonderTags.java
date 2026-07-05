@@ -9,7 +9,6 @@ import com.mo_guang.ctpp.CTPP;
 import com.mo_guang.ctpp.registry.CTPPMachines;
 import com.mo_guang.ctpp.registry.CTPPMultiblockMachines;
 import com.simibubi.create.AllBlocks;
-import org.antarcticgardens.cna.CNABlocks;
 import tech.vixhentx.mcmod.ctnhlib.client.ponder.CTNHPonderTagHelper;
 
 import static com.mo_guang.ctpp.CTPPRegistration.REGISTRATE;

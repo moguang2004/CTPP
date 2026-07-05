@@ -9,6 +9,7 @@ import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import com.mo_guang.ctpp.common.item.debug.ContraptionDebugToolItem;
 import com.tterrag.registrate.util.entry.ItemEntry;
 
 import static com.mo_guang.ctpp.CTPPRegistration.REGISTRATE;
@@ -42,6 +43,25 @@ public class CTPPItems {
                 item.attachComponents(new FoodStats(builder.build()));
                 item.burnTime(30000);
             })
+            .register();
+    public static ItemEntry<ContraptionDebugToolItem> CONTRAPTION_LOCATOR = REGISTRATE
+            .item("contraption_locator", p -> new ContraptionDebugToolItem(p, ContraptionDebugToolItem.Mode.LOCATE))
+            .cnlang("装置定位器")
+            .lang("Contraption Locator")
+            .model((ctx, prov) -> prov.generated(ctx, prov.mcLoc("item/stick")))
+            .register();
+    public static ItemEntry<ContraptionDebugToolItem> CONTRAPTION_ASSEMBLER = REGISTRATE
+            .item("contraption_assembler", p -> new ContraptionDebugToolItem(p, ContraptionDebugToolItem.Mode.ASSEMBLE))
+            .cnlang("装置组装器")
+            .lang("Contraption Assembler")
+            .model((ctx, prov) -> prov.generated(ctx, prov.mcLoc("item/stick")))
+            .register();
+    public static ItemEntry<ContraptionDebugToolItem> CONTRAPTION_DISASSEMBLER = REGISTRATE
+            .item("contraption_disassembler",
+                    p -> new ContraptionDebugToolItem(p, ContraptionDebugToolItem.Mode.DISASSEMBLE))
+            .cnlang("装置解组装器")
+            .lang("Contraption Disassembler")
+            .model((ctx, prov) -> prov.generated(ctx, prov.mcLoc("item/stick")))
             .register();
     // public static ItemEntry<RotationWandItem> ROTATION_WAND = REGISTRATE.item("rotation_wand", p -> new
     // RotationWandItem(p)).register();

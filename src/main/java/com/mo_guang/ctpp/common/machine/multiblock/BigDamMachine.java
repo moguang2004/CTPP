@@ -65,4 +65,18 @@ public class BigDamMachine extends KineticOutputMachine
     public Map<Integer, SimpleRotatingContraptionEntity> assemble(BlockPos pivot) {
         return assembleFromPattern(pivot);
     }
+
+    @Override
+    public BlockPos getAssemblyPivot() {
+        return MachineUtils.getOffset(this, 0, 6, 9);
+    }
+
+    @Override
+    public void onDebugAssembled() {
+        contraptionEntity.forEach(entity -> {
+            var facing = getFrontFacing().getNormal();
+            Vec3 newF = new Vec3(facing.getX(), facing.getY(), facing.getZ());
+            entity.setRotationSpeed(MathUtil.rotateByVec(newF, 90, new Vec3(0, -1, 0)), 2);
+        });
+    }
 }

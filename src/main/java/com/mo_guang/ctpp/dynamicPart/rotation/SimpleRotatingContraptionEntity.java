@@ -462,6 +462,7 @@ public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity {
 
     @Override
     protected void writeAdditional(CompoundTag nbt, boolean spawnPacket) {
+        ensureContraptionReadyForSave();
         // 先调用父类方法，保存父类的核心数据
         super.writeAdditional(nbt, spawnPacket);
 
@@ -525,5 +526,16 @@ public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity {
 
     public Vec3 getEulerAngle() {
         return getSmartEulerAngles(serverRotation, 5.0f);
+    }
+
+    public void ensureContraptionReadyForSave() {
+        if (contraption == null || level() == null) {
+            return;
+        }
+        boolean hasUninitializedActors = contraption.getActors().stream()
+                .anyMatch(actor -> actor != null && actor.right == null);
+        if (hasUninitializedActors) {
+            contraption.startMoving(level());
+        }
     }
 }

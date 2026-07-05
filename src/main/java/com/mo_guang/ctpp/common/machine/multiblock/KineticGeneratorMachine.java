@@ -163,4 +163,15 @@ public class KineticGeneratorMachine extends KineticWorkableMultiblockMachine
     public Map<Integer, SimpleRotatingContraptionEntity> assemble(BlockPos pivot) {
         return assembleFromPattern(pivot);
     }
+
+    @Override
+    public BlockPos getAssemblyPivot() {
+        return MachineUtils.getOffset(this, 2, 0, 1);
+    }
+
+    @Override
+    public void onDebugAssembled() {
+        updateMachineSpeed();
+        updateRotateBlocks(getRecipeLogic().isWorking());
+    }
 }

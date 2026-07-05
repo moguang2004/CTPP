@@ -246,4 +246,14 @@ public class WindMillControlMachine extends KineticOutputMachine
     public void saveCustomPersistedData(@NotNull CompoundTag tag, boolean forDrop) {
         super.saveCustomPersistedData(tag, forDrop);
     }
+
+    @Override
+    public BlockPos getAssemblyPivot() {
+        return MachineUtils.getOffset(this, 0, 5, 5);
+    }
+
+    @Override
+    public void onDebugAssembled() {
+        updateRotateBlocks(getRecipeLogic().isWorking());
+    }
 }

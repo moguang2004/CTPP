@@ -138,4 +138,9 @@ public class ComplexRotatingMachine extends WorkableElectricMultiblockMachine
         }
         return null;
     }
+
+    @Override
+    public BlockPos getAssemblyPivot() {
+        return MachineUtils.getOffset(this, 0, 0, 1);
+    }
 }

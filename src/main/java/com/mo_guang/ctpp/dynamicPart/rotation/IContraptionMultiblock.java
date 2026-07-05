@@ -10,6 +10,7 @@ import net.minecraft.world.phys.AABB;
 
 import com.mo_guang.ctpp.api.pattern.StaticBlockPattern;
 import com.simibubi.create.content.contraptions.AbstractContraptionEntity;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -39,6 +40,13 @@ public interface IContraptionMultiblock<T extends SimpleRotatingContraptionEntit
     default BlockPos getBlockPosition() {
         return self().getPos();
     }
+
+    @Nullable
+    default BlockPos getAssemblyPivot() {
+        return null;
+    }
+
+    default void onDebugAssembled() {}
 
     /**
      * After chunk reload, find existing entities that belong to this controller
