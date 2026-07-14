@@ -43,6 +43,7 @@ public final class CTPPEmiPlugin implements EmiPlugin {
     }
 
     private static EmiRecipeCategory category(String id, EmiStack first, EmiStack second) {
+        String translationKey = "ctpp.recipe." + id;
         return new EmiRecipeCategory(CTPP.id(id), (graphics, x, y, delta) -> {
             first.render(graphics, x, y, delta);
             second.render(graphics, x + 8, y + 8, delta);
@@ -50,7 +51,7 @@ public final class CTPPEmiPlugin implements EmiPlugin {
 
             @Override
             public Component getName() {
-                return Component.translatable("ctpp.recipe." + id);
+                return Component.translatable(translationKey);
             }
         };
     }
@@ -85,7 +86,7 @@ public final class CTPPEmiPlugin implements EmiPlugin {
     private static void addEncasingRecipe(EmiRegistry registry, String id, ItemStack cogwheel, ItemStack casing,
                                           ItemStack output) {
         registry.addRecipe(EmiWorldInteractionRecipe.builder()
-                .id(CTPP.id("world/encasing/" + id))
+                .id(CTPP.id("/world/encasing/" + id))
                 .leftInput(EmiStack.of(cogwheel))
                 .rightInput(EmiStack.of(casing), true)
                 .output(EmiStack.of(output))
