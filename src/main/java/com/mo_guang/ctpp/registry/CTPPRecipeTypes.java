@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
-import com.gregtechceu.gtceu.api.recipe.content.Content;
+import com.gregtechceu.gtceu.api.recipe.ingredient.item.ItemIngredient;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.data.GTRecipes;
 import com.gregtechceu.gtceu.common.data.GTSoundEntries;
@@ -106,23 +106,24 @@ public class CTPPRecipeTypes {
         // });
         MACERATOR_RECIPES.onRecipeBuild((builder, provider) -> {
             assert SMASHING_FACTORY_RECIPES != null;
+            long eut = builder.EUt();
             if (!GTRecipes.RECIPE_FILTERS.contains(convert(builder.id, builder.recipeType)) &&
-                    GTUtil.getTierByVoltage(builder.EUt().voltage()) <=
+                    GTUtil.getTierByVoltage(eut) <=
                             MainConfig.INSTANCE.ctnhConfig.smashingFactoryMaximumProcessingCapacity) {
                 var newRecipe = SMASHING_FACTORY_RECIPES.copyFrom(builder)
                         .duration(Math.max((int) (builder.duration /
                                 MainConfig.INSTANCE.ctnhConfig.smashingFactorySpeedMultiplier), 1))
                         .buildRawRecipe();
-                List<Content> output = new ArrayList<>();
+                List<ItemIngredient> output = new ArrayList<>();
                 for (var content : newRecipe.getOutputContents(ItemRecipeCapability.CAP)) {
                     if (!content.isChanced()) output.add(content);
                 }
                 newRecipe.outputs.put(ItemRecipeCapability.CAP, output);
-                new CTPPRecipeBuilder(newRecipe, SMASHING_FACTORY_RECIPES)
+                new CTPPRecipeBuilder(newRecipe.toRuntime(), SMASHING_FACTORY_RECIPES)
                         .rpm(MainConfig.INSTANCE.ctnhConfig.smashingFactoryRPMRequirement)
                         .noEUt()
-                        .tier(Math.min(GTUtil.getTierByVoltage(builder.EUt().voltage()) * 2, 5))
-                        .inputStress(builder.EUt().voltage() *
+                        .tier(Math.min(GTUtil.getTierByVoltage(eut) * 2, 5))
+                        .inputStress(eut *
                                 MainConfig.INSTANCE.ctnhConfig.smashingFactoryStressRequirement)
                         .save(provider);
             }

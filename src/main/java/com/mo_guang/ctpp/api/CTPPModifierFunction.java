@@ -2,47 +2,42 @@ package com.mo_guang.ctpp.api;
 
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
-import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
+import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
+import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
+
+import net.minecraft.network.chat.Component;
 
 public class CTPPModifierFunction {
 
-    public static ModifierFunction inputStressMultiplier(double multiplier) {
-        return recipe -> {
-            GTRecipe copied = recipe.copy();
-            copied.inputs.put(StressRecipeCapability.CAP, recipe.inputs.get(StressRecipeCapability.CAP).stream().map(
-                    capability -> capability.copy(StressRecipeCapability.CAP, ContentModifier.multiplier(multiplier)))
-                    .toList());
-            return copied;
+    public static RecipeModifier inputStressMultiplier(double multiplier) {
+        return (machine, group, recipe) -> {
+            multiplyStressContents(recipe.inputs.get(StressRecipeCapability.CAP), multiplier);
+            return null;
         };
     }
 
-    public static ModifierFunction outputStressMultiplier(double multiplier) {
-        return recipe -> {
-            GTRecipe copied = recipe.copy();
-            copied.outputs.put(StressRecipeCapability.CAP, recipe.outputs.get(StressRecipeCapability.CAP).stream().map(
-                    capability -> capability.copy(StressRecipeCapability.CAP, ContentModifier.multiplier(multiplier)))
-                    .toList());
-            return copied;
+    public static RecipeModifier outputStressMultiplier(double multiplier) {
+        return (machine, group, recipe) -> {
+            multiplyStressContents(recipe.outputs.get(StressRecipeCapability.CAP), multiplier);
+            multiplyStressContents(recipe.tickOutputs.get(StressRecipeCapability.CAP), multiplier);
+            return null;
         };
     }
 
-    public static final ModifierFunction accurateParallel(MetaMachine machine, GTRecipe recipe, int parallel) {
-        int maxParallel = ParallelLogic.getParallelAmount(machine, recipe, parallel);
-        if (recipe.hasTick()) {
-            return ModifierFunction.builder()
-                    .parallels(maxParallel)
-                    .inputModifier(ContentModifier.multiplier(maxParallel))
-                    .outputModifier(ContentModifier.multiplier(maxParallel))
-                    .eutMultiplier(maxParallel)
-                    .build();
-        } else {
-            return ModifierFunction.builder()
-                    .parallels(maxParallel)
-                    .inputModifier(ContentModifier.multiplier(maxParallel))
-                    .outputModifier(ContentModifier.multiplier(maxParallel))
-                    .build();
+    public static Component accurateParallel(MetaMachine machine, RecipeHandlerGroup group, GTRecipe recipe,
+                                             int limit) {
+        int maxParallel = ParallelLogic.getParallelAmount(group, recipe, limit);
+        if (maxParallel <= 1) return null;
+        recipe.multiplyAllContents(maxParallel);
+        recipe.parallels *= maxParallel;
+        return null;
+    }
+
+    private static void multiplyStressContents(java.util.List<Float> contents, double multiplier) {
+        if (contents == null || contents.isEmpty()) return;
+        for (int i = 0; i < contents.size(); i++) {
+            contents.set(i, (float) (contents.get(i) * multiplier));
         }
     }
 }

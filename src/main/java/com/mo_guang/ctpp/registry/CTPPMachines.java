@@ -16,6 +16,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraftforge.client.model.generators.BlockModelBuilder;
+import net.minecraftforge.client.model.generators.ConfiguredModel;
 import net.minecraftforge.client.model.generators.ModelFile;
 
 import com.ctnhlang.CN;
@@ -199,7 +200,7 @@ public class CTPPMachines {
                             ResourceLocation.tryParse("create_new_age:block/carbon_brushes/base"));
                     BlockModelBuilder model = prov.models().nested().parent(parentModel);
                     // Apply a 90° Y rotation so the model matches CreateNewAge's orientation
-                    builder.forAllStates(state -> net.minecraftforge.client.model.generators.ConfiguredModel.builder()
+                    builder.forAllStates(state -> ConfiguredModel.builder()
                             .modelFile(model)
                             .rotationX(90)
                             .build());

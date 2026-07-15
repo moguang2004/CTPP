@@ -122,7 +122,7 @@ public class StaticBlockPattern extends BlockPattern {
                             return false;
                         }
                         if (predicate.addCache()) {
-                            worldState.addPosCache(pos);
+                            worldState.addPosCache(pos, predicate);
                             if (savePredicate) {
                                 matchContext.getOrCreate("predicates", HashMap::new).put(pos, predicate);
                             }

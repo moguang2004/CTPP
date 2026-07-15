@@ -269,7 +269,7 @@ public class CTPPMultiblockBuilder extends CTNHMultiblockMachineBuilder {
         return (CTPPMultiblockBuilder) super.alwaysTryModifyRecipe(alwaysTryModifyRecipe);
     }
 
-    public CTPPMultiblockBuilder beforeWorking(BiPredicate<IRecipeLogicMachine, GTRecipe> beforeWorking) {
+    public CTPPMultiblockBuilder beforeWorking(BiFunction<IRecipeLogicMachine, GTRecipe, Component> beforeWorking) {
         return (CTPPMultiblockBuilder) super.beforeWorking(beforeWorking);
     }
 

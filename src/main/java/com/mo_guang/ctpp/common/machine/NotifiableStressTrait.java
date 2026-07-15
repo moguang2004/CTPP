@@ -10,10 +10,10 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import net.minecraft.util.Mth;
 
 import com.mo_guang.ctpp.api.StressRecipeCapability;
+import com.simibubi.create.infrastructure.config.AllConfigs;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Collections;
 import java.util.List;
 
 public class NotifiableStressTrait extends NotifiableRecipeHandlerTrait<Float> implements ICapabilityTrait {
@@ -49,37 +49,61 @@ public class NotifiableStressTrait extends NotifiableRecipeHandlerTrait<Float> i
     }
 
     @Override
-    public List<Float> handleRecipeInner(IO io, GTRecipe recipe, List<Float> left,
-                                         boolean simulate) {
-        if (machine instanceof IKineticMachine kineticMachine) {
-            float sum = left.stream().reduce(0f, Float::sum);
-            var kineticDefinition = kineticMachine.getKineticDefinition();
+    public boolean handleRecipe(IO io, GTRecipe recipe, List<Float> left,
+                                boolean simulate) {
+        if (!(machine instanceof IKineticMachine kineticMachine) || !handlerIO.support(io)) {
+            return false;
+        }
+
+        var kineticDefinition = kineticMachine.getKineticDefinition();
+        for (var it = left.listIterator(); it.hasNext();) {
+            float stress = it.next();
+            if (stress <= 0) {
+                it.remove();
+                continue;
+            }
+
+            float handled = 0;
             if (io == IO.IN && !kineticDefinition.isSource()) {
                 float capacity = Mth.abs(kineticMachine.getKineticHolder().getSpeed()) * kineticDefinition.torque;
-                if (capacity > 0) {
-                    sum = sum - capacity;
-                }
+                handled = Math.min(stress, capacity);
             } else if (io == IO.OUT && kineticDefinition.isSource()) {
-                available = kineticMachine.getKineticHolder().scheduleWorking(sum, simulate);
-
-                sum = sum - available;
+                handled = kineticMachine.getKineticHolder().scheduleWorking(stress, simulate);
             }
-            return sum <= 0 ? null : Collections.singletonList(sum);
+
+            if (!simulate) {
+                available = handled;
+            }
+
+            stress -= handled;
+            // Stress outputs are voidable, but GTM only discards excess after a real output pass.
+            // Treat the remaining stress as handled during simulation so a partial output can start the recipe.
+            if (simulate && io == IO.OUT && kineticDefinition.isSource()) {
+                it.remove();
+                continue;
+            }
+            if (stress <= 0.0001f) {
+                it.remove();
+            } else {
+                it.set(stress);
+            }
         }
-        return left;
+
+        return left.isEmpty();
     }
 
     @Override
     public List<Object> getContents() {
-        return List.of(available);
+        return List.of(getCurrentStressCapacity());
     }
 
     @Override
     public double getTotalContentAmount() {
-        return available;
+        return getCurrentStressCapacity();
     }
 
     public void stopWorking() {
+        available = 0;
         if (machine instanceof IKineticMachine kineticMachine) {
             var kineticDefinition = kineticMachine.getKineticDefinition();
             if (kineticDefinition.isSource()) {
@@ -91,5 +115,16 @@ public class NotifiableStressTrait extends NotifiableRecipeHandlerTrait<Float> i
     @Override
     public RecipeCapability<Float> getCapability() {
         return StressRecipeCapability.CAP;
+    }
+
+    private float getCurrentStressCapacity() {
+        if (!(machine instanceof IKineticMachine kineticMachine)) {
+            return available;
+        }
+        var kineticDefinition = kineticMachine.getKineticDefinition();
+        if (!kineticDefinition.isSource()) {
+            return Mth.abs(kineticMachine.getKineticHolder().getSpeed()) * kineticDefinition.torque;
+        }
+        return AllConfigs.server().kinetics.maxRotationSpeed.get() * kineticDefinition.torque;
     }
 }

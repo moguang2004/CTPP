@@ -3,6 +3,7 @@ package com.mo_guang.ctpp.api;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
 
 import java.util.List;
 import java.util.Objects;
@@ -17,8 +18,11 @@ public class CTPPParallelLogic {
             return parallelLimit;
         } else if (machine instanceof IRecipeLogicMachine) {
             IRecipeLogicMachine rlm = (IRecipeLogicMachine) machine;
-            int maxInputMultiplier = getMaxByInput(rlm, recipe, parallelLimit, List.of());
-            int maxParallelKinetic = StressRecipeCapability.CAP.getMaxParallelByInput(rlm, recipe, parallelLimit,
+            RecipeHandlerGroup group = rlm.getRecipeHandlerGroups().isEmpty() ? null :
+                    rlm.getRecipeHandlerGroups().get(0);
+            if (group == null) return 0;
+            int maxInputMultiplier = getMaxByInput(group, recipe, parallelLimit, false, List.of());
+            int maxParallelKinetic = StressRecipeCapability.CAP.getMaxParallelByInput(group, recipe, parallelLimit,
                     false);
             if (!perfect)
                 maxParallelKinetic = (int) Math.sqrt(maxParallelKinetic);
@@ -27,7 +31,7 @@ public class CTPPParallelLogic {
                 return 0;
             } else {
                 Objects.requireNonNull(rlm);
-                return limitByOutputMerging(rlm, recipe, maxInputMultiplier, rlm::canVoidRecipeOutputs, List.of());
+                return limitByOutputMerging(group, recipe, maxInputMultiplier, List.of());
             }
         } else {
             return 1;

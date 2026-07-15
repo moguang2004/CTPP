@@ -5,10 +5,13 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
+import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
 import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.pattern.Predicates;
+import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.common.data.GCYMBlocks;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMachines;
@@ -31,6 +34,8 @@ import com.mo_guang.ctpp.common.machine.multiblock.windmillController.WindMillCo
 import com.mo_guang.ctpp.util.CommonTooltips;
 import com.simibubi.create.AllBlocks;
 
+import java.util.Comparator;
+
 import static com.gregtechceu.gtceu.api.pattern.Predicates.blocks;
 import static com.gregtechceu.gtceu.common.data.GTBlocks.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterialBlocks.CABLE_BLOCKS;
@@ -43,6 +48,19 @@ import static net.minecraft.world.level.block.Blocks.*;
 public class CTPPMultiblockMachines {
 
     public static void init() {}
+
+    private static Comparator<IMultiPart> kineticOutputPartSorter(MultiblockControllerMachine machine) {
+        return Comparator
+                .comparing((IMultiPart part) -> part.self().getPos(),
+                        RelativeDirection.RIGHT.getSorter(machine.getFrontFacing(), machine.getUpwardsFacing(),
+                                machine.isFlipped()))
+                .thenComparing(part -> part.self().getPos(),
+                        RelativeDirection.DOWN.getSorter(machine.getFrontFacing(), machine.getUpwardsFacing(),
+                                machine.isFlipped()))
+                .thenComparing(part -> part.self().getPos(),
+                        RelativeDirection.FRONT.getSorter(machine.getFrontFacing(), machine.getUpwardsFacing(),
+                                machine.isFlipped()));
+    }
 
     public static MultiblockMachineDefinition SMASHING_FACTORY = CTPPRegistration.conditionalRegistration(
             ctnhEnabled("SmashingFactory"),
@@ -139,6 +157,7 @@ public class CTPPMultiblockMachines {
             () -> REGISTRATE.multiblock("kinetic_steam_turbine", KineticTurbineMachine::new)
                     .cnLangValue("机械蒸汽涡轮")
                     .rotationState(RotationState.NON_Y_AXIS)
+                    .partSorter(CTPPMultiblockMachines::kineticOutputPartSorter)
                     .recipeType(CTPPRecipeTypes.KINETIC_STEAM_TURBINE_RECIPES)
                     .appearanceBlock(CASING_BRONZE_BRICKS)
                     .tooltips(Component.translatable("ctpp.multiblock.kinetic_steam_turbine.tooltip.0"),
@@ -213,6 +232,7 @@ public class CTPPMultiblockMachines {
                     .cnLangValue("风车控制中心")
                     .rotationState(RotationState.NON_Y_AXIS)
                     .allowExtendedFacing(false)
+                    .partSorter(CTPPMultiblockMachines::kineticOutputPartSorter)
                     .recipeType(CTPPRecipeTypes.WINDMILL_CONTROL)
                     .appearanceBlock(AllBlocks.BRASS_CASING)
                     .recipeModifiers(WindMillControlMachine::recipeModifier)
@@ -320,6 +340,7 @@ public class CTPPMultiblockMachines {
             () -> REGISTRATE.multiblock("boom_of_create", KineticOutputMachine::new)
                     .cnLangValue("大型聚爆应力厂")
                     .rotationState(RotationState.NON_Y_AXIS)
+                    .partSorter(CTPPMultiblockMachines::kineticOutputPartSorter)
                     .recipeType(CTPPRecipeTypes.BOOM_OF_CREATE)
                     .appearanceBlock(CASING_STEEL_SOLID)
                     .noRecipeModifier()
@@ -488,6 +509,7 @@ public class CTPPMultiblockMachines {
             .cnLangValue("三峡大坝")
             .rotationState(RotationState.NON_Y_AXIS)
             .allowExtendedFacing(false)
+            .partSorter(CTPPMultiblockMachines::kineticOutputPartSorter)
             .recipeType(CTPPRecipeTypes.BIG_DAM)
             .noRecipeModifier()
             .appearanceBlock(() -> AllBlocks.INDUSTRIAL_IRON_BLOCK.get())
@@ -878,10 +900,10 @@ public class CTPPMultiblockMachines {
                     .where("I", Predicates.blocks(AllBlocks.METAL_GIRDER.get()))
                     .where("E", Predicates.blocks(AllBlocks.ANDESITE_CASING.get()))
                     .where("A", Predicates.blocks(STONE_BRICK_WALL))
-                    .where("B", Predicates.blocks(STONE_BRICKS))
-                    .where("H", Predicates.blocks(AllBlocks.INDUSTRIAL_IRON_BLOCK.get())
+                    .where("B", Predicates.blocks(STONE_BRICKS)
                             .or(Predicates.autoAbilities(definition.getRecipeTypes()))
                             .or(Predicates.abilities(CTPPPartAbility.OUTPUT_KINETIC)).setMinGlobalLimited(1))
+                    .where("H", Predicates.blocks(AllBlocks.INDUSTRIAL_IRON_BLOCK.get()))
                     .where("#", Predicates.any())
                     .where("@", Predicates.controller(Predicates.blocks(definition.get())))
                     .build())

@@ -67,11 +67,11 @@ public class KineticWorkableMultiblockMachine extends KineticMultiblockMachine i
     }
 
     @Override
-    public boolean beforeWorking(@Nullable GTRecipe recipe) {
-        boolean result = super.beforeWorking(recipe);
+    public @Nullable Component beforeWorking(@Nullable GTRecipe recipe) {
+        Component result = super.beforeWorking(recipe);
         previousSpeed = speed;
         if (speed != previousSpeed) {
-            updateRotateBlocks(result);
+            updateRotateBlocks(result == null);
         }
         return result;
     }

@@ -417,7 +417,7 @@ public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity {
 
     @Override
     protected StructureTransform makeStructureTransform() {
-        BlockPos offset = net.minecraft.core.BlockPos.containing(pivot);
+        BlockPos offset = BlockPos.containing(pivot);
         return new StructureTransform(offset, 0, 0, 0);
     }
 

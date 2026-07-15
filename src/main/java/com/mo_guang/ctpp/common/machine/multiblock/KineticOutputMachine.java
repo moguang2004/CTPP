@@ -72,6 +72,6 @@ public class KineticOutputMachine extends KineticMultiblockMachine {
 
     @Override
     public boolean canVoidRecipeOutputs(RecipeCapability<?> capability) {
-        return super.canVoidRecipeOutputs(capability) || capability == StressRecipeCapability.CAP;
+        return capability == StressRecipeCapability.CAP || super.canVoidRecipeOutputs(capability);
     }
 }

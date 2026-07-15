@@ -12,9 +12,10 @@ import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDisplayUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockDisplayText;
-import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.RecipeMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 
+import com.gregtechceu.gtceu.api.machine.trait.WorkLogic;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.widget.*;
 
@@ -40,7 +41,7 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Objects;
 
-public abstract class KineticMultiblockMachine extends WorkableMultiblockMachine
+public abstract class KineticMultiblockMachine extends RecipeMultiblockMachine
                                                implements IFancyUIMachine, IDisplayUIMachine {
 
     @Getter
@@ -72,7 +73,7 @@ public abstract class KineticMultiblockMachine extends WorkableMultiblockMachine
                 mixin.setCTNHInMultiblock(true);
             }
         }
-        updateActiveBlocks(recipeLogic.isWorking());
+        updateActiveBlocks(getRecipeLogic().isWorking());
     }
 
     @Override
@@ -86,21 +87,8 @@ public abstract class KineticMultiblockMachine extends WorkableMultiblockMachine
             }
         }
     }
-    //////////////////////////////////////
-    // ********* Recipe Logic **********//
-    //////////////////////////////////////
 
     public void onTierChanged() {}
-
-    @Override
-    protected RecipeLogic createRecipeLogic(Object... args) {
-        return new KineticRecipeLogic(this);
-    }
-
-    @Override
-    public KineticRecipeLogic getRecipeLogic() {
-        return (KineticRecipeLogic) super.getRecipeLogic();
-    }
 
     public void stopWorking() {
         getCapabilitiesFlat(IO.OUT, StressRecipeCapability.CAP).forEach(iRecipeHandler -> {
@@ -111,9 +99,10 @@ public abstract class KineticMultiblockMachine extends WorkableMultiblockMachine
     }
 
     @Override
-    public void notifyStatusChanged(RecipeLogic.Status oldStatus, RecipeLogic.Status newStatus) {
-        super.notifyStatusChanged(oldStatus, newStatus);
-        if (newStatus != RecipeLogic.Status.WORKING) stopWorking();
+    public void notifyWorkStatusChanged(WorkLogic.Status oldStatus,
+                                        WorkLogic.Status newStatus) {
+        super.notifyWorkStatusChanged(oldStatus, newStatus);
+        if (newStatus != WorkLogic.Status.WORKING) stopWorking();
     }
 
     @Override
@@ -198,11 +187,11 @@ public abstract class KineticMultiblockMachine extends WorkableMultiblockMachine
         int batchParallels;
         int totalRuns;
         boolean exact = false;
-        if (recipeLogic.isActive() && recipeLogic.getLastRecipe() != null) {
-            numParallels = recipeLogic.getLastRecipe().parallels;
-            subtickParallels = recipeLogic.getLastRecipe().subtickParallels;
-            batchParallels = recipeLogic.getLastRecipe().batchParallels;
-            totalRuns = recipeLogic.getLastRecipe().getTotalRuns();
+        if (getRecipeLogic().isActive() && getRecipeLogic().getLastRecipe() != null) {
+            numParallels = getRecipeLogic().getLastRecipe().parallels;
+            subtickParallels = getRecipeLogic().getLastRecipe().subtickParallels;
+            batchParallels = getRecipeLogic().getLastRecipe().batchParallels;
+            totalRuns = getRecipeLogic().getLastRecipe().getTotalRuns();
             exact = true;
         } else {
             numParallels = getParallelHatch()
@@ -212,24 +201,24 @@ public abstract class KineticMultiblockMachine extends WorkableMultiblockMachine
             batchParallels = 0;
             totalRuns = 0;
         }
-        if (recipeLogic.isWaiting()) {
+        if (getRecipeLogic().isWaiting()) {
             textList.add(Component.translatable("ctpp.multiblock.kinetic_multiblock.info.waiting")
                     .withStyle(ChatFormatting.RED));
-            for (var reason : recipeLogic.getFancyTooltip()) {
+            for (var reason : getRecipeLogic().getFancyTooltip()) {
                 textList.add(Component.literal(" - " + reason.getString()));
             }
         }
         MultiblockDisplayText.builder(textList, isFormed())
-                .setWorkingStatus(recipeLogic.isWorkingEnabled(), recipeLogic.isActive())
+                .setWorkingStatus(getRecipeLogic().isWorkingEnabled(), getRecipeLogic().isActive())
                 .addMachineModeLine(getRecipeType(), getRecipeTypes().length > 1)
                 .addTotalRunsLine(totalRuns)
                 .addParallelsLine(numParallels, exact)
                 .addSubtickParallelsLine(subtickParallels)
                 .addBatchModeLine(isBatchEnabled(), batchParallels)
                 .addWorkingStatusLine()
-                .addProgressLine(recipeLogic.getProgress(), recipeLogic.getMaxProgress(),
-                        recipeLogic.getProgressPercent())
-                .addOutputLines(recipeLogic.getLastRecipe());
+                .addProgressLine(getRecipeLogic().getProgress(), getRecipeLogic().getMaxProgress(),
+                        getRecipeLogic().getProgressPercent())
+                .addOutputLines(getRecipeLogic().getLastRecipe());
         getDefinition().getAdditionalDisplay().accept(this, textList);
         IDisplayUIMachine.super.addDisplayText(textList);
     }
@@ -268,15 +257,6 @@ public abstract class KineticMultiblockMachine extends WorkableMultiblockMachine
 
         public KineticRecipeLogic(IRecipeLogicMachine machine) {
             super(machine);
-        }
-
-        @Override
-        public void inValid() {
-            if (lastRecipe != null && machine.onWorking()) {
-                if (machine instanceof KineticMultiblockMachine kineticMultiblockMachine) {
-                    kineticMultiblockMachine.stopWorking();
-                }
-            }
         }
     }
 }

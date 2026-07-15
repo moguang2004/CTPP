@@ -7,9 +7,9 @@ import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IRotorHolderMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
-import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
+import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
+import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.minecraft.ChatFormatting;
@@ -69,18 +69,16 @@ public class KineticTurbineMachine extends KineticOutputMachine implements ITier
         return 1 + (double) tier / (1 + tier);
     }
 
-    public static ModifierFunction recipeModifier(MetaMachine machine, GTRecipe recipe) {
+    public static @Nullable Component recipeModifier(MetaMachine machine, RecipeHandlerGroup group, GTRecipe recipe) {
         if (machine instanceof KineticTurbineMachine kmachine) {
-            var parallelResult = ParallelLogic.getParallelAmountFast(kmachine, recipe,
+            int parallelResult = ParallelLogic.getParallelAmountFast(group, recipe,
                     (int) pow(4, kmachine.tier - 3) * 5);
-            ModifierFunction modifiedByKinetic = ModifierFunction.builder()
-                    .inputModifier(ContentModifier.multiplier(parallelResult))
-                    .outputModifier(ContentModifier.multiplier(parallelResult))
-                    .parallels(parallelResult).build();
             var rotorHolder = kmachine.getRotorHolder();
-            if (!rotorHolder.hasRotor()) {
-                return ModifierFunction.NULL;
+            if (rotorHolder == null || !rotorHolder.hasRotor()) {
+                return RecipeModifier.DEFAULT_FAILURE;
             }
+            recipe.multiplyAllContents(parallelResult);
+            recipe.parallels *= parallelResult;
             double holderEfficiency = rotorHolder.getTotalEfficiency() / 100.0;
             double boostRate = rotorHolder.getRotorSpeed() < rotorHolder.getMaxRotorHolderSpeed() ?
                     (double) rotorHolder.getRotorSpeed() / rotorHolder.getMaxRotorHolderSpeed() : 1.0;
@@ -90,9 +88,8 @@ public class KineticTurbineMachine extends KineticOutputMachine implements ITier
             }
             var stressModifier = holderEfficiency * boostRate * boostRate * kmachine.lossrate *
                     kmachine.getMechanicalEfficiency();
-            ModifierFunction modifiedByRotor = CTPPModifierFunction.outputStressMultiplier(stressModifier);
-            return modifiedByRotor.compose(modifiedByKinetic);
+            return CTPPModifierFunction.outputStressMultiplier(stressModifier).apply(machine, group, recipe);
         }
-        return ModifierFunction.NULL;
+        return RecipeModifier.nullWrongType(KineticTurbineMachine.class, machine);
     }
 }

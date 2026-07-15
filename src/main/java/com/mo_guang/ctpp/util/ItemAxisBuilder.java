@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemDisplayContext;
+import net.minecraftforge.client.model.generators.loaders.CompositeModelBuilder;
 
 import com.tterrag.registrate.builders.ItemBuilder;
 
@@ -56,7 +57,7 @@ public class ItemAxisBuilder {
                     .scale(0.5f)
                     .end();
 
-            modelBuilder.customLoader(net.minecraftforge.client.model.generators.loaders.CompositeModelBuilder::begin)
+            modelBuilder.customLoader(CompositeModelBuilder::begin)
                     .child("base", baseModel)
                     .child("axis", cubeModel);
         });

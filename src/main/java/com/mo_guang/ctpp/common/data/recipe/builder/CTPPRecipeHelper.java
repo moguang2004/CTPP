@@ -1,7 +1,6 @@
 package com.mo_guang.ctpp.common.data.recipe.builder;
 
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.api.recipe.content.Content;
 
 import com.mo_guang.ctpp.api.StressRecipeCapability;
 import org.jetbrains.annotations.NotNull;
@@ -10,15 +9,13 @@ public class CTPPRecipeHelper {
 
     public static float getInputStress(@NotNull GTRecipe recipe) {
         return (float) recipe.getInputContents(StressRecipeCapability.CAP).stream()
-                .map(Content::getContent)
-                .mapToDouble(StressRecipeCapability.CAP::of)
+                .mapToDouble(Float::doubleValue)
                 .sum();
     }
 
     public static float getOutputStress(@NotNull GTRecipe recipe) {
         return (float) recipe.getOutputContents(StressRecipeCapability.CAP).stream()
-                .map(Content::getContent)
-                .mapToDouble(StressRecipeCapability.CAP::of)
+                .mapToDouble(Float::doubleValue)
                 .sum();
     }
 

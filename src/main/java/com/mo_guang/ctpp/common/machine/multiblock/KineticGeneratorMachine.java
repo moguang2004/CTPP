@@ -6,8 +6,8 @@ import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
-import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
+import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
+import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.common.block.CoilBlock;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -26,6 +26,7 @@ import com.mo_guang.ctpp.dynamicPart.rotation.SimpleRotatingContraptionEntity;
 import com.mo_guang.ctpp.util.MathUtil;
 import lombok.Getter;
 import lombok.Setter;
+import org.jetbrains.annotations.Nullable;
 import tech.vixhentx.mcmod.ctnhlib.langprovider.Lang;
 
 import java.util.ArrayList;
@@ -138,17 +139,16 @@ public class KineticGeneratorMachine extends KineticWorkableMultiblockMachine
         }
     }
 
-    public static ModifierFunction recipeModifier(MetaMachine machine, GTRecipe recipe) {
+    public static @Nullable Component recipeModifier(MetaMachine machine, RecipeHandlerGroup group,
+                                                     GTRecipe recipe) {
         if (machine instanceof KineticGeneratorMachine kmachine) {
             int limit = (int) (Math.pow(4, kmachine.tier) * 512);
             kmachine.outputEnergy = Math
                     .min(kmachine.getTotalInputStress() * kmachine.efficiency * GENERATING_BOOST / 128, limit);
-            var modifiedRecipe = recipe.copy();
-            modifiedRecipe.tickOutputs.put(EURecipeCapability.CAP,
-                    EURecipeCapability.makeEUContent(new EnergyStack((long) kmachine.outputEnergy)));
-            return recipe1 -> modifiedRecipe;
+            EURecipeCapability.putEUContent(recipe.tickOutputs, (long) kmachine.outputEnergy);
+            return null;
         }
-        return ModifierFunction.NULL;
+        return RecipeModifier.nullWrongType(KineticGeneratorMachine.class, machine);
     }
 
     @Override

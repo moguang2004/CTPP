@@ -1,6 +1,5 @@
 package com.mo_guang.ctpp.registry;
 
-import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 
 import com.mo_guang.ctpp.api.CTPPModifierFunction;
@@ -9,20 +8,21 @@ import com.mo_guang.ctpp.common.machine.multiblock.KineticWorkableMultiblockMach
 
 public class CTPPRecipeModifiers {
 
-    public static final RecipeModifier KINETIC_PARALLEL = ((machine, recipe) -> {
+    public static final RecipeModifier KINETIC_PARALLEL = ((machine, group, recipe) -> {
         if (machine instanceof KineticWorkableMultiblockMachine kmachine) {
             var parallels = CTPPParallelLogic.getKineticParallelAmount(kmachine, recipe, Integer.MAX_VALUE, false);
-            return CTPPModifierFunction.inputStressMultiplier(parallels)
-                    .andThen(CTPPModifierFunction.accurateParallel(kmachine, recipe, parallels));
+            var failure = CTPPModifierFunction.inputStressMultiplier(parallels).apply(machine, group, recipe);
+            if (failure != null) return failure;
+            return CTPPModifierFunction.accurateParallel(kmachine, group, recipe, parallels);
         }
-        return ModifierFunction.IDENTITY;
+        return null;
     });
 
-    public static final RecipeModifier KINETIC_PERFECT_PARALLEL = ((machine, recipe) -> {
+    public static final RecipeModifier KINETIC_PERFECT_PARALLEL = ((machine, group, recipe) -> {
         if (machine instanceof KineticWorkableMultiblockMachine kmachine) {
             var parallels = CTPPParallelLogic.getKineticParallelAmount(kmachine, recipe, Integer.MAX_VALUE, true);
-            return CTPPModifierFunction.accurateParallel(kmachine, recipe, parallels);
+            return CTPPModifierFunction.accurateParallel(kmachine, group, recipe, parallels);
         }
-        return ModifierFunction.IDENTITY;
+        return null;
     });
 }

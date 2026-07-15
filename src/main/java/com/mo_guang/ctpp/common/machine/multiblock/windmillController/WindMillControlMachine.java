@@ -3,8 +3,8 @@ package com.mo_guang.ctpp.common.machine.multiblock.windmillController;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
-import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
+import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
+import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 
 import com.lowdragmc.lowdraglib.gui.util.ClickData;
 import com.lowdragmc.lowdraglib.gui.widget.ComponentPanelWidget;
@@ -17,6 +17,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 
+import com.mo_guang.ctpp.api.StressRecipeCapability;
 import com.mo_guang.ctpp.common.machine.multiblock.KineticOutputMachine;
 import com.mo_guang.ctpp.common.machine.multiblock.MachineUtils;
 import com.mo_guang.ctpp.dynamicPart.rotation.IContraptionMultiblock;
@@ -117,12 +118,12 @@ public class WindMillControlMachine extends KineticOutputMachine
     }
 
     @Override
-    public boolean beforeWorking(@Nullable GTRecipe recipe) {
-        boolean result = super.beforeWorking(recipe);
+    public @Nullable Component beforeWorking(@Nullable GTRecipe recipe) {
+        Component result = super.beforeWorking(recipe);
         previousSpeed = speed;
         speed = getOutputSpeed();
         if (speed != previousSpeed) {
-            updateRotateBlocks(result);
+            updateRotateBlocks(result == null);
         }
         return result;
     }
@@ -185,16 +186,17 @@ public class WindMillControlMachine extends KineticOutputMachine
         }
     }
 
-    public static ModifierFunction recipeModifier(MetaMachine machine, GTRecipe recipe) {
+    public static @Nullable Component recipeModifier(MetaMachine machine, RecipeHandlerGroup group, GTRecipe recipe) {
         if (machine instanceof WindMillControlMachine wmachine) {
             if (wmachine.hasConflictingController) {
-                return ModifierFunction.builder().outputModifier(ContentModifier.multiplier(0)).build();
+                recipe.outputs.put(StressRecipeCapability.CAP, List.of(0.0f));
+                return null;
             }
-            var add = ModifierFunction.builder().outputModifier(ContentModifier.addition(wmachine.TotalOutput)).build();
-            return add.andThen(
-                    ModifierFunction.builder().outputModifier(ContentModifier.multiplier(wmachine.efficiency)).build());
+            float output = wmachine.TotalOutput * wmachine.efficiency;
+            recipe.outputs.put(StressRecipeCapability.CAP, List.of(output));
+            return null;
         }
-        return ModifierFunction.NULL;
+        return RecipeModifier.nullWrongType(WindMillControlMachine.class, machine);
     }
 
     public void refreshControllerState() {
