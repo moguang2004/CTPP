@@ -72,9 +72,9 @@ public class ChineseLangHandler {
         provider.add("ctpp.multiblock.boom_of_create.tooltip.2", "持续运行时会逐渐减少电力消耗，最低可为0");
         provider.add("ctpp.multiblock.boom_of_create.tooltip.3", "§a应力飞升之路§r");
 
-        provider.add("ctpp.recipe.fan_breathing", "批量龙吟");
+        provider.add("create.recipe.fan_breathing", "批量龙吟");
         provider.add("ctpp.recipe.breathing.fan", "在龙首后放置鼓风机");
-        provider.add("ctpp.recipe.fan_acid_washing", "批量酸洗");
+        provider.add("create.recipe.fan_acid_washing", "批量酸洗");
         provider.add("ctpp.recipe.acid_washing.fan", "在硫酸后放置鼓风机");
 
         provider.add("ctpp.copyright.info", "该机器由§6CT++§r添加");

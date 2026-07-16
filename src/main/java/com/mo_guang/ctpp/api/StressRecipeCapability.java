@@ -12,11 +12,12 @@ import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 
+import net.minecraft.network.FriendlyByteBuf;
+
 import com.mo_guang.ctpp.common.data.recipe.builder.CTPPRecipeHelper;
 import com.mo_guang.ctpp.common.machine.NotifiableStressTrait;
 import com.mojang.serialization.Codec;
 import com.simibubi.create.AllBlocks;
-import net.minecraft.network.FriendlyByteBuf;
 import org.apache.commons.lang3.mutable.MutableInt;
 
 import java.util.List;
@@ -86,6 +87,6 @@ public class StressRecipeCapability extends RecipeCapability<Float> {
                 LocalizationUtils.format(langKey, FormattingUtil.formatNumbers(stress))));
         var handler = new CustomItemStackHandler(AllBlocks.COGWHEEL.asStack());
         group.addWidget(new SlotWidget(handler, 0, group.getSize().width - 30,
-                group.getSize().height - 30, false, false));
+                yOffset.getValue(), false, false));
     }
 }

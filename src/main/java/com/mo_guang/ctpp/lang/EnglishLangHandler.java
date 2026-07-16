@@ -89,9 +89,9 @@ public class EnglishLangHandler {
                 "Electricity consumption gradually decreases during continuous operation, with a minimum of 0.");
         provider.add("ctpp.multiblock.boom_of_create.tooltip.3", "§aThe Path to Stress Ascension§r");
 
-        provider.add("ctpp.recipe.fan_breathing", "Dragon Fan Processing");
+        provider.add("create.recipe.fan_breathing", "Dragon Fan Processing");
         provider.add("ctpp.recipe.breathing.fan", "Place the fan behind the Dragon head");
-        provider.add("ctpp.recipe.fan_acid_washing", "AcidWashing Fan Processing");
+        provider.add("create.recipe.fan_acid_washing", "AcidWashing Fan Processing");
         provider.add("ctpp.recipe.acid_washing.fan", "Place the fan behind the Sulfuric acid");
 
         provider.add("ctpp.copyright.info", "This machine is added by §6CT++§r");
