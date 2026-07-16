@@ -16,6 +16,7 @@ import com.mo_guang.ctpp.api.pattern.StaticBlockPattern;
 import com.mo_guang.ctpp.dynamicPart.rotation.*;
 import lombok.Getter;
 import lombok.Setter;
+import tech.vixhentx.mcmod.ctnhlib.utils.MachineUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
