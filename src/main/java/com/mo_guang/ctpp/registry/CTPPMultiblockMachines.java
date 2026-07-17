@@ -3,6 +3,7 @@ package com.mo_guang.ctpp.registry;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.RotationState;
+import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
@@ -891,9 +892,8 @@ public class CTPPMultiblockMachines {
                     .where("J", Predicates.blocks(TREATED_WOOD_PLANK.get()), false)
                     .where("C", Predicates.blocks(TREATED_WOOD_PLANK.get()), false)
                     .where("K",
-                            Predicates.blocks(MATERIAL_BLOCKS.get(TagPrefix.block, CTPPMaterials.AndesiteAlloy).get()),
+                            Predicates.blocks(ChemicalHelper.getBlock(TagPrefix.block, CTPPMaterials.AndesiteAlloy)),
                             false)
-
                     .where("D", Predicates.frames(TreatedWood))
                     .where("F", Predicates.blocks(TREATED_WOOD_PLANK.get()))
                     .where("G", Predicates.blocks(WATER))

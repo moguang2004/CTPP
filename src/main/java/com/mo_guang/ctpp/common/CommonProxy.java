@@ -2,10 +2,13 @@ package com.mo_guang.ctpp.common;
 
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.data.chemical.material.event.MaterialEvent;
+import com.gregtechceu.gtceu.api.data.chemical.material.event.MaterialRegistryEvent;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
 
+import com.gregtechceu.gtceu.common.unification.material.MaterialRegistryManager;
+import com.mo_guang.ctpp.CTPP;
 import net.minecraft.core.Registry;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
@@ -91,6 +94,11 @@ public class CommonProxy {
         if (event.includeClient()) {
             CTNHPonderLang.init(new CTPPPonderPlugin());
         }
+    }
+
+    @SubscribeEvent
+    public void registerMaterial(MaterialRegistryEvent event) {
+        MaterialRegistryManager.getInstance().createRegistry(CTPP.MODID);
     }
 
     @SubscribeEvent

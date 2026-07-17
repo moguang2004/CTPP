@@ -224,6 +224,7 @@
   "itemGroup.ctpp.machine": "CTPP Machines",
   "machine.ctpp.ctppmachines.carbon_brushes": "Energy Output for Generator Coil",
   "machine.ctpp.ctppmachines.max_output_amperage": "§eMax Output Amperage:§r %sA",
+  "material.ctpp.andesite_alloy": "Andesite Alloy",
   "recipe.capability.su.name": "Create Stress",
   "recipe.condition.ctpp.mechanicaltiercondition.mechanical_tier": "Mechanical Tier: %d(%s)",
   "recipe.condition.mechanical_tier.tooltip": "Mechanical Tier: %s",
