@@ -118,7 +118,7 @@ public class WindMillControlMachine extends KineticOutputMachine
     }
 
     @Override
-    public @Nullable Component beforeWorking(@Nullable GTRecipe recipe) {
+    public @Nullable Component beforeWorking(@NotNull GTRecipe recipe) {
         Component result = super.beforeWorking(recipe);
         previousSpeed = speed;
         speed = getOutputSpeed();

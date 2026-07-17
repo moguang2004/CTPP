@@ -14,6 +14,7 @@ import com.mo_guang.ctpp.common.machine.IKineticMachine;
 import com.mo_guang.ctpp.common.machine.multiblock.part.KineticPartMachine;
 import com.simibubi.create.infrastructure.config.AllConfigs;
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -67,7 +68,7 @@ public class KineticWorkableMultiblockMachine extends KineticMultiblockMachine i
     }
 
     @Override
-    public @Nullable Component beforeWorking(@Nullable GTRecipe recipe) {
+    public @Nullable Component beforeWorking(@NotNull GTRecipe recipe) {
         Component result = super.beforeWorking(recipe);
         previousSpeed = speed;
         if (speed != previousSpeed) {
