@@ -39,8 +39,6 @@ public class CommonProxy {
         init();
         MainConfig.init();
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
-        modEventBus.addListener(this::addMaterialFlag);
-        modEventBus.addListener(this::commonSetup);
         modEventBus.register(this);
     }
 
@@ -57,7 +55,8 @@ public class CommonProxy {
         modEventBus.addGenericListener(GTRecipeType.class, this::registerRecipeTypes);
     }
 
-    private void commonSetup(final FMLCommonSetupEvent event) {
+    @SubscribeEvent
+    public void commonSetup(final FMLCommonSetupEvent event) {
         event.enqueueWork(() -> {
             Registry.register(
                     CreateBuiltInRegistries.ARM_INTERACTION_POINT_TYPE,
@@ -66,6 +65,7 @@ public class CommonProxy {
         });
     }
 
+    @SubscribeEvent
     public void addMaterialFlag(MaterialEvent event) {
         GTMaterialAddon.init();
     }
