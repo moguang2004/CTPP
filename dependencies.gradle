@@ -10,7 +10,6 @@ dependencies {
     modImplementation(ctnh.botarium)
     modImplementation(ctnh.createnewage)
     modImplementation(ctnh.creatediesel)
-    modImplementation(ctnh.createmetallurgy)
     modImplementation(ctnh.createvintage)
     
     modCompileOnly(variantOf(ctnh.curios) { classifier("api") })

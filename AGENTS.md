@@ -80,16 +80,6 @@ CTPP wraps Create and addon recipe types with datagen-friendly builders. These a
 | `BasinFermentingRecipeBuilder` | `BasinFermentingRecipe` | createdieselgenerators |
 | `DistillationRecipeBuilder` | `DistillationRecipe` | createdieselgenerators |
 
-**Create Metallurgy (5 builders)** — use mod-specific builder APIs:
-
-| Builder | Target recipe class / type | Mod |
-|---|---|---|
-| `AlloyingRecipeBuilder` | `AlloyingRecipe` (via `ProcessingRecipeBuilder`) | createmetallurgy |
-| `BulkMeltingRecipeBuilder` | `BulkMeltingRecipe` (via `FoundryRecipeBuilder`) | createmetallurgy |
-| `CastingInBasinRecipeBuilder` | `CMRecipeTypes.CASTING_IN_BASIN` (via `CastingRecipeBuilder`) | createmetallurgy |
-| `CastingInTableRecipeBuilder` | `CMRecipeTypes.CASTING_IN_TABLE` (via `CastingRecipeBuilder`) | createmetallurgy |
-| `MeltingRecipeBuilder` | `MeltingRecipe` (via `ProcessingRecipeBuilder`) | createmetallurgy |
-
 **Vintage Improvements (7 builders)** — extend `AbstractVintageRecipeBuilder`, use `VintageRecipes` enum:
 
 | Builder | VintageRecipes enum | Notes |
