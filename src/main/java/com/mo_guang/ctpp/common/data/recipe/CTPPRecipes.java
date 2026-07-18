@@ -16,7 +16,7 @@ import net.minecraft.world.level.block.Block;
 
 import com.mo_guang.ctpp.CTPP;
 import com.mo_guang.ctpp.registry.CTPPMachines;
-import com.mo_guang.ctpp.registry.CTPPMaterials;
+import com.mo_guang.ctpp.registry.CreateMaterials;
 import com.simibubi.create.AllBlocks;
 import com.tterrag.registrate.util.entry.ItemProviderEntry;
 
@@ -74,7 +74,7 @@ public class CTPPRecipes {
                 "CDC",
                 "ABA",
                 'A', ChemicalHelper.get(rod, GTMaterials.Iron),
-                'B', ChemicalHelper.get(plate, CTPPMaterials.AndesiteAlloy),
+                'B', ChemicalHelper.get(plate, CreateMaterials.AndesiteAlloy),
                 'C', ChemicalHelper.get(dust, GTMaterials.Coke),
                 'D', AllBlocks.SHAFT.asStack());
     }

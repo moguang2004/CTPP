@@ -892,7 +892,7 @@ public class CTPPMultiblockMachines {
                     .where("J", Predicates.blocks(TREATED_WOOD_PLANK.get()), false)
                     .where("C", Predicates.blocks(TREATED_WOOD_PLANK.get()), false)
                     .where("K",
-                            Predicates.blocks(ChemicalHelper.getBlock(TagPrefix.block, CTPPMaterials.AndesiteAlloy)),
+                            Predicates.blocks(ChemicalHelper.getBlock(TagPrefix.block, CreateMaterials.AndesiteAlloy)),
                             false)
                     .where("D", Predicates.frames(TreatedWood))
                     .where("F", Predicates.blocks(TREATED_WOOD_PLANK.get()))

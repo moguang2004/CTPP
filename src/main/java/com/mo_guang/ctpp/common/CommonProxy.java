@@ -6,9 +6,8 @@ import com.gregtechceu.gtceu.api.data.chemical.material.event.MaterialRegistryEv
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
-
 import com.gregtechceu.gtceu.common.unification.material.MaterialRegistryManager;
-import com.mo_guang.ctpp.CTPP;
+
 import net.minecraft.core.Registry;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
@@ -19,6 +18,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
+import com.mo_guang.ctpp.CTPP;
 import com.mo_guang.ctpp.CTPPRegistration;
 import com.mo_guang.ctpp.api.CTPPRecipeConditions;
 import com.mo_guang.ctpp.client.ponder.CTPPPonderPlugin;
@@ -103,6 +103,6 @@ public class CommonProxy {
 
     @SubscribeEvent
     public void registerMaterial(MaterialEvent event) {
-        CTPPMaterials.init();
+        CreateMaterials.init();
     }
 }
