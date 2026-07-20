@@ -22,6 +22,7 @@
     "fix.RotorHolderPartMachineMixin"
   ],
   "client": [
+    "create.AllCreatePonderScenesMixin",
     "create.fix.DeployerApplicationRecipeMixin",
     "create.fix.DeployerApplicationRecipeMixin$StockTickerBlockEntityMixin",
     "create.fix.SequencedAssemblyCategoryMixin"
