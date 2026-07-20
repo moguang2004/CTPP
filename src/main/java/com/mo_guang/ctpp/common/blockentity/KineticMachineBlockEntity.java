@@ -204,7 +204,7 @@ public class KineticMachineBlockEntity extends KineticBlockEntity implements IMa
     }
 
     public float scheduleWorking(float su, boolean simulate) {
-        if (getDefinition().isSource()) {
+        if (getDefinition().isSource() && isValidOutputSource()) {
             float speed = Math.min(AllConfigs.server().kinetics.maxRotationSpeed.get(),
                     su / getDefinition().getTorque());
             if (!simulate) {
@@ -224,7 +224,7 @@ public class KineticMachineBlockEntity extends KineticBlockEntity implements IMa
     }
 
     public void stopWorking() {
-        if (getDefinition().isSource() && getGeneratedSpeed() != 0) {
+        if (getDefinition().isSource() && workingSpeed != 0) {
             workingSpeed = 0;
             reActivateSource = true;
         }
@@ -232,7 +232,12 @@ public class KineticMachineBlockEntity extends KineticBlockEntity implements IMa
 
     @Override
     public float getGeneratedSpeed() {
-        return workingSpeed;
+        return isValidOutputSource() ? workingSpeed : 0;
+    }
+
+    private boolean isValidOutputSource() {
+        return !(metaMachine instanceof KineticPartMachine kineticPartMachine) ||
+                kineticPartMachine.isValidOutputBinding();
     }
 
     protected void notifyStressCapacityChange(float capacity) {
@@ -258,6 +263,9 @@ public class KineticMachineBlockEntity extends KineticBlockEntity implements IMa
     }
 
     public void tick() {
+        if (getDefinition().isSource() && !isValidOutputSource()) {
+            stopWorking();
+        }
         super.tick();
         if (getDefinition().isSource() && this.reActivateSource) {
             this.updateGeneratedRotation();
@@ -323,6 +331,10 @@ public class KineticMachineBlockEntity extends KineticBlockEntity implements IMa
 
     @Override
     public float calculateStressApplied() {
+        if (!isValidOutputSource()) {
+            this.lastStressApplied = 0;
+            return 0;
+        }
         float impact = (float) IBlockStressValues.getImpact(this.getStressConfigKey());
         this.lastStressApplied = impact;
         return impact;
@@ -330,6 +342,10 @@ public class KineticMachineBlockEntity extends KineticBlockEntity implements IMa
 
     @Override
     public float calculateAddedStressCapacity() {
+        if (!isValidOutputSource()) {
+            this.lastCapacityProvided = 0;
+            return 0;
+        }
         float capacity = (float) IBlockStressValues.getCapacity(this.getStressConfigKey());
         this.lastCapacityProvided = capacity;
         return capacity;

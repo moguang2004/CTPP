@@ -19,6 +19,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import com.mo_guang.ctpp.common.machine.IKineticMachine;
 import com.mo_guang.ctpp.common.machine.NotifiableStressTrait;
 import com.mo_guang.ctpp.common.machine.multiblock.KineticMultiblockMachine;
+import com.mo_guang.ctpp.common.machine.multiblock.KineticOutputMachine;
 import lombok.Getter;
 
 import javax.annotation.Nullable;
@@ -42,6 +43,20 @@ public class KineticPartMachine extends TieredIOPartMachine implements IKineticM
 
     public IO getIO() {
         return this.io;
+    }
+
+    public boolean isValidOutputBinding() {
+        if (io != IO.OUT || !getKineticDefinition().isSource()) {
+            return true;
+        }
+        if (!isFormed() || getControllers().isEmpty()) {
+            return false;
+        }
+        var controller = getControllers().first();
+        return controller instanceof KineticOutputMachine outputMachine &&
+                outputMachine.isFormed() &&
+                outputMachine.isActive() &&
+                outputMachine.getParts().contains(this);
     }
 
     //////////////////////////////////////
@@ -91,7 +106,7 @@ public class KineticPartMachine extends TieredIOPartMachine implements IKineticM
 
     void checkWorking() {
         if (getOffsetTimer() % 100 == 0 && !GTCEu.isClientSide()) {
-            if (!isFormed() || getControllers().isEmpty() ||
+            if (!isValidOutputBinding() || !isFormed() || getControllers().isEmpty() ||
                     !(getControllers().first() instanceof IRecipeLogicMachine recipeLogicMachine) ||
                     !recipeLogicMachine.isActive()) {
                 getKineticHolder().stopWorking();
