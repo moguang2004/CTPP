@@ -1,12 +1,11 @@
 package com.mo_guang.ctpp.mixin.create;
 
-import com.simibubi.create.AllBlocks;
-import com.simibubi.create.infrastructure.ponder.AllCreatePonderScenes;
-import com.simibubi.create.infrastructure.ponder.scenes.KineticsScenes;
-
 import net.createmod.ponder.api.registration.PonderSceneRegistrationHelper;
 import net.minecraft.resources.ResourceLocation;
 
+import com.simibubi.create.AllBlocks;
+import com.simibubi.create.infrastructure.ponder.AllCreatePonderScenes;
+import com.simibubi.create.infrastructure.ponder.scenes.KineticsScenes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
