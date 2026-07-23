@@ -8,7 +8,6 @@ dependencies {
         }
     }
     modImplementation(ctnh.botarium)
-    modImplementation(ctnh.createnewage)
     modImplementation(ctnh.creatediesel)
     modImplementation(ctnh.createvintage)
     

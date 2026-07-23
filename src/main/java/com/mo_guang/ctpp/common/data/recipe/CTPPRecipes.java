@@ -15,6 +15,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 
 import com.mo_guang.ctpp.CTPP;
+import com.mo_guang.ctpp.registry.CTPPBlocks;
 import com.mo_guang.ctpp.registry.CTPPMachines;
 import com.mo_guang.ctpp.registry.CreateMaterials;
 import com.simibubi.create.AllBlocks;
@@ -76,6 +77,15 @@ public class CTPPRecipes {
                 'A', ChemicalHelper.get(rod, GTMaterials.Iron),
                 'B', ChemicalHelper.get(plate, CreateMaterials.AndesiteAlloy),
                 'C', ChemicalHelper.get(dust, GTMaterials.Coke),
+                'D', AllBlocks.SHAFT.asStack());
+
+        VanillaRecipeHelper.addShapedRecipe(provider, CTPP.id("generator_coil"), CTPPBlocks.GENERATOR_COIL.asStack(),
+                "ABA",
+                "CDC",
+                "ABA",
+                'A', ChemicalHelper.get(rod, GTMaterials.Copper),
+                'B', ChemicalHelper.get(plate, GTMaterials.Iron),
+                'C', ChemicalHelper.get(rod, GTMaterials.Iron),
                 'D', AllBlocks.SHAFT.asStack());
     }
 

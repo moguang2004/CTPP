@@ -37,6 +37,8 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 import com.mo_guang.ctpp.api.IBlockStressValues;
 import com.mo_guang.ctpp.api.KineticMachineDefinition;
+import com.mo_guang.ctpp.client.CarbonBrushesRenderer;
+import com.mo_guang.ctpp.client.CarbonBrushesVisual;
 import com.mo_guang.ctpp.client.KineticMachineBlockEntityRenderer;
 import com.mo_guang.ctpp.common.machine.IKineticMachine;
 import com.mo_guang.ctpp.common.machine.multiblock.part.KineticPartMachine;
@@ -111,6 +113,26 @@ public class KineticMachineBlockEntity extends KineticBlockEntity implements IMa
                                         .apply();
 
                                 BlockEntityRenderers.register(type, KineticMachineBlockEntityRenderer::new);
+                            }));
+        }
+    }
+
+    public static void onCarbonBrushesBlockEntityRegister(BlockEntityType<?> blockEntityType) {
+        if (LDLib.isClient()) {
+            var type = (BlockEntityType<KineticMachineBlockEntity>) blockEntityType;
+
+            DistExecutor.unsafeRunWhenOn(
+                    Dist.CLIENT,
+                    () -> () -> OneTimeEventReceiver.addModListener(
+                            GTRegistration.REGISTRATE,
+                            FMLClientSetupEvent.class,
+                            ($) -> {
+                                SimpleBlockEntityVisualizer.builder(type)
+                                        .factory(CarbonBrushesVisual::new)
+                                        .skipVanillaRender((be) -> false)
+                                        .apply();
+
+                                BlockEntityRenderers.register(type, CarbonBrushesRenderer::new);
                             }));
         }
     }

@@ -5,7 +5,7 @@
   "variants": {
     "": {
       "model": {
-        "parent": "create_new_age:block/carbon_brushes/base"
+        "parent": "ctpp:block/machine/carbon_brushes/base"
       },
       "x": 90
     }

@@ -9,7 +9,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
 import com.mo_guang.ctpp.api.pattern.CTPPBlockMaps;
-import org.antarcticgardens.cna.content.electricity.generation.magnet.ImplementedMagnetBlock;
+import com.mo_guang.ctpp.common.block.MagnetBlock;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,16 +28,11 @@ public class CTPPPredicates {
 
         return (new TraceabilityPredicate((state) -> {
             BlockState blockState = state.getBlockState();
-            for (var entry : map.entrySet()) {
-                if (blockState.is(entry.getValue().get())) {
-                    if (entry.getValue().get() instanceof ImplementedMagnetBlock magnet) {
-                        int strength = (int) magnet.getStrength();
-                        int current_strength = state.getMatchContext().getOrPut("MagnetStrength", 0);
-                        current_strength += strength;
-                        state.getMatchContext().set("MagnetStrength", current_strength);
-                        return true;
-                    }
-                }
+            int strength = MagnetBlock.getStrength(blockState);
+            if (strength > 0) {
+                int currentStrength = state.getMatchContext().getOrPut("MagnetStrength", 0);
+                state.getMatchContext().set("MagnetStrength", currentStrength + strength);
+                return true;
             }
             return false;
         }, () -> blockInfos.toArray(BlockInfo[]::new)))

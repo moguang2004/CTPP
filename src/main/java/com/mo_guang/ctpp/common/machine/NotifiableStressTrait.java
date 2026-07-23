@@ -7,9 +7,12 @@ import com.gregtechceu.gtceu.api.machine.trait.ICapabilityTrait;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableRecipeHandlerTrait;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 
+import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
+
 import net.minecraft.util.Mth;
 
 import com.mo_guang.ctpp.api.StressRecipeCapability;
+import com.mo_guang.ctpp.common.machine.multiblock.part.KineticPartMachine;
 import com.simibubi.create.infrastructure.config.AllConfigs;
 import lombok.Getter;
 import lombok.Setter;
@@ -25,6 +28,9 @@ public class NotifiableStressTrait extends NotifiableRecipeHandlerTrait<Float> i
     public final IO handlerIO;
     @Getter
     public final IO capabilityIO;
+    @Getter
+    @Persisted
+    private int remainingOutputTicks;
     private float available, lastSpeed;
 
     public NotifiableStressTrait(MetaMachine machine, IO handlerIO, IO capabilityIO) {
@@ -39,6 +45,11 @@ public class NotifiableStressTrait extends NotifiableRecipeHandlerTrait<Float> i
         super.onMachineLoad();
         if (machine instanceof IKineticMachine kineticMachine) {
             machine.subscribeServerTick(() -> {
+                if (remainingOutputTicks > 0 && machine instanceof KineticPartMachine kineticPart &&
+                        !kineticPart.isValidOutputBinding() && --remainingOutputTicks == 0) {
+                    forceStopWorking();
+                }
+
                 var speed = kineticMachine.getKineticHolder().getSpeed();
                 if (speed != lastSpeed) {
                     lastSpeed = speed;
@@ -73,6 +84,9 @@ public class NotifiableStressTrait extends NotifiableRecipeHandlerTrait<Float> i
 
             if (!simulate) {
                 available = handled;
+                if (io == IO.OUT && kineticDefinition.isSource() && handled > 0) {
+                    remainingOutputTicks = Math.max(recipe.duration + 20, 1);
+                }
             }
 
             stress -= handled;
@@ -103,6 +117,11 @@ public class NotifiableStressTrait extends NotifiableRecipeHandlerTrait<Float> i
     }
 
     public void stopWorking() {
+        forceStopWorking();
+    }
+
+    public void forceStopWorking() {
+        remainingOutputTicks = 0;
         available = 0;
         if (machine instanceof IKineticMachine kineticMachine) {
             var kineticDefinition = kineticMachine.getKineticDefinition();
@@ -124,6 +143,9 @@ public class NotifiableStressTrait extends NotifiableRecipeHandlerTrait<Float> i
         var kineticDefinition = kineticMachine.getKineticDefinition();
         if (!kineticDefinition.isSource()) {
             return Mth.abs(kineticMachine.getKineticHolder().getSpeed()) * kineticDefinition.torque;
+        }
+        if (machine instanceof KineticPartMachine kineticPart && !kineticPart.isValidOutputBinding()) {
+            return 0;
         }
         return AllConfigs.server().kinetics.maxRotationSpeed.get() * kineticDefinition.torque;
     }

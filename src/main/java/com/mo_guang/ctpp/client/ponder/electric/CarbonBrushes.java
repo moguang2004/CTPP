@@ -1,13 +1,15 @@
 package com.mo_guang.ctpp.client.ponder.electric;
 
+import com.gregtechceu.gtceu.GTCEu;
+
 import net.createmod.ponder.api.scene.SceneBuilder;
 import net.createmod.ponder.api.scene.SceneBuildingUtil;
 import net.createmod.ponder.api.scene.Selection;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import com.mo_guang.ctpp.client.ponder.CTPPPonderSceneBuilder;
-import org.antarcticgardens.cna.CNABlocks;
 
 public class CarbonBrushes {
 
@@ -98,14 +100,13 @@ public class CarbonBrushes {
                 "同样，磁铁的等级也会增加应力消耗。")
                 .attachKeyFrame();
         scene.idle(20);
-        BlockState redstoneMagnet = CNABlocks.REDSTONE_MAGNET.getDefaultState();
-        scene.world().replaceBlocks(allMagnets, redstoneMagnet, true);
+        BlockState magneticIron = ForgeRegistries.BLOCKS.getValue(GTCEu.id("magnetic_iron_block"))
+                .defaultBlockState();
+        scene.world().replaceBlocks(allMagnets, magneticIron, true);
         scene.idle(20);
-        BlockState fluxuatedMagnetite = CNABlocks.FLUXUATED_MAGNETITE.getDefaultState();
-        scene.world().replaceBlocks(allMagnets, fluxuatedMagnetite, true);
-        scene.idle(20);
-        BlockState netheriteMagnet = CNABlocks.NETHERITE_MAGNET.getDefaultState();
-        scene.world().replaceBlocks(allMagnets, netheriteMagnet, true);
+        BlockState magneticSteel = ForgeRegistries.BLOCKS.getValue(GTCEu.id("magnetic_steel_block"))
+                .defaultBlockState();
+        scene.world().replaceBlocks(allMagnets, magneticSteel, true);
         scene.idle(20);
         scene.markAsFinished();
     }

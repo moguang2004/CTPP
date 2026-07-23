@@ -14,13 +14,16 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
+import com.ctnhlang.CN;
+import com.ctnhlang.EN;
+import com.mo_guang.ctpp.common.blockentity.GeneratorCoilBlockEntity;
 import com.mo_guang.ctpp.common.machine.IKineticMachine;
+import com.mo_guang.ctpp.config.MainConfig;
 import com.simibubi.create.content.kinetics.base.DirectionalKineticBlock;
 import com.simibubi.create.foundation.utility.CreateLang;
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
-import org.antarcticgardens.cna.content.electricity.generation.coil.GeneratorCoilBlock;
-import org.antarcticgardens.cna.content.electricity.generation.coil.GeneratorCoilBlockEntity;
 import org.apache.commons.lang3.mutable.MutableInt;
+import tech.vixhentx.mcmod.ctnhlib.langprovider.Lang;
 
 import java.util.List;
 
@@ -76,7 +79,7 @@ public class CarbonBrushesGeneratorMachine extends WorkableTieredMachine impleme
 
         Direction facing = getBlockState().getValue(DirectionalKineticBlock.FACING);
 
-        MutableInt coilsLeft = new MutableInt(18);
+        MutableInt coilsLeft = new MutableInt(MainConfig.INSTANCE.ctnhConfig.carbonBrushesMaxCoils);
 
         int output = 0;
         output += processCoil(getPos(), facing, coilsLeft);
@@ -87,11 +90,24 @@ public class CarbonBrushesGeneratorMachine extends WorkableTieredMachine impleme
         energyContainer.changeEnergy(output);
     }
 
+    @CN("能量状态:")
+    @EN("Energy Statistics:")
+    static Lang goggle_info1;
+
+    @CN("能量输出:")
+    @EN("Energy Output:")
+    static Lang goggle_info2;
+
+    @CN("    %s EU/t")
+    @EN("    %s EU/t")
+    static Lang goggle_info3;
+
     @Override
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
-        CreateLang.translate("tooltip.create_new_age.energy_stats").style(ChatFormatting.WHITE).forGoggles(tooltip);
-        CreateLang.translate("tooltip.create_new_age.energy_output").style(ChatFormatting.GRAY).forGoggles(tooltip);
-        tooltip.add(Component.literal("    %s EU/t".formatted(lastOutput)).withStyle(ChatFormatting.YELLOW));
+        CreateLang.text(goggle_info1.translate().getString()).style(ChatFormatting.WHITE).forGoggles(tooltip);
+        CreateLang.text(goggle_info2.translate().getString()).style(ChatFormatting.GRAY).forGoggles(tooltip);
+        CreateLang.text(goggle_info3.translate(lastOutput).getString()).style(ChatFormatting.YELLOW)
+                .forGoggles(tooltip);
         return true;
     }
 
@@ -106,7 +122,8 @@ public class CarbonBrushesGeneratorMachine extends WorkableTieredMachine impleme
             if (!(be instanceof GeneratorCoilBlockEntity coil))
                 break;
 
-            Direction.Axis axis = coil.getBlockState().getValue(GeneratorCoilBlock.AXIS);
+            Direction.Axis axis = coil.getBlockState().getValue(
+                    com.simibubi.create.content.kinetics.base.RotatedPillarKineticBlock.AXIS);
             if (!axis.test(dir))
                 break;
 

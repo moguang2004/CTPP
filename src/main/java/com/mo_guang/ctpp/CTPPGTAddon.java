@@ -5,16 +5,18 @@ import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockPreviewHighlightRegistry;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 
+import net.createmod.catnip.placement.PlacementHelpers;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
 
 import com.mo_guang.ctpp.api.CTPPPartAbility;
 import com.mo_guang.ctpp.api.CTPPRecipeCapabilities;
 import com.mo_guang.ctpp.api.pattern.CTPPBlockMaps;
+import com.mo_guang.ctpp.common.block.MagnetPlacementHelper;
 import com.mo_guang.ctpp.common.data.recipe.CTPPRecipes;
+import com.mo_guang.ctpp.registry.CTPPBlockEntities;
 import com.mo_guang.ctpp.registry.CTPPBlocks;
 
-import java.util.List;
 import java.util.function.Consumer;
 
 @GTAddon
@@ -28,7 +30,9 @@ public class CTPPGTAddon implements IGTAddon {
     @Override
     public void initializeAddon() {
         CTPPBlocks.init();
+        CTPPBlockEntities.init();
         CTPPBlockMaps.init();
+        PlacementHelpers.register(MagnetPlacementHelper.INSTANCE);
     }
 
     @Override
@@ -57,10 +61,5 @@ public class CTPPGTAddon implements IGTAddon {
     }
 
     @Override
-    public void removeRecipes(Consumer<ResourceLocation> consumer) {
-        List<String> path = List.of(
-                "create_new_age:shaped/carbon_brushes");
-
-        path.forEach(s -> consumer.accept(ResourceLocation.tryParse(s)));
-    }
+    public void removeRecipes(Consumer<ResourceLocation> consumer) {}
 }

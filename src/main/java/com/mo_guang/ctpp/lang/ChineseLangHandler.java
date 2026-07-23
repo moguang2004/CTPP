@@ -6,6 +6,7 @@ import tech.vixhentx.mcmod.ctnhlib.registrate.lang.RegistrateCNLangProvider;
 public class ChineseLangHandler {
 
     public static void init(RegistrateCNLangProvider provider) {
+        provider.add("ctpp.magnet.tooltip", "\u78c1\u611f\u5e94\u5f3a\u5ea6\uff1a%d");
         provider.add("ctpp.common_tooltip.kinetic_overclock", "-输入配方所需的(N的平方)倍应力时，获得N并行");
         provider.add("ctpp.common_tooltip.input_speed", "*输入转速以等级最高的应力仓的转速为准");
         provider.add("ctpp.common_tooltip.mechanical_tier",
@@ -103,6 +104,8 @@ public class ChineseLangHandler {
         provider.add("config.ctpp.option.kineticGeneratorGeneratingBoost", "应力发电机的电力产出加成");
         provider.add("config.ctpp.option.kineticGeneratorGeneratingRequireLubricant", "应力发电是否消耗润滑油");
         provider.add("config.ctpp.option.kineticGeneratorGeneratingRequireLubricantAmount", "应力发电的润滑油消耗量");
+        provider.add("config.ctpp.option.carbonBrushesMaxCoils", "一个碳刷可接收的发电机线圈数量");
+        provider.add("config.ctpp.option.carbonBrushesSuToEnergy", "发电机线圈每单位应力的能量产出");
         provider.add("config.ctpp.option.enableKineticSteamTurbine", "是否启用CTNH的机械蒸汽涡轮");
         provider.add("config.ctpp.option.enableSteamTurbineGearBox", "是否启用CTNH的蒸汽涡轮齿轮箱");
         provider.add("config.ctpp.option.steamPoweredKineticGeneratingBoost", "蒸汽动力的应力产出加成");

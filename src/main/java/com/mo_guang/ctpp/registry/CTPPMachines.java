@@ -197,7 +197,7 @@ public class CTPPMachines {
                 KineticMachineBlockEntity::create)
                 .model((ctx, prov, builder) -> {
                     ModelFile parentModel = prov.models().getExistingFile(
-                            ResourceLocation.tryParse("create_new_age:block/carbon_brushes/base"));
+                            CTPP.id("block/machine/carbon_brushes/base"));
                     BlockModelBuilder model = prov.models().nested().parent(parentModel);
                     // Apply a 90° Y rotation so the model matches CreateNewAge's orientation
                     builder.forAllStates(state -> ConfiguredModel.builder()
@@ -218,7 +218,7 @@ public class CTPPMachines {
                         carbon_brushes.translate()))
                 .hasBER(false)
                 .blockProp(BlockBehaviour.Properties::noOcclusion)
-                .onBlockEntityRegister(KineticMachineBlockEntity::onBlockEntityRegister)
+                .onBlockEntityRegister(KineticMachineBlockEntity::onCarbonBrushesBlockEntityRegister)
                 .register();
 
         ELECTRIC_GEAR_BOX_2A = registerElectricGearBox(2, LOW_TIERS);

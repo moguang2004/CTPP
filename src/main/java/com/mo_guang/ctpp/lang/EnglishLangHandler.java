@@ -6,6 +6,7 @@ import com.tterrag.registrate.providers.RegistrateLangProvider;
 public class EnglishLangHandler {
 
     public static void init(RegistrateLangProvider provider) {
+        provider.add("ctpp.magnet.tooltip", "Magnetic induction strength: %d");
         provider.add("ctpp.common_tooltip.kinetic_overclock",
                 "- Input (N squared) times stress required by the recipe to get N parallels");
         provider.add("ctpp.common_tooltip.input_speed",
@@ -129,6 +130,10 @@ public class EnglishLangHandler {
                 "Kinetic Generation Require Lubricant");
         provider.add(MainConfig.getConfigOptionKey("kineticGeneratorGeneratingRequireLubricantAmount"),
                 "Kinetic Generation Require Lubricant Amount");
+        provider.add(MainConfig.getConfigOptionKey("carbonBrushesMaxCoils"),
+                "Maximum Generator Coils Collected by One Carbon Brush");
+        provider.add(MainConfig.getConfigOptionKey("carbonBrushesSuToEnergy"),
+                "Generator Coil Energy per Stress Unit");
 
         provider.add(MainConfig.getConfigOptionKey("enableKineticSteamTurbine"), "Enable Kinetic Steam Turbine");
         provider.add(MainConfig.getConfigOptionKey("enableSteamTurbineGearBox"), "Enable Steam Turbine GearBox");

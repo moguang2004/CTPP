@@ -1,0 +1,17 @@
+{
+  "variants": {
+    "axis=x": {
+      "model": "ctpp:block/machine/generator_coil/generator_coil",
+      "x": 90,
+      "y": 90
+    },
+    "axis=y": {
+      "model": "ctpp:block/machine/generator_coil/generator_coil"
+    },
+    "axis=z": {
+      "model": "ctpp:block/machine/generator_coil/generator_coil",
+      "x": 90,
+      "y": 180
+    }
+  }
+}

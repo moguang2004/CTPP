@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
-import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 
@@ -84,7 +83,7 @@ public class KineticPartMachine extends TieredIOPartMachine implements IKineticM
     @Override
     public void removedFromController(IMultiController controller) {
         super.removedFromController(controller);
-        getKineticHolder().stopWorking();
+        stressTrait.forceStopWorking();
     }
 
     @Override
@@ -99,17 +98,15 @@ public class KineticPartMachine extends TieredIOPartMachine implements IKineticM
     @Override
     public void setWorkingEnabled(boolean workingEnabled) {
         if (!workingEnabled) {
-            getKineticHolder().stopWorking();
+            stressTrait.forceStopWorking();
         }
         super.setWorkingEnabled(workingEnabled);
     }
 
     void checkWorking() {
         if (getOffsetTimer() % 100 == 0 && !GTCEu.isClientSide()) {
-            if (!isValidOutputBinding() || !isFormed() || getControllers().isEmpty() ||
-                    !(getControllers().first() instanceof IRecipeLogicMachine recipeLogicMachine) ||
-                    !recipeLogicMachine.isActive()) {
-                getKineticHolder().stopWorking();
+            if (!isValidOutputBinding()) {
+                stressTrait.forceStopWorking();
             }
         }
     }

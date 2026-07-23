@@ -11,9 +11,9 @@ import com.mo_guang.ctpp.client.ponder.kinetic.BigDam;
 import com.mo_guang.ctpp.client.ponder.kinetic.KineticHatch;
 import com.mo_guang.ctpp.client.ponder.kinetic.SmashingFactory;
 import com.mo_guang.ctpp.client.ponder.kinetic.WindmillControlCenter;
+import com.mo_guang.ctpp.registry.CTPPBlocks;
 import com.mo_guang.ctpp.registry.CTPPMachines;
 import com.mo_guang.ctpp.registry.CTPPMultiblockMachines;
-import org.antarcticgardens.cna.CNABlocks;
 
 public final class CTPPPonderScenes {
 
@@ -40,7 +40,7 @@ public final class CTPPPonderScenes {
         helper.forComponents(kineticHatches)
                 .addStoryBoard("kinetic_hatch/common", KineticHatch::Common, CTPPPonderTags.KineticHatch);
 
-        helper.forComponents(CTPPMachines.CARBON_BRUSHES.getId(), CNABlocks.GENERATOR_COIL.getId())
+        helper.forComponents(CTPPMachines.CARBON_BRUSHES.getId(), CTPPBlocks.GENERATOR_COIL.getId())
                 .addStoryBoard("carbonbrushes/common", CarbonBrushes::ponder, CTPPPonderTags.CTPPPonder);
 
         CTPP.LOGGER.info("Ponder scenes initialized");

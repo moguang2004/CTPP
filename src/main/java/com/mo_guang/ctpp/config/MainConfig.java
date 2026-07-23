@@ -94,6 +94,13 @@ public class MainConfig {
         @Configurable.Comment("KineticGenerator's Require Lubricant Amount (mL)")
         public int kineticGeneratorGeneratingRequireLubricantAmount = 1;
         @Configurable
+        @Configurable.Comment("Maximum number of generator coils collected by one carbon brush")
+        public int carbonBrushesMaxCoils = 8;
+        @Configurable
+        @Configurable.Comment("Energy generated per stress unit and tick by generator coils")
+        @Configurable.DecimalRange(min = 0.0, max = Double.MAX_VALUE)
+        public double carbonBrushesSuToEnergy = 0.029296875;
+        @Configurable
         @Configurable.Comment("Is CTNH KineticSteamTurbine Enabled?")
         public boolean enableKineticSteamTurbine = true;
         @Configurable
