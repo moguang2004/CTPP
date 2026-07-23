@@ -18,10 +18,15 @@
     "create.fix.DeployerApplicationRecipeMixin$ChuteBlockEntityMixin",
     "create.fix.DeployerApplicationRecipeMixin$DeployerBlockEntityMixin",
     "create.fix.DeployerApplicationRecipeMixin$MaterialChecklistMixin",
+    "create.jei.RecipeSlotBuilderMixin",
+    "create.jei.SequencedAssemblyCategoryMixin",
+    "create.jei.SequencedAssemblySubCategoryMixin",
+    "create.jei.TMRVSlotWidgetMixin",
     "fix.IRotorHolderMachineMixin",
     "fix.RotorHolderPartMachineMixin"
   ],
   "client": [
+    "create.AllCreatePonderScenesMixin",
     "create.fix.DeployerApplicationRecipeMixin",
     "create.fix.DeployerApplicationRecipeMixin$StockTickerBlockEntityMixin",
     "create.fix.SequencedAssemblyCategoryMixin"

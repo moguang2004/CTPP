@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 
 import net.createmod.catnip.math.Pointing;
-import net.createmod.ponder.api.PonderPalette;
 import net.createmod.ponder.api.element.ElementLink;
 import net.createmod.ponder.api.element.WorldSectionElement;
 import net.createmod.ponder.api.scene.SceneBuilder;
@@ -100,8 +99,6 @@ public class BigDam {
 
         scene.idle(20);
 
-        scene.overlay().showOutline(PonderPalette.RED, "left", ioPortLeft, 40);
-        scene.overlay().showOutline(PonderPalette.RED, "right", ioPortRight, 40);
         scene.showText(40,
                 "You can place interfaces at the location of the stone bricks, such as input bins, stress output bins, etc",
                 "你可以在石砖的位置放置接口，如输入仓，应力输出仓等")
