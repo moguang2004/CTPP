@@ -16,8 +16,11 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 
+import com.ctnhlang.CN;
+import com.ctnhlang.EN;
 import com.mo_guang.ctpp.api.CTPPModifierFunction;
 import org.jetbrains.annotations.Nullable;
+import tech.vixhentx.mcmod.ctnhlib.langprovider.Lang;
 
 import java.util.List;
 
@@ -25,6 +28,10 @@ import static com.gregtechceu.gtceu.common.machine.multiblock.generator.LargeTur
 import static java.lang.Math.pow;
 
 public class KineticTurbineMachine extends KineticOutputMachine implements ITieredMachine {
+
+    @CN({ "涡轮总效率：%d%%", "应力输出：%dsu" })
+    @EN({ "Total Turbine Efficiency：%d%%", "Kinetic Output：%dsu" })
+    static Lang[] info;
 
     public double lossrate = 1;
 
@@ -52,7 +59,7 @@ public class KineticTurbineMachine extends KineticOutputMachine implements ITier
                 textList.add(Component.translatable("gtceu.multiblock.turbine.rotor_speed",
                         FormattingUtil.formatNumbers(rotorHolder.getRotorSpeed()),
                         FormattingUtil.formatNumbers(rotorHolder.getMaxRotorHolderSpeed())));
-                textList.add(Component.translatable("ctpp.multiblock.kinetic_steam_turbine.info.0",
+                textList.add(info[0].translate(
                         FormattingUtil.formatNumbers(rotorHolder.getTotalEfficiency() * lossrate)));
                 int rotorDurability = rotorHolder.getRotorDurabilityPercent();
                 if (rotorDurability > MIN_DURABILITY_TO_WARN) {

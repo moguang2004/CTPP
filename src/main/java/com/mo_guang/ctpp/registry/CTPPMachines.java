@@ -140,6 +140,14 @@ public class CTPPMachines {
     @EN("§eMax Output Amperage:§r %sA")
     static Lang max_output_amperage;
 
+    @CN("应力影响：%s su")
+    @EN("Kinetic Effect：%s su")
+    static Lang kineticInputBoxTooltip;
+
+    @CN("应力影响：%s su")
+    @EN("Kinetic Effect：%s su")
+    static Lang kineticOutputBoxTooltip;
+
     public static void init() {
         KINETIC_INPUT_BOX = registerKineticTieredMachines(
                 "kinetic_input_box",
@@ -151,7 +159,7 @@ public class CTPPMachines {
                 (holder, tier) -> new KineticPartMachine(holder, tier, IO.IN), (tier, builder) -> builder
                         .langValue(VNF[tier] + " Kinetic Input Box")
                         .tooltips(
-                                Component.translatable("ctpp.machine.kinetic_input_box.tooltip",
+                                kineticInputBoxTooltip.translate(
                                         FormattingUtil.formatNumbers(GTValues.V[tier] *
                                                 MainConfig.INSTANCE.gtmConfig.kineticInputBoxTorqueMultiplier)),
                                 Component.translatable("gtceu.part_sharing.disabled"))
@@ -173,7 +181,7 @@ public class CTPPMachines {
                 (holder, tier) -> new KineticPartMachine(holder, tier, IO.OUT), (tier, builder) -> builder
                         .langValue(VNF[tier] + " Kinetic Output Box")
                         .tooltips(
-                                Component.translatable("ctpp.machine.kinetic_output_box.tooltip",
+                                kineticOutputBoxTooltip.translate(
                                         FormattingUtil.formatNumbers(GTValues.V[tier] *
                                                 MainConfig.INSTANCE.gtmConfig.kineticInputBoxTorqueMultiplier)),
                                 Component.translatable("gtceu.part_sharing.disabled"))
@@ -229,7 +237,7 @@ public class CTPPMachines {
         MECHANICAL_UPGRADE_BUS = REGISTRATE.machine("mechanical_upgrade_bus", MechanicalUpgradePartMachine::new)
                 .cnLangValue("机械升级仓")
                 .langValue("Mechanical Upgrade Bus")
-                .tooltips(CommonTooltips.MECHANICAL_TIER)
+                .tooltips(CommonTooltips.MECHANICAL_TIER.translate())
                 .tier(LV)
                 .rotationState(RotationState.ALL)
                 .abilities(CTPPPartAbility.MECHANICAL_UPGRADE)

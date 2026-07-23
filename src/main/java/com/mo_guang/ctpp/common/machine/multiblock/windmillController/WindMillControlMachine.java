@@ -17,6 +17,8 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 
+import com.ctnhlang.CN;
+import com.ctnhlang.EN;
 import com.mo_guang.ctpp.api.StressRecipeCapability;
 import com.mo_guang.ctpp.common.machine.multiblock.KineticOutputMachine;
 import com.mo_guang.ctpp.dynamicPart.rotation.IContraptionMultiblock;
@@ -30,6 +32,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tech.vixhentx.mcmod.ctnhlib.client.render.ColorData;
 import tech.vixhentx.mcmod.ctnhlib.client.render.highlight.HighlightHandler;
+import tech.vixhentx.mcmod.ctnhlib.langprovider.Lang;
 import tech.vixhentx.mcmod.ctnhlib.utils.MachineUtils;
 
 import java.util.ArrayList;
@@ -38,6 +41,19 @@ import java.util.Map;
 
 public class WindMillControlMachine extends KineticOutputMachine
                                     implements IContraptionMultiblock<SimpleRotatingContraptionEntity> {
+
+    @CN("附近存在其他风车控制中心")
+    @EN("There are other Windmill Controllers Around")
+    static Lang conflict;
+
+    @CN({ "控制的风车数量：%d(最大：%d)", "控制的风车总应力：%dsu", "总产能效率：%d%%", "总应力输出：§a%dsu§r" })
+    @EN({ "Number of controlled windmills: %d(Max: %d)", "Total stress of controlled windmills: %dsu",
+            "Total energy efficiency: %d%%", "Total stress output: §a%dsu§r" })
+    static Lang[] info;
+
+    @CN("高亮显示")
+    @EN("Highlight Info")
+    static Lang highlightInfo;
 
     public static int LEGAL_DISTANCE = 64;
     public List<BlockPos> windmillAround = new ArrayList<>();
@@ -157,20 +173,16 @@ public class WindMillControlMachine extends KineticOutputMachine
         super.addDisplayText(textList);
         if (isFormed()) {
             if (hasConflictingController) {
-                textList.add(Component.translatable("ctpp.multiblock.windmill_control_center.conflict")
+                textList.add(conflict.translate()
                         .withStyle(ChatFormatting.RED, ChatFormatting.BOLD));
                 return;
             }
-            var button = ComponentPanelWidget.withButton(Component
-                    .translatable("ctpp.multiblock.windmill_control_center.button").withStyle(ChatFormatting.RED),
+            var button = ComponentPanelWidget.withButton(highlightInfo.translate().withStyle(ChatFormatting.RED),
                     "Highlight");
             textList.add(
-                    Component.translatable("ctpp.multiblock.windmill_control_center.info.0", efficiency, 6 + 6 * tier)
-                            .append(button));
-            textList.add(Component.translatable("ctpp.multiblock.windmill_control_center.info.1",
-                    String.format("%.1f", TotalOutput)));
-            textList.add(Component.translatable("ctpp.multiblock.windmill_control_center.info.2",
-                    String.format("%d", efficiency * 100)));
+                    info[0].translate(efficiency, 6 + 6 * tier).append(button));
+            textList.add(info[1].translate(String.format("%.1f", TotalOutput)));
+            textList.add(info[2].translate(String.format("%d", efficiency * 100)));
             // textList.add(Component.translatable("ctpp.multiblock.windmill_control_center.info.3",String.format("%.1f",(TotalOutput
             // + 512) * efficiency)));
         }

@@ -1,17 +1,12 @@
 package com.mo_guang.ctpp.util;
 
-import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.Component;
+import com.ctnhlang.CN;
+import com.ctnhlang.EN;
+import tech.vixhentx.mcmod.ctnhlib.langprovider.Lang;
 
 public class CTPPValues {
 
-    public static String[] MT = {
-            Component.translatable("ctpp.mechanical_tier.0").getString(),
-            ChatFormatting.GRAY + Component.translatable("ctpp.mechanical_tier.1").getString() + ChatFormatting.RESET,
-            ChatFormatting.YELLOW + Component.translatable("ctpp.mechanical_tier.2").getString() + ChatFormatting.RESET,
-            ChatFormatting.DARK_GRAY + Component.translatable("ctpp.mechanical_tier.3").getString() +
-                    ChatFormatting.RESET,
-            ChatFormatting.AQUA + Component.translatable("ctpp.mechanical_tier.4").getString() + ChatFormatting.RESET,
-            ChatFormatting.GOLD + Component.translatable("ctpp.mechanical_tier.5").getString() + ChatFormatting.RESET,
-    };
+    @CN({ "无", "§7基础§r", "§e黄铜§r", "§8钢铁§r", "§b电子§r", "§6运算§r" })
+    @EN({ "None", "§7Basic§r", "§eBronze§r", "§8Steel§r", "§bElectricity§r", "§6Calculation§r" })
+    public static Lang[] MT;
 }
