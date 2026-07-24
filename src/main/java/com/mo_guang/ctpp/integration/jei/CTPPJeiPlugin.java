@@ -11,10 +11,13 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.ItemLike;
 
+import com.ctnhlang.CN;
+import com.ctnhlang.EN;
+import com.ctnhlang.Key;
 import com.mo_guang.ctpp.CTPP;
-import com.mo_guang.ctpp.common.data.recipe.fan_processing.CTPPRecipeTypeInfo;
 import com.mo_guang.ctpp.common.kinetic.fan.acidwashing.AcidwashingRecipe;
 import com.mo_guang.ctpp.common.kinetic.fan.breathing.BreathingRecipe;
+import com.mo_guang.ctpp.data.recipe.fanprocessing.CTPPRecipeTypeInfo;
 import com.mo_guang.ctpp.integration.jei.category.FanAcidWashingCategory;
 import com.mo_guang.ctpp.integration.jei.category.FanBreathingCategory;
 import com.simibubi.create.AllBlocks;
@@ -34,6 +37,7 @@ import mezz.jei.api.recipe.category.IRecipeCategory;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
+import tech.vixhentx.mcmod.ctnhlib.langprovider.Lang;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -49,6 +53,24 @@ import static com.simibubi.create.compat.jei.CreateJEI.*;
 @JeiPlugin
 public class CTPPJeiPlugin implements IModPlugin {
 
+    @Key("ctpp.recipe.fan_breathing")
+    @CN("批量龙吟")
+    @EN("Dragon Fan Processing")
+    private static Lang breathingCategory;
+
+    @CN("在龙首后放置鼓风机")
+    @EN("Place the fan behind the Dragon head")
+    private static Lang breathingFan;
+
+    @Key("ctpp.recipe.fan_acid_washing")
+    @CN("批量酸洗")
+    @EN("AcidWashing Fan Processing")
+    private static Lang acidWashingCategory;
+
+    @CN("在硫酸后放置鼓风机")
+    @EN("Place the fan behind the Sulfuric acid")
+    private static Lang acidWashingFan;
+
     private final List<CreateRecipeCategory<?>> categories = new ArrayList<>();
 
     @Override
@@ -61,7 +83,7 @@ public class CTPPJeiPlugin implements IModPlugin {
         CreateRecipeCategory<?> breathing = builder(BreathingRecipe.class)
                 .addTypedRecipes(CTPPRecipeTypeInfo.BREATHING)
                 .catalystStack(() -> AllBlocks.ENCASED_FAN.asStack()
-                        .setHoverName(Component.translatable("ctpp.recipe.breathing.fan")
+                        .setHoverName(breathingFan.translate()
                                 .withStyle(style -> style.withItalic(false))))
                 .doubleItemIcon(AllItems.PROPELLER.get(), Items.DRAGON_BREATH)
                 .emptyBackground(178, 72)
@@ -69,7 +91,7 @@ public class CTPPJeiPlugin implements IModPlugin {
         CreateRecipeCategory<?> acidwashing = builder(AcidwashingRecipe.class)
                 .addTypedRecipes(CTPPRecipeTypeInfo.ACIDWASHING)
                 .catalystStack(() -> AllBlocks.ENCASED_FAN.asStack()
-                        .setHoverName(Component.translatable("ctpp.recipe.acid_washing.fan")
+                        .setHoverName(acidWashingFan.translate()
                                 .withStyle(style -> style.withItalic(false))))
                 .doubleItemIcon(AllItems.PROPELLER.get(), GTMaterials.SulfuricAcid.getBucket())
                 .emptyBackground(178, 72)

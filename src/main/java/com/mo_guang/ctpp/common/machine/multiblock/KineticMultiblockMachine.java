@@ -14,8 +14,8 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockDisplayText;
 import com.gregtechceu.gtceu.api.machine.multiblock.RecipeMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
-
 import com.gregtechceu.gtceu.api.machine.trait.WorkLogic;
+
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.widget.*;
 
@@ -25,6 +25,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
+import com.ctnhlang.CN;
+import com.ctnhlang.EN;
 import com.mo_guang.ctpp.api.StressRecipeCapability;
 import com.mo_guang.ctpp.common.blockentity.IKineticBlockEntityExtension;
 import com.mo_guang.ctpp.common.machine.NotifiableStressTrait;
@@ -37,8 +39,6 @@ import it.unimi.dsi.fastutil.longs.LongSets;
 import lombok.Getter;
 import tech.vixhentx.mcmod.ctnhlib.langprovider.Lang;
 
-import com.ctnhlang.CN;
-import com.ctnhlang.EN;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;

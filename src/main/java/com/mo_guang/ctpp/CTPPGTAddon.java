@@ -13,7 +13,7 @@ import com.mo_guang.ctpp.api.CTPPPartAbility;
 import com.mo_guang.ctpp.api.CTPPRecipeCapabilities;
 import com.mo_guang.ctpp.api.pattern.CTPPBlockMaps;
 import com.mo_guang.ctpp.common.block.MagnetPlacementHelper;
-import com.mo_guang.ctpp.common.data.recipe.CTPPRecipes;
+import com.mo_guang.ctpp.data.recipe.CTPPRecipes;
 import com.mo_guang.ctpp.registry.CTPPBlockEntities;
 import com.mo_guang.ctpp.registry.CTPPBlocks;
 

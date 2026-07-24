@@ -5,6 +5,7 @@ import com.mo_guang.ctpp.data.tags.FluidTags;
 import com.tterrag.registrate.providers.ProviderType;
 
 import static com.mo_guang.ctpp.CTPPRegistration.REGISTRATE;
+
 public class CTPPDatagen {
 
     public static void init() {

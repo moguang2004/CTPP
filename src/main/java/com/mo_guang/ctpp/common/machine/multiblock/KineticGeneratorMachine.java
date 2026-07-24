@@ -34,7 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static com.mo_guang.ctpp.common.data.recipe.KineticGeneratorRecipes.GENERATING_BOOST;
+import static com.mo_guang.ctpp.data.recipe.KineticGeneratorRecipes.GENERATING_BOOST;
 
 public class KineticGeneratorMachine extends KineticWorkableMultiblockMachine
                                      implements IContraptionMultiblock<SimpleRotatingContraptionEntity> {

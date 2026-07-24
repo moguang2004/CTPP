@@ -7,7 +7,6 @@ import net.minecraft.world.item.CreativeModeTab;
 
 import com.ctnhlang.CN;
 import com.ctnhlang.EN;
-import com.mo_guang.ctpp.CTPP;
 import com.tterrag.registrate.util.entry.RegistryEntry;
 import tech.vixhentx.mcmod.ctnhlib.langprovider.Lang;
 

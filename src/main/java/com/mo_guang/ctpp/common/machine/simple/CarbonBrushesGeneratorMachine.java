@@ -12,7 +12,10 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.BlockHitResult;
 
 import com.ctnhlang.CN;
 import com.ctnhlang.EN;
@@ -71,6 +74,11 @@ public class CarbonBrushesGeneratorMachine extends WorkableTieredMachine impleme
     @Override
     protected long getMaxInputOutputAmperage() {
         return 16;
+    }
+
+    @Override
+    public boolean shouldOpenUI(Player player, InteractionHand hand, BlockHitResult hit) {
+        return false;
     }
 
     public void tick() {

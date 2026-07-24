@@ -63,7 +63,8 @@ public class CTPPMultiblockMachines {
     @CN({ "一个输出应力的机器", "转子支架每升高一级,涡轮效率增加§610%§r",
             "蒸汽类型的机器在电压等级高于§6HV§r时,每一级发电效率会减少10%",
             "运行效率会获得1 + (机械等级/(机械等级 + 1))的效率加成" })
-    @EN({ "A machine that can output kinetic", "Each level of the rotor holder upgrade increases turbine efficiency by §610%§r",
+    @EN({ "A machine that can output kinetic",
+            "Each level of the rotor holder upgrade increases turbine efficiency by §610%§r",
             "Steam-type machines lose 10% efficiency for each voltage tier above §6HV§r",
             "Running efficiency will gain an addition of (1 + tier/(tier + 1))" })
     static Lang[] kineticSteamTurbineTooltip;

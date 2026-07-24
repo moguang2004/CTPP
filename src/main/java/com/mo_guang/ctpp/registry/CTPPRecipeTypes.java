@@ -16,8 +16,8 @@ import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
 import net.minecraft.resources.ResourceLocation;
 
 import com.mo_guang.ctpp.CTPP;
-import com.mo_guang.ctpp.common.data.recipe.builder.CTPPRecipeBuilder;
 import com.mo_guang.ctpp.config.MainConfig;
+import com.mo_guang.ctpp.data.recipe.builder.CTPPRecipeBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
