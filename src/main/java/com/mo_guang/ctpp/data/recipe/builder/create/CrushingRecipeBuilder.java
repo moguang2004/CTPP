@@ -79,6 +79,10 @@ public class CrushingRecipeBuilder {
         return result(stack);
     }
 
+    public CrushingRecipeBuilder output(Item item, int amount) {
+        return result(new ItemStack(item, amount));
+    }
+
     public void toJson(JsonObject json) {
         if (ingredients.isEmpty() || results.isEmpty()) {
             throw new IllegalStateException("Crushing recipe missing required fields");

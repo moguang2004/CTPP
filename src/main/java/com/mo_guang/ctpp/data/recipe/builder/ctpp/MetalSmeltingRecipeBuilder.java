@@ -25,6 +25,9 @@ public class MetalSmeltingRecipeBuilder extends
     public MetalSmeltingRecipeBuilder(String path) {
         this(CTPP.id(path));
     }
+    public static MetalSmeltingRecipeBuilder builder(String path) {
+        return new MetalSmeltingRecipeBuilder(path);
+    }
 
     @Override
     public void save(Consumer<FinishedRecipe> consumer) {
