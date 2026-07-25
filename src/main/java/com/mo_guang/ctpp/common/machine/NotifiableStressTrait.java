@@ -47,7 +47,7 @@ public class NotifiableStressTrait extends NotifiableRecipeHandlerTrait<Float> i
             machine.subscribeServerTick(() -> {
                 if (remainingOutputTicks > 0 && machine instanceof KineticPartMachine kineticPart &&
                         !kineticPart.isValidOutputBinding() && --remainingOutputTicks == 0) {
-                    forceStopWorking();
+                    stopWorking();
                 }
 
                 var speed = kineticMachine.getKineticHolder().getSpeed();
@@ -108,19 +108,15 @@ public class NotifiableStressTrait extends NotifiableRecipeHandlerTrait<Float> i
 
     @Override
     public List<Object> getContents() {
-        return List.of(getCurrentStressCapacity());
+        return List.of(available);
     }
 
     @Override
     public double getTotalContentAmount() {
-        return getCurrentStressCapacity();
+        return available;
     }
 
     public void stopWorking() {
-        forceStopWorking();
-    }
-
-    public void forceStopWorking() {
         remainingOutputTicks = 0;
         available = 0;
         if (machine instanceof IKineticMachine kineticMachine) {
@@ -134,19 +130,5 @@ public class NotifiableStressTrait extends NotifiableRecipeHandlerTrait<Float> i
     @Override
     public RecipeCapability<Float> getCapability() {
         return StressRecipeCapability.CAP;
-    }
-
-    private float getCurrentStressCapacity() {
-        if (!(machine instanceof IKineticMachine kineticMachine)) {
-            return available;
-        }
-        var kineticDefinition = kineticMachine.getKineticDefinition();
-        if (!kineticDefinition.isSource()) {
-            return Mth.abs(kineticMachine.getKineticHolder().getSpeed()) * kineticDefinition.torque;
-        }
-        if (machine instanceof KineticPartMachine kineticPart && !kineticPart.isValidOutputBinding()) {
-            return 0;
-        }
-        return AllConfigs.server().kinetics.maxRotationSpeed.get() * kineticDefinition.torque;
     }
 }

@@ -83,7 +83,7 @@ public class KineticPartMachine extends TieredIOPartMachine implements IKineticM
     @Override
     public void removedFromController(IMultiController controller) {
         super.removedFromController(controller);
-        stressTrait.forceStopWorking();
+        stressTrait.stopWorking();
     }
 
     @Override
@@ -98,7 +98,7 @@ public class KineticPartMachine extends TieredIOPartMachine implements IKineticM
     @Override
     public void setWorkingEnabled(boolean workingEnabled) {
         if (!workingEnabled) {
-            stressTrait.forceStopWorking();
+            stressTrait.stopWorking();
         }
         super.setWorkingEnabled(workingEnabled);
     }
@@ -106,7 +106,7 @@ public class KineticPartMachine extends TieredIOPartMachine implements IKineticM
     void checkWorking() {
         if (getOffsetTimer() % 100 == 0 && !GTCEu.isClientSide()) {
             if (!isValidOutputBinding()) {
-                stressTrait.forceStopWorking();
+                stressTrait.stopWorking();
             }
         }
     }

@@ -78,7 +78,7 @@ public abstract class KineticMultiblockMachine extends RecipeMultiblockMachine
 
     @Override
     public void onStructureInvalid() {
-        forceStopWorking();
+        stopWorking();
         super.onStructureInvalid();
         for (var pos : rotateBlocks) {
             var blockEntity = getLevel().getBlockEntity(BlockPos.of(pos));
@@ -95,14 +95,6 @@ public abstract class KineticMultiblockMachine extends RecipeMultiblockMachine
         getCapabilitiesFlat(IO.OUT, StressRecipeCapability.CAP).forEach(iRecipeHandler -> {
             if (iRecipeHandler instanceof NotifiableStressTrait notifiableStressTrait) {
                 notifiableStressTrait.stopWorking();
-            }
-        });
-    }
-
-    public void forceStopWorking() {
-        getCapabilitiesFlat(IO.OUT, StressRecipeCapability.CAP).forEach(iRecipeHandler -> {
-            if (iRecipeHandler instanceof NotifiableStressTrait notifiableStressTrait) {
-                notifiableStressTrait.forceStopWorking();
             }
         });
     }
