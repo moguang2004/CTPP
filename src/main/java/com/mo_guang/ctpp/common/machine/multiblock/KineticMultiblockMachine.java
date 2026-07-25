@@ -25,6 +25,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
+import com.ctnhlang.CN;
+import com.ctnhlang.EN;
 import com.mo_guang.ctpp.api.StressRecipeCapability;
 import com.mo_guang.ctpp.common.blockentity.IKineticBlockEntityExtension;
 import com.mo_guang.ctpp.common.machine.NotifiableStressTrait;
@@ -35,6 +37,7 @@ import com.simibubi.create.content.processing.burner.BlazeBurnerBlockEntity;
 import it.unimi.dsi.fastutil.longs.LongSet;
 import it.unimi.dsi.fastutil.longs.LongSets;
 import lombok.Getter;
+import tech.vixhentx.mcmod.ctnhlib.langprovider.Lang;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -54,6 +57,10 @@ public abstract class KineticMultiblockMachine extends RecipeMultiblockMachine
     @Getter
     public float previousSpeed = 0;
     public int tier = 0;
+
+    @CN("暂停中：")
+    @EN("Waiting：")
+    static Lang waiting;
 
     public KineticMultiblockMachine(IMachineBlockEntity holder) {
         super(holder);
@@ -203,7 +210,7 @@ public abstract class KineticMultiblockMachine extends RecipeMultiblockMachine
             totalRuns = 0;
         }
         if (getRecipeLogic().isWaiting()) {
-            textList.add(Component.translatable("ctpp.multiblock.kinetic_multiblock.info.waiting")
+            textList.add(waiting.translate()
                     .withStyle(ChatFormatting.RED));
             for (var reason : getRecipeLogic().getFancyTooltip()) {
                 textList.add(Component.literal(" - " + reason.getString()));

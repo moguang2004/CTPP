@@ -20,11 +20,12 @@ import com.gregtechceu.gtceu.common.data.GTMaterials;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
+import com.ctnhlang.CN;
+import com.ctnhlang.EN;
 import com.mo_guang.ctpp.CTPP;
 import com.mo_guang.ctpp.CTPPRegistration;
 import com.mo_guang.ctpp.api.CTPPPartAbility;
@@ -34,6 +35,7 @@ import com.mo_guang.ctpp.common.machine.multiblock.*;
 import com.mo_guang.ctpp.common.machine.multiblock.windmillController.WindMillControlMachine;
 import com.mo_guang.ctpp.util.CommonTooltips;
 import com.simibubi.create.AllBlocks;
+import tech.vixhentx.mcmod.ctnhlib.langprovider.Lang;
 
 import java.util.Comparator;
 
@@ -47,6 +49,41 @@ import static com.mo_guang.ctpp.config.ConfigUtils.ctnhEnabled;
 import static net.minecraft.world.level.block.Blocks.*;
 
 public class CTPPMultiblockMachines {
+
+    @CN({ "能量守恒", "应力转化EU的基础效率为128：1", "需要至少512su以启动机器",
+            "线圈等级每升高一级，总效率提高§a10%§r（初始为90%）", "同时更高级的磁铁意味着更高的能量转化效率",
+            "发电上限受到机械等级的影响，机械等级每升高一级，发电上限提高§a4倍§r" })
+    @EN({ "Energy Conversation", "The base conversion efficiency from stress to EU is 128:1",
+            "Requires at least 512 SU to activate the machine",
+            "Each level of coil tier improves total efficiency by §a10%§r (initial value: 90%)",
+            "At the same time, higher-tier magnets mean higher energy conversion efficiency",
+            "The generation limit is affected by the mechanical tier, and each level of mechanical tier increases the generation limit by §a4 times§r" })
+    static Lang[] kineticGeneratorTooltip;
+
+    @CN({ "一个输出应力的机器", "转子支架每升高一级,涡轮效率增加§610%§r",
+            "蒸汽类型的机器在电压等级高于§6HV§r时,每一级发电效率会减少10%",
+            "运行效率会获得1 + (机械等级/(机械等级 + 1))的效率加成" })
+    @EN({ "A machine that can output kinetic",
+            "Each level of the rotor holder upgrade increases turbine efficiency by §610%§r",
+            "Steam-type machines lose 10% efficiency for each voltage tier above §6HV§r",
+            "Running efficiency will gain an addition of (1 + tier/(tier + 1))" })
+    static Lang[] kineticSteamTurbineTooltip;
+
+    @CN({ "风力总控！越多越强！",
+            "-会检测多方块周围半径32格内的风车轴承\n-总输出的应力为：周围的风车轴承数x(周围风车总应力输出 + 512)\n-§4最多控制(6 + 6 * 机械等级)个风车！§r",
+            "64格范围内存在其他风车控制中心会使得输出变为0" })
+    @EN({ "Windmill Master Control! The more, the stronger!",
+            "-Detects windmill bearings within a radius of 32 blocks around the multiblock. \n-The total stress output is calculated as: Number of windmill bearings × (Total stress output of surrounding windmills + 512). \n-§4Can control up to (6 + 6 * tier) windmills!§r",
+            "If there are other windmill controllers within 64 blocks, the output will decrease to 0." })
+    static Lang[] windmillControlCenterTooltip;
+
+    @CN({ "艺术就是爆炸！", "大型聚爆应力厂使用爆炸物以及一小部分电力运行，以此产生大量应力",
+            "持续运行时会逐渐减少电力消耗，最低可为0", "§a应力飞升之路§r" })
+    @EN({ "Art is an explosion!",
+            "The Explosive Vortex Stress Induction System (EVSIS) using explosives and a small amount of electricity to generate massive stress.",
+            "Electricity consumption gradually decreases during continuous operation, with a minimum of 0.",
+            "§aThe Path to Stress Ascension§r" })
+    static Lang[] boomOfCreateTooltip;
 
     public static void init() {}
 
@@ -70,7 +107,8 @@ public class CTPPMultiblockMachines {
                     .rotationState(RotationState.NON_Y_AXIS)
                     .appearanceBlock(AllBlocks.ANDESITE_CASING)
                     .recipeType(CTPPRecipeTypes.SMASHING_FACTORY_RECIPES)
-                    .tooltips(CommonTooltips.KINETIC_OVERCLOCK)
+                    .tooltips(CommonTooltips.KINETIC_OVERCLOCK.translate(),
+                            CommonTooltips.INPUT_SPEED.translate().withStyle(ChatFormatting.YELLOW))
                     .recipeModifier(CTPPRecipeModifiers.KINETIC_PARALLEL)
                     .pattern(definition -> FactoryBlockPattern.start()
                             .aisle("AAAAA", "ABBBA", "ABBBA")
@@ -118,12 +156,11 @@ public class CTPPMultiblockMachines {
                     .generator(true)
                     .recipeModifier(KineticGeneratorMachine::recipeModifier, true)
                     .tooltips(
-                            Component.translatable("ctpp.multiblock.kinetic_generator.tooltip.0")
-                                    .withStyle(ChatFormatting.GRAY),
-                            Component.translatable("ctpp.multiblock.kinetic_generator.tooltip.1"),
-                            Component.translatable("ctpp.multiblock.kinetic_generator.tooltip.2"),
-                            Component.translatable("ctpp.multiblock.kinetic_generator.tooltip.3"),
-                            Component.translatable("ctpp.multiblock.kinetic_generator.tooltip.4"))
+                            kineticGeneratorTooltip[0].translate().withStyle(ChatFormatting.GRAY),
+                            kineticGeneratorTooltip[1].translate(),
+                            kineticGeneratorTooltip[2].translate(),
+                            kineticGeneratorTooltip[3].translate(),
+                            kineticGeneratorTooltip[4].translate())
                     .pattern(definition -> FactoryStaticBlockPattern.start()
                             .aisle("DDDDDDD", "##MMMG#", "##MMMG#", "##MMMG#", "#######")
                             .aisle("FFMMMGF", "ECTTTGK", "ECTTTGK", "ECTTTGK", "##MMMG#")
@@ -161,12 +198,11 @@ public class CTPPMultiblockMachines {
                     .partSorter(CTPPMultiblockMachines::kineticOutputPartSorter)
                     .recipeType(CTPPRecipeTypes.KINETIC_STEAM_TURBINE_RECIPES)
                     .appearanceBlock(CASING_BRONZE_BRICKS)
-                    .tooltips(Component.translatable("ctpp.multiblock.kinetic_steam_turbine.tooltip.0"),
-                            Component.translatable("ctpp.multiblock.kinetic_steam_turbine.tooltip.1"),
-                            Component.translatable("ctpp.multiblock.kinetic_steam_turbine.tooltip.2")
-                                    .withStyle(ChatFormatting.RED),
-                            Component.translatable("ctpp.multiblock.kinetic_steam_turbine.tooltip.3"),
-                            CommonTooltips.MECHANICAL_TIER_MACHINE)
+                    .tooltips(kineticSteamTurbineTooltip[0].translate(),
+                            kineticSteamTurbineTooltip[1].translate(),
+                            kineticSteamTurbineTooltip[2].translate().withStyle(ChatFormatting.RED),
+                            kineticSteamTurbineTooltip[3].translate(),
+                            CommonTooltips.MECHANICAL_TIER_MACHINE.translate())
                     .recipeModifiers(KineticTurbineMachine::recipeModifier)
                     .pattern(definition -> FactoryBlockPattern.start()
                             .aisle("AAAAAAAA", "BBBBCC##", "BBBBBB##", "BBBB####", "########")
@@ -199,7 +235,7 @@ public class CTPPMultiblockMachines {
                     .rotationState(RotationState.NON_Y_AXIS)
                     .recipeType(CTPPRecipeTypes.SEAWEED_FARM)
                     .recipeModifier(CTPPRecipeModifiers.KINETIC_PARALLEL)
-                    .tooltips(CommonTooltips.KINETIC_OVERCLOCK)
+                    .tooltips(CommonTooltips.KINETIC_OVERCLOCK.translate())
                     .appearanceBlock(AllBlocks.ANDESITE_CASING)
                     .pattern(definition -> FactoryBlockPattern.start()
                             .aisle("CNNNNNC", "CGGGGGC", "CGGGGGC", "CGGGGGC", "CNNNNNC")
@@ -238,12 +274,10 @@ public class CTPPMultiblockMachines {
                     .appearanceBlock(AllBlocks.BRASS_CASING)
                     .recipeModifiers(WindMillControlMachine::recipeModifier)
                     .tooltips(
-                            Component.translatable("ctpp.multiblock.windmill_control_center.tooltip.0")
-                                    .withStyle(ChatFormatting.GRAY),
-                            Component.translatable("ctpp.multiblock.windmill_control_center.tooltip.1"),
-                            CommonTooltips.MECHANICAL_TIER_MACHINE,
-                            Component.translatable("ctpp.multiblock.windmill_control_center.tooltip.2")
-                                    .withStyle(ChatFormatting.RED))
+                            windmillControlCenterTooltip[0].translate().withStyle(ChatFormatting.GRAY),
+                            windmillControlCenterTooltip[1].translate(),
+                            CommonTooltips.MECHANICAL_TIER_MACHINE.translate(),
+                            windmillControlCenterTooltip[2].translate().withStyle(ChatFormatting.RED))
                     .pattern(definition -> FactoryStaticBlockPattern.start()
                             .aisle("AABPPPPPBAA", "###CDDDC###", "###CDDDC###", "###CDDDC###", "AAACCCCCAAA",
                                     "###########", "#####EE####", "####EE#####", "####E######", "###########",
@@ -346,11 +380,10 @@ public class CTPPMultiblockMachines {
                     .appearanceBlock(CASING_STEEL_SOLID)
                     .noRecipeModifier()
                     .tooltips(
-                            Component.translatable("ctpp.multiblock.boom_of_create.tooltip.0")
-                                    .withStyle(ChatFormatting.GRAY),
-                            Component.translatable("ctpp.multiblock.boom_of_create.tooltip.1"),
-                            Component.translatable("ctpp.multiblock.boom_of_create.tooltip.2"),
-                            Component.translatable("ctpp.multiblock.boom_of_create.tooltip.3"))
+                            boomOfCreateTooltip[0].translate().withStyle(ChatFormatting.GRAY),
+                            boomOfCreateTooltip[1].translate(),
+                            boomOfCreateTooltip[2].translate(),
+                            boomOfCreateTooltip[3].translate())
                     .pattern(definition -> FactoryBlockPattern.start()
                             .aisle("######AAA######",
                                     "######AAA######",

@@ -9,7 +9,6 @@
     "MultiblockStateMixin",
     "RotationPropagatorMixin",
     "SmartBlockEntityMixin",
-    "create.CreateJEIMixin",
     "create.KineticBlockEntityMixin",
     "create.Matrix3dMixin",
     "create.WindmillBearingBlockMixin",
@@ -28,8 +27,8 @@
   "client": [
     "create.AllCreatePonderScenesMixin",
     "create.fix.DeployerApplicationRecipeMixin",
-    "create.fix.DeployerApplicationRecipeMixin$StockTickerBlockEntityMixin",
-    "create.fix.SequencedAssemblyCategoryMixin"
+    "create.fix.SequencedAssemblyCategoryMixin",
+    "create.fix.DeployerApplicationRecipeMixin$StockTickerBlockEntityMixin"
   ],
   "minVersion": "0.8"
 }

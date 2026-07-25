@@ -19,7 +19,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.Vec3;
 
-import com.mo_guang.ctpp.common.data.recipe.fan_processing.CTPPRecipeTypeInfo;
+import com.mo_guang.ctpp.data.recipe.fanprocessing.CTPPRecipeTypeInfo;
 import com.mo_guang.ctpp.data.tags.CustomTags;
 import com.simibubi.create.content.kinetics.fan.processing.FanProcessingType;
 import com.simibubi.create.foundation.recipe.RecipeApplier;

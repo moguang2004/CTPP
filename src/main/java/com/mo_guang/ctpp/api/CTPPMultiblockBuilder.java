@@ -33,6 +33,9 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
+import com.ctnhlang.CN;
+import com.ctnhlang.EN;
+import com.ctnhlang.Key;
 import com.tterrag.registrate.builders.BlockBuilder;
 import com.tterrag.registrate.builders.ItemBuilder;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
@@ -41,6 +44,7 @@ import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 import lombok.Generated;
 import org.apache.commons.lang3.function.TriFunction;
 import org.jetbrains.annotations.Nullable;
+import tech.vixhentx.mcmod.ctnhlib.langprovider.Lang;
 import tech.vixhentx.mcmod.ctnhlib.registrate.CNRegistrate;
 import tech.vixhentx.mcmod.ctnhlib.registrate.builders.CTNHMultiblockMachineBuilder;
 
@@ -49,6 +53,11 @@ import java.util.List;
 import java.util.function.*;
 
 public class CTPPMultiblockBuilder extends CTNHMultiblockMachineBuilder {
+
+    @Key("ctpp.copyright.info")
+    @CN("该机器由§6CT++§r添加")
+    @EN("This machine is added by §6CT++§r")
+    static Lang copyrightInfo;
 
     protected CTPPMultiblockBuilder(CNRegistrate registrate, String name,
                                     Function<IMachineBlockEntity, ? extends MultiblockControllerMachine> metaMachine,

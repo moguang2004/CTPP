@@ -7,6 +7,8 @@ import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
 
 import net.minecraft.network.chat.Component;
 
+import com.ctnhlang.CN;
+import com.ctnhlang.EN;
 import com.mo_guang.ctpp.api.CTPPRecipeConditions;
 import com.mo_guang.ctpp.common.machine.IKineticMachine;
 import com.mo_guang.ctpp.common.machine.multiblock.KineticWorkableMultiblockMachine;
@@ -14,6 +16,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
+import tech.vixhentx.mcmod.ctnhlib.langprovider.Lang;
 
 @NoArgsConstructor
 public class RPMCondition extends RecipeCondition<RPMCondition> {
@@ -25,6 +28,10 @@ public class RPMCondition extends RecipeCondition<RPMCondition> {
 
     public final static RPMCondition INSTANCE = new RPMCondition();
     private float rpm;
+
+    @CN("转速: %d")
+    @EN("RPM: %d")
+    static Lang rpmTooltip;
 
     public RPMCondition(boolean isReverse, float rpm) {
         super(isReverse);
@@ -42,7 +49,7 @@ public class RPMCondition extends RecipeCondition<RPMCondition> {
 
     @Override
     public Component getTooltips() {
-        return Component.translatable("recipe.condition.rpm.tooltip", rpm);
+        return rpmTooltip.translate(rpm);
     }
 
     public float getRpm() {

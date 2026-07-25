@@ -21,17 +21,24 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
+import com.ctnhlang.CN;
+import com.ctnhlang.EN;
 import com.mo_guang.ctpp.common.machine.multiblock.KineticMultiblockMachine;
 import com.mo_guang.ctpp.registry.CTPPItems;
 import com.mo_guang.ctpp.util.CTPPValues;
 import com.simibubi.create.AllItems;
 import lombok.Getter;
+import tech.vixhentx.mcmod.ctnhlib.langprovider.Lang;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class MechanicalUpgradePartMachine extends TieredIOPartMachine implements IMachineModifyDrops, IDistinctPart {
+
+    @CN("当前机械等级：%d(%s)")
+    @EN("Current Mechanical Tier：%s(%s)")
+    static Lang mechanicalTier;
 
     @Getter
     @Persisted
@@ -96,7 +103,7 @@ public class MechanicalUpgradePartMachine extends TieredIOPartMachine implements
     public void addMultiText(List<Component> textList) {
         super.addMultiText(textList);
         textList.add(textList.size(),
-                Component.translatable("ctpp.multiblock.mechanical_tier", tier, CTPPValues.MT[tier]));
+                mechanicalTier.translate(tier, CTPPValues.MT[tier].translate()));
     }
 
     @Override

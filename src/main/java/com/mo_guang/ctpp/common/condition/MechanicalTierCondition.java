@@ -9,6 +9,7 @@ import net.minecraft.network.chat.Component;
 
 import com.ctnhlang.CN;
 import com.ctnhlang.EN;
+import com.ctnhlang.Key;
 import com.ctnhlang.Prefix;
 import com.mo_guang.ctpp.api.CTPPRecipeConditions;
 import com.mo_guang.ctpp.common.machine.multiblock.KineticMultiblockMachine;
@@ -45,12 +46,16 @@ public class MechanicalTierCondition extends RecipeCondition<MechanicalTierCondi
     }
 
     @CN("机械等级：%d(%s)")
-    @EN("Mechanical Tier: %d(%s)")
+    @EN("Mechanical Tier：%d(%s)")
     static Lang mechanical_tier;
+
+    @Key("recipe.condition.mechanical_tier.tooltip")
+    @EN("Mechanical Tier: %s")
+    static Lang mechanical_tier_tooltip;
 
     @Override
     public Component getTooltips() {
-        return mechanical_tier.translate(tier, CTPPValues.MT[tier]);
+        return mechanical_tier.translate(tier, CTPPValues.MT[tier].translate());
     }
 
     @Override

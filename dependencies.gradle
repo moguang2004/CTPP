@@ -2,11 +2,6 @@ dependencies {
     modImplementation(project(":modules:CTNH-Lib")){ transitive = false }
     jarJar(project(":modules:CTNH-Lib")){ transitive = false }
 
-    modImplementation(ctnh.create){
-        accessTransformers.configure(it) {
-            config = project.file('src/main/resources/META-INF/accesstransformer.cfg')
-        }
-    }
     modImplementation(ctnh.botarium)
     modImplementation(ctnh.creatediesel)
     modImplementation(ctnh.createvintage)
