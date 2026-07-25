@@ -12,6 +12,9 @@
     "create.KineticBlockEntityMixin",
     "create.Matrix3dMixin",
     "create.WindmillBearingBlockMixin",
+    "create.diesel.BasinFermentingCategoryMixin",
+    "create.diesel.BasinRecipeMixin",
+    "create.diesel.CDGJEIMixin",
     "create.fix.DeployerApplicationRecipeMixin$BasinBlockEntityMixin",
     "create.fix.DeployerApplicationRecipeMixin$BrassTunnelBlockEntityMixin",
     "create.fix.DeployerApplicationRecipeMixin$ChuteBlockEntityMixin",
@@ -27,8 +30,8 @@
   "client": [
     "create.AllCreatePonderScenesMixin",
     "create.fix.DeployerApplicationRecipeMixin",
-    "create.fix.SequencedAssemblyCategoryMixin",
-    "create.fix.DeployerApplicationRecipeMixin$StockTickerBlockEntityMixin"
+    "create.fix.DeployerApplicationRecipeMixin$StockTickerBlockEntityMixin",
+    "create.fix.SequencedAssemblyCategoryMixin"
   ],
   "minVersion": "0.8"
 }

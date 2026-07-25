@@ -15,7 +15,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 
 import com.mo_guang.ctpp.CTPP;
-import com.mo_guang.ctpp.data.recipe.builder.diesel.BasinFermentingRecipeBuilder;
+import com.mo_guang.ctpp.data.recipe.builder.ctpp.MetalSmeltingRecipeBuilder;
 import com.mo_guang.ctpp.registry.CTPPBlocks;
 import com.mo_guang.ctpp.registry.CTPPMachines;
 import com.mo_guang.ctpp.registry.CreateMaterials;
@@ -90,14 +90,15 @@ public class CTPPRecipes {
                 'C', ChemicalHelper.get(rod, GTMaterials.Iron),
                 'D', AllBlocks.SHAFT.asStack());
 
-        new BasinFermentingRecipeBuilder("test1")
-                .input(ChemicalHelper.get(ingot, GTMaterials.Iron))
+        new MetalSmeltingRecipeBuilder("test1")
+                .input(ChemicalHelper.get(crushed, GTMaterials.Iron))
                 .outputFluid(GTMaterials.Iron.getFluid(144))
+                .outputFluid(CreateMaterials.SLAG.getFluid(10))
                 .heat(HeatCondition.SUPERHEATED)
                 .duration(100)
                 .save(provider);
 
-        new BasinFermentingRecipeBuilder("test2")
+        new MetalSmeltingRecipeBuilder("test2")
                 .inputFluid(GTMaterials.Iron.getFluid(144))
                 .output(ChemicalHelper.get(ingot, GTMaterials.Iron))
                 .duration(100)
