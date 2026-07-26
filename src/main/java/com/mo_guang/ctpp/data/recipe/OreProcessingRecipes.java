@@ -21,7 +21,7 @@ import java.util.function.Consumer;
 public class OreProcessingRecipes {
     private static final Material[] MATERIAL = {
             GTMaterials.Hematite, GTMaterials.Magnetite,
-            GTMaterials.get("ctnhcore:precious_alloy"),
+            GTMaterials.get("gtceu:precious_alloy"),
             GTMaterials.Copper, GTMaterials.Diamond, GTMaterials.Tin, GTMaterials.Silver,
             GTMaterials.VanadiumMagnetite, GTMaterials.Spodumene, GTMaterials.RockSalt, GTMaterials.Salt,
             GTMaterials.Lepidolite, GTMaterials.Lazurite, GTMaterials.Lapis, GTMaterials.Sodalite,
@@ -59,16 +59,16 @@ public class OreProcessingRecipes {
                     .output(ChemicalHelper.get(TagPrefix.dustImpure, material).getItem(), oreMultiplier)
                     .result(ChemicalHelper.get(TagPrefix.dustImpure, material).getItem().getDefaultInstance(), basic_chance * oreMultiplier)
                     .save(provider);
-            SplashingRecipeBuilder.builder("ctpp/crushed_" + material + "_purified")
+            SplashingRecipeBuilder.builder("ctpp/crushed_" + material.getName() + "_purified")
                     .input(ChemicalHelper.get(TagPrefix.crushed, material).getItem())
                     .result(ChemicalHelper.get(TagPrefix.crushedPurified, material).getItem().getDefaultInstance())
                     .save(provider);
-            SplashingRecipeBuilder.builder("ctpp/impure_" + material + "_purified")
+            SplashingRecipeBuilder.builder("ctpp/impure_" + material.getName() + "_purified")
                     .input(ChemicalHelper.get(TagPrefix.dustImpure, material).getItem())
                     .result(ChemicalHelper.get(TagPrefix.dust, material).getItem().getDefaultInstance())
                     .save(provider);
             if (material.hasProperty(PropertyKey.INGOT)) {
-                SplashingRecipeBuilder.builder("ctpp/" + material + "_nuggets_from_purified_ore")
+                SplashingRecipeBuilder.builder("ctpp/" + material.getName() + "_nuggets_from_purified_ore")
                         .input(ChemicalHelper.get(TagPrefix.crushedPurified, material).getItem())
                         .result(new ItemStack(ChemicalHelper.get(TagPrefix.nugget, material).getItem(), 11))
                         .result(new ItemStack(ChemicalHelper.get(TagPrefix.nugget, material).getItem(), 2), 0.4)
@@ -81,32 +81,34 @@ public class OreProcessingRecipes {
         for (Material material : MATERIAL) {
             if (!material.hasProperty(PropertyKey.GEM)) {
                 Material smeltInto = material.getProperty(PropertyKey.ORE).getDirectSmeltResult();
-                MetalSmeltingRecipeBuilder.builder("ctpp/melting/curshed_" + material.getName())
-                        .input(ChemicalHelper.get(TagPrefix.crushed, material).getItem())
-                        .heat(HeatCondition.HEATED)
-                        .duration(40)
-                        .outputFluid(smeltInto.getFluid(108))
-                        .outputFluid(CreateMaterials.SLAG.getFluid(100))
-                        .save(provider);
-                MetalSmeltingRecipeBuilder.builder("ctpp/melting/purified_curshed_" + material.getName())
-                        .input(ChemicalHelper.get(TagPrefix.crushedPurified, material).getItem())
-                        .heat(HeatCondition.HEATED)
-                        .duration(40)
-                        .outputFluid(smeltInto.getFluid(144))
-                        .save(provider);
-                MetalSmeltingRecipeBuilder.builder("ctpp/melting/impure_" + material.getName() + "_dust")
-                        .input(ChemicalHelper.get(TagPrefix.dustImpure, material).getItem())
-                        .heat(HeatCondition.HEATED)
-                        .duration(40)
-                        .outputFluid(smeltInto.getFluid(144))
-                        .outputFluid(CreateMaterials.SLAG.getFluid(50))
-                        .save(provider);
-                MetalSmeltingRecipeBuilder.builder("ctpp/melting/" + material.getName() + "_dust")
-                        .input(ChemicalHelper.get(TagPrefix.dust, material).getItem())
-                        .heat(HeatCondition.HEATED)
-                        .duration(40)
-                        .outputFluid(smeltInto.getFluid(144))
-                        .save(provider);
+                if (!smeltInto.isNull() && smeltInto.hasProperty(PropertyKey.FLUID)) {
+                    MetalSmeltingRecipeBuilder.builder("ctpp/melting/curshed_" + material.getName())
+                            .input(ChemicalHelper.get(TagPrefix.crushed, material).getItem())
+                            .heat(HeatCondition.HEATED)
+                            .duration(40)
+                            .outputFluid(smeltInto.getFluid(108))
+                            .outputFluid(CreateMaterials.SLAG.getFluid(100))
+                            .save(provider);
+                    MetalSmeltingRecipeBuilder.builder("ctpp/melting/purified_curshed_" + material.getName())
+                            .input(ChemicalHelper.get(TagPrefix.crushedPurified, material).getItem())
+                            .heat(HeatCondition.HEATED)
+                            .duration(40)
+                            .outputFluid(smeltInto.getFluid(144))
+                            .save(provider);
+                    MetalSmeltingRecipeBuilder.builder("ctpp/melting/impure_" + material.getName() + "_dust")
+                            .input(ChemicalHelper.get(TagPrefix.dustImpure, material).getItem())
+                            .heat(HeatCondition.HEATED)
+                            .duration(40)
+                            .outputFluid(smeltInto.getFluid(144))
+                            .outputFluid(CreateMaterials.SLAG.getFluid(50))
+                            .save(provider);
+                    MetalSmeltingRecipeBuilder.builder("ctpp/melting/" + material.getName() + "_dust")
+                            .input(ChemicalHelper.get(TagPrefix.dust, material).getItem())
+                            .heat(HeatCondition.HEATED)
+                            .duration(40)
+                            .outputFluid(smeltInto.getFluid(144))
+                            .save(provider);
+                }
             }
             if (material.hasProperty(PropertyKey.INGOT)) {
                 MetalSmeltingRecipeBuilder.builder("ctpp/melting/" + material.getName() + "_ingot")
