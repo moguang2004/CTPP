@@ -13,7 +13,6 @@ import net.minecraft.util.Mth;
 
 import com.mo_guang.ctpp.api.StressRecipeCapability;
 import com.mo_guang.ctpp.common.machine.multiblock.part.KineticPartMachine;
-import com.simibubi.create.infrastructure.config.AllConfigs;
 import lombok.Getter;
 import lombok.Setter;
 
