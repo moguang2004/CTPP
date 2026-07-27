@@ -1,0 +1,30 @@
+{
+  "variants": {
+    "facing=down": {
+      "model": "ctpp:block/hv_voltage_coil",
+      "x": 180
+    },
+    "facing=east": {
+      "model": "ctpp:block/hv_voltage_coil",
+      "x": 90,
+      "y": 90
+    },
+    "facing=north": {
+      "model": "ctpp:block/hv_voltage_coil",
+      "x": 90
+    },
+    "facing=south": {
+      "model": "ctpp:block/hv_voltage_coil",
+      "x": 90,
+      "y": 180
+    },
+    "facing=up": {
+      "model": "ctpp:block/hv_voltage_coil"
+    },
+    "facing=west": {
+      "model": "ctpp:block/hv_voltage_coil",
+      "x": 90,
+      "y": 270
+    }
+  }
+}

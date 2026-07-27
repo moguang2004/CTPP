@@ -1,5 +1,8 @@
 package com.mo_guang.ctpp.registry;
 
+import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.data.recipe.CustomTags;
+
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -12,11 +15,13 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 
 import com.mo_guang.ctpp.CTPP;
 import com.mo_guang.ctpp.common.block.GeneratorCoilBlock;
+import com.mo_guang.ctpp.common.block.VoltageTerminalBlock;
 import com.simibubi.create.foundation.data.BlockStateGen;
 import com.simibubi.create.foundation.data.ModelGen;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.nullness.NonNullFunction;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
+import tech.vixhentx.mcmod.ctnhlib.api.CTNHValues;
 
 import java.util.function.Supplier;
 
@@ -48,6 +53,26 @@ public class CTPPBlocks {
             .transform(ModelGen.customItemModel())
             .register();
 
+    public static BlockEntry<VoltageTerminalBlock>[] VOLTAGE_COILS = new BlockEntry[10];
+
+    static {
+        for (int tier : GTValues.tiersBetween(GTValues.ULV, GTValues.UHV)) {
+            String tierName = GTValues.VN[tier].toLowerCase();
+            VOLTAGE_COILS[tier] = REGISTRATE
+                    .block(tierName + "_voltage_terminal", VoltageTerminalBlock::new)
+                    .cnlang(CTNHValues.VNC[tier] + "接线柱")
+                    .lang(GTValues.VOLTAGE_NAMES[tier] + " Terminal")
+                    .initialProperties(() -> Blocks.IRON_BLOCK)
+                    .properties(p -> p.isValidSpawn((state, level, pos, ent) -> false).noOcclusion())
+                    .blockstate((ctx, prov) -> prov.directionalBlock(ctx.getEntry(),
+                            prov.models().withExistingParent(ctx.getName(), CTPP.id("block/voltage_coil"))
+                                    .texture("texture", CTPP.id("block/voltage_coil/" + tierName))))
+                    .tag(BlockTags.MINEABLE_WITH_PICKAXE, CustomTags.MINEABLE_WITH_WRENCH)
+                    .simpleItem()
+                    .register();
+        }
+    }
+
     public static BlockEntry<Block> createCasingBlock(String name, String cnName, ResourceLocation texture) {
         return createCasingBlock(name, cnName, Block::new, texture, () -> Blocks.IRON_BLOCK,
                 () -> RenderType::cutoutMipped);
@@ -67,8 +92,7 @@ public class CTPPBlocks {
                 .blockstate((ctx, prov) -> {
                     prov.simpleBlock(ctx.getEntry(), prov.models().cubeAll(name, texture));
                 })
-                .tag(TagKey.create(BuiltInRegistries.BLOCK.key(),
-                        ResourceLocation.tryBuild("forge", "mineable/wrench")), BlockTags.MINEABLE_WITH_PICKAXE)
+                .tag(CustomTags.MINEABLE_WITH_WRENCH, BlockTags.MINEABLE_WITH_PICKAXE)
                 .item(BlockItem::new)
                 .build()
                 .register();

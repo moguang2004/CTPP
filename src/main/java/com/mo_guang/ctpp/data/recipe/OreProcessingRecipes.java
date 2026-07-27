@@ -1,24 +1,24 @@
 package com.mo_guang.ctpp.data.recipe;
 
+import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
-import com.gregtechceu.gtceu.common.data.GTItems;
-import com.mo_guang.ctpp.data.recipe.builder.create.*;
-
-import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 
-import com.mo_guang.ctpp.data.recipe.builder.ctpp.MetalSmeltingRecipeBuilder;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.world.item.ItemStack;
 
+import com.mo_guang.ctpp.data.recipe.builder.create.*;
+import com.mo_guang.ctpp.data.recipe.builder.ctpp.MetalSmeltingRecipeBuilder;
 import com.mo_guang.ctpp.registry.CreateMaterials;
 import com.simibubi.create.content.processing.recipe.HeatCondition;
 
 import java.util.function.Consumer;
 
 public class OreProcessingRecipes {
+
     private static final Material[] MATERIAL = {
             GTMaterials.Hematite, GTMaterials.Magnetite,
             GTMaterials.get("gtceu:precious_alloy"),
@@ -45,6 +45,7 @@ public class OreProcessingRecipes {
         addAlloys(provider);
         addCasting(provider);
     }
+
     private static void addOreProcessing(Consumer<FinishedRecipe> provider) {
         for (Material material : MATERIAL) {
             int oreMultiplier = material.getProperty(PropertyKey.ORE).getOreMultiplier();
@@ -52,12 +53,14 @@ public class OreProcessingRecipes {
             CrushingRecipeBuilder.builder("ctpp/raw_" + material.getName() + "_crushing")
                     .input(ChemicalHelper.get(TagPrefix.rawOre, material).getItem())
                     .output(ChemicalHelper.get(TagPrefix.crushed, material).getItem(), oreMultiplier)
-                    .result(ChemicalHelper.get(TagPrefix.crushed, material).getItem().getDefaultInstance(), basic_chance * oreMultiplier)
+                    .result(ChemicalHelper.get(TagPrefix.crushed, material).getItem().getDefaultInstance(),
+                            basic_chance * oreMultiplier)
                     .save(provider);
             CrushingRecipeBuilder.builder("ctpp/crushed_" + material.getName() + "_ore_crushing")
                     .input(ChemicalHelper.get(TagPrefix.crushed, material).getItem())
                     .output(ChemicalHelper.get(TagPrefix.dustImpure, material).getItem(), oreMultiplier)
-                    .result(ChemicalHelper.get(TagPrefix.dustImpure, material).getItem().getDefaultInstance(), basic_chance * oreMultiplier)
+                    .result(ChemicalHelper.get(TagPrefix.dustImpure, material).getItem().getDefaultInstance(),
+                            basic_chance * oreMultiplier)
                     .save(provider);
             SplashingRecipeBuilder.builder("ctpp/crushed_" + material.getName() + "_purified")
                     .input(ChemicalHelper.get(TagPrefix.crushed, material).getItem())
@@ -161,9 +164,11 @@ public class OreProcessingRecipes {
     }
 
     private static void addCasting(Consumer<FinishedRecipe> provider) {
-        Material[] metal = new Material[]{
-                CreateMaterials.AndesiteAlloy, GTMaterials.Brass, GTMaterials.Steel, GTMaterials.Silver, GTMaterials.Nickel, GTMaterials.Lead,
-                GTMaterials.Tin, GTMaterials.Zinc, GTMaterials.Bronze, GTMaterials.Iron, GTMaterials.Copper, GTMaterials.Gold
+        Material[] metal = new Material[] {
+                CreateMaterials.AndesiteAlloy, GTMaterials.Brass, GTMaterials.Steel, GTMaterials.Silver,
+                GTMaterials.Nickel, GTMaterials.Lead,
+                GTMaterials.Tin, GTMaterials.Zinc, GTMaterials.Bronze, GTMaterials.Iron, GTMaterials.Copper,
+                GTMaterials.Gold
         };
         for (Material material : metal) {
             CompactingRecipeBuilder.builder("ctpp/casting/" + material.getName() + "_ingot")

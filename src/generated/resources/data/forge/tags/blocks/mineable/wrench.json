@@ -1,6 +1,16 @@
 {
   "values": [
     "ctpp:steel_casing",
-    "ctpp:heavy_machinery_casing"
+    "ctpp:heavy_machinery_casing",
+    "ctpp:ulv_voltage_coil",
+    "ctpp:lv_voltage_coil",
+    "ctpp:mv_voltage_coil",
+    "ctpp:hv_voltage_coil",
+    "ctpp:ev_voltage_coil",
+    "ctpp:iv_voltage_coil",
+    "ctpp:luv_voltage_coil",
+    "ctpp:zpm_voltage_coil",
+    "ctpp:uv_voltage_coil",
+    "ctpp:uhv_voltage_coil"
   ]
 }
