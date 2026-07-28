@@ -117,6 +117,8 @@
   "ctpp.ctppvalues.mt.3": "§8钢铁§r",
   "ctpp.ctppvalues.mt.4": "§b电子§r",
   "ctpp.ctppvalues.mt.5": "§6运算§r",
+  "ctpp.gthammeritem.tooltip": "使用时，锻造或破坏副手中的物品",
+  "ctpp.gtwirecutteritem.tooltip": "使用时，裁剪副手中的物品",
   "ctpp.kinetic_generator": "应力发电",
   "ctpp.kinetic_mixer": "应力搅拌",
   "ctpp.kinetic_steam_turbine": "蒸汽动力",

@@ -43,7 +43,7 @@ public class CTPPRecipes {
         BoomOfCreateRecipes.init(provider);
 
         OreProcessingRecipes.init(provider);
-
+        ToolRecipes.init(provider);
         // MetaTileEntityLoader.registerMachineRecipe(provider, false, CTPPMachines.KINETIC_MIXER, "GRG", "GEG", "CMC",
         // "M", HULL, "R",
         // ROTOR, "C", AllItems.PRECISION_MECHANISM, "G", GLASS, "E", AllBlocks.SHAFT);

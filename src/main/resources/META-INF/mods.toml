@@ -57,7 +57,7 @@ description='''${mod_description}'''
 [[dependencies.ctpp]]
     modId = "create"
     mandatory = true
-    versionRange = "[0.5.1.e,)"
+    versionRange = "[6.0.8,)"
 # Here's another dependency
 [[dependencies.ctpp]]
     modId="minecraft"

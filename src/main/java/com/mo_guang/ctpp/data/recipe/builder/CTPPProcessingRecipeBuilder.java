@@ -74,6 +74,14 @@ public class CTPPProcessingRecipeBuilder<BUILDER extends CTPPProcessingRecipeBui
         return getThis();
     }
 
+    public BUILDER output(TagPrefix orePrefix, Material material, int amount) {
+        return output(ChemicalHelper.get(orePrefix, material, amount));
+    }
+
+    public BUILDER output(TagPrefix orePrefix, Material material) {
+        return output(orePrefix, material, 1);
+    }
+
     public BUILDER outputChanced(ItemStack stack, int chance) {
         output((float) chance / IChancedIngredient.MAX_CHANCE, stack);
         return getThis();
