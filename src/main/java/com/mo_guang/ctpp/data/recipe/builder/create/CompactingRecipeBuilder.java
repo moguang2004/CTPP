@@ -31,6 +31,7 @@ public class CompactingRecipeBuilder {
     private final List<Integer> ingredientCounts = new ArrayList<>();
     private final List<ItemStack> results = new ArrayList<>();
     private String heatRequirement = null;
+    private Integer processingTime;
     private final List<JsonObject> fluidIngredients = new ArrayList<>();
     private final List<JsonObject> fluidResults = new ArrayList<>();
 
@@ -134,6 +135,11 @@ public class CompactingRecipeBuilder {
         return this;
     }
 
+    public CompactingRecipeBuilder processingTime(int processingTime) {
+        this.processingTime = processingTime;
+        return this;
+    }
+
     public void toJson(JsonObject json) {
         if ((ingredients.isEmpty() && fluidIngredients.isEmpty()) || (results.isEmpty() && fluidResults.isEmpty())) {
             throw new IllegalStateException("Compacting recipe missing required fields");
@@ -160,6 +166,9 @@ public class CompactingRecipeBuilder {
 
         if (heatRequirement != null) {
             json.addProperty("heatRequirement", heatRequirement);
+        }
+        if (processingTime != null) {
+            json.addProperty("processingTime", processingTime);
         }
     }
 

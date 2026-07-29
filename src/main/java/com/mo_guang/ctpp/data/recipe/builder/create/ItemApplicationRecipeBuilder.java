@@ -72,7 +72,9 @@ public class ItemApplicationRecipeBuilder {
         ingredients.forEach(i -> ingr.add(i.toJson()));
         json.add("ingredients", ingr);
 
-        json.add("result", serializeItemStack(result));
+        JsonArray results = new JsonArray();
+        results.add(serializeItemStack(result));
+        json.add("results", results);
     }
 
     public FinishedRecipe build() {
