@@ -18,6 +18,7 @@ import com.mo_guang.ctpp.common.network.packet.CTPPToolboxActionPacket;
 import com.mo_guang.ctpp.common.toolbox.CTPPToolboxInventory;
 import com.mo_guang.ctpp.common.toolbox.CTPPToolboxSounds;
 import com.mo_guang.ctpp.common.toolbox.CTPPToolboxSourceId;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.simibubi.create.AllPartialModels;
 import com.simibubi.create.foundation.gui.AllGuiTextures;
@@ -101,7 +102,16 @@ public final class CTPPToolboxScreen extends AbstractSimiContainerScreen<CTPPToo
                 graphics.renderItemDecorations(font, stack, leftPos + slot.x, topPos + slot.y,
                         String.valueOf(menu.totalCountInCompartment(compartment)));
             }
-            if (isHovering(slot.x, slot.y, 16, 16, mouseX, mouseY)) hoveredToolboxSlot = slot;
+            if (isHovering(slot.x, slot.y, 16, 16, mouseX, mouseY)) {
+                hoveredToolboxSlot = slot;
+                RenderSystem.disableDepthTest();
+                RenderSystem.colorMask(true, true, true, false);
+                int color = getSlotColor(slot.index);
+                graphics.fillGradient(leftPos + slot.x, topPos + slot.y,
+                        leftPos + slot.x + 16, topPos + slot.y + 16, color, color);
+                RenderSystem.colorMask(true, true, true, true);
+                RenderSystem.enableDepthTest();
+            }
         }
     }
 
