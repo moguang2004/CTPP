@@ -139,12 +139,14 @@ public class CTPPToolboxBlockEntity extends SmartBlockEntity implements Nameable
     protected void read(CompoundTag tag, boolean clientPacket) {
         super.read(tag, clientPacket);
         toolboxId = tag.hasUUID("ToolboxId") ? tag.getUUID("ToolboxId") : null;
+        if (clientPacket) openCount = tag.getInt("OpenCount");
         if (tag.contains("CustomName")) customName = Component.Serializer.fromJson(tag.getString("CustomName"));
     }
 
     @Override
     protected void write(CompoundTag tag, boolean clientPacket) {
         if (toolboxId != null) tag.putUUID("ToolboxId", toolboxId);
+        if (clientPacket) tag.putInt("OpenCount", openCount);
         if (customName != null) tag.putString("CustomName", Component.Serializer.toJson(customName));
         super.write(tag, clientPacket);
     }

@@ -2,6 +2,7 @@ package com.mo_guang.ctpp.client;
 
 import com.gregtechceu.gtceu.common.network.GTNetwork;
 
+import net.createmod.catnip.animation.LerpedFloat;
 import net.createmod.catnip.gui.element.GuiGameElement;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
@@ -26,7 +27,8 @@ public final class CTPPToolboxScreen extends AbstractSimiContainerScreen<CTPPToo
     private static final AllGuiTextures BACKGROUND = AllGuiTextures.TOOLBOX;
     private static final AllGuiTextures PLAYER = AllGuiTextures.PLAYER_INVENTORY;
     private Slot hoveredToolboxSlot;
-    private float openProgress;
+    private final LerpedFloat lid = LerpedFloat.linear().startWithValue(0);
+    private final LerpedFloat drawers = LerpedFloat.linear().startWithValue(0);
 
     public CTPPToolboxScreen(CTPPToolboxMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title);
@@ -51,7 +53,10 @@ public final class CTPPToolboxScreen extends AbstractSimiContainerScreen<CTPPToo
 
     @Override
     public void containerTick() {
-        openProgress = Math.min(1, openProgress + 0.2f);
+        lid.chase(1, 0.2f, LerpedFloat.Chaser.LINEAR);
+        drawers.chase(1, 0.2f, LerpedFloat.Chaser.EXP);
+        lid.tickChaser();
+        drawers.tickChaser();
         super.containerTick();
     }
 
@@ -69,7 +74,8 @@ public final class CTPPToolboxScreen extends AbstractSimiContainerScreen<CTPPToo
         BACKGROUND.render(graphics, x, y);
         graphics.drawString(font, title, x + 15, y + 4, 0x592424, false);
         PLAYER.render(graphics, leftPos, topPos + imageHeight - PLAYER.getHeight());
-        renderToolbox(graphics, x + BACKGROUND.getWidth() + 50, y + BACKGROUND.getHeight() + 12);
+        renderToolbox(graphics, x + BACKGROUND.getWidth() + 50, y + BACKGROUND.getHeight() + 12,
+                partialTicks);
 
         hoveredToolboxSlot = null;
         for (int compartment = 0; compartment < CTPPToolboxInventory.COMPARTMENTS; compartment++) {
@@ -85,7 +91,7 @@ public final class CTPPToolboxScreen extends AbstractSimiContainerScreen<CTPPToo
         }
     }
 
-    private void renderToolbox(GuiGraphics graphics, int x, int y) {
+    private void renderToolbox(GuiGraphics graphics, int x, int y, float partialTicks) {
         ItemStack display = menu.displayStack();
         if (!(display.getItem() instanceof BlockItem blockItem) ||
                 !(blockItem.getBlock() instanceof CTPPToolboxBlock block))
@@ -99,13 +105,21 @@ public final class CTPPToolboxScreen extends AbstractSimiContainerScreen<CTPPToo
         GuiGameElement.of(block.defaultBlockState()).render(graphics);
         pose.pushPose();
         pose.translate(0, -6 / 16f, 12 / 16f);
-        pose.mulPose(com.mojang.math.Axis.XP.rotationDegrees(-105 * openProgress));
+        float lidProgress = lid.getValue(partialTicks);
+        float drawerProgress = drawers.getValue(partialTicks);
+        if (menu.source().type() == com.mo_guang.ctpp.common.toolbox.CTPPToolboxSourceId.Type.BLOCK &&
+                menu.source().blockPos() != null && minecraft.level.getBlockEntity(menu.source()
+                        .blockPos()) instanceof com.mo_guang.ctpp.common.blockentity.CTPPToolboxBlockEntity entity) {
+            lidProgress = entity.lid.getValue(partialTicks);
+            drawerProgress = entity.drawers.getValue(partialTicks);
+        }
+        pose.mulPose(com.mojang.math.Axis.XP.rotationDegrees(-105 * lidProgress));
         pose.translate(0, 6 / 16f, -12 / 16f);
         GuiGameElement.of(AllPartialModels.TOOLBOX_LIDS.get(block.getColor())).render(graphics);
         pose.popPose();
         for (int offset = 0; offset < 2; offset++) {
             pose.pushPose();
-            pose.translate(0, -offset / 8f, openProgress * -0.175f * (2 - offset));
+            pose.translate(0, -offset / 8f, drawerProgress * -0.175f * (2 - offset));
             GuiGameElement.of(AllPartialModels.TOOLBOX_DRAWER).render(graphics);
             pose.popPose();
         }

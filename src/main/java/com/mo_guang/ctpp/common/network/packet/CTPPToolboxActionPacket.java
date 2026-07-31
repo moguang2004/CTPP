@@ -58,7 +58,7 @@ public final class CTPPToolboxActionPacket implements GTNetwork.INetPacket {
             case UNEQUIP -> CTPPToolboxOperations.unequip(player, hotbarSlot, false);
             case DETACH -> CTPPToolboxOperations.unequip(player, hotbarSlot, true);
             case DEPOSIT -> {
-                if (source != null) CTPPToolboxOperations.depositAll(player, source);
+                CTPPToolboxOperations.depositAll(player, source);
             }
         }
     }

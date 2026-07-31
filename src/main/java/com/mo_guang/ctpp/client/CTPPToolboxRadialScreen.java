@@ -40,7 +40,7 @@ public final class CTPPToolboxRadialScreen extends AbstractSimiScreen {
         this.hotbarSlot = hotbarSlot;
         sourceIndex = findBoundSource();
         if (sourceIndex < 0) sourceIndex = sources.isEmpty() ? -1 : 0;
-        selectingSources = binding == null && sources.size() > 1;
+        selectingSources = sources.size() > 1;
     }
 
     private int findBoundSource() {
@@ -151,12 +151,14 @@ public final class CTPPToolboxRadialScreen extends AbstractSimiScreen {
             GTNetwork.sendToServer(new CTPPToolboxActionPacket(action, null, -1, hotbarSlot));
             return;
         }
-        CTPPToolboxSnapshot source = currentSource();
-        if (source == null) return;
         if (hovered == DEPOSIT) {
             GTNetwork.sendToServer(new CTPPToolboxActionPacket(CTPPToolboxActionPacket.Action.DEPOSIT,
-                    source.source(), -1, hotbarSlot));
-        } else if (hovered >= 0 && isActive(hovered)) {
+                    selectingSources ? null : currentSource().source(), -1, hotbarSlot));
+            return;
+        }
+        CTPPToolboxSnapshot source = currentSource();
+        if (source == null) return;
+        if (hovered >= 0 && isActive(hovered)) {
             GTNetwork.sendToServer(new CTPPToolboxActionPacket(CTPPToolboxActionPacket.Action.EQUIP,
                     source.source(), hovered, hotbarSlot));
         }
@@ -181,7 +183,7 @@ public final class CTPPToolboxRadialScreen extends AbstractSimiScreen {
     public boolean keyReleased(int code, int scanCode, int modifiers) {
         InputConstants.Key key = InputConstants.getKey(code, scanCode);
         if (AllKeys.TOOLBELT.getKeybind().isActiveAndMatches(key)) {
-            if (!selectingSources && (hovered == CENTER || hovered == DEPOSIT || isActive(hovered))) {
+            if (hovered == CENTER || hovered == DEPOSIT || !selectingSources && isActive(hovered)) {
                 committed = true;
             }
             onClose();

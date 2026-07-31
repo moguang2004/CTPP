@@ -21,12 +21,16 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.level.storage.loot.LootParams;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.common.util.FakePlayer;
 
 import com.mo_guang.ctpp.common.blockentity.CTPPToolboxBlockEntity;
 import com.mo_guang.ctpp.common.item.CTPPToolboxItem;
+import com.mo_guang.ctpp.common.toolbox.CTPPToolboxOperations;
 import com.mo_guang.ctpp.common.toolbox.CTPPToolboxSavedData;
 import com.mo_guang.ctpp.common.toolbox.CTPPToolboxService;
 import com.mo_guang.ctpp.common.toolbox.CTPPToolboxSourceId;
@@ -36,6 +40,7 @@ import com.simibubi.create.AllShapes;
 import com.simibubi.create.foundation.block.IBE;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.UUID;
 
 import static net.minecraft.world.level.block.state.properties.BlockStateProperties.WATERLOGGED;
@@ -100,6 +105,26 @@ public class CTPPToolboxBlock extends HorizontalDirectionalBlock
             if (toolbox.hasCustomName()) stack.setHoverName(toolbox.getCustomName());
         });
         return stack;
+    }
+
+    @Override
+    public List<ItemStack> getDrops(BlockState state, LootParams.Builder builder) {
+        if (builder.getOptionalParameter(LootContextParams.BLOCK_ENTITY) instanceof CTPPToolboxBlockEntity toolbox) {
+            return List.of(toolbox.getDisplayStack());
+        }
+        return List.of(new ItemStack(this));
+    }
+
+    @Override
+    public void attack(BlockState state, Level level, BlockPos pos, Player player) {
+        if (level.isClientSide || player instanceof FakePlayer || player.isSpectator()) return;
+        if (!(level.getBlockEntity(pos) instanceof CTPPToolboxBlockEntity toolbox)) return;
+        ItemStack stack = toolbox.getDisplayStack();
+        if (level instanceof net.minecraft.server.level.ServerLevel serverLevel && toolbox.getToolboxId() != null) {
+            CTPPToolboxOperations.detachSource(serverLevel, toolbox.getToolboxId());
+        }
+        if (!level.destroyBlock(pos, false)) return;
+        if (!player.getInventory().add(stack)) player.drop(stack, false);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.mo_guang.ctpp.common.toolbox;
 
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -21,7 +22,7 @@ public final class CTPPToolboxOperations {
             return false;
 
         unequip(player, hotbarSlot, false);
-        resolved = CTPPToolboxService.resolve(player, sourceId);
+        resolved = CTPPToolboxService.resolve(player, resolved.source());
         if (resolved == null) return false;
         ItemStack filter = resolved.inventory().getFilter(compartment);
         ItemStack current = player.getInventory().getItem(hotbarSlot);
@@ -79,7 +80,50 @@ public final class CTPPToolboxOperations {
     }
 
     public static void depositAll(ServerPlayer player, CTPPToolboxSourceId sourceId) {
+        if (sourceId == null) {
+            java.util.List<CTPPToolboxService.Resolved> sources = CTPPToolboxService.collect(player);
+            for (int hotbarSlot = 0; hotbarSlot < 9; hotbarSlot++) {
+                if (CTPPToolboxBindings.get(player, hotbarSlot) != null) unequip(player, hotbarSlot, true);
+            }
+            for (int slot = 0; slot < player.getInventory().getContainerSize(); slot++) {
+                ItemStack stack = player.getInventory().getItem(slot);
+                if (stack.isEmpty() || stack.getItem() instanceof com.mo_guang.ctpp.common.item.CTPPToolboxItem)
+                    continue;
+                ItemStack remainder = stack.copy();
+                for (CTPPToolboxService.Resolved resolved : sources) {
+                    for (int compartment = 0; compartment < CTPPToolboxInventory.COMPARTMENTS &&
+                            !remainder.isEmpty(); compartment++) {
+                        remainder = resolved.inventory().distribute(remainder, compartment, false);
+                    }
+                    resolved.syncProjection();
+                }
+                if (remainder.getCount() != stack.getCount()) player.getInventory().setItem(slot, remainder);
+            }
+            return;
+        }
         CTPPToolboxService.Resolved resolved = CTPPToolboxService.resolve(player, sourceId);
+        if (resolved == null) return;
+        depositInto(player, resolved);
+    }
+
+    public static void detachSource(ServerLevel level, java.util.UUID toolboxId) {
+        for (ServerPlayer player : level.getServer().getPlayerList().getPlayers()) {
+            if (player.level() != level) continue;
+            for (int slot = 0; slot < 9; slot++) {
+                CTPPToolboxBinding binding = CTPPToolboxBindings.get(player, slot);
+                if (binding != null && binding.source().toolboxId().equals(toolboxId)) {
+                    unequip(player, slot, false);
+                }
+            }
+        }
+    }
+
+    private static void depositInto(ServerPlayer player, CTPPToolboxService.Resolved initial) {
+        CTPPToolboxService.Resolved resolved = initial;
+        for (int hotbarSlot = 0; hotbarSlot < 9; hotbarSlot++) {
+            if (CTPPToolboxBindings.get(player, hotbarSlot) != null) unequip(player, hotbarSlot, true);
+        }
+        resolved = CTPPToolboxService.resolve(player, resolved.source());
         if (resolved == null) return;
         for (int slot = 0; slot < player.getInventory().getContainerSize(); slot++) {
             ItemStack stack = player.getInventory().getItem(slot);
