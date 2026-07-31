@@ -24,7 +24,6 @@ import com.mo_guang.ctpp.api.CTPPRecipeConditions;
 import com.mo_guang.ctpp.client.ponder.CTPPPonderPlugin;
 import com.mo_guang.ctpp.common.data.GTArmInteractionPointTypes;
 import com.mo_guang.ctpp.common.network.CTPPNetwork;
-import com.mo_guang.ctpp.common.toolbox.CTPPToolboxEvents;
 import com.mo_guang.ctpp.config.MainConfig;
 import com.mo_guang.ctpp.data.CTPPDatagen;
 import com.mo_guang.ctpp.data.recipe.builder.CTPPRecipeProvider;
@@ -43,7 +42,6 @@ public class CommonProxy {
         MainConfig.init();
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.register(this);
-        net.minecraftforge.common.MinecraftForge.EVENT_BUS.register(new CTPPToolboxEvents());
     }
 
     public void init() {

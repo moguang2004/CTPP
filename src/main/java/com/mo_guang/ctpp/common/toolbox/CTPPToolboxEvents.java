@@ -4,11 +4,15 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 
+import com.mo_guang.ctpp.CTPP;
+
+@Mod.EventBusSubscriber(modid = CTPP.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public final class CTPPToolboxEvents {
 
     @SubscribeEvent
-    public void onPlayerTick(TickEvent.PlayerTickEvent event) {
+    public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
         if (event.phase != TickEvent.Phase.END || event.player.level().isClientSide ||
                 !(event.player instanceof ServerPlayer player) || player.tickCount % 5 != 0)
             return;
@@ -24,17 +28,17 @@ public final class CTPPToolboxEvents {
     }
 
     @SubscribeEvent
-    public void onLogin(PlayerEvent.PlayerLoggedInEvent event) {
+    public static void onLogin(PlayerEvent.PlayerLoggedInEvent event) {
         if (event.getEntity() instanceof ServerPlayer player) CTPPToolboxBindings.sync(player);
     }
 
     @SubscribeEvent
-    public void onDimensionChange(PlayerEvent.PlayerChangedDimensionEvent event) {
+    public static void onDimensionChange(PlayerEvent.PlayerChangedDimensionEvent event) {
         if (event.getEntity() instanceof ServerPlayer player) CTPPToolboxBindings.sync(player);
     }
 
     @SubscribeEvent
-    public void onClone(PlayerEvent.Clone event) {
+    public static void onClone(PlayerEvent.Clone event) {
         if (event.getOriginal() instanceof ServerPlayer original && event.getEntity() instanceof ServerPlayer player) {
             CTPPToolboxBindings.copy(original, player);
         }

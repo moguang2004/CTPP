@@ -53,6 +53,16 @@ public final class CTPPToolboxSavedData extends SavedData {
         return records.get(id);
     }
 
+    public java.util.Collection<Record> records() {
+        return List.copyOf(records.values());
+    }
+
+    public boolean delete(UUID id) {
+        boolean removed = records.remove(id) != null;
+        if (removed) setDirty();
+        return removed;
+    }
+
     public Record getOrCreate(@Nullable UUID id, DyeColor color) {
         Record existing = id == null ? null : records.get(id);
         return existing != null ? existing : create(color);
