@@ -1,6 +1,7 @@
 package com.mo_guang.ctpp.common.toolbox;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.world.item.ItemStack;
 
 import org.jetbrains.annotations.Nullable;
@@ -12,6 +13,7 @@ public final class CTPPToolboxStackData {
     public static final String ID = "CTPPToolboxId";
     public static final String TOOL_TYPES = "tool_types";
     public static final String LAST_USED_TOOL = "last_used_tool";
+    public static final String TOOL_NAMES = "tool_names";
 
     private CTPPToolboxStackData() {}
 
@@ -28,6 +30,10 @@ public final class CTPPToolboxStackData {
         } else if (!record.toolTypes().equals(tag.getString(TOOL_TYPES))) {
             tag.putString(TOOL_TYPES, record.toolTypes());
         }
+        ListTag names = new ListTag();
+        record.toolNames().forEach(name -> names.add(net.minecraft.nbt.StringTag.valueOf(name)));
+        if (names.isEmpty()) tag.remove(TOOL_NAMES);
+        else tag.put(TOOL_NAMES, names);
         if (tag.getInt("ToolboxColor") != record.color().getId()) tag.putInt("ToolboxColor", record.color().getId());
     }
 

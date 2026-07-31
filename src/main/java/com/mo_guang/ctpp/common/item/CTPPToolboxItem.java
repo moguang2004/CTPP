@@ -157,13 +157,13 @@ public class CTPPToolboxItem extends BlockItem implements IToolboxItem, IRecipeR
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
         var tag = stack.getTag();
-        String summary = tag == null ? "" : tag.getString(CTPPToolboxStackData.TOOL_TYPES).trim();
-        if (summary.isEmpty()) {
+        if (tag == null || !tag.contains(CTPPToolboxStackData.TOOL_NAMES, net.minecraft.nbt.Tag.TAG_LIST)) {
             tooltip.add(emptyTooltip.translate().withStyle(ChatFormatting.GRAY));
             return;
         }
-        for (String name : summary.split(" ")) {
-            if (!name.isEmpty()) tooltip.add(Component.literal(" * " + name).withStyle(ChatFormatting.AQUA));
+        for (var nameTag : tag.getList(CTPPToolboxStackData.TOOL_NAMES, net.minecraft.nbt.Tag.TAG_STRING)) {
+            Component name = Component.Serializer.fromJson(nameTag.getAsString());
+            if (name != null) tooltip.add(Component.literal(" * ").append(name).withStyle(ChatFormatting.AQUA));
         }
     }
 

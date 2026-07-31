@@ -95,6 +95,8 @@ public class CTPPToolboxBlockEntity extends SmartBlockEntity implements Nameable
 
     public void setToolboxId(UUID toolboxId) {
         this.toolboxId = toolboxId;
+        inventoryCapability.invalidate();
+        inventoryCapability = LazyOptional.of(this::resolveInventory);
         setChanged();
         sendData();
     }

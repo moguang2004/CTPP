@@ -11,6 +11,7 @@ import net.minecraft.world.level.saveddata.SavedData;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -71,6 +72,7 @@ public final class CTPPToolboxSavedData extends SavedData {
         private final CTPPToolboxInventory inventory;
         private DyeColor color;
         private String toolTypes;
+        private List<String> toolNames;
         private final Runnable changed;
 
         private Record(UUID id, DyeColor color, Runnable changed) {
@@ -79,6 +81,7 @@ public final class CTPPToolboxSavedData extends SavedData {
             this.changed = changed;
             this.inventory = new CTPPToolboxInventory();
             this.toolTypes = "";
+            this.toolNames = List.of();
             inventory.setChanged(this::inventoryChanged);
         }
 
@@ -86,6 +89,7 @@ public final class CTPPToolboxSavedData extends SavedData {
             this(tag.getUUID("Id"), DyeColor.byId(tag.getInt("Color")), changed);
             inventory.deserializeNBT(tag.getCompound("Inventory"));
             toolTypes = inventory.toolTypeSummary();
+            toolNames = inventory.toolNameSummary();
         }
 
         public UUID id() {
@@ -110,8 +114,13 @@ public final class CTPPToolboxSavedData extends SavedData {
             return toolTypes;
         }
 
+        public List<String> toolNames() {
+            return toolNames;
+        }
+
         private void inventoryChanged() {
             toolTypes = inventory.toolTypeSummary();
+            toolNames = inventory.toolNameSummary();
             changed.run();
         }
 

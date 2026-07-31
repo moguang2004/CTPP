@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.ItemStackHandler;
@@ -152,6 +153,20 @@ public final class CTPPToolboxInventory extends ItemStackHandler {
             if (!stack.isEmpty()) ToolHelper.getToolTypes(stack).forEach(type -> names.add(type.name));
         }
         return names.isEmpty() ? "" : " " + String.join(" ", names) + " ";
+    }
+
+    public List<String> toolNameSummary() {
+        List<String> names = new ArrayList<>();
+        for (int compartment = 0; compartment < COMPARTMENTS; compartment++) {
+            for (int slot = 0; slot < STACKS_PER_COMPARTMENT; slot++) {
+                ItemStack stack = getStackInSlot(compartment * STACKS_PER_COMPARTMENT + slot);
+                if (!stack.isEmpty()) {
+                    names.add(Component.Serializer.toJson(stack.getHoverName()));
+                    break;
+                }
+            }
+        }
+        return names;
     }
 
     @Override
