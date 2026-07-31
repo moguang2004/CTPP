@@ -29,6 +29,7 @@ import com.mo_guang.ctpp.data.recipe.builder.CTPPRecipeProvider;
 import com.mo_guang.ctpp.data.recipe.fanprocessing.CTPPFanProcessingTypes;
 import com.mo_guang.ctpp.data.recipe.fanprocessing.CTPPRecipeTypeInfo;
 import com.mo_guang.ctpp.registry.*;
+import com.mo_guang.ctpp.registry.CTPPNetwork;
 import com.simibubi.create.api.registry.CreateBuiltInRegistries;
 import tech.vixhentx.mcmod.ctnhlib.client.ponder.CTNHPonderLang;
 
@@ -37,6 +38,7 @@ public class CommonProxy {
 
     public CommonProxy() {
         init();
+        CTPPNetwork.init();
         MainConfig.init();
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.register(this);
@@ -46,6 +48,7 @@ public class CommonProxy {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
         CTPPCreativeModeTabs.init();
+        CTPPMenus.init();
         CTPPRegistration.REGISTRATE.registerRegistrate();
         CTPPDatagen.init();
         CTPPRecipeTypeInfo.register(modEventBus);
@@ -86,6 +89,7 @@ public class CommonProxy {
 
     @SubscribeEvent
     public void gatherData(GatherDataEvent event) {
+        CTPPDatagen.addToolboxData(event);
         DataGenerator generator = event.getGenerator();
         PackOutput output = generator.getPackOutput();
         if (event.includeServer()) {
