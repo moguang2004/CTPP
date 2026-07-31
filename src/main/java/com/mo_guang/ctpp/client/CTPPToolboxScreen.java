@@ -16,6 +16,8 @@ import com.mo_guang.ctpp.common.block.CTPPToolboxBlock;
 import com.mo_guang.ctpp.common.menu.CTPPToolboxMenu;
 import com.mo_guang.ctpp.common.network.packet.CTPPToolboxActionPacket;
 import com.mo_guang.ctpp.common.toolbox.CTPPToolboxInventory;
+import com.mo_guang.ctpp.common.toolbox.CTPPToolboxSounds;
+import com.mo_guang.ctpp.common.toolbox.CTPPToolboxSourceId;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.simibubi.create.AllPartialModels;
 import com.simibubi.create.foundation.gui.AllGuiTextures;
@@ -61,6 +63,15 @@ public final class CTPPToolboxScreen extends AbstractSimiContainerScreen<CTPPToo
         lid.tickChaser();
         drawers.tickChaser();
         super.containerTick();
+    }
+
+    @Override
+    public void removed() {
+        if (minecraft.level != null && menu.source().type() != CTPPToolboxSourceId.Type.BLOCK &&
+                minecraft.player != null) {
+            CTPPToolboxSounds.playCloseLocally(minecraft.level, minecraft.player.blockPosition());
+        }
+        super.removed();
     }
 
     @Override
@@ -110,7 +121,7 @@ public final class CTPPToolboxScreen extends AbstractSimiContainerScreen<CTPPToo
         pose.translate(0, -6 / 16f, 12 / 16f);
         float lidProgress = lid.getValue(partialTicks);
         float drawerProgress = drawers.getValue(partialTicks);
-        if (menu.source().type() == com.mo_guang.ctpp.common.toolbox.CTPPToolboxSourceId.Type.BLOCK &&
+        if (menu.source().type() == CTPPToolboxSourceId.Type.BLOCK &&
                 menu.source().blockPos() != null && minecraft.level.getBlockEntity(menu.source()
                         .blockPos()) instanceof com.mo_guang.ctpp.common.blockentity.CTPPToolboxBlockEntity entity) {
             lidProgress = entity.lid.getValue(partialTicks);

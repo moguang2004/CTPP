@@ -109,7 +109,8 @@ public final class CTPPToolboxRadialScreen extends AbstractSimiScreen {
             if (hovered == CENTER) {
                 AllGuiTextures.TOOLBELT_SLOT_HIGHLIGHT.render(graphics, -13, -13);
                 tip = currentSource() == null ? Component.translatable("create.toolbox.detach") :
-                        Component.translatable("create.toolbox.unequip");
+                        Component.translatable("create.toolbox.unequip",
+                                minecraft.player.getMainHandItem().getHoverName());
             }
         }
         pose.popPose();

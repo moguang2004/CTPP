@@ -148,6 +148,16 @@ public class MainConfig {
     @EN("Enable Boom Of Create")
     public static Lang configOptionEnableBoomOfCreate;
 
+    @Key("config.ctpp.option.clientConfig")
+    @CN("客户端配置")
+    @EN("Client Configuration")
+    public static Lang configOptionClientConfig;
+
+    @Key("config.ctpp.option.toolboxSounds")
+    @CN("启用工具箱音效")
+    @EN("Enable Toolbox Sounds")
+    public static Lang configOptionToolboxSounds;
+
     public static MainConfig INSTANCE;
     private static final Object LOCK = new Object();
 
@@ -165,6 +175,9 @@ public class MainConfig {
     @Configurable
     @Configurable.Comment("CTNH's Configs")
     public CTNHConfig ctnhConfig = new CTNHConfig();
+    @Configurable
+    @Configurable.Comment("Client-only configurations")
+    public ClientConfig clientConfig = new ClientConfig();
 
     public static class GtmConfig {
 
@@ -251,5 +264,12 @@ public class MainConfig {
         @Configurable
         @Configurable.Comment("Is CTNH BoomOfCreate Enabled?")
         public boolean enableBoomOfCreate = true;
+    }
+
+    public static class ClientConfig {
+
+        @Configurable
+        @Configurable.Comment("Whether toolbox opening and closing sounds are enabled")
+        public boolean toolboxSounds = true;
     }
 }

@@ -3,7 +3,6 @@ package com.mo_guang.ctpp.common.block;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
@@ -138,8 +137,6 @@ public class CTPPToolboxBlock extends HorizontalDirectionalBlock
             UUID id = toolbox.ensureToolboxId();
             if (id == null) return;
             toolbox.startOpen();
-            level.playSound(null, pos, SoundEvents.BARREL_OPEN, net.minecraft.sounds.SoundSource.BLOCKS,
-                    0.5f, 1.0f);
             CTPPToolboxItem.open(serverPlayer,
                     new CTPPToolboxSourceId(CTPPToolboxSourceId.Type.BLOCK, -1, id, pos));
         });

@@ -17,6 +17,7 @@ import net.minecraftforge.items.IItemHandler;
 import com.mo_guang.ctpp.common.block.CTPPToolboxBlock;
 import com.mo_guang.ctpp.common.toolbox.CTPPToolboxBlockRegistry;
 import com.mo_guang.ctpp.common.toolbox.CTPPToolboxSavedData;
+import com.mo_guang.ctpp.common.toolbox.CTPPToolboxSounds;
 import com.mo_guang.ctpp.common.toolbox.CTPPToolboxStackData;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
@@ -64,10 +65,20 @@ public class CTPPToolboxBlockEntity extends SmartBlockEntity implements Nameable
     @Override
     public void tick() {
         super.tick();
+        if (level != null && level.isClientSide) tickAudio();
         lid.chase(openCount > 0 ? 1 : 0, 0.2f, LerpedFloat.Chaser.LINEAR);
         drawers.chase(openCount > 0 ? 1 : 0, 0.2f, LerpedFloat.Chaser.EXP);
         lid.tickChaser();
         drawers.tickChaser();
+    }
+
+    private void tickAudio() {
+        if (lid.settled() && openCount > 0 && lid.getChaseTarget() == 0) {
+            CTPPToolboxSounds.playOpenLocally(level, worldPosition);
+        }
+        if (lid.settled() && openCount == 0 && lid.getChaseTarget() == 1) {
+            CTPPToolboxSounds.playCloseLocally(level, worldPosition);
+        }
     }
 
     public UUID ensureToolboxId() {

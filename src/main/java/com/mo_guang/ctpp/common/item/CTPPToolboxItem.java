@@ -9,8 +9,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
@@ -31,6 +29,7 @@ import com.mo_guang.ctpp.common.block.CTPPToolboxBlock;
 import com.mo_guang.ctpp.common.menu.CTPPToolboxMenu;
 import com.mo_guang.ctpp.common.toolbox.CTPPToolboxSavedData;
 import com.mo_guang.ctpp.common.toolbox.CTPPToolboxService;
+import com.mo_guang.ctpp.common.toolbox.CTPPToolboxSounds;
 import com.mo_guang.ctpp.common.toolbox.CTPPToolboxSourceId;
 import com.mo_guang.ctpp.common.toolbox.CTPPToolboxStackData;
 import org.jetbrains.annotations.Nullable;
@@ -75,7 +74,7 @@ public class CTPPToolboxItem extends BlockItem implements IToolboxItem, IRecipeR
             CTPPToolboxSourceId source = new CTPPToolboxSourceId(
                     CTPPToolboxSourceId.Type.PLAYER_INVENTORY, slot, record.id(), null);
             open(serverPlayer, source);
-            level.playSound(null, player.blockPosition(), SoundEvents.BARREL_OPEN, SoundSource.BLOCKS, 0.5f, 1.0f);
+            CTPPToolboxSounds.playOpen(level, player.blockPosition());
         }
         return InteractionResultHolder.sidedSuccess(stack, level.isClientSide);
     }
