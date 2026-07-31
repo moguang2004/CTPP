@@ -15,7 +15,9 @@ import net.minecraftforge.items.SlotItemHandler;
 
 import com.mo_guang.ctpp.common.blockentity.CTPPToolboxBlockEntity;
 import com.mo_guang.ctpp.common.network.packet.CTPPToolboxMenuFiltersPacket;
+import com.mo_guang.ctpp.common.toolbox.CTPPToolboxBindings;
 import com.mo_guang.ctpp.common.toolbox.CTPPToolboxInventory;
+import com.mo_guang.ctpp.common.toolbox.CTPPToolboxOperations;
 import com.mo_guang.ctpp.common.toolbox.CTPPToolboxService;
 import com.mo_guang.ctpp.common.toolbox.CTPPToolboxSourceId;
 import com.mo_guang.ctpp.registry.CTPPMenus;
@@ -90,6 +92,9 @@ public class CTPPToolboxMenu extends AbstractContainerMenu {
     public ItemStack quickMoveStack(Player player, int index) {
         Slot clicked = getSlot(index);
         if (!clicked.hasItem()) return ItemStack.EMPTY;
+        if (index >= toolbox.getSlots() && player instanceof ServerPlayer serverPlayer) {
+            detachBindingForSlot(serverPlayer, clicked.getContainerSlot());
+        }
         ItemStack original = clicked.getItem().copy();
         ItemStack moving = clicked.getItem();
         int storageSlots = toolbox.getSlots();
@@ -105,6 +110,9 @@ public class CTPPToolboxMenu extends AbstractContainerMenu {
 
     @Override
     public void clicked(int index, int button, ClickType type, Player player) {
+        if (index >= toolbox.getSlots() && player instanceof ServerPlayer serverPlayer) {
+            detachBindingForSlot(serverPlayer, getSlot(index).getContainerSlot());
+        }
         if (index >= 0 && index < toolbox.getSlots()) {
             ItemStack clicked = getSlot(index).getItem();
             ItemStack carried = getCarried();
@@ -123,6 +131,13 @@ public class CTPPToolboxMenu extends AbstractContainerMenu {
             }
         }
         super.clicked(index, button, type, player);
+    }
+
+    private static void detachBindingForSlot(ServerPlayer player, int containerSlot) {
+        if (containerSlot >= 0 && containerSlot < 9 &&
+                CTPPToolboxBindings.get(player, containerSlot) != null) {
+            CTPPToolboxOperations.unequip(player, containerSlot, true);
+        }
     }
 
     @Override

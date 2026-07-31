@@ -5,15 +5,24 @@ import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 
+import com.ctnhlang.CN;
+import com.ctnhlang.EN;
+import com.ctnhlang.Key;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.mo_guang.ctpp.registry.CTPPBlocks;
+import tech.vixhentx.mcmod.ctnhlib.langprovider.Lang;
 
 import java.nio.file.Path;
 import java.util.concurrent.CompletableFuture;
 
 @SuppressWarnings("removal")
 public final class CuriosTags implements DataProvider {
+
+    @Key("curios.identifier.toolbox")
+    @EN("Toolbox")
+    @CN("工具箱")
+    static Lang toolbox;
 
     private final PackOutput.PathProvider pathProvider;
 

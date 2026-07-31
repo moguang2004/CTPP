@@ -20,6 +20,7 @@ import com.simibubi.create.foundation.data.ModelGen;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.nullness.NonNullFunction;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
+import tech.vixhentx.mcmod.ctnhlib.api.CTNHValues;
 
 import java.util.function.Supplier;
 
@@ -60,7 +61,7 @@ public class CTPPBlocks {
             String name = color.getName() + "_toolbox";
             result[color.getId()] = REGISTRATE
                     .block(name, properties -> new CTPPToolboxBlock(properties, color))
-                    .cnlang(color.getName() + "工具箱")
+                    .cnlang(CTNHValues.DYE_COLOR_CN.get(color) + "工具箱")
                     .lang(capitalize(color.getName()) + " Toolbox")
                     .initialProperties(() -> Blocks.CHEST)
                     .properties(BlockBehaviour.Properties::noOcclusion)

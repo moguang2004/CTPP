@@ -225,6 +225,7 @@
   "ctpp.windmillcontrolmachine.info.1": "Total stress of controlled windmills: %dsu",
   "ctpp.windmillcontrolmachine.info.2": "Total energy efficiency: %d%%",
   "ctpp.windmillcontrolmachine.info.3": "Total stress output: §a%dsu§r",
+  "curios.identifier.toolbox": "Toolbox",
   "debug_tool.ctpp.contraptiondebugtoolitem.assembler_already_present": "This controller already tracks %s contraption entities.",
   "debug_tool.ctpp.contraptiondebugtoolitem.assembler_failed": "Failed to assemble contraption entities from the current structure.",
   "debug_tool.ctpp.contraptiondebugtoolitem.assembler_success": "Assembled %2$s contraption entities at pivot %1$s.",
