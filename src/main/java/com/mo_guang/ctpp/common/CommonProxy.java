@@ -23,6 +23,8 @@ import com.mo_guang.ctpp.CTPPRegistration;
 import com.mo_guang.ctpp.api.CTPPRecipeConditions;
 import com.mo_guang.ctpp.client.ponder.CTPPPonderPlugin;
 import com.mo_guang.ctpp.common.data.GTArmInteractionPointTypes;
+import com.mo_guang.ctpp.common.network.CTPPNetwork;
+import com.mo_guang.ctpp.common.toolbox.CTPPToolboxEvents;
 import com.mo_guang.ctpp.config.MainConfig;
 import com.mo_guang.ctpp.data.CTPPDatagen;
 import com.mo_guang.ctpp.data.recipe.builder.CTPPRecipeProvider;
@@ -37,15 +39,18 @@ public class CommonProxy {
 
     public CommonProxy() {
         init();
+        CTPPNetwork.init();
         MainConfig.init();
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.register(this);
+        net.minecraftforge.common.MinecraftForge.EVENT_BUS.register(new CTPPToolboxEvents());
     }
 
     public void init() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
         CTPPCreativeModeTabs.init();
+        CTPPMenus.init();
         CTPPRegistration.REGISTRATE.registerRegistrate();
         CTPPDatagen.init();
         CTPPRecipeTypeInfo.register(modEventBus);
@@ -86,6 +91,7 @@ public class CommonProxy {
 
     @SubscribeEvent
     public void gatherData(GatherDataEvent event) {
+        CTPPDatagen.addToolboxData(event);
         DataGenerator generator = event.getGenerator();
         PackOutput output = generator.getPackOutput();
         if (event.includeServer()) {

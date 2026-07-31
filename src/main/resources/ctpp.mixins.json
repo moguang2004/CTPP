@@ -30,6 +30,7 @@
   ],
   "client": [
     "create.AllCreatePonderScenesMixin",
+    "create.ToolboxHandlerClientMixin",
     "create.fix.DeployerApplicationRecipeMixin",
     "create.fix.DeployerApplicationRecipeMixin$StockTickerBlockEntityMixin",
     "create.fix.SequencedAssemblyCategoryMixin"

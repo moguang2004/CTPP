@@ -6,12 +6,15 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 
 import com.mo_guang.ctpp.CTPP;
+import com.mo_guang.ctpp.common.block.CTPPToolboxBlock;
 import com.mo_guang.ctpp.common.block.GeneratorCoilBlock;
+import com.mo_guang.ctpp.common.item.CTPPToolboxItem;
 import com.simibubi.create.foundation.data.BlockStateGen;
 import com.simibubi.create.foundation.data.ModelGen;
 import com.tterrag.registrate.util.entry.BlockEntry;
@@ -47,6 +50,34 @@ public class CTPPBlocks {
             .item()
             .transform(ModelGen.customItemModel())
             .register();
+
+    public static final BlockEntry<CTPPToolboxBlock>[] TOOLBOXES = createToolboxes();
+
+    @SuppressWarnings("unchecked")
+    private static BlockEntry<CTPPToolboxBlock>[] createToolboxes() {
+        BlockEntry<CTPPToolboxBlock>[] result = new BlockEntry[DyeColor.values().length];
+        for (DyeColor color : DyeColor.values()) {
+            String name = color.getName() + "_toolbox";
+            result[color.getId()] = REGISTRATE
+                    .block(name, properties -> new CTPPToolboxBlock(properties, color))
+                    .cnlang(color.getName() + "工具箱")
+                    .lang(capitalize(color.getName()) + " Toolbox")
+                    .initialProperties(() -> Blocks.CHEST)
+                    .properties(BlockBehaviour.Properties::noOcclusion)
+                    .blockstate((ctx, prov) -> {})
+                    .item(CTPPToolboxItem::new)
+                    .model((ctx, prov) -> prov.withExistingParent(ctx.getName(),
+                            ResourceLocation.tryBuild("create", "block/toolbox/item"))
+                            .texture("0", ResourceLocation.tryBuild("create", "block/toolbox/" + color.getName())))
+                    .build()
+                    .register();
+        }
+        return result;
+    }
+
+    private static String capitalize(String value) {
+        return Character.toUpperCase(value.charAt(0)) + value.substring(1);
+    }
 
     public static BlockEntry<Block> createCasingBlock(String name, String cnName, ResourceLocation texture) {
         return createCasingBlock(name, cnName, Block::new, texture, () -> Blocks.IRON_BLOCK,
