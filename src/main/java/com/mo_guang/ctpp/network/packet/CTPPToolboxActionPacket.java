@@ -1,4 +1,4 @@
-package com.mo_guang.ctpp.common.network.packet;
+package com.mo_guang.ctpp.network.packet;
 
 import com.gregtechceu.gtceu.common.network.GTNetwork;
 

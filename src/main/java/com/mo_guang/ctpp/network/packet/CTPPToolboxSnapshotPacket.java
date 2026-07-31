@@ -1,4 +1,4 @@
-package com.mo_guang.ctpp.common.network.packet;
+package com.mo_guang.ctpp.network.packet;
 
 import com.gregtechceu.gtceu.common.network.GTNetwork;
 
@@ -6,7 +6,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 
-import com.mo_guang.ctpp.client.CTPPToolboxClientState;
+import com.mo_guang.ctpp.client.toolbox.CTPPToolboxClientState;
 import com.mo_guang.ctpp.common.toolbox.CTPPToolboxBinding;
 import com.mo_guang.ctpp.common.toolbox.CTPPToolboxSnapshot;
 import com.mo_guang.ctpp.common.toolbox.CTPPToolboxSourceId;

@@ -14,6 +14,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import com.mo_guang.ctpp.client.ponder.CTPPPonderPlugin;
 import com.mo_guang.ctpp.client.renderer.CTPPToolboxCurioRenderer;
 import com.mo_guang.ctpp.client.renderer.CTPPToolboxRenderer;
+import com.mo_guang.ctpp.client.toolbox.CTPPToolboxOverlay;
 import com.mo_guang.ctpp.common.CommonProxy;
 import com.mo_guang.ctpp.registry.CTPPBlockEntities;
 import com.mo_guang.ctpp.registry.CTPPBlocks;

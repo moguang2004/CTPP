@@ -1,6 +1,6 @@
 package com.mo_guang.ctpp.registry;
 
-import com.mo_guang.ctpp.client.CTPPToolboxScreen;
+import com.mo_guang.ctpp.client.toolbox.CTPPToolboxScreen;
 import com.mo_guang.ctpp.common.menu.CTPPToolboxMenu;
 import com.tterrag.registrate.util.entry.MenuEntry;
 

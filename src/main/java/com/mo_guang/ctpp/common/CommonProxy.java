@@ -23,13 +23,13 @@ import com.mo_guang.ctpp.CTPPRegistration;
 import com.mo_guang.ctpp.api.CTPPRecipeConditions;
 import com.mo_guang.ctpp.client.ponder.CTPPPonderPlugin;
 import com.mo_guang.ctpp.common.data.GTArmInteractionPointTypes;
-import com.mo_guang.ctpp.common.network.CTPPNetwork;
 import com.mo_guang.ctpp.config.MainConfig;
 import com.mo_guang.ctpp.data.CTPPDatagen;
 import com.mo_guang.ctpp.data.recipe.builder.CTPPRecipeProvider;
 import com.mo_guang.ctpp.data.recipe.fanprocessing.CTPPFanProcessingTypes;
 import com.mo_guang.ctpp.data.recipe.fanprocessing.CTPPRecipeTypeInfo;
 import com.mo_guang.ctpp.registry.*;
+import com.mo_guang.ctpp.registry.CTPPNetwork;
 import com.simibubi.create.api.registry.CreateBuiltInRegistries;
 import tech.vixhentx.mcmod.ctnhlib.client.ponder.CTNHPonderLang;
 

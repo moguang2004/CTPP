@@ -14,12 +14,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.SlotItemHandler;
 
 import com.mo_guang.ctpp.common.blockentity.CTPPToolboxBlockEntity;
-import com.mo_guang.ctpp.common.network.packet.CTPPToolboxMenuFiltersPacket;
 import com.mo_guang.ctpp.common.toolbox.CTPPToolboxBindings;
 import com.mo_guang.ctpp.common.toolbox.CTPPToolboxInventory;
 import com.mo_guang.ctpp.common.toolbox.CTPPToolboxOperations;
 import com.mo_guang.ctpp.common.toolbox.CTPPToolboxService;
 import com.mo_guang.ctpp.common.toolbox.CTPPToolboxSourceId;
+import com.mo_guang.ctpp.network.packet.CTPPToolboxMenuFiltersPacket;
 import com.mo_guang.ctpp.registry.CTPPMenus;
 
 import java.util.ArrayList;

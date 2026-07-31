@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.common.network.GTNetwork;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 
-import com.mo_guang.ctpp.common.network.packet.CTPPToolboxBindingsPacket;
+import com.mo_guang.ctpp.network.packet.CTPPToolboxBindingsPacket;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.LinkedHashMap;

@@ -1,4 +1,4 @@
-package com.mo_guang.ctpp.client;
+package com.mo_guang.ctpp.client.toolbox;
 
 import com.gregtechceu.gtceu.common.network.GTNetwork;
 
@@ -11,9 +11,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 
-import com.mo_guang.ctpp.common.network.packet.CTPPToolboxActionPacket;
 import com.mo_guang.ctpp.common.toolbox.CTPPToolboxBinding;
 import com.mo_guang.ctpp.common.toolbox.CTPPToolboxSnapshot;
+import com.mo_guang.ctpp.network.packet.CTPPToolboxActionPacket;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.simibubi.create.AllKeys;
 import com.simibubi.create.foundation.gui.AllGuiTextures;

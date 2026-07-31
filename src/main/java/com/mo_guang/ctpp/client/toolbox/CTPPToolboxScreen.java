@@ -1,4 +1,4 @@
-package com.mo_guang.ctpp.client;
+package com.mo_guang.ctpp.client.toolbox;
 
 import com.gregtechceu.gtceu.common.network.GTNetwork;
 
@@ -14,10 +14,10 @@ import net.minecraft.world.item.ItemStack;
 
 import com.mo_guang.ctpp.common.block.CTPPToolboxBlock;
 import com.mo_guang.ctpp.common.menu.CTPPToolboxMenu;
-import com.mo_guang.ctpp.common.network.packet.CTPPToolboxActionPacket;
 import com.mo_guang.ctpp.common.toolbox.CTPPToolboxInventory;
 import com.mo_guang.ctpp.common.toolbox.CTPPToolboxSounds;
 import com.mo_guang.ctpp.common.toolbox.CTPPToolboxSourceId;
+import com.mo_guang.ctpp.network.packet.CTPPToolboxActionPacket;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.simibubi.create.AllPartialModels;

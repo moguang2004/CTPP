@@ -1,15 +1,15 @@
-package com.mo_guang.ctpp.common.network;
+package com.mo_guang.ctpp.registry;
 
 import com.gregtechceu.gtceu.common.network.GTNetwork;
 
 import net.minecraftforge.network.NetworkDirection;
 
-import com.mo_guang.ctpp.common.network.packet.CTPPToolboxActionPacket;
-import com.mo_guang.ctpp.common.network.packet.CTPPToolboxBindingsPacket;
-import com.mo_guang.ctpp.common.network.packet.CTPPToolboxMenuFiltersPacket;
-import com.mo_guang.ctpp.common.network.packet.CTPPToolboxOpenNearestPacket;
-import com.mo_guang.ctpp.common.network.packet.CTPPToolboxSnapshotPacket;
-import com.mo_guang.ctpp.common.network.packet.CTPPToolboxSnapshotRequestPacket;
+import com.mo_guang.ctpp.network.packet.CTPPToolboxActionPacket;
+import com.mo_guang.ctpp.network.packet.CTPPToolboxBindingsPacket;
+import com.mo_guang.ctpp.network.packet.CTPPToolboxMenuFiltersPacket;
+import com.mo_guang.ctpp.network.packet.CTPPToolboxOpenNearestPacket;
+import com.mo_guang.ctpp.network.packet.CTPPToolboxSnapshotPacket;
+import com.mo_guang.ctpp.network.packet.CTPPToolboxSnapshotRequestPacket;
 
 public final class CTPPNetwork {
 

@@ -1,4 +1,4 @@
-package com.mo_guang.ctpp.client;
+package com.mo_guang.ctpp.client.toolbox;
 
 import com.gregtechceu.gtceu.common.network.GTNetwork;
 
@@ -9,8 +9,8 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 import com.mo_guang.ctpp.CTPP;
-import com.mo_guang.ctpp.common.network.packet.CTPPToolboxOpenNearestPacket;
-import com.mo_guang.ctpp.common.network.packet.CTPPToolboxSnapshotRequestPacket;
+import com.mo_guang.ctpp.network.packet.CTPPToolboxOpenNearestPacket;
+import com.mo_guang.ctpp.network.packet.CTPPToolboxSnapshotRequestPacket;
 import com.simibubi.create.AllKeys;
 
 import static com.mo_guang.ctpp.client.ClientProxy.OPEN_NEAREST;

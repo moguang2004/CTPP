@@ -1,4 +1,4 @@
-package com.mo_guang.ctpp.client;
+package com.mo_guang.ctpp.client.toolbox;
 
 import net.createmod.catnip.gui.ScreenOpener;
 
