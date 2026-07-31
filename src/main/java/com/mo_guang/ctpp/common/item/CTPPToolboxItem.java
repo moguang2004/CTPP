@@ -1,6 +1,6 @@
 package com.mo_guang.ctpp.common.item;
 
-import com.gregtechceu.gtceu.api.item.IToolboxItem;
+import com.gregtechceu.gtceu.api.item.ICustomToolIngredient;
 import com.gregtechceu.gtceu.api.item.component.IRecipeRemainder;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
@@ -38,7 +38,7 @@ import tech.vixhentx.mcmod.ctnhlib.langprovider.Lang;
 import java.util.List;
 import java.util.UUID;
 
-public class CTPPToolboxItem extends BlockItem implements IToolboxItem, IRecipeRemainder {
+public class CTPPToolboxItem extends BlockItem implements ICustomToolIngredient, IRecipeRemainder {
 
     @CN("工具箱为空")
     @EN("Toolbox is empty")
@@ -120,6 +120,11 @@ public class CTPPToolboxItem extends BlockItem implements IToolboxItem, IRecipeR
             }
         }
         return false;
+    }
+
+    @Override
+    public void markLastUsedTool(ItemStack stack, GTToolType toolType) {
+        stack.getOrCreateTag().putString(CTPPToolboxStackData.LAST_USED_TOOL, toolType.name);
     }
 
     @Override
