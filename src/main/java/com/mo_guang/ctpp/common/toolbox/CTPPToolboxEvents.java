@@ -12,7 +12,15 @@ public final class CTPPToolboxEvents {
         if (event.phase != TickEvent.Phase.END || event.player.level().isClientSide ||
                 !(event.player instanceof ServerPlayer player) || player.tickCount % 5 != 0)
             return;
-        CTPPToolboxBindings.get(player).forEach((slot, binding) -> CTPPToolboxOperations.refill(player, slot, binding));
+        CTPPToolboxBindings.get(player).forEach((slot, binding) -> {
+            if (binding.source().type() == CTPPToolboxSourceId.Type.BLOCK &&
+                    (binding.source().blockPos() == null ||
+                            binding.source().blockPos().distSqr(player.blockPosition()) > 64 * 64)) {
+                CTPPToolboxOperations.unequip(player, slot, true);
+            } else {
+                CTPPToolboxOperations.refill(player, slot, binding);
+            }
+        });
     }
 
     @SubscribeEvent

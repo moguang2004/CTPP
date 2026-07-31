@@ -34,9 +34,12 @@ public final class CTPPToolboxRenderer extends SmartBlockEntityRenderer<CTPPTool
                 .rotateXDegrees(135 * toolbox.lid.getValue(partialTicks))
                 .translate(0, -6 / 16f, -12 / 16f)
                 .light(light).renderInto(pose, consumer);
+        float drawerProgress = toolbox.drawers.getValue(partialTicks);
         for (int offset : Iterate.zeroAndOne) {
             drawer.center().rotateYDegrees(-facing.toYRot()).uncenter()
-                    .translate(0, offset / 8f, -toolbox.drawers.getValue(partialTicks) * 0.175f * (2 - offset))
+                    // CTPP reuses Create's body model, whose closed drawer faces
+                    // overlap the partial model without this small depth separation.
+                    .translate(0, offset / 8f, -0.001f - drawerProgress * 0.175f * (2 - offset))
                     .light(light).renderInto(pose, consumer);
         }
     }

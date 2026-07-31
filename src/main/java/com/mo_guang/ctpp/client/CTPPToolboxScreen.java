@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.common.network.GTNetwork;
 import net.createmod.catnip.animation.LerpedFloat;
 import net.createmod.catnip.gui.element.GuiGameElement;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
@@ -21,6 +22,8 @@ import com.simibubi.create.foundation.gui.AllGuiTextures;
 import com.simibubi.create.foundation.gui.AllIcons;
 import com.simibubi.create.foundation.gui.menu.AbstractSimiContainerScreen;
 import com.simibubi.create.foundation.gui.widget.IconButton;
+
+import java.util.List;
 
 public final class CTPPToolboxScreen extends AbstractSimiContainerScreen<CTPPToolboxMenu> {
 
@@ -130,5 +133,11 @@ public final class CTPPToolboxScreen extends AbstractSimiContainerScreen<CTPPToo
     protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
         super.renderLabels(graphics, mouseX, mouseY);
         if (hoveredToolboxSlot != null) hoveredSlot = hoveredToolboxSlot;
+    }
+
+    @Override
+    public List<Rect2i> getExtraAreas() {
+        return List.of(new Rect2i(leftPos + 30 + BACKGROUND.getWidth(),
+                topPos + BACKGROUND.getHeight() - 55, 72, 68));
     }
 }

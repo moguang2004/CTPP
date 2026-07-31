@@ -102,6 +102,39 @@ public final class CTPPToolboxService {
         return result;
     }
 
+    public static java.util.Optional<Resolved> findNearest(ServerPlayer player) {
+        var curios = CuriosApi.getCuriosInventory(player).resolve().orElse(null);
+        if (curios != null) {
+            var handler = curios.getEquippedCurios();
+            for (int slot = 0; slot < handler.getSlots(); slot++) {
+                ItemStack stack = handler.getStackInSlot(slot);
+                if (stack.getItem() instanceof CTPPToolboxItem) {
+                    CTPPToolboxSavedData.Record record = ensure(stack, player.serverLevel());
+                    return java.util.Optional.of(new Resolved(new CTPPToolboxSourceId(
+                            CTPPToolboxSourceId.Type.CURIOS, slot, record.id(), null), record,
+                            stack.copy(), stack.getHoverName(), stack));
+                }
+            }
+        }
+        for (int slot = 0; slot < player.getInventory().getContainerSize(); slot++) {
+            ItemStack stack = player.getInventory().getItem(slot);
+            if (stack.getItem() instanceof CTPPToolboxItem) {
+                CTPPToolboxSavedData.Record record = ensure(stack, player.serverLevel());
+                return java.util.Optional.of(new Resolved(new CTPPToolboxSourceId(
+                        CTPPToolboxSourceId.Type.PLAYER_INVENTORY, slot, record.id(), null), record,
+                        stack.copy(), stack.getHoverName(), stack));
+            }
+        }
+        return CTPPToolboxBlockRegistry.nearby(player).stream().findFirst().flatMap(block -> {
+            UUID id = block.getToolboxId();
+            CTPPToolboxSavedData.Record record = id == null ? null :
+                    CTPPToolboxSavedData.get(player.serverLevel()).find(id);
+            return record == null ? java.util.Optional.empty() : java.util.Optional.of(new Resolved(
+                    new CTPPToolboxSourceId(CTPPToolboxSourceId.Type.BLOCK, -1, id, block.getBlockPos()),
+                    record, block.getDisplayStack(), block.getDisplayName(), ItemStack.EMPTY));
+        });
+    }
+
     private static ItemStack inventoryStack(Player player, int slot) {
         return slot >= 0 && slot < player.getInventory().getContainerSize() ?
                 player.getInventory().getItem(slot) : ItemStack.EMPTY;

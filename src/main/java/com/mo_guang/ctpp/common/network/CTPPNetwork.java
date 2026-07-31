@@ -7,6 +7,7 @@ import net.minecraftforge.network.NetworkDirection;
 import com.mo_guang.ctpp.common.network.packet.CTPPToolboxActionPacket;
 import com.mo_guang.ctpp.common.network.packet.CTPPToolboxBindingsPacket;
 import com.mo_guang.ctpp.common.network.packet.CTPPToolboxMenuFiltersPacket;
+import com.mo_guang.ctpp.common.network.packet.CTPPToolboxOpenNearestPacket;
 import com.mo_guang.ctpp.common.network.packet.CTPPToolboxSnapshotPacket;
 import com.mo_guang.ctpp.common.network.packet.CTPPToolboxSnapshotRequestPacket;
 
@@ -18,6 +19,8 @@ public final class CTPPNetwork {
         GTNetwork.register(CTPPToolboxActionPacket.class, CTPPToolboxActionPacket::new,
                 NetworkDirection.PLAY_TO_SERVER);
         GTNetwork.register(CTPPToolboxSnapshotRequestPacket.class, CTPPToolboxSnapshotRequestPacket::new,
+                NetworkDirection.PLAY_TO_SERVER);
+        GTNetwork.register(CTPPToolboxOpenNearestPacket.class, CTPPToolboxOpenNearestPacket::new,
                 NetworkDirection.PLAY_TO_SERVER);
         GTNetwork.register(CTPPToolboxBindingsPacket.class, CTPPToolboxBindingsPacket::new,
                 NetworkDirection.PLAY_TO_CLIENT);
