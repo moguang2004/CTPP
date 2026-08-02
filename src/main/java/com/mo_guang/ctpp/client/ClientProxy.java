@@ -50,7 +50,7 @@ public class ClientProxy extends CommonProxy {
             BlockEntityRenderers.register(CTPPBlockEntities.GENERATOR_COIL.get(), GeneratorCoilRenderer::new);
             BlockEntityRenderers.register(CTPPBlockEntities.TOOLBOX.get(), CTPPToolboxRenderer::new);
             for (int i = 0; i < CTPPBlocks.TOOLBOXES.length; i++) {
-                CuriosRendererRegistry.register(CTPPBlocks.TOOLBOXES[0].get().asItem(),
+                CuriosRendererRegistry.register(CTPPBlocks.TOOLBOXES[i].get().asItem(),
                         () -> CTPPToolboxCurioRenderer.INSTANCE);
             }
         });
