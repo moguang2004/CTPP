@@ -45,7 +45,7 @@ public class CTPPBlocks {
                     (s) -> prov.models().getExistingFile(CTPP.id("block/machine/generator_coil/generator_coil"))))
             .tag(BlockTags.MINEABLE_WITH_PICKAXE)
             .item()
-            .transform(ModelGen.customItemModel())
+            .transform(ModelGen.customItemModel("machine", "generator_coil", "item"))
             .register();
 
     public static BlockEntry<Block> createCasingBlock(String name, String cnName, ResourceLocation texture) {
