@@ -6,8 +6,6 @@ dependencies {
     modImplementation(ctnh.creatediesel)
     modImplementation(ctnh.createvintage)
     
-    modCompileOnly(variantOf(ctnh.curios) { classifier("api") })
-
-    modLocalRuntime(ctnh.curios)
+    modImplementation(ctnh.curios)
     modLocalRuntime(ctnh.constructionwand)
 }

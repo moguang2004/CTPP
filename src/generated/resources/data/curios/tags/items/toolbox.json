@@ -1,0 +1,21 @@
+{
+  "replace": false,
+  "values": [
+    "ctpp:white_toolbox",
+    "ctpp:orange_toolbox",
+    "ctpp:magenta_toolbox",
+    "ctpp:light_blue_toolbox",
+    "ctpp:yellow_toolbox",
+    "ctpp:lime_toolbox",
+    "ctpp:pink_toolbox",
+    "ctpp:gray_toolbox",
+    "ctpp:light_gray_toolbox",
+    "ctpp:cyan_toolbox",
+    "ctpp:purple_toolbox",
+    "ctpp:blue_toolbox",
+    "ctpp:brown_toolbox",
+    "ctpp:green_toolbox",
+    "ctpp:red_toolbox",
+    "ctpp:black_toolbox"
+  ]
+}
