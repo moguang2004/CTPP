@@ -10,7 +10,7 @@ public class CTPPRecipeModifiers {
 
     public static final RecipeModifier KINETIC_PARALLEL = ((machine, group, recipe) -> {
         if (machine instanceof KineticWorkableMultiblockMachine kmachine) {
-            var parallels = CTPPParallelLogic.getKineticParallelAmount(kmachine, recipe, Integer.MAX_VALUE, false);
+            var parallels = CTPPParallelLogic.getKineticParallelAmount(group, recipe, Integer.MAX_VALUE, false);
             var failure = CTPPModifierFunction.inputStressMultiplier(parallels).apply(machine, group, recipe);
             if (failure != null) return failure;
             return CTPPModifierFunction.accurateParallel(kmachine, group, recipe, parallels);
@@ -20,7 +20,7 @@ public class CTPPRecipeModifiers {
 
     public static final RecipeModifier KINETIC_PERFECT_PARALLEL = ((machine, group, recipe) -> {
         if (machine instanceof KineticWorkableMultiblockMachine kmachine) {
-            var parallels = CTPPParallelLogic.getKineticParallelAmount(kmachine, recipe, Integer.MAX_VALUE, true);
+            var parallels = CTPPParallelLogic.getKineticParallelAmount(group, recipe, Integer.MAX_VALUE, true);
             return CTPPModifierFunction.accurateParallel(kmachine, group, recipe, parallels);
         }
         return null;

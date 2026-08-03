@@ -1,11 +1,10 @@
 package com.mo_guang.ctpp.registry;
 
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
+
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.Block;
