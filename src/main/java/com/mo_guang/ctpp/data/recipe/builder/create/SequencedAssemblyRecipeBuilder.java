@@ -193,7 +193,8 @@ public class SequencedAssemblyRecipeBuilder {
         return step("vintageimprovements:curving", json -> {
             json.add("ingredients", ingredients(itemIngredient(transitionalItem)));
             json.add("results", ingredients(itemIngredient(transitionalItem)));
-            json.addProperty("head", Objects.requireNonNull(ForgeRegistries.ITEMS.getKey(head.getItem())).toString());
+            json.addProperty("itemAsHead",
+                    Objects.requireNonNull(ForgeRegistries.ITEMS.getKey(head.getItem())).toString());
         });
     }
 
