@@ -1,10 +1,11 @@
 package com.mo_guang.ctpp.data.recipe;
 
+import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
-import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 
 import net.minecraft.data.recipes.FinishedRecipe;
@@ -43,7 +44,7 @@ public class OreProcessingRecipes {
         addOreProcessing(provider);
         addMetalMelting(provider);
         addAlloys(provider);
-        addCasting(provider);
+        addPressing(provider);
     }
 
     private static void addOreProcessing(Consumer<FinishedRecipe> provider) {
@@ -165,28 +166,24 @@ public class OreProcessingRecipes {
                 .save(provider);
     }
 
-    private static void addCasting(Consumer<FinishedRecipe> provider) {
-        Material[] metal = new Material[] {
-                CreateMaterials.AndesiteAlloy, GTMaterials.Brass, GTMaterials.Steel, GTMaterials.Silver,
-                GTMaterials.Nickel, GTMaterials.Lead,
-                GTMaterials.Tin, GTMaterials.Zinc, GTMaterials.Bronze, GTMaterials.Iron, GTMaterials.Copper,
-                GTMaterials.Gold
-        };
-        for (Material material : metal) {
-            CompactingRecipeBuilder.builder("ctpp/casting/" + material.getName() + "_ingot")
-                    .input(GTItems.SHAPE_MOLD_INGOT.asItem())
-                    .inputFluid(material.getFluid(144))
-                    .output(ChemicalHelper.get(TagPrefix.ingot, material))
-                    .save(provider);
-            CompactingRecipeBuilder.builder("ctpp/casting/" + material.getName() + "_plate")
-                    .input(GTItems.SHAPE_MOLD_INGOT.asItem())
-                    .inputFluid(material.getFluid(216))
-                    .output(ChemicalHelper.get(TagPrefix.ingot, material))
-                    .save(provider);
-            CompactingRecipeBuilder.builder("ctpp/casting/" + material.getName() + "_block")
-                    .input(GTItems.SHAPE_MOLD_INGOT.asItem())
-                    .inputFluid(material.getFluid(1296))
-                    .output(ChemicalHelper.get(TagPrefix.ingot, material))
+    /**
+     * Create 冲压机（机械动力压片）配方：1 个锭 → 1 个对应板材。
+     * 与 GTCEu 卷板机锭→板材配方使用相同的材料判定条件，覆盖所有已定义可压板材料。
+     */
+    private static void addPressing(Consumer<FinishedRecipe> provider) {
+        for (Material material : GTCEuAPI.materialManager.getRegisteredMaterials()) {
+            if (!material.hasProperty(PropertyKey.INGOT) || !material.hasFlag(MaterialFlags.GENERATE_PLATE) ||
+                    material.hasFlag(MaterialFlags.NO_WORKING) || material.hasFlag(MaterialFlags.NO_SMASHING)) {
+                continue;
+            }
+            ItemStack ingot = ChemicalHelper.get(TagPrefix.ingot, material);
+            ItemStack plate = ChemicalHelper.get(TagPrefix.plate, material);
+            if (ingot.isEmpty() || plate.isEmpty()) {
+                continue;
+            }
+            PressingRecipeBuilder.builder(material.getName())
+                    .input(ingot)
+                    .output(plate)
                     .save(provider);
         }
     }
