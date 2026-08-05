@@ -1,7 +1,6 @@
 package com.mo_guang.ctpp.data.recipe;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.common.data.*;
@@ -15,9 +14,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 
 import com.mo_guang.ctpp.CTPP;
-import com.mo_guang.ctpp.registry.CTPPBlocks;
 import com.mo_guang.ctpp.registry.CTPPMachines;
-import com.mo_guang.ctpp.registry.CreateMaterials;
 import com.simibubi.create.AllBlocks;
 import com.tterrag.registrate.util.entry.ItemProviderEntry;
 
@@ -71,24 +68,6 @@ public class CTPPRecipes {
                 'B', GTMaterialItems.MATERIAL_ITEMS.get(TagPrefix.plate, GTMaterials.Iron).asStack(),
                 'C', GTMachines.ITEM_IMPORT_BUS[GTValues.ULV].asStack(),
                 'D', Items.GLASS_PANE.getDefaultInstance());
-
-        VanillaRecipeHelper.addShapedRecipe(provider, CTPP.id("carbon_brushes"), CTPPMachines.CARBON_BRUSHES.asStack(),
-                "ABA",
-                "CDC",
-                "ABA",
-                'A', ChemicalHelper.get(rod, GTMaterials.Iron),
-                'B', ChemicalHelper.get(plate, CreateMaterials.AndesiteAlloy),
-                'C', ChemicalHelper.get(dust, GTMaterials.Coke),
-                'D', AllBlocks.SHAFT.asStack());
-
-        VanillaRecipeHelper.addShapedRecipe(provider, CTPP.id("generator_coil"), CTPPBlocks.GENERATOR_COIL.asStack(),
-                "ABA",
-                "CDC",
-                "ABA",
-                'A', ChemicalHelper.get(rod, GTMaterials.Copper),
-                'B', ChemicalHelper.get(plate, GTMaterials.Iron),
-                'C', ChemicalHelper.get(rod, GTMaterials.Iron),
-                'D', AllBlocks.SHAFT.asStack());
     }
 
     public static void registerMachineRecipe(Consumer<FinishedRecipe> provider, boolean setMaterialInfoData,
