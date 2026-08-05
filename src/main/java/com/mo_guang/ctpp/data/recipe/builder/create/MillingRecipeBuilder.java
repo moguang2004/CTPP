@@ -40,11 +40,19 @@ public class MillingRecipeBuilder {
     private final List<ResultEntry> results = new ArrayList<>();
 
     public MillingRecipeBuilder(String name) {
-        this.id = CTPP.id(name);
+        this(CTPP.id(name));
+    }
+
+    public MillingRecipeBuilder(ResourceLocation id) {
+        this.id = id;
     }
 
     public static MillingRecipeBuilder builder(String name) {
         return new MillingRecipeBuilder(name);
+    }
+
+    public static MillingRecipeBuilder builder(ResourceLocation id) {
+        return new MillingRecipeBuilder(id);
     }
 
     public MillingRecipeBuilder input(ItemStack stack) {
