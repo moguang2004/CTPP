@@ -15,6 +15,7 @@
     "create.diesel.BasinFermentingCategoryMixin",
     "create.diesel.BasinRecipeMixin",
     "create.diesel.CDGJEIMixin",
+    "create.diesel.DistillationTankBlockEntityMixin",
     "create.fix.DeployerApplicationRecipeMixin$BasinBlockEntityMixin",
     "create.fix.DeployerApplicationRecipeMixin$BrassTunnelBlockEntityMixin",
     "create.fix.DeployerApplicationRecipeMixin$ChuteBlockEntityMixin",
