@@ -28,11 +28,19 @@ public class ItemApplicationRecipeBuilder {
     private ItemStack result;
 
     public ItemApplicationRecipeBuilder(String name) {
-        this.id = CTPP.id(name);
+        this(CTPP.id(name));
+    }
+
+    public ItemApplicationRecipeBuilder(ResourceLocation id) {
+        this.id = id;
     }
 
     public static ItemApplicationRecipeBuilder builder(String name) {
         return new ItemApplicationRecipeBuilder(name);
+    }
+
+    public static ItemApplicationRecipeBuilder builder(ResourceLocation id) {
+        return new ItemApplicationRecipeBuilder(id);
     }
 
     public ItemApplicationRecipeBuilder input(ItemStack stack) {

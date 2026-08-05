@@ -19,4 +19,8 @@ public class HammerRecipeBuilder extends CTPPProcessingRecipeBuilder<HammerRecip
     public static HammerRecipeBuilder builder(String path) {
         return new HammerRecipeBuilder(path);
     }
+
+    public static HammerRecipeBuilder builder(ResourceLocation id) {
+        return new HammerRecipeBuilder(id);
+    }
 }
