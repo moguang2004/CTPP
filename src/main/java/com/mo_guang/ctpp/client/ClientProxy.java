@@ -11,6 +11,9 @@ import net.minecraftforge.client.settings.KeyModifier;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
+import com.ctnhlang.CN;
+import com.ctnhlang.EN;
+import com.ctnhlang.Key;
 import com.mo_guang.ctpp.client.ponder.CTPPPonderPlugin;
 import com.mo_guang.ctpp.client.renderer.CTPPToolboxCurioRenderer;
 import com.mo_guang.ctpp.client.renderer.CTPPToolboxRenderer;
@@ -20,6 +23,7 @@ import com.mo_guang.ctpp.registry.CTPPBlockEntities;
 import com.mo_guang.ctpp.registry.CTPPBlocks;
 import com.mojang.blaze3d.platform.InputConstants;
 import dev.engine_room.flywheel.lib.visualization.SimpleBlockEntityVisualizer;
+import tech.vixhentx.mcmod.ctnhlib.langprovider.Lang;
 import top.theillusivec4.curios.api.client.CuriosRendererRegistry;
 
 public class ClientProxy extends CommonProxy {
@@ -28,10 +32,14 @@ public class ClientProxy extends CommonProxy {
         super();
     }
 
-    public static final KeyMapping OPEN_NEAREST = new KeyMapping("key.ctpp.open_nearest_toolbox",
+    @Key("key.ctpp.open_nearest_toolbox")
+    @EN("Open the toolbox in inventory or near by")
+    @CN("打开身上或附近的工具箱")
+    static Lang openToolbox;
+
+    public static final KeyMapping OPEN_NEAREST = new KeyMapping(openToolbox.key(),
             KeyConflictContext.IN_GAME, KeyModifier.SHIFT,
-            InputConstants.Type.KEYSYM.getOrCreate(InputConstants.KEY_B),
-            "key.categories.ctpp");
+            InputConstants.Type.KEYSYM.getOrCreate(InputConstants.KEY_B), "CT++");
 
     @SubscribeEvent
     public void registerKeyMappings(RegisterKeyMappingsEvent event) {

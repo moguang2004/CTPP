@@ -15,12 +15,10 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 
 import com.mo_guang.ctpp.CTPP;
-import com.mo_guang.ctpp.data.recipe.builder.ctpp.MetalSmeltingRecipeBuilder;
 import com.mo_guang.ctpp.registry.CTPPBlocks;
 import com.mo_guang.ctpp.registry.CTPPMachines;
 import com.mo_guang.ctpp.registry.CreateMaterials;
 import com.simibubi.create.AllBlocks;
-import com.simibubi.create.content.processing.recipe.HeatCondition;
 import com.tterrag.registrate.util.entry.ItemProviderEntry;
 
 import java.util.Arrays;
@@ -91,20 +89,6 @@ public class CTPPRecipes {
                 'B', ChemicalHelper.get(plate, GTMaterials.Iron),
                 'C', ChemicalHelper.get(rod, GTMaterials.Iron),
                 'D', AllBlocks.SHAFT.asStack());
-
-        new MetalSmeltingRecipeBuilder("test1")
-                .input(ChemicalHelper.get(crushed, GTMaterials.Iron))
-                .outputFluid(GTMaterials.Iron.getFluid(144))
-                .outputFluid(CreateMaterials.SLAG.getFluid(10))
-                .heat(HeatCondition.SUPERHEATED)
-                .duration(100)
-                .save(provider);
-
-        new MetalSmeltingRecipeBuilder("test2")
-                .inputFluid(GTMaterials.Iron.getFluid(144))
-                .output(ChemicalHelper.get(ingot, GTMaterials.Iron))
-                .duration(100)
-                .save(provider);
     }
 
     public static void registerMachineRecipe(Consumer<FinishedRecipe> provider, boolean setMaterialInfoData,

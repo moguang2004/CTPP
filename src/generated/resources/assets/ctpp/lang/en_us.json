@@ -252,6 +252,7 @@
   "item.ctpp.incomplete_basic_mechanism": "Incomplete Basic Mechanism",
   "item.ctpp.incomplete_steel_mechanism": "Incomplete Steel Mechanism",
   "item.ctpp.steel_mechanism": "Steel Mechanism",
+  "key.ctpp.open_nearest_toolbox": "Open the toolbox in inventory or near by",
   "machine.ctpp.ctppmachines.carbon_brushes": "Energy Output for Generator Coil",
   "machine.ctpp.ctppmachines.kineticinputboxtooltip": "Kinetic Effect：%s su",
   "machine.ctpp.ctppmachines.kineticoutputboxtooltip": "Kinetic Effect：%s su",

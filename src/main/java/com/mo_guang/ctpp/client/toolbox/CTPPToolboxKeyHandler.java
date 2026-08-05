@@ -2,9 +2,11 @@ package com.mo_guang.ctpp.client.toolbox;
 
 import com.gregtechceu.gtceu.common.network.GTNetwork;
 
+import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.InputEvent;
+import net.minecraftforge.client.settings.KeyModifier;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -20,7 +22,7 @@ public final class CTPPToolboxKeyHandler {
 
     @SubscribeEvent
     public static void onKeyInput(InputEvent.Key event) {
-        if (event.getAction() == 1 && OPEN_NEAREST.matches(event.getKey(), event.getScanCode()) &&
+        if (event.getAction() == 1 && doesModifierAndCodeMatch(OPEN_NEAREST, event.getKey()) &&
                 Minecraft.getInstance().player != null && Minecraft.getInstance().screen == null) {
             GTNetwork.sendToServer(new CTPPToolboxOpenNearestPacket());
             return;
@@ -28,5 +30,19 @@ public final class CTPPToolboxKeyHandler {
         if (event.getAction() != 1 || !AllKeys.TOOLBELT.doesModifierAndCodeMatch(event.getKey())) return;
         if (Minecraft.getInstance().player == null || Minecraft.getInstance().screen != null) return;
         GTNetwork.sendToServer(new CTPPToolboxSnapshotRequestPacket());
+    }
+
+    public static boolean doesModifierAndCodeMatch(KeyMapping keybind, int code) {
+        boolean codeMatches = code == keybind.getKey().getValue();
+
+        boolean modifierMatches;
+        KeyModifier modifier = keybind.getKeyModifier();
+        if (modifier == KeyModifier.NONE) {
+            modifierMatches = true;
+        } else {
+            modifierMatches = modifier.equals(KeyModifier.getActiveModifier());
+        }
+
+        return codeMatches && modifierMatches;
     }
 }

@@ -258,6 +258,7 @@
   "item.ctpp.incomplete_basic_mechanism": "未完成的基础构件",
   "item.ctpp.incomplete_steel_mechanism": "未完成的钢铁构件",
   "item.ctpp.steel_mechanism": "钢铁构件",
+  "key.ctpp.open_nearest_toolbox": "打开身上或附近的工具箱",
   "machine.ctpp.ctppmachines.carbon_brushes": "输出发电机线圈产生的能量",
   "machine.ctpp.ctppmachines.kineticinputboxtooltip": "应力影响：%s su",
   "machine.ctpp.ctppmachines.kineticoutputboxtooltip": "应力影响：%s su",
