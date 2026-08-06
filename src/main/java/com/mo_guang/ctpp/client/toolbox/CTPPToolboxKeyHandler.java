@@ -32,6 +32,7 @@ public final class CTPPToolboxKeyHandler {
         GTNetwork.sendToServer(new CTPPToolboxSnapshotRequestPacket());
     }
 
+    @SuppressWarnings("removal")
     public static boolean doesModifierAndCodeMatch(KeyMapping keybind, int code) {
         boolean codeMatches = code == keybind.getKey().getValue();
 
