@@ -18,10 +18,10 @@ public class BlockTags {
     public static void init(RegistrateTagsProvider<Block> provider) {
         create(provider, AllTags.AllBlockTags.FAN_TRANSPARENT.tag, Blocks.DRAGON_HEAD, Blocks.DRAGON_WALL_HEAD);
         create(provider, CustomTags.CATALYST_BREATHING, Blocks.DRAGON_HEAD, Blocks.DRAGON_WALL_HEAD);
-        createOptional(provider, CustomTags.MAGNET_TIER_1, GTCEu.id("magnetic_iron_block"));
-        createOptional(provider, CustomTags.MAGNET_TIER_2, GTCEu.id("magnetic_steel_block"));
-        createOptional(provider, CustomTags.MAGNET_TIER_3);
-        createOptional(provider, CustomTags.MAGNET_TIER_4);
+        createOptional(provider, CustomTags.MAGNET_TIER_1, GTCEu.id("raw_magnetite_block"));
+        createOptional(provider, CustomTags.MAGNET_TIER_2, GTCEu.id("magnetic_iron_block"));
+        createOptional(provider, CustomTags.MAGNET_TIER_3, GTCEu.id("magnetic_steel_block"));
+        createOptional(provider, CustomTags.MAGNET_TIER_4, GTCEu.id("magnetic_neodymium_block"));
         createOptional(provider, CustomTags.MAGNET_TIER_5);
     }
 
