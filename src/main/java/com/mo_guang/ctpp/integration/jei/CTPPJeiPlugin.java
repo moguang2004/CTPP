@@ -20,7 +20,6 @@ import com.jesz.createdieselgenerators.compat.jei.BasinFermentingCategory;
 import com.mo_guang.ctpp.CTPP;
 import com.mo_guang.ctpp.common.kinetic.fan.acidwashing.AcidwashingRecipe;
 import com.mo_guang.ctpp.common.kinetic.fan.breathing.BreathingRecipe;
-import com.mo_guang.ctpp.data.recipe.builder.ctpp.MetalSmeltingRecipeBuilder;
 import com.mo_guang.ctpp.data.recipe.fanprocessing.CTPPRecipeTypeInfo;
 import com.mo_guang.ctpp.integration.jei.category.FanAcidWashingCategory;
 import com.mo_guang.ctpp.integration.jei.category.FanBreathingCategory;
@@ -79,10 +78,6 @@ public class CTPPJeiPlugin implements IModPlugin {
     @EN("Fermenting")
     private static Lang basinFermentingCategory;
 
-    @CN("金属冶炼")
-    @EN("Metal Smelting")
-    private static Lang metalSmeltingCategory;
-
     private final List<CreateRecipeCategory<?>> categories = new ArrayList<>();
 
     @Override
@@ -118,16 +113,6 @@ public class CTPPJeiPlugin implements IModPlugin {
                 .doubleItemIcon(AllBlocks.BASIN.get(), CDGBlocks.BASIN_LID.get())
                 .emptyBackground(177, 100)
                 .build("basin_fermenting", basinFermentingCategory.translate(), BasinFermentingCategory::new);
-
-        CreateRecipeCategory<?> metal_smelting = builder(BasinRecipe.class)
-                .addTypedRecipesIf(CDGRecipes.BASIN_FERMENTING::getType,
-                        r -> r.getId().getPath().startsWith(MetalSmeltingRecipeBuilder.TYPE))
-                .catalyst(CDGBlocks.BASIN_LID::get)
-                .catalyst(AllBlocks.BASIN::get)
-                .doubleItemIcon(AllBlocks.BASIN.get(), Items.IRON_INGOT)
-                .emptyBackground(177, 100)
-                .build(MetalSmeltingRecipeBuilder.TYPE, metalSmeltingCategory.translate(),
-                        BasinFermentingCategory::new);
     }
 
     @Override
