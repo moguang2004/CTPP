@@ -60,8 +60,10 @@ import java.util.Set;
 
 public class KineticMachineBlockEntity extends KineticBlockEntity implements IMachineBlockEntity, IManaged {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = ManagedFieldHolderMap.createManagedFieldHolder(
-            KineticMachineBlockEntity.class);
+    static {
+        ManagedFieldHolderMap.createManagedFieldHolder(KineticMachineBlockEntity.class);
+    }
+
     public final MultiManagedStorage managedStorage = new MultiManagedStorage();
 
     @Getter

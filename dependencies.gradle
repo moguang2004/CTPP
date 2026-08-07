@@ -9,7 +9,5 @@ dependencies {
     modImplementation(ctnh.curios)
     modLocalRuntime(ctnh.constructionwand)
 
-    // GregTech Construct (local patched build)：匠魂熔化配方
-    modImplementation("extra-mods:GregTech-Construct-3.11.2.180:3.11.2.180")
     modImplementation(ctnh.mantle)
 }
