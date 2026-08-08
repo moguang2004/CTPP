@@ -3,6 +3,7 @@ package com.mo_guang.ctpp.common.machine.multiblock;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.phys.Vec3;
 
 import com.mo_guang.ctpp.dynamicPart.rotation.IContraptionMultiblock;
@@ -31,7 +32,7 @@ public class BigDamMachine extends KineticOutputMachine
     public void onStructureFormed() {
         super.onStructureFormed();
         // assemble rotating entities using interface helper
-        createAndAttachRotatingEntities(MachineUtils.getOffset(this, 0, 6, 9));
+        createAndAttachRotatingEntities(MachineUtils.getOffset(this, 0, 6, 9), getContraptionRotationAxis());
         contraptionEntity.forEach(entity -> {
             var facing = getFrontFacing().getNormal();
             Vec3 newF = new Vec3(facing.getX(), facing.getY(), facing.getZ());
@@ -64,7 +65,11 @@ public class BigDamMachine extends KineticOutputMachine
 
     @Override
     public Map<Integer, SimpleRotatingContraptionEntity> assemble(BlockPos pivot) {
-        return assembleFromPattern(pivot);
+        return assembleFromPattern(pivot, getContraptionRotationAxis());
+    }
+
+    private Direction.Axis getContraptionRotationAxis() {
+        return getFrontFacing().getAxis() == Direction.Axis.Z ? Direction.Axis.X : Direction.Axis.Z;
     }
 
     @Override

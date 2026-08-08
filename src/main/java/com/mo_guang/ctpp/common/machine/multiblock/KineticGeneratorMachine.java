@@ -16,6 +16,7 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.phys.Vec3;
 
@@ -70,7 +71,7 @@ public class KineticGeneratorMachine extends KineticWorkableMultiblockMachine
         }
         efficiency = getEfficiency();
         // assemble rotating entities using interface helper
-        createAndAttachRotatingEntities(MachineUtils.getOffset(this, 2, 0, 1));
+        createAndAttachRotatingEntities(MachineUtils.getOffset(this, 2, 0, 1), getContraptionRotationAxis());
     }
 
     @Override
@@ -162,7 +163,11 @@ public class KineticGeneratorMachine extends KineticWorkableMultiblockMachine
     }
 
     public Map<Integer, SimpleRotatingContraptionEntity> assemble(BlockPos pivot) {
-        return assembleFromPattern(pivot);
+        return assembleFromPattern(pivot, getContraptionRotationAxis());
+    }
+
+    private Direction.Axis getContraptionRotationAxis() {
+        return getFrontFacing().getAxis() == Direction.Axis.Z ? Direction.Axis.X : Direction.Axis.Z;
     }
 
     @Override

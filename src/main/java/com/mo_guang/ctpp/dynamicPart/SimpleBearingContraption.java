@@ -42,9 +42,7 @@ public class SimpleBearingContraption extends Contraption {
             return false;
 
         startMoving(world);
-        expandBoundsAroundAxis(Direction.Axis.X);
-        expandBoundsAroundAxis(Direction.Axis.Y);
-        expandBoundsAroundAxis(Direction.Axis.Z);
+        expandBoundsAroundAxis(facing.getAxis());
         return true;
     }
 

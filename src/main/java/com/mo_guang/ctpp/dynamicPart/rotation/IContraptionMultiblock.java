@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.lowdragmc.lowdraglib.utils.TrackedDummyWorld;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.AABB;
 
@@ -81,6 +82,16 @@ public interface IContraptionMultiblock<T extends SimpleRotatingContraptionEntit
      */
     @SuppressWarnings("unchecked")
     default Map<Integer, T> assembleFromPattern(BlockPos pivot) {
+        return assembleFromPattern(pivot, null);
+    }
+
+    /**
+     * Assemble dynamic parts with bounds expanded only around their fixed
+     * rotation axis. Passing null keeps the all-axis bounds for contraptions that
+     * can rotate around more than one axis.
+     */
+    @SuppressWarnings("unchecked")
+    default Map<Integer, T> assembleFromPattern(BlockPos pivot, Direction.Axis rotationAxis) {
         if (self().getLevel() instanceof TrackedDummyWorld) return null;
         if (self().getLevel().isClientSide) return null;
         Map<Integer, T> ce = new HashMap<>();
@@ -93,7 +104,7 @@ public interface IContraptionMultiblock<T extends SimpleRotatingContraptionEntit
                         .filter(pos -> !self().getLevel().getBlockState(pos).isAir())
                         .toList();
                 if (part.isEmpty()) continue;
-                SimpleRotatingContraption contraption = new SimpleRotatingContraption(part, pivot);
+                SimpleRotatingContraption contraption = new SimpleRotatingContraption(part, pivot, rotationAxis);
                 contraption.assemble(this.self().getLevel(), self().getPos());
                 contraption.removeBlocksFromWorld(this.self().getLevel(), BlockPos.ZERO);
                 SimpleRotatingContraptionEntity contraptionEntity = SimpleRotatingContraptionEntity
@@ -112,11 +123,20 @@ public interface IContraptionMultiblock<T extends SimpleRotatingContraptionEntit
      * Will only create entities on server and non-dummy worlds, and only if no rotating entities exist yet.
      */
     default void createAndAttachRotatingEntities(BlockPos pivot) {
+        createAndAttachRotatingEntities(pivot, null);
+    }
+
+    /**
+     * Assemble and attach rotating entities with an optional fixed rotation
+     * axis. A null axis retains the conservative behavior for dynamic-axis
+     * contraptions.
+     */
+    default void createAndAttachRotatingEntities(BlockPos pivot, Direction.Axis rotationAxis) {
         if (self().getLevel() instanceof TrackedDummyWorld) return;
         if (self().getLevel().isClientSide) return;
         if (getContraptionEntity() == null) setContraptionEntity(new ArrayList<>());
         if (!getContraptionEntity().isEmpty()) return;
-        Map<Integer, T> map = assembleFromPattern(pivot);
+        Map<Integer, T> map = assembleFromPattern(pivot, rotationAxis);
         if (map != null && !map.isEmpty()) {
             setContraptionEntity(new ArrayList<>(map.values()));
         }

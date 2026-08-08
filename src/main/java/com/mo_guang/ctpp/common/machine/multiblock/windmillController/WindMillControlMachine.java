@@ -11,6 +11,7 @@ import com.lowdragmc.lowdraglib.gui.widget.ComponentPanelWidget;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -109,7 +110,7 @@ public class WindMillControlMachine extends KineticOutputMachine
             windmillData.registerFormedController(this.getPos());
         }
         // assemble rotating entities (use interface helper)
-        createAndAttachRotatingEntities(MachineUtils.getOffset(this, 0, 5, 5));
+        createAndAttachRotatingEntities(MachineUtils.getOffset(this, 0, 5, 5), Direction.Axis.Y);
     }
 
     @Override
@@ -152,7 +153,7 @@ public class WindMillControlMachine extends KineticOutputMachine
 
     @Override
     public Map<Integer, SimpleRotatingContraptionEntity> assemble(BlockPos pivot) {
-        return assembleFromPattern(pivot);
+        return assembleFromPattern(pivot, Direction.Axis.Y);
     }
 
     //////////////////////////////////////
