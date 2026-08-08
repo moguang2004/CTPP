@@ -1,8 +1,5 @@
 package com.mo_guang.ctpp.common.blockentity;
 
-import com.ctnhlang.CN;
-import com.ctnhlang.EN;
-import com.simibubi.create.foundation.utility.CreateLang;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -11,10 +8,13 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 
+import com.ctnhlang.CN;
+import com.ctnhlang.EN;
 import com.mo_guang.ctpp.common.block.MagnetBlock;
 import com.mo_guang.ctpp.config.MainConfig;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import com.simibubi.create.content.kinetics.base.RotatedPillarKineticBlock;
+import com.simibubi.create.foundation.utility.CreateLang;
 import tech.vixhentx.mcmod.ctnhlib.langprovider.Lang;
 
 import java.util.ArrayList;
@@ -40,7 +40,8 @@ public class GeneratorCoilBlockEntity extends KineticBlockEntity {
 
     @Override
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
-        CreateLang.text(efficiency_tooltip.translate(String.format("%.2f", efficiency * 100)).getString()).style(ChatFormatting.AQUA).forGoggles(tooltip);
+        CreateLang.text(efficiency_tooltip.translate(String.format("%.2f", efficiency * 100)).getString())
+                .style(ChatFormatting.AQUA).forGoggles(tooltip);
         return super.addToGoggleTooltip(tooltip, isPlayerSneaking);
     }
 
