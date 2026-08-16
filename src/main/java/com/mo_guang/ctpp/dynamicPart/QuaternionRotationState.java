@@ -14,6 +14,11 @@ public class QuaternionRotationState extends AbstractContraptionEntity.Contrapti
 
     public QuaternionRotationState(Quaternionf q) {
         quaternion.set(q);
+        if (quaternion.lengthSquared() < 1.0E-8f) {
+            quaternion.identity();
+        } else {
+            quaternion.normalize();
+        }
     }
 
     @Override

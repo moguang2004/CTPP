@@ -101,6 +101,7 @@
   "config.ctpp.option.smashingFactoryStressRequirement": "粉碎工厂的应力要求（等于原配方的电压需求乘以该倍数）",
   "config.ctpp.option.steamPoweredKineticGeneratingBoost": "蒸汽动力的应力产出加成",
   "config.ctpp.option.toolboxSounds": "启用工具箱音效",
+  "config.jade.plugin_ctpp.kinetic_output_machine_provider": "[CTPP]应力输出",
   "config.screen.ctpp": "CTPP设置",
   "ctpp.boom_of_create": "聚爆应力",
   "ctpp.carbonbrushesgeneratormachine.goggle_info1": "能量状态:",

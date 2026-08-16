@@ -197,6 +197,7 @@ public class CTPPMultiblockMachines {
                     .rotationState(RotationState.NON_Y_AXIS)
                     .partSorter(CTPPMultiblockMachines::kineticOutputPartSorter)
                     .recipeType(CTPPRecipeTypes.KINETIC_STEAM_TURBINE_RECIPES)
+                    .alwaysTryModifyRecipe(true)
                     .appearanceBlock(CASING_BRONZE_BRICKS)
                     .tooltips(kineticSteamTurbineTooltip[0].translate(),
                             kineticSteamTurbineTooltip[1].translate(),

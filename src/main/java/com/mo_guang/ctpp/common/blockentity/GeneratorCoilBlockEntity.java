@@ -26,7 +26,7 @@ public class GeneratorCoilBlockEntity extends KineticBlockEntity {
     private float plainStress;
     private float lastStress;
     private int generatedEnergy;
-    private float efficiency;
+    private float efficiency = 0;
 
     public GeneratorCoilBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
@@ -40,6 +40,8 @@ public class GeneratorCoilBlockEntity extends KineticBlockEntity {
 
     @Override
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
+        calculateStressApplied();
+        efficiency = (lastStressApplied - plainStress) / lastStressApplied;
         CreateLang.text(efficiency_tooltip.translate(String.format("%.2f", efficiency * 100)).getString())
                 .style(ChatFormatting.AQUA).forGoggles(tooltip);
         return super.addToGoggleTooltip(tooltip, isPlayerSneaking);
@@ -70,7 +72,6 @@ public class GeneratorCoilBlockEntity extends KineticBlockEntity {
         super.tick();
         if (level == null || level.isClientSide) return;
 
-        efficiency = (lastStressApplied - plainStress) / lastStressApplied;
         generatedEnergy = (int) ((lastStressApplied - plainStress) * Math.abs(getSpeed()) *
                 MainConfig.INSTANCE.ctnhConfig.carbonBrushesSuToEnergy);
     }

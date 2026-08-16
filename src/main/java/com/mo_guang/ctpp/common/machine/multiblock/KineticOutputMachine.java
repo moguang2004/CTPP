@@ -64,8 +64,8 @@ public class KineticOutputMachine extends KineticMultiblockMachine {
         if (isFormed() && getRecipeLogic().getLastRecipe() != null) {
             textList.add(maxKineticOutput.translate(
                     FormattingUtil.formatNumbers(maxOutputStress)).withStyle(ChatFormatting.GRAY));
-            textList.add(recipeKineticOutput.translate(FormattingUtil.formatNumbers(
-                    CTPPRecipeHelper.getOutputStress(getRecipeLogic().getLastRecipe())))
+            textList.add(recipeKineticOutput.translate(Component.literal(String.format("%s SU", FormattingUtil.formatNumber2Places(
+                    CTPPRecipeHelper.getOutputStress(getRecipeLogic().getLastRecipe())))).withStyle(ChatFormatting.GOLD).getString())
                     .withStyle(ChatFormatting.GRAY));
         }
     }

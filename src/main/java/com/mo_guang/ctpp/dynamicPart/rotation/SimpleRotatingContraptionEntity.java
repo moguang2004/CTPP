@@ -43,8 +43,6 @@ public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity {
     @Getter
     protected boolean isRunning = false;
 
-    protected float clientRotationDiff = 0.0f;
-
     protected static final EntityDataAccessor<Float> DATA_Q_W = SynchedEntityData
             .defineId(SimpleRotatingContraptionEntity.class, EntityDataSerializers.FLOAT);
     protected static final EntityDataAccessor<Float> DATA_Q_X = SynchedEntityData
@@ -90,7 +88,7 @@ public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity {
         SimpleRotatingContraptionEntity entity = new SimpleRotatingContraptionEntity(
                 CTPPEntityTypes.SIMPLE_CONTRAPTION.get(), world);
         entity.controllerPos = controller.getBlockPosition();
-        entity.isRunning = true;
+        entity.setRunning(true);
         entity.setContraption(contraption);
         entity.setPivot(pivot);
         return entity;
@@ -164,7 +162,6 @@ public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity {
             this.isRunning = entityData.get(DATA_IS_RUNNING);
             // 客户端停止运行时，清零预测旋转差值
             if (level().isClientSide() && !this.isRunning) {
-                this.clientRotationDiff = 0.0f;
                 this.clientRotation = new Quaternionf(this.serverRotation);
                 this.prevClientRotation = new Quaternionf(this.serverRotation);
             }
@@ -179,13 +176,29 @@ public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity {
                 float y = entityData.get(DATA_Q_Y);
                 float z = entityData.get(DATA_Q_Z);
 
-                // 可以在这里立即更新clientRotation，或让checkAndCorrectRotation处理
-                // 对于快速旋转，最好保持预测，只在差异大时纠正
+                Quaternionf syncedRotation = new Quaternionf(x, y, z, w);
+                if (!isUsableRotation(syncedRotation)) {
+                    syncedRotation.identity();
+                } else {
+                    syncedRotation.normalize();
+                }
+                this.serverRotation = syncedRotation;
+                // Do not leave the renderer on a stale pose once prediction is idle.
+                if (!hasAngularVelocity() || !this.isRunning) {
+                    this.clientRotation = new Quaternionf(syncedRotation);
+                    this.prevClientRotation = new Quaternionf(syncedRotation);
+                }
             }
 
             if (DATA_ANGULAR_VEL.equals(key)) {
                 Vector3f vel = entityData.get(DATA_ANGULAR_VEL);
                 this.angularVelocity = new Vec3(vel.x(), vel.y(), vel.z());
+                if (!hasAngularVelocity()) {
+                    Quaternionf syncedRotation = readSyncedRotation();
+                    this.serverRotation = syncedRotation;
+                    this.clientRotation = new Quaternionf(syncedRotation);
+                    this.prevClientRotation = new Quaternionf(syncedRotation);
+                }
             }
         }
     }
@@ -207,34 +220,41 @@ public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity {
         return new QuaternionRotationState(level().isClientSide ? clientRotation : serverRotation);
     }
 
+    /**
+     * Discrete rotating contraptions can own their server-side progression while
+     * retaining angular velocity for client-side prediction.
+     */
+    protected boolean shouldAdvanceWithAngularVelocity() {
+        return true;
+    }
+
+    /**
+     * Continuous contraptions use authoritative snapshots to correct local
+     * prediction. Discrete contraptions can opt out while a known move runs.
+     */
+    protected boolean shouldCorrectClientRotation() {
+        return true;
+    }
+
+    protected boolean hasAngularVelocity() {
+        return angularVelocity.lengthSqr() > 1.0E-8;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    protected Quaternionf getInterpolatedClientRotation(float partialTicks) {
+        return slerp(prevClientRotation, clientRotation, partialTicks);
+    }
+
     @Override
     public Vec3 applyRotation(Vec3 localPos, float partialTicks) {
-        Quaternionf interpQ;
-        if (level().isClientSide) {
-            if (!isRunning || clientRotationDiff > 0.001f) {
-                interpQ = new Quaternionf(serverRotation);
-            } else {
-                interpQ = slerp(prevClientRotation, clientRotation, partialTicks);
-            }
-        } else {
-            interpQ = serverRotation;
-        }
+        Quaternionf interpQ = level().isClientSide ? getInterpolatedClientRotation(partialTicks) : serverRotation;
 
         return rotateByQuaternion(localPos, interpQ);
     }
 
     @Override
     public Vec3 reverseRotation(Vec3 globalPos, float partialTicks) {
-        Quaternionf interpQ;
-        if (level().isClientSide) {
-            if (!isRunning || clientRotationDiff > 0.001f) {
-                interpQ = new Quaternionf(serverRotation);
-            } else {
-                interpQ = slerp(prevClientRotation, clientRotation, partialTicks);
-            }
-        } else {
-            interpQ = serverRotation;
-        }
+        Quaternionf interpQ = level().isClientSide ? getInterpolatedClientRotation(partialTicks) : serverRotation;
 
         // 获取逆旋转（单位四元数的逆=共轭）
         Quaternionf inverseQ = new Quaternionf(interpQ).conjugate();
@@ -274,7 +294,7 @@ public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity {
             setRunning(true);
         }
         if (!level().isClientSide) {
-            if (!angularVelocity.equals(Vec3.ZERO)) {
+            if (shouldAdvanceWithAngularVelocity() && hasAngularVelocity()) {
                 float speed = (float) angularVelocity.length();
                 Vec3 axis = angularVelocity.normalize();
 
@@ -283,14 +303,14 @@ public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity {
                                 (float) axis.x, (float) axis.y, (float) axis.z,
                                 (float) Math.toRadians(speed));
 
-                serverRotation = delta.mul(serverRotation);
+                serverRotation = delta.mul(serverRotation, new Quaternionf()).normalize();
                 syncRotationQuaternion();
             }
         } else {
             prevClientRotation = new Quaternionf(clientRotation);
 
             // 2. 应用本地预测的旋转（保持流畅性）
-            if (!angularVelocity.equals(Vec3.ZERO)) {
+            if (hasAngularVelocity()) {
                 float speed = (float) angularVelocity.length();
                 if (speed > 0.001f) {
                     Vec3 axis = angularVelocity.normalize();
@@ -309,7 +329,9 @@ public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity {
                 }
             }
             // 3. 检查是否需要强制同步（纠正预测）
-            checkAndCorrectRotation();
+            if (shouldCorrectClientRotation()) {
+                checkAndCorrectRotation();
+            }
         }
     }
 
@@ -317,9 +339,14 @@ public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity {
      * 同步四元数旋转到客户端（服务端调用）
      */
     public void syncRotationQuaternion() {
+        syncRotationQuaternion(false);
+    }
+
+    protected void syncRotationQuaternion(boolean force) {
         if (!isRunning) {
             return;
         }
+        serverRotation.normalize();
         // 获取当前存储的值
         float storedW = entityData.get(DATA_Q_W);
         float storedX = entityData.get(DATA_Q_X);
@@ -333,7 +360,7 @@ public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity {
         float angleDiff = quaternionAngleDifference(serverRotation, storedQ);
         float thresholdDeg = 2.0f;
 
-        if (angleDiff > Math.toRadians(thresholdDeg)) {
+        if (force || angleDiff > Math.toRadians(thresholdDeg)) {
             // 角度差异超过阈值，需要同步
             entityData.set(DATA_Q_W, serverRotation.w());
             entityData.set(DATA_Q_X, serverRotation.x());
@@ -350,15 +377,16 @@ public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity {
         if (!isRunning) {
             return;
         }
-        // 获取服务端同步的旋转
-        float serverW = entityData.get(DATA_Q_W);
-        float serverX = entityData.get(DATA_Q_X);
-        float serverY = entityData.get(DATA_Q_Y);
-        float serverZ = entityData.get(DATA_Q_Z);
-        Quaternionf serverQ = new Quaternionf(serverX, serverY, serverZ, serverW);
+        Quaternionf serverQ = readSyncedRotation();
+        serverRotation = new Quaternionf(serverQ);
 
         // 计算预测旋转与服务端旋转的差异
         float angleDiff = quaternionAngleDifference(clientRotation, serverQ);
+        if (!hasAngularVelocity()) {
+            clientRotation = new Quaternionf(serverQ);
+            prevClientRotation = new Quaternionf(serverQ);
+            return;
+        }
         float thresholdDeg = 5.0f;  // 可容忍的差异阈值
 
         if (angleDiff > Math.toRadians(thresholdDeg)) {
@@ -380,6 +408,23 @@ public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity {
             corrected.normalize();
             clientRotation = corrected;
         }
+    }
+
+    private Quaternionf readSyncedRotation() {
+        float w = entityData.get(DATA_Q_W);
+        float x = entityData.get(DATA_Q_X);
+        float y = entityData.get(DATA_Q_Y);
+        float z = entityData.get(DATA_Q_Z);
+        Quaternionf syncedRotation = new Quaternionf(x, y, z, w);
+        if (!isUsableRotation(syncedRotation)) {
+            return new Quaternionf();
+        }
+        return syncedRotation.normalize();
+    }
+
+    private static boolean isUsableRotation(Quaternionf rotation) {
+        return Float.isFinite(rotation.x()) && Float.isFinite(rotation.y()) && Float.isFinite(rotation.z()) &&
+                Float.isFinite(rotation.w()) && rotation.lengthSquared() > 1.0E-8f;
     }
 
     protected IContraptionMultiblock getController() {
@@ -441,18 +486,7 @@ public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity {
     @OnlyIn(Dist.CLIENT)
     public void applyLocalTransforms(PoseStack matrixStack, float partialTicks) {
         // 1. 获取插值后的四元数
-        Quaternionf rotationQ;
-        if (level().isClientSide) {
-            // 客户端使用插值四元数
-            if (!isRunning || clientRotationDiff > 0.001f) {
-                rotationQ = new Quaternionf(serverRotation);
-            } else {
-                rotationQ = slerp(prevClientRotation, clientRotation, partialTicks);
-            }
-        } else {
-            // 服务端直接使用当前旋转
-            rotationQ = new Quaternionf(serverRotation);
-        }
+        Quaternionf rotationQ = getInterpolatedClientRotation(partialTicks);
 
         // 3. 应用四元数旋转
         matrixStack.translate(0.5, 0.5, 0.5);
@@ -519,7 +553,6 @@ public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity {
         if (this.level().isClientSide()) {
             this.clientRotation = new Quaternionf(this.serverRotation);
             this.prevClientRotation = new Quaternionf(this.serverRotation);
-            this.clientRotationDiff = quaternionAngleDifference(this.clientRotation, this.serverRotation);
             this.angularVelocity = Vec3.ZERO;
         }
     }

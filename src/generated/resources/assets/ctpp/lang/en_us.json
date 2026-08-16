@@ -101,6 +101,7 @@
   "config.ctpp.option.smashingFactoryStressRequirement": "Smashing Factory Stress Load Factor (Recipe's Voltage × This Value)",
   "config.ctpp.option.steamPoweredKineticGeneratingBoost": "Steam Turbine Stress Output Boost",
   "config.ctpp.option.toolboxSounds": "Enable Toolbox Sounds",
+  "config.jade.plugin_ctpp.kinetic_output_machine_provider": "[CTPP] Kinetic Output Stress",
   "config.screen.ctpp": "CTPP Configuration",
   "ctpp.carbonbrushesgeneratormachine.goggle_info1": "Energy Statistics:",
   "ctpp.carbonbrushesgeneratormachine.goggle_info2": "Energy Output:",
