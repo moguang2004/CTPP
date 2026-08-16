@@ -107,10 +107,10 @@ public abstract class DistillationTankBlockEntityMixin extends SmartBlockEntity 
         if (isController() && isBottom()) {
             if (processingTime >= 0 && currentRecipe != null) {
                 if (level.getGameTime() % 20 == 0) {
-                    ctpp$canWork = ctpp$canFill();
                     if (!ctpp$canDrain()) {
-                        currentRecipe = null;
-                        processingTime = -1;
+                        ctpp$resetProcessing();
+                    } else {
+                        ctpp$canWork = ctpp$canFill();
                     }
                 }
                 if (ctpp$canWork) {
@@ -135,8 +135,7 @@ public abstract class DistillationTankBlockEntityMixin extends SmartBlockEntity 
                             }
                     }
 
-                    currentRecipe = null;
-                    processingTime = -1;
+                    ctpp$resetProcessing();
                     if (!tankInventory.isEmpty()) {
                         checkForRecipes();
                     }
@@ -167,11 +166,23 @@ public abstract class DistillationTankBlockEntityMixin extends SmartBlockEntity 
 
     @Unique
     private void ctpp$updateProgress() {
-        if (currentRecipe.getRequiredHeat() == HeatCondition.HEATED) {
+        DistillationRecipe recipe = currentRecipe;
+        if (recipe == null) {
+            ctpp$canWork = false;
+            return;
+        }
+        if (recipe.getRequiredHeat() == HeatCondition.HEATED) {
             processingTime -= ctpp$totalHeatLevel;
-        } else if (currentRecipe.getRequiredHeat() == HeatCondition.SUPERHEATED) {
+        } else if (recipe.getRequiredHeat() == HeatCondition.SUPERHEATED) {
             processingTime -= ctpp$totalHeatLevel / 2;
         }
+    }
+
+    @Unique
+    private void ctpp$resetProcessing() {
+        currentRecipe = null;
+        processingTime = -1;
+        ctpp$canWork = false;
     }
 
     @Unique
