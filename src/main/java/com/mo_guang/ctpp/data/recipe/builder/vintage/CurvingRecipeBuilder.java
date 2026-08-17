@@ -1,13 +1,9 @@
 package com.mo_guang.ctpp.data.recipe.builder.vintage;
 
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import com.google.gson.JsonObject;
 import com.negodya1.vintageimprovements.VintageRecipes;
-
-import java.util.Objects;
 
 public class CurvingRecipeBuilder extends AbstractVintageRecipeBuilder<CurvingRecipeBuilder> {
 
@@ -38,11 +34,6 @@ public class CurvingRecipeBuilder extends AbstractVintageRecipeBuilder<CurvingRe
     public CurvingRecipeBuilder head(String head) {
         this.itemAsHead = head;
         return this;
-    }
-
-    public CurvingRecipeBuilder head(ItemStack head) {
-        return head(Objects.requireNonNull(ForgeRegistries.ITEMS.getKey(head.getItem()),
-                "Unable to determine registry id for curving head " + head).toString());
     }
 
     @Override
