@@ -89,7 +89,8 @@ public class KineticTurbineMachine extends KineticOutputMachine implements ITier
                 recipe.parallels *= parallelResult;
             }
             double holderEfficiency = rotorHolder.getTotalEfficiency() / 100.0;
-            if (holderEfficiency <= 0) return Component.translatable("gtceu.recipe_modifier.missing_valid_turbine_rotor");
+            if (holderEfficiency <= 0)
+                return Component.translatable("gtceu.recipe_modifier.missing_valid_turbine_rotor");
             double boostRate = rotorHolder.getRotorSpeed() < rotorHolder.getMaxRotorHolderSpeed() ?
                     (double) rotorHolder.getRotorSpeed() / rotorHolder.getMaxRotorHolderSpeed() : 1.0;
             var tier = Math.max(kmachine.tier, rotorHolder.self().getDefinition().getTier());

@@ -51,6 +51,7 @@ public class KineticOutputMachineProvider extends CapabilityBlockProvider<Kineti
             data.putFloat("OutputStress", CTPPRecipeHelper.getOutputStress(recipe));
         }
     }
+
     @CN("应力输出：%s")
     @EN("Stress Output: %s")
     static Lang kineticOutput;

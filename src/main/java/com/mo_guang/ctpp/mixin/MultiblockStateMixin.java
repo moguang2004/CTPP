@@ -32,8 +32,10 @@ public class MultiblockStateMixin {
         if (controller.isFormed() && controller instanceof KineticMultiblockMachine kineticMultiblockMachine) {
             if (!serverLevel.getBlockState(pos).getBlock().equals(Blocks.AIR)) {
                 long posLong = pos.asLong();
-                if ((kineticMultiblockMachine.blazeBlocks != null && kineticMultiblockMachine.blazeBlocks.contains(posLong)) ||
-                        (kineticMultiblockMachine.rotateBlocks != null && kineticMultiblockMachine.rotateBlocks.contains(posLong))) {
+                if ((kineticMultiblockMachine.blazeBlocks != null &&
+                        kineticMultiblockMachine.blazeBlocks.contains(posLong)) ||
+                        (kineticMultiblockMachine.rotateBlocks != null &&
+                                kineticMultiblockMachine.rotateBlocks.contains(posLong))) {
                     ci.cancel();
                 }
             }
