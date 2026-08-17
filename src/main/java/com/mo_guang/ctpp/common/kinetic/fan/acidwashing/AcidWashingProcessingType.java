@@ -120,6 +120,7 @@ public class AcidWashingProcessingType implements FanProcessingType {
                     SoundSource.NEUTRAL, 1.25f, 0.65f);
 
             Slime newslime = EntityType.SLIME.create(level);
+            if (newslime == null) return;
             CompoundTag serializeNBT = slime.saveWithoutId(new CompoundTag());
             serializeNBT.remove("UUID");
             serializeNBT.putInt("CTPPAcidwashing", 0);
