@@ -125,6 +125,7 @@ public abstract class KineticMultiblockMachine extends RecipeMultiblockMachine
     }
 
     public void checkTier() {
+        tier = 0;
         for (IMultiPart multiPart : getParts()) {
             if (multiPart instanceof MechanicalUpgradePartMachine upgradePartMachine) {
                 tier = Math.max(upgradePartMachine.tier, tier);

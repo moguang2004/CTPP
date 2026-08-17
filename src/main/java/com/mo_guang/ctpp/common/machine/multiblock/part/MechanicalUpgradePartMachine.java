@@ -94,7 +94,7 @@ public class MechanicalUpgradePartMachine extends TieredIOPartMachine implements
     public void noticeController() {
         if (!getControllers().isEmpty() &&
                 getControllers().first() instanceof KineticMultiblockMachine kineticMultiblockMachine) {
-            kineticMultiblockMachine.tier = tier;
+            kineticMultiblockMachine.checkTier();
             kineticMultiblockMachine.onTierChanged();
         }
     }
