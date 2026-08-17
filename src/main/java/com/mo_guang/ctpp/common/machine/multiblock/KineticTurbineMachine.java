@@ -78,14 +78,16 @@ public class KineticTurbineMachine extends KineticOutputMachine implements ITier
 
     public static @Nullable Component recipeModifier(MetaMachine machine, RecipeHandlerGroup group, GTRecipe recipe) {
         if (machine instanceof KineticTurbineMachine kmachine) {
-            int parallelResult = ParallelLogic.getParallelAmountFast(group, recipe,
-                    (int) pow(4, kmachine.tier - 3) * 5);
+            int parallelLimit = Math.max(1, (int) (pow(4, kmachine.tier - 3) * 5));
+            int parallelResult = ParallelLogic.getParallelAmountFast(group, recipe, parallelLimit);
             var rotorHolder = kmachine.getRotorHolder();
             if (rotorHolder == null || !rotorHolder.hasRotor()) {
                 return Component.translatable("gtceu.recipe_modifier.missing_valid_turbine_rotor");
             }
-            recipe.multiplyAllContents(parallelResult);
-            recipe.parallels *= parallelResult;
+            if (parallelResult > 1) {
+                recipe.multiplyAllContents(parallelResult);
+                recipe.parallels *= parallelResult;
+            }
             double holderEfficiency = rotorHolder.getTotalEfficiency() / 100.0;
             if (holderEfficiency <= 0) return Component.translatable("gtceu.recipe_modifier.missing_valid_turbine_rotor");
             double boostRate = rotorHolder.getRotorSpeed() < rotorHolder.getMaxRotorHolderSpeed() ?

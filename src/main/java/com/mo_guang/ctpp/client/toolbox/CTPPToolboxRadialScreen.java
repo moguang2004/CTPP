@@ -154,7 +154,7 @@ public final class CTPPToolboxRadialScreen extends AbstractSimiScreen {
         }
         if (hovered == DEPOSIT) {
             GTNetwork.sendToServer(new CTPPToolboxActionPacket(CTPPToolboxActionPacket.Action.DEPOSIT,
-                    selectingSources ? null : currentSource().source(), -1, hotbarSlot));
+                    selectingSources || currentSource() == null ? null : currentSource().source(), -1, hotbarSlot));
             return;
         }
         CTPPToolboxSnapshot source = currentSource();
