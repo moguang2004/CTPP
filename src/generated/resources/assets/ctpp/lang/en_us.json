@@ -146,6 +146,7 @@
   "ctpp.kineticmultiblockmachine.waiting": "Waiting：",
   "ctpp.kineticoutputmachine.maxkineticoutput.tooltip": "Max stress output: %s",
   "ctpp.kineticoutputmachine.recipekineticoutput.tooltip": "Recipe stress output: %s",
+  "ctpp.kineticoutputmachineprovider.kineticoutput": "Stress Output: %s",
   "ctpp.kineticturbinemachine.info.0": "Total Turbine Efficiency：%d%%",
   "ctpp.kineticturbinemachine.info.1": "Kinetic Output：%dsu",
   "ctpp.kineticworkablemultiblockmachine.inputstress": "Input stress: %dsu",

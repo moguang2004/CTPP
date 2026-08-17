@@ -45,7 +45,8 @@ public class NotifiableStressTrait extends NotifiableRecipeHandlerTrait<Float> i
         if (machine instanceof IKineticMachine kineticMachine) {
             machine.subscribeServerTick(() -> {
                 if (remainingOutputTicks > 0 && machine instanceof KineticPartMachine kineticPart &&
-                        !kineticPart.isValidOutputBinding() && --remainingOutputTicks == 0) {
+                        !kineticPart.isValidOutputBinding() && !kineticPart.getKineticHolder().isGraceActive() &&
+                        --remainingOutputTicks == 0) {
                     stopWorking();
                 }
 

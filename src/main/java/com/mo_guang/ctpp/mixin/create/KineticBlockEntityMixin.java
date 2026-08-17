@@ -1,7 +1,5 @@
 package com.mo_guang.ctpp.mixin.create;
 
-import net.minecraft.nbt.CompoundTag;
-
 import com.mo_guang.ctpp.common.blockentity.IKineticBlockEntityExtension;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import org.spongepowered.asm.mixin.Mixin;
@@ -26,20 +24,6 @@ public class KineticBlockEntityMixin implements IKineticBlockEntityExtension {
         if (CTNH$inMultiblock) {
             ci.cancel();
         }
-    }
-
-    @Inject(method = "write",
-            at = @At(value = "TAIL"),
-            remap = false)
-    public void write(CompoundTag compound, boolean clientPacket, CallbackInfo ci) {
-        compound.putBoolean("inMultiblock", CTNH$inMultiblock);
-    }
-
-    @Inject(method = "read",
-            at = @At(value = "TAIL"),
-            remap = false)
-    public void read(CompoundTag compound, boolean clientPacket, CallbackInfo ci) {
-        CTNH$inMultiblock = compound.getBoolean("inMultiblock");
     }
 
     @Override

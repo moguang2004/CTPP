@@ -150,6 +150,7 @@
   "ctpp.kineticmultiblockmachine.waiting": "暂停中：",
   "ctpp.kineticoutputmachine.maxkineticoutput.tooltip": "最大应力输出：%s",
   "ctpp.kineticoutputmachine.recipekineticoutput.tooltip": "配方应力产出：%s",
+  "ctpp.kineticoutputmachineprovider.kineticoutput": "应力输出：%s",
   "ctpp.kineticturbinemachine.info.0": "涡轮总效率：%d%%",
   "ctpp.kineticturbinemachine.info.1": "应力输出：%dsu",
   "ctpp.kineticworkablemultiblockmachine.inputstress": "输入应力：%dsu",

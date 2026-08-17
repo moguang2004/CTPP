@@ -34,6 +34,10 @@ public class KineticPartMachine extends TieredIOPartMachine implements IKineticM
 
     @Nullable
     protected TickableSubscription selfCheckSubs;
+    /**
+     * 上一次检查时的输出绑定有效性，用于检测重载后异步重检成型的“无效→有效”跃迁。
+     */
+    private boolean wasValidBinding = true;
 
     public KineticPartMachine(IMachineBlockEntity holder, int tier, IO io, Object... args) {
         super(holder, tier, io);
@@ -105,8 +109,19 @@ public class KineticPartMachine extends TieredIOPartMachine implements IKineticM
 
     void checkWorking() {
         if (getOffsetTimer() % 100 == 0 && !GTCEu.isClientSide()) {
-            if (!isValidOutputBinding()) {
-                stressTrait.stopWorking();
+            boolean valid = isValidOutputBinding();
+            if (valid) {
+                if (!wasValidBinding) {
+                    // 重载后异步重检成型恢复：之前未成型导致的停机已结束，
+                    // 重新通知 holder 同步 Create 网络源（速度由配方逻辑恢复）。
+                    wasValidBinding = true;
+                    getKineticHolder().reActivateSource = true;
+                }
+            } else {
+                wasValidBinding = false;
+                if (!getKineticHolder().isGraceActive()) {
+                    stressTrait.stopWorking();
+                }
             }
         }
     }
