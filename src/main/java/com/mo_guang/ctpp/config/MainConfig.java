@@ -58,6 +58,11 @@ public class MainConfig {
     @EN("Enable Electric Gearbox")
     public static Lang configOptionEnableGtmElectricGearBox;
 
+    @Key("config.ctpp.option.electricGearBoxRpmPerAmp")
+    @CN("电力齿轮箱每安培输出转速")
+    @EN("Electric Gearbox RPM Per Amp")
+    public static Lang configOptionElectricGearBoxRpmPerAmp;
+
     @Key("config.ctpp.option.ctnhConfig")
     @CN("CTNH机器配置")
     @EN("CTNH Machinery Configuration")
@@ -206,6 +211,10 @@ public class MainConfig {
         @Configurable
         @Configurable.Comment("Is GTM ElectricGearBox Enabled?")
         public boolean enableGTMElectricGearBox = true;
+        @Configurable
+        @Configurable.Comment("Electric Gearbox's RPM per amp (1~256)")
+        @Configurable.Range(min = 1, max = 256)
+        public int electricGearBoxRpmPerAmp = 16;
     }
 
     public static class CTNHConfig {

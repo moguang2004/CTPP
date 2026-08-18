@@ -23,7 +23,9 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 
 import com.ctnhlang.CN;
 import com.ctnhlang.EN;
@@ -94,6 +96,18 @@ public abstract class KineticMultiblockMachine extends RecipeMultiblockMachine
                 mixin.setCTNHInMultiblock(false);
             }
         }
+    }
+
+    @Override
+    public boolean shouldIgnoreChange(BlockPos pos, BlockState state) {
+        if (!state.getBlock().equals(Blocks.AIR)) {
+            long posLong = pos.asLong();
+            if ((blazeBlocks != null && blazeBlocks.contains(posLong)) ||
+                    (rotateBlocks != null && rotateBlocks.contains(posLong))) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void onTierChanged() {}

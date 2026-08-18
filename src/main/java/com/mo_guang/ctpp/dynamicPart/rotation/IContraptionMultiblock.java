@@ -7,6 +7,7 @@ import com.lowdragmc.lowdraglib.utils.TrackedDummyWorld;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 
 import com.mo_guang.ctpp.api.pattern.StaticBlockPattern;
@@ -74,6 +75,19 @@ public interface IContraptionMultiblock<T extends SimpleRotatingContraptionEntit
                 }
             }
         }
+    }
+
+    @Override
+    default boolean shouldIgnoreChange(BlockPos pos, BlockState state) {
+        if (this.getPattern() instanceof StaticBlockPattern staticBlockPattern) {
+            var dynamicParts = staticBlockPattern.getDynamicPart(getMultiblockState()).values();
+            for (var dynamicPart : dynamicParts) {
+                if (dynamicPart.contains(pos)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /**
