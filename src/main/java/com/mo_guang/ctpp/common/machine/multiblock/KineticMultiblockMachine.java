@@ -31,6 +31,7 @@ import com.ctnhlang.CN;
 import com.ctnhlang.EN;
 import com.mo_guang.ctpp.api.StressRecipeCapability;
 import com.mo_guang.ctpp.common.blockentity.IKineticBlockEntityExtension;
+import com.mo_guang.ctpp.common.blockentity.KineticMachineBlockEntity;
 import com.mo_guang.ctpp.common.machine.NotifiableStressTrait;
 import com.mo_guang.ctpp.common.machine.multiblock.part.MechanicalUpgradePartMachine;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
@@ -89,10 +90,14 @@ public abstract class KineticMultiblockMachine extends RecipeMultiblockMachine
     public void onStructureInvalid() {
         stopWorking();
         super.onStructureInvalid();
+        if (rotateBlocks == null || getLevel() == null) {
+            return;
+        }
         for (var pos : rotateBlocks) {
             var blockEntity = getLevel().getBlockEntity(BlockPos.of(pos));
             if (blockEntity instanceof KineticBlockEntity kineticBlockEntity) {
                 IKineticBlockEntityExtension mixin = ((IKineticBlockEntityExtension) kineticBlockEntity);
+                mixin.setCTNHVisualSpeed(0);
                 mixin.setCTNHInMultiblock(false);
             }
         }
@@ -158,17 +163,10 @@ public abstract class KineticMultiblockMachine extends RecipeMultiblockMachine
     }
 
     public void updateRotateBlock(boolean active, BlockEntity blockEntity) {
-        if (blockEntity instanceof KineticBlockEntity kineticBlockEntity) {
-            if (active) {
-                float currentSpeed = kineticBlockEntity.getSpeed();
-                kineticBlockEntity.setSpeed(speed);
-                kineticBlockEntity.onSpeedChanged(currentSpeed);
-                kineticBlockEntity.sendData();
-            } else {
-                kineticBlockEntity.setSpeed(0);
-                kineticBlockEntity.onSpeedChanged(kineticBlockEntity.getSpeed());
-                kineticBlockEntity.sendData();
-            }
+        if (blockEntity instanceof KineticBlockEntity kineticBlockEntity &&
+                kineticBlockEntity instanceof IKineticBlockEntityExtension extension &&
+                !(kineticBlockEntity instanceof KineticMachineBlockEntity)) {
+            extension.setCTNHVisualSpeed(active ? speed : 0);
         }
     }
 

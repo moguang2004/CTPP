@@ -3,6 +3,7 @@ package com.mo_guang.ctpp.mixin;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 import com.mo_guang.ctpp.common.blockentity.KineticMachineBlockEntity;
 import com.mo_guang.ctpp.common.machine.IKineticMachine;
@@ -25,13 +26,15 @@ public abstract class RotationPropagatorMixin {
     /**
      * 重载/未成型窗口期的网络重建竞态会让 Create 原版的动能冲突保护
      * （方向相反、同网络速度跳变等）直接 destroyBlock 掉应力输入/输出箱。
-     * 这些机器箱的动能状态由 GT 配方驱动，不应被该保护误杀。
+     * 这些机器箱的动能状态由 GT 配方驱动，不应被该保护误杀；普通 Create
+     * 动力节点和纯渲染 roBlocks 均保留原版保护。
      */
     @Redirect(method = "propagateNewSource",
               at = @At(value = "INVOKE",
                        target = "Lnet/minecraft/world/level/Level;destroyBlock(Lnet/minecraft/core/BlockPos;Z)Z"))
     private static boolean ctpp$protectKineticMachines(Level level, BlockPos pos, boolean dropBlock) {
-        if (level.getBlockEntity(pos) instanceof KineticMachineBlockEntity) {
+        BlockEntity blockEntity = level.getBlockEntity(pos);
+        if (blockEntity instanceof KineticMachineBlockEntity) {
             return false;
         }
         return level.destroyBlock(pos, dropBlock);
