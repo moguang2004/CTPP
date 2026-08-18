@@ -14,7 +14,7 @@ public class CommonTooltips {
     @EN("*The input speed is based on the highest-speed stress chamber.")
     public static Lang INPUT_SPEED;
 
-    @CN("§n机械等级§r由§l机械升级仓§r中的物品决定：无(0)，§7基础构件(1)§r，§e精密构件(2)§r，\n§8钢铁构建/基础电子电路(3)§r，§b优质电子电路(4)§r，§6进阶集成电路(5)§r")
+    @CN("§n机械等级§r由§l机械升级仓§r中的物品决定：无(0)，§7基础构件(1)§r，§e精密构件(2)§r，\n§8钢铁构件/基础电子电路(3)§r，§b优质电子电路(4)§r，§6进阶集成电路(5)§r")
     @EN("§nMechanical Tier§r is determined by items in the Mechanical Upgrade Bus: None (0), §7Basic Components (1)§r, §ePrecision Components (2)§r,\n§8Steel Structures or Basic Electronic Circuits (3)§r, §bAdvanced Electronic Circuits (4)§r, §6Integrated Circuits (5)§r")
     public static Lang MECHANICAL_TIER;
 

@@ -77,6 +77,7 @@
   "config.ctpp.option.carbonBrushesSuToEnergy": "Generator Coil Energy per Stress Unit",
   "config.ctpp.option.clientConfig": "Client Configuration",
   "config.ctpp.option.ctnhConfig": "CTNH Machinery Configuration",
+  "config.ctpp.option.electricGearBoxRpmPerAmp": "Electric Gearbox RPM Per Amp",
   "config.ctpp.option.enableBoomOfCreate": "Enable Boom Of Create",
   "config.ctpp.option.enableGTMElectricGearBox": "Enable Electric Gearbox",
   "config.ctpp.option.enableGTMKineticCreateMixer": "Enable GTM Kinetic Mixer",
