@@ -79,6 +79,14 @@ public interface IContraptionMultiblock<T extends SimpleRotatingContraptionEntit
 
     @Override
     default boolean shouldIgnoreChange(BlockPos pos, BlockState state) {
+        return shouldIgnoreContraptionChange(pos, state);
+    }
+
+    /**
+     * Keeps blocks moved into a rotating contraption from invalidating the source
+     * multiblock while the contraption is being assembled or disassembled.
+     */
+    default boolean shouldIgnoreContraptionChange(BlockPos pos, BlockState state) {
         if (this.getPattern() instanceof StaticBlockPattern staticBlockPattern) {
             var dynamicParts = staticBlockPattern.getDynamicPart(getMultiblockState()).values();
             for (var dynamicPart : dynamicParts) {

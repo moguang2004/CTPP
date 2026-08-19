@@ -34,6 +34,7 @@ import com.mo_guang.ctpp.common.blockentity.IKineticBlockEntityExtension;
 import com.mo_guang.ctpp.common.blockentity.KineticMachineBlockEntity;
 import com.mo_guang.ctpp.common.machine.NotifiableStressTrait;
 import com.mo_guang.ctpp.common.machine.multiblock.part.MechanicalUpgradePartMachine;
+import com.mo_guang.ctpp.dynamicPart.rotation.IContraptionMultiblock;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import com.simibubi.create.content.processing.burner.BlazeBurnerBlock;
 import com.simibubi.create.content.processing.burner.BlazeBurnerBlockEntity;
@@ -105,6 +106,10 @@ public abstract class KineticMultiblockMachine extends RecipeMultiblockMachine
 
     @Override
     public boolean shouldIgnoreChange(BlockPos pos, BlockState state) {
+        if (this instanceof IContraptionMultiblock<?> contraptionMultiblock &&
+                contraptionMultiblock.shouldIgnoreContraptionChange(pos, state)) {
+            return true;
+        }
         if (!state.getBlock().equals(Blocks.AIR)) {
             long posLong = pos.asLong();
             if ((blazeBlocks != null && blazeBlocks.contains(posLong)) ||
