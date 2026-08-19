@@ -112,7 +112,7 @@ public abstract class KineticMultiblockMachine extends RecipeMultiblockMachine
                 return true;
             }
         }
-        return false;
+        return super.shouldIgnoreChange(pos, state);
     }
 
     public void onTierChanged() {}
