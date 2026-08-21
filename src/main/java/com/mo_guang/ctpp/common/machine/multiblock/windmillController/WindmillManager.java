@@ -109,15 +109,13 @@ public class WindmillManager {
                 savedData.setDirty(); // 必须调用！标记数据修改，否则不会持久化到硬盘
             }
         }
-        // 2. 控制器冲突检测
-        boolean hasConflict = savedData.hasConflictingController(controllerPos, legalDistance);
-        // 3. 更新控制中心状态（严格判空，避免机器被破坏后空指针）
+        // 2. 更新控制中心状态（严格判空，避免机器被破坏后空指针）
         BlockEntity be = serverLevel.getBlockEntity(controllerPos);
         if (be instanceof IMachineBlockEntity machineBE &&
                 machineBE.getMetaMachine() instanceof WindMillControlMachine controller) {
-            controller.hasConflictingController = hasConflict;
-            controller.windmillAround.clear();
-            controller.windmillAround.addAll(foundWindmills);
+            // 统一走 calculateWindmillAround 重算（含冲突检测、风车列表、效率与总输出），
+            // 避免扫描完成只更新 windmillAround 而遗留旧效率，导致重启后转速为 0
+            controller.calculateWindmillAround();
         }
     }
 

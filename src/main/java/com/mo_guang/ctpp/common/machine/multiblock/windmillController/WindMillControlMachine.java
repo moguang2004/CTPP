@@ -82,6 +82,20 @@ public class WindMillControlMachine extends KineticOutputMachine
         if (!getLevel().isClientSide()) {
             ServerLevel serverLevel = (ServerLevel) getLevel();
             BlockPos controllerPos = this.getPos();
+            // 重启/区块重载后 isFormed 等持久化字段已从 NBT 恢复，但效率/转速/实体列表这类
+            // 运行时状态不会自动重建（onStructureFormed 不保证再次触发），这里一次性恢复
+            if (isFormed()) {
+                calculateWindmillAround();
+                float currentSpeed = getOutputSpeed();
+                if (this.speed != currentSpeed) {
+                    this.previousSpeed = this.speed;
+                    this.speed = currentSpeed;
+                }
+                findAndReattachEntities();
+                if (getRecipeLogic().isWorking()) {
+                    updateRotateBlocks(true);
+                }
+            }
             // 向WindmillManager提交扫描任务：参数（世界，控制中心位置，扫描半径32，冲突检测距离64）
             WindmillManager.getInstance().submitScanTask(
                     serverLevel,
@@ -101,9 +115,6 @@ public class WindMillControlMachine extends KineticOutputMachine
             this.previousSpeed = this.speed;
             this.speed = currentSpeed;
         }
-        if (getRecipeLogic().isWorking()) {
-            updateRotateBlocks(true);
-        }
         if (!getLevel().isClientSide()) {
             ServerLevel serverLevel = (ServerLevel) getLevel();
             WindmillSavedData windmillData = WindmillSavedData.get(serverLevel);
@@ -111,6 +122,10 @@ public class WindMillControlMachine extends KineticOutputMachine
         }
         // assemble rotating entities (use interface helper)
         createAndAttachRotatingEntities(MachineUtils.getOffset(this, 0, 5, 5), Direction.Axis.Y);
+        // 先装配再下发转速，确保新装配/已重挂的实体能立即拿到转速
+        if (getRecipeLogic().isWorking()) {
+            updateRotateBlocks(true);
+        }
     }
 
     @Override
@@ -124,6 +139,16 @@ public class WindMillControlMachine extends KineticOutputMachine
         }
         // clear and disassemble rotating entities (use interface helper)
         clearAndDisassembleRotatingEntities();
+    }
+
+    @Override
+    public void attach(SimpleRotatingContraptionEntity contraption) {
+        IContraptionMultiblock.super.attach(contraption);
+        // 实体在区块重载后通过自身 tick 重新挂接时，立即补发一次转速，
+        // 否则 onStructureFormed 下发转速时实体列表可能还是空的，导致配方运行但结构不转
+        if (isFormed() && getRecipeLogic().isWorking()) {
+            updateRotateBlocks(true);
+        }
     }
 
     @Override
@@ -181,7 +206,7 @@ public class WindMillControlMachine extends KineticOutputMachine
             var button = ComponentPanelWidget.withButton(highlightInfo.translate().withStyle(ChatFormatting.RED),
                     "Highlight");
             textList.add(
-                    info[0].translate(efficiency, 6 + 6 * tier).append(button));
+                    info[0].translate(efficiency, getMaxControlledSize()).append(button));
             textList.add(info[1].translate(String.format("%.1f", TotalOutput)));
             textList.add(info[2].translate(String.format("%d", efficiency * 100)));
             // textList.add(Component.translatable("ctpp.multiblock.windmill_control_center.info.3",String.format("%.1f",(TotalOutput
@@ -246,15 +271,19 @@ public class WindMillControlMachine extends KineticOutputMachine
                     var kineticBlockEntity = getLevel().getBlockEntity(windmill);
                     if (kineticBlockEntity instanceof WindmillBearingBlockEntity windmillBearingBlockEntity) {
                         var speed = windmillBearingBlockEntity.getGeneratedSpeed();
-                        if (speed != 0 && windmillAround.size() < 6 + tier * 6) {
+                        if (speed != 0 && windmillAround.size() < getMaxControlledSize()) {
                             windmillAround.add(windmill);
                             TotalOutput += speed * 512;
                         }
                     }
                 }
             }
-            efficiency = Math.min(windmillAround.size(), 6 + tier * 6);
+            efficiency = Math.min(windmillAround.size(), getMaxControlledSize());
         }
+    }
+
+    public int getMaxControlledSize() {
+        return tier * 4 + 4;
     }
 
     @Override
