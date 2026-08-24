@@ -23,6 +23,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 
 import com.mo_guang.ctpp.common.machine.IKineticMachine;
+import com.mo_guang.ctpp.config.MainConfig;
 import lombok.Getter;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -78,7 +79,11 @@ public class ElectricGearBoxMachine extends TieredEnergyMachine implements IKine
     }
 
     public float getCurrentRPM() {
-        return getCurrentAmps() * 8;
+        return getCurrentAmps() * getRpmPerAmp();
+    }
+
+    private int getRpmPerAmp() {
+        return MainConfig.INSTANCE.gtmConfig.electricGearBoxRpmPerAmp;
     }
 
     @Override
@@ -136,14 +141,16 @@ public class ElectricGearBoxMachine extends TieredEnergyMachine implements IKine
                 new TextTexture("").setWidth(92).setType(TextTexture.TextType.ROLL)
                         .setSupplier(() -> "Speed: " + getKineticHolder().workingSpeed)))
                 .addWidget(new ButtonWidget(4, 24, 30, 20,
-                        new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("-8rpm")), cd -> {
+                        new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("-" + getRpmPerAmp() + "rpm")),
+                        cd -> {
                             if (!cd.isRemote) {
                                 int amount = cd.isCtrlClick ? cd.isShiftClick ? 32 : 16 : cd.isShiftClick ? 4 : 1;
                                 setCurrentAmps(currentAmps - amount);
                             }
                         }).setHoverTooltips("gui.widget.incrementButton.default_tooltip"))
                 .addWidget(new ButtonWidget(130, 24, 30, 20,
-                        new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("+8rpm")), cd -> {
+                        new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("+" + getRpmPerAmp() + "rpm")),
+                        cd -> {
                             if (!cd.isRemote) {
                                 int amount = cd.isCtrlClick ? cd.isShiftClick ? 32 : 16 : cd.isShiftClick ? 4 : 1;
                                 setCurrentAmps(currentAmps + amount);

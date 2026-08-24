@@ -1,0 +1,8 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "ctpp:item/tools/wire_cutter_base_cut",
+    "layer1": "ctpp:item/tools/wire_cutter_cut",
+    "layer2": "ctpp:item/tools/wire_cutter_overlay_cut"
+  }
+}

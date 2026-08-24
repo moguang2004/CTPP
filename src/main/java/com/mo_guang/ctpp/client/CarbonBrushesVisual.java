@@ -18,11 +18,11 @@ public class CarbonBrushesVisual extends SplitShaftVisual {
 
     public CarbonBrushesVisual(VisualizationContext context, KineticMachineBlockEntity blockEntity, float partialTick) {
         super(context, blockEntity, partialTick);
-        Direction axisDirection = Direction.get(Direction.AxisDirection.POSITIVE, rotationAxis());
+        // Direction axisDirection = Direction.get(Direction.AxisDirection.POSITIVE, );
         coil = instancerProvider()
                 .instancer(AllInstanceTypes.ROTATING, Models.partial(CTPPPartialModels.CARBON_BRUSHES_COIL))
                 .createInstance()
-                .rotateToFace(Direction.UP, axisDirection)
+                .rotateToFace(Direction.UP, rotationAxis())
                 .setup(blockEntity)
                 .setPosition(getVisualPosition());
         coil.setChanged();

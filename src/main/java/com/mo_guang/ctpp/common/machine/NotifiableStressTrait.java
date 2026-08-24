@@ -45,7 +45,8 @@ public class NotifiableStressTrait extends NotifiableRecipeHandlerTrait<Float> i
         if (machine instanceof IKineticMachine kineticMachine) {
             machine.subscribeServerTick(() -> {
                 if (remainingOutputTicks > 0 && machine instanceof KineticPartMachine kineticPart &&
-                        !kineticPart.isValidOutputBinding() && --remainingOutputTicks == 0) {
+                        !kineticPart.isValidOutputBinding() && !kineticPart.getKineticHolder().isGraceActive() &&
+                        --remainingOutputTicks == 0) {
                     stopWorking();
                 }
 
@@ -107,11 +108,24 @@ public class NotifiableStressTrait extends NotifiableRecipeHandlerTrait<Float> i
 
     @Override
     public List<Object> getContents() {
-        return List.of(available);
+        return List.of(getStressAvailable());
     }
 
     @Override
     public double getTotalContentAmount() {
+        return getStressAvailable();
+    }
+
+    public float getStressAvailable() {
+        if (machine instanceof IKineticMachine kineticMachine) {
+            var kineticDefinition = kineticMachine.getKineticDefinition();
+            if (handlerIO.support(IO.IN) && !kineticDefinition.isSource()) {
+                return Mth.abs(kineticMachine.getKineticHolder().getSpeed()) * kineticDefinition.torque;
+            }
+            if (handlerIO.support(IO.OUT) && kineticDefinition.isSource()) {
+                return available;
+            }
+        }
         return available;
     }
 

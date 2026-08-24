@@ -86,7 +86,7 @@ public class CTPPMultiblockBuilder extends CTNHMultiblockMachineBuilder {
     }
 
     public CTPPMultiblockBuilder recoveryItems(Supplier<ItemLike[]> items) {
-        this.recoveryItems(items);
+        super.recoveryItems(items);
         return this;
     }
 

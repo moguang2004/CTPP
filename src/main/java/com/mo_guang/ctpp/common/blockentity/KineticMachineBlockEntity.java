@@ -60,8 +60,10 @@ import java.util.Set;
 
 public class KineticMachineBlockEntity extends KineticBlockEntity implements IMachineBlockEntity, IManaged {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = ManagedFieldHolderMap.createManagedFieldHolder(
-            KineticMachineBlockEntity.class);
+    static {
+        ManagedFieldHolderMap.createManagedFieldHolder(KineticMachineBlockEntity.class);
+    }
+
     public final MultiManagedStorage managedStorage = new MultiManagedStorage();
 
     @Getter
@@ -76,8 +78,17 @@ public class KineticMachineBlockEntity extends KineticBlockEntity implements IMa
     private MachineRenderState renderState;
     private final long offset = GTValues.RNG.nextInt(20);
     @Persisted
+    @DescSynced
     public float workingSpeed;
     public boolean reActivateSource;
+    /**
+     * 重载宽限期：GTCEu 不持久化多方块成型状态，重载后需要异步重检（约 1~1.5s）才能恢复。
+     * 在此期间保留持久化的 workingSpeed 重新挂接 Create 网络，避免应力网络失去源而整体崩溃。
+     */
+    private static final int GRACE_TICKS = 100;
+    @DescSynced
+    private boolean graceActive;
+    private int graceTicks;
 
     protected KineticMachineBlockEntity(BlockEntityType<?> typeIn, BlockPos pos, BlockState state) {
         super(typeIn, pos, state);
@@ -181,6 +192,16 @@ public class KineticMachineBlockEntity extends KineticBlockEntity implements IMa
     public void onLoad() {
         super.onLoad();
         metaMachine.onLoad();
+        if (!level.isClientSide && getDefinition().isSource() && workingSpeed != 0 &&
+                metaMachine instanceof KineticPartMachine) {
+            // 方案 B：保留 NBT 里持久化的 Create 动能状态（speed/source/network），
+            // 由 Create 的 initialize()/attachKinetics() 自行恢复原网络，
+            // 避免进游戏后应力网络失去源而整体崩溃。
+            // 宽限期只负责在 GTCEu 异步重检成型（约 1~1.5s）期间对源保持乐观判定。
+            graceActive = true;
+            graceTicks = GRACE_TICKS;
+            reActivateSource = true;
+        }
     }
 
     @Override
@@ -232,9 +253,6 @@ public class KineticMachineBlockEntity extends KineticBlockEntity implements IMa
             if (!simulate) {
                 workingSpeed = speed;
                 reActivateSource = true;
-                // level.getServer().tell(
-                // new TickTask(level.getServer().getTickCount() + 1, this::updateGeneratedRotation)
-                // );
             }
             return speed * getDefinition().getTorque();
         }
@@ -257,8 +275,24 @@ public class KineticMachineBlockEntity extends KineticBlockEntity implements IMa
         return isValidOutputSource() ? workingSpeed : 0;
     }
 
+    public boolean isGraceActive() {
+        return graceActive;
+    }
+
+    /**
+     * 宽限期内乐观信任持久化的 workingSpeed，避免重载后 GTCEu 异步重检成型完成前
+     * 应力网络短暂失去源；重检结束后立即恢复严格判定。
+     */
     private boolean isValidOutputSource() {
-        return !(metaMachine instanceof KineticPartMachine kineticPartMachine) ||
+        if (graceActive) {
+            return true;
+        }
+        // 只有应力输出部件需要按成型状态门控：未成型时不得继续充当网络源。
+        return !(metaMachine instanceof KineticPartMachine) || isKineticPartFormed();
+    }
+
+    private boolean isKineticPartFormed() {
+        return metaMachine instanceof KineticPartMachine kineticPartMachine &&
                 kineticPartMachine.isValidOutputBinding();
     }
 
@@ -285,13 +319,30 @@ public class KineticMachineBlockEntity extends KineticBlockEntity implements IMa
     }
 
     public void tick() {
-        if (getDefinition().isSource() && !isValidOutputSource()) {
-            stopWorking();
+        if (!level.isClientSide && getDefinition().isSource()) {
+            tickGracePeriod();
+            // workingSpeed 是 @DescSynced 服务器权威字段，客户端不允许本地写：
+            // 客户端写会污染同步值，且服务端值不变时不会重发，可能把转速卡在 0。
+            if (!isValidOutputSource()) {
+                stopWorking();
+            }
         }
         super.tick();
-        if (getDefinition().isSource() && this.reActivateSource) {
-            this.updateGeneratedRotation();
-            this.reActivateSource = false;
+        if (getDefinition().isSource() && reActivateSource) {
+            updateGeneratedRotation();
+            reActivateSource = false;
+        }
+    }
+
+    /**
+     * 重载宽限期倒计时：异步重检已成型则提前结束，超时则按未成型处理（由 tick 停机）。
+     */
+    private void tickGracePeriod() {
+        if (!graceActive) {
+            return;
+        }
+        if (--graceTicks <= 0 || isKineticPartFormed()) {
+            graceActive = false;
         }
     }
 
@@ -322,33 +373,33 @@ public class KineticMachineBlockEntity extends KineticBlockEntity implements IMa
         return added;
     }
 
+    /**
+     * 只允许服务器侧更新转速与应力网络：客户端由 @DescSynced 同步显示，不做本地写。
+     */
     public void updateGeneratedRotation() {
-        if (!getDefinition().isSource()) return;
+        if (!getDefinition().isSource() || level == null || level.isClientSide) {
+            return;
+        }
         float speed = this.getGeneratedSpeed();
         float prevSpeed = this.speed;
-        if (!this.level.isClientSide) {
-            if (prevSpeed != speed) {
-                if (!this.hasSource()) {
-                    IRotate.SpeedLevel levelBefore = IRotate.SpeedLevel.of(this.speed);
-                    IRotate.SpeedLevel levelafter = IRotate.SpeedLevel.of(speed);
-                    if (levelBefore != levelafter) {
-                        this.effects.queueRotationIndicators();
-                    }
+        if (prevSpeed != speed) {
+            if (!this.hasSource()) {
+                IRotate.SpeedLevel levelBefore = IRotate.SpeedLevel.of(this.speed);
+                IRotate.SpeedLevel levelAfter = IRotate.SpeedLevel.of(speed);
+                if (levelBefore != levelAfter) {
+                    this.effects.queueRotationIndicators();
                 }
-
-                this.applyNewSpeed(prevSpeed, speed);
             }
-
-            if (this.hasNetwork() && speed != 0.0F) {
-                KineticNetwork network = this.getOrCreateNetwork();
-                this.notifyStressCapacityChange(this.calculateAddedStressCapacity());
-                this.getOrCreateNetwork().updateStressFor(this, this.calculateStressApplied());
-                network.updateStress();
-            }
-
-            this.onSpeedChanged(prevSpeed);
-            this.sendData();
+            this.applyNewSpeed(prevSpeed, speed);
         }
+        if (this.hasNetwork() && speed != 0.0F) {
+            KineticNetwork network = this.getOrCreateNetwork();
+            this.notifyStressCapacityChange(this.calculateAddedStressCapacity());
+            this.getOrCreateNetwork().updateStressFor(this, this.calculateStressApplied());
+            network.updateStress();
+        }
+        this.onSpeedChanged(prevSpeed);
+        this.sendData();
     }
 
     @Override
@@ -388,17 +439,20 @@ public class KineticMachineBlockEntity extends KineticBlockEntity implements IMa
             this.setNetwork(this.createNetworkId());
             this.attachKinetics();
         } else if (this.hasSource()) {
-            if (Math.abs(prevSpeed) >= Math.abs(speed)) {
-                if (Math.signum(prevSpeed) != Math.signum(speed)) {
-                    this.level.destroyBlock(this.worldPosition, true);
-                }
-            } else {
-                this.detachKinetics();
-                this.setSpeed(speed);
-                this.source = null;
-                this.setNetwork(this.createNetworkId());
-                this.attachKinetics();
+            if (Math.abs(prevSpeed) >= Math.abs(speed) && Math.signum(prevSpeed) == Math.signum(speed)) {
+                return;
             }
+            // 应力箱是 GT 驱动的多方块部件，方向冲突只会来自重载/未成型竞态，
+            // 不触发原版“反向即销毁”的保护，改为重新挂载以同步到新目标速度。
+            if (Math.abs(prevSpeed) >= Math.abs(speed) && !(metaMachine instanceof KineticPartMachine)) {
+                this.level.destroyBlock(this.worldPosition, true);
+                return;
+            }
+            this.detachKinetics();
+            this.setSpeed(speed);
+            this.source = null;
+            this.setNetwork(this.createNetworkId());
+            this.attachKinetics();
         } else {
             this.detachKinetics();
             this.setSpeed(speed);

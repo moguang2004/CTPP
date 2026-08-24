@@ -38,13 +38,22 @@ public class MillingRecipeBuilder {
     }
 
     private final List<ResultEntry> results = new ArrayList<>();
+    private int processingTime = 100;
 
     public MillingRecipeBuilder(String name) {
-        this.id = CTPP.id(name);
+        this(CTPP.id(name));
+    }
+
+    public MillingRecipeBuilder(ResourceLocation id) {
+        this.id = id;
     }
 
     public static MillingRecipeBuilder builder(String name) {
         return new MillingRecipeBuilder(name);
+    }
+
+    public static MillingRecipeBuilder builder(ResourceLocation id) {
+        return new MillingRecipeBuilder(id);
     }
 
     public MillingRecipeBuilder input(ItemStack stack) {
@@ -79,6 +88,14 @@ public class MillingRecipeBuilder {
         return result(stack);
     }
 
+    public MillingRecipeBuilder processingTime(int processingTime) {
+        if (processingTime <= 0) {
+            throw new IllegalArgumentException("Milling processing time must be positive");
+        }
+        this.processingTime = processingTime;
+        return this;
+    }
+
     public void toJson(JsonObject json) {
         if (ingredients.isEmpty() || results.isEmpty()) {
             throw new IllegalStateException("Milling recipe missing required fields");
@@ -93,6 +110,7 @@ public class MillingRecipeBuilder {
         JsonArray resultsJson = new JsonArray();
         results.forEach(entry -> resultsJson.add(serializeResultEntry(entry)));
         json.add("results", resultsJson);
+        json.addProperty("processingTime", processingTime);
     }
 
     public FinishedRecipe build() {

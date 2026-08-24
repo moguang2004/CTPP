@@ -1,15 +1,21 @@
 package com.mo_guang.ctpp.common.blockentity;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 
+import com.ctnhlang.CN;
+import com.ctnhlang.EN;
 import com.mo_guang.ctpp.common.block.MagnetBlock;
 import com.mo_guang.ctpp.config.MainConfig;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import com.simibubi.create.content.kinetics.base.RotatedPillarKineticBlock;
+import com.simibubi.create.foundation.utility.CreateLang;
+import tech.vixhentx.mcmod.ctnhlib.langprovider.Lang;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,11 +26,25 @@ public class GeneratorCoilBlockEntity extends KineticBlockEntity {
     private float plainStress;
     private float lastStress;
     private int generatedEnergy;
+    private float efficiency = 0;
 
     public GeneratorCoilBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
         magnetPositions.addAll(getMagnetPositions(pos, state.getValue(RotatedPillarKineticBlock.AXIS)));
         setLazyTickRate(20);
+    }
+
+    @CN("发电效率：%d%%")
+    @EN("Generator Efficiency: %d%%")
+    static Lang efficiency_tooltip;
+
+    @Override
+    public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
+        calculateStressApplied();
+        efficiency = (lastStressApplied - plainStress) / lastStressApplied;
+        CreateLang.text(efficiency_tooltip.translate(String.format("%.2f", efficiency * 100)).getString())
+                .style(ChatFormatting.AQUA).forGoggles(tooltip);
+        return super.addToGoggleTooltip(tooltip, isPlayerSneaking);
     }
 
     @Override
@@ -34,7 +54,7 @@ public class GeneratorCoilBlockEntity extends KineticBlockEntity {
 
     @Override
     public float calculateStressApplied() {
-        plainStress = super.calculateStressApplied();
+        plainStress = 12;
         float stress = plainStress;
 
         if (level != null) {

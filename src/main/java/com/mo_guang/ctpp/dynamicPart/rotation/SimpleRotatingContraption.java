@@ -18,11 +18,22 @@ import java.util.List;
 public class SimpleRotatingContraption extends Contraption {
 
     public List<BlockPos> partPos;
+    private final Direction.Axis rotationAxis;
 
     public SimpleRotatingContraption(List<BlockPos> partPos, BlockPos anchor) {
+        this(partPos, anchor, null);
+    }
+
+    /**
+     * @param rotationAxis the axis this contraption rotates around; null keeps the
+     *                     conservative all-axis bounds for contraptions that can
+     *                     change axes at runtime
+     */
+    public SimpleRotatingContraption(List<BlockPos> partPos, BlockPos anchor, Direction.Axis rotationAxis) {
         super();
         this.partPos = partPos;
         this.anchor = anchor;
+        this.rotationAxis = rotationAxis;
         this.bounds = new AABB(BlockPos.ZERO);
     }
 
@@ -35,9 +46,13 @@ public class SimpleRotatingContraption extends Contraption {
                     be != null ? be.saveWithFullMetadata() : null);
             addBlock(world, pos, Pair.of(info, be));
         }
-        expandBoundsAroundAxis(Direction.Axis.X);
-        expandBoundsAroundAxis(Direction.Axis.Y);
-        expandBoundsAroundAxis(Direction.Axis.Z);
+        if (rotationAxis == null) {
+            expandBoundsAroundAxis(Direction.Axis.X);
+            expandBoundsAroundAxis(Direction.Axis.Y);
+            expandBoundsAroundAxis(Direction.Axis.Z);
+        } else {
+            expandBoundsAroundAxis(rotationAxis);
+        }
         return true;
     }
 

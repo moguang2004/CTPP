@@ -197,7 +197,7 @@ public class CTPPMachines {
         CARBON_BRUSHES = REGISTRATE.machine("carbon_brushes",
                 "碳刷",
                 id -> new KineticMachineDefinition(id, false,
-                        GTValues.V[LV] * MainConfig.INSTANCE.gtmConfig.kineticOutputBoxTorqueMultiplier)
+                        0)
                         .setFrontRotation(true),
                 holder -> new CarbonBrushesGeneratorMachine(holder, LV, genericGeneratorTankSizeFunction),
                 KineticMachineBlock::new,

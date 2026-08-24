@@ -8,7 +8,7 @@ import com.negodya1.vintageimprovements.VintageRecipes;
 public class CurvingRecipeBuilder extends AbstractVintageRecipeBuilder<CurvingRecipeBuilder> {
 
     private Integer mode;
-    private String head;
+    private String itemAsHead;
 
     public CurvingRecipeBuilder(String name) {
         super(name, VintageRecipes.CURVING);
@@ -32,13 +32,13 @@ public class CurvingRecipeBuilder extends AbstractVintageRecipeBuilder<CurvingRe
     }
 
     public CurvingRecipeBuilder head(String head) {
-        this.head = head;
+        this.itemAsHead = head;
         return this;
     }
 
     @Override
     protected void addExtraJson(JsonObject json) {
         if (mode != null) json.addProperty("mode", mode);
-        if (head != null) json.addProperty("head", head);
+        if (itemAsHead != null) json.addProperty("itemAsHead", itemAsHead);
     }
 }

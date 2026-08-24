@@ -28,11 +28,19 @@ public class ItemApplicationRecipeBuilder {
     private ItemStack result;
 
     public ItemApplicationRecipeBuilder(String name) {
-        this.id = CTPP.id(name);
+        this(CTPP.id(name));
+    }
+
+    public ItemApplicationRecipeBuilder(ResourceLocation id) {
+        this.id = id;
     }
 
     public static ItemApplicationRecipeBuilder builder(String name) {
         return new ItemApplicationRecipeBuilder(name);
+    }
+
+    public static ItemApplicationRecipeBuilder builder(ResourceLocation id) {
+        return new ItemApplicationRecipeBuilder(id);
     }
 
     public ItemApplicationRecipeBuilder input(ItemStack stack) {
@@ -72,7 +80,9 @@ public class ItemApplicationRecipeBuilder {
         ingredients.forEach(i -> ingr.add(i.toJson()));
         json.add("ingredients", ingr);
 
-        json.add("result", serializeItemStack(result));
+        JsonArray results = new JsonArray();
+        results.add(serializeItemStack(result));
+        json.add("results", results);
     }
 
     public FinishedRecipe build() {

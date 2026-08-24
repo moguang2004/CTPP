@@ -10,14 +10,18 @@ import net.minecraft.world.phys.Vec3;
 
 import com.mo_guang.ctpp.CTPPEntityTypes;
 import com.simibubi.create.content.contraptions.Contraption;
+import org.joml.Matrix3f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
+import tech.vixhentx.mcmod.ctnhlib.utils.ExtendNbtUtils;
 
-import static com.mo_guang.ctpp.util.MathUtil.quaternionAngleDifference;
+import static com.mo_guang.ctpp.util.MathUtil.slerp;
 
 public class RubiksCubeContraptionEntity extends SimpleRotatingContraptionEntity {
 
-    public static float ROTATE_SPEED = 4.5f; // 90 degrees per 10 ticks
+    public static final float ROTATE_SPEED = 4.5f;
+    private static final float QUARTER_TURN_DEGREES = 90.0f;
+    private static final float MOVE_EPSILON_DEGREES = 1.0E-4f;
     public Direction frontFacing;
     public BlockPos startPos;
 
@@ -31,6 +35,16 @@ public class RubiksCubeContraptionEntity extends SimpleRotatingContraptionEntity
     public boolean shouldStop;
     public RotationLayer layer;
     public boolean clockwise;
+    private Quaternionf moveStartRotation = new Quaternionf();
+    private Quaternionf moveTargetRotation = new Quaternionf();
+    private Vec3 moveAxis = Vec3.ZERO;
+    private float movedDegrees;
+    private boolean moving;
+
+    private static final int[][] AXIS_PERMUTATIONS = {
+            { 0, 1, 2 }, { 0, 2, 1 }, { 1, 0, 2 },
+            { 1, 2, 0 }, { 2, 0, 1 }, { 2, 1, 0 }
+    };
 
     public static RubiksCubeContraptionEntity create(Level world, Contraption contraption, Vec3 pivot,
                                                      Direction frontFacing, BlockPos pos,
@@ -38,7 +52,7 @@ public class RubiksCubeContraptionEntity extends SimpleRotatingContraptionEntity
         RubiksCubeContraptionEntity entity = new RubiksCubeContraptionEntity(
                 CTPPEntityTypes.RUBIKS_CUBE_CONTRAPTION.get(), world);
         entity.controllerPos = controller.getBlockPosition();
-        entity.isRunning = true;
+        entity.setRunning(true);
         entity.frontFacing = frontFacing;
         entity.startPos = pos;
         entity.setContraption(contraption);
@@ -88,6 +102,20 @@ public class RubiksCubeContraptionEntity extends SimpleRotatingContraptionEntity
             return new Vec3(layerDirection.getStepX(), layerDirection.getStepY(), layerDirection.getStepZ());
         }
 
+        public boolean contains(Vec3 localPosition, Direction frontFacing, Quaternionf rotation) {
+            Direction direction = getDirection(frontFacing);
+            Vector3f rotated = new Quaternionf(rotation).transform(new Vector3f(
+                    (float) localPosition.x,
+                    (float) localPosition.y,
+                    (float) localPosition.z));
+            float coordinate = switch (direction.getAxis()) {
+                case X -> rotated.x();
+                case Y -> rotated.y();
+                case Z -> rotated.z();
+            };
+            return coordinate * direction.getAxisDirection().getStep() > 0.5f;
+        }
+
         /**
          * 获取左方向（基于整体朝向）
          */
@@ -108,44 +136,89 @@ public class RubiksCubeContraptionEntity extends SimpleRotatingContraptionEntity
         private static Direction getRightDirection(Direction frontFacing) {
             return getLeftDirection(frontFacing).getOpposite();
         }
+    }
 
-        /**
-         * 判断一个角块位置是否属于这个旋转层
-         */
-        public boolean isInLayer(Vec3 startPos, Direction frontFacing, Quaternionf rotating) {
-            Direction layerDirection = this.getDirection(frontFacing);
-            Vector3f rotated = new Vector3f((float) startPos.x, (float) startPos.y, (float) startPos.z);
-            Vector3f localPos = rotated.rotate(rotating);
+    @Override
+    protected boolean shouldAdvanceWithAngularVelocity() {
+        return false;
+    }
 
-            // 根据层的方向判断位置是否在指定层
-            return switch (layerDirection) {
-                case EAST -> Math.signum(localPos.x) == 1;
-                case WEST -> Math.signum(localPos.x) == -1;
-                case UP -> Math.signum(localPos.y) == 1;
-                case DOWN -> Math.signum(localPos.y) == -1;
-                case SOUTH -> Math.signum(localPos.z) == 1;
-                case NORTH -> Math.signum(localPos.z) == -1;
-            };
+    @Override
+    protected boolean shouldCorrectClientRotation() {
+        return false;
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        if (level().isClientSide || !moving) {
+            return;
+        }
+
+        movedDegrees = Math.min(QUARTER_TURN_DEGREES, movedDegrees + ROTATE_SPEED);
+        float progress = movedDegrees / QUARTER_TURN_DEGREES;
+        serverRotation = slerp(moveStartRotation, moveTargetRotation, progress).normalize();
+        syncRotationQuaternion(false);
+
+        if (movedDegrees >= QUARTER_TURN_DEGREES - MOVE_EPSILON_DEGREES) {
+            finishMove();
         }
     }
 
-    public void notifyChange() {
-        Quaternionf q = serverRotation;
-        if (this.layer.isInLayer(this.startPos.getCenter().subtract(getPivot()), frontFacing, q) && !this.shouldStop) {
-            float speed = clockwise ? ROTATE_SPEED : -ROTATE_SPEED;
-            Vec3 worldAxisVector = layer.getRotationVector(frontFacing);
-
-            this.setRotationSpeed(
-                    ((float) worldAxisVector.x * speed),
-                    ((float) worldAxisVector.y * speed),
-                    ((float) worldAxisVector.z * speed));
-        } else {
-            setRotationSpeed(0, 0, 0);
+    private void beginMove() {
+        if (moving || startPos == null || frontFacing == null || layer == null) {
+            return;
         }
+
+        // Every move starts from a legal cube orientation. This also repairs
+        // entities created by older versions that accumulated quaternion error.
+        moveStartRotation = snapToCubeRotation(serverRotation);
+        serverRotation = new Quaternionf(moveStartRotation);
+
+        Vec3 localPosition = startPos.getCenter().subtract(getPivot());
+        if (!layer.contains(localPosition, frontFacing, moveStartRotation)) {
+            shouldStop = true;
+            syncRotationQuaternion(true);
+            return;
+        }
+
+        moveAxis = layer.getRotationVector(frontFacing).scale(clockwise ? 1.0 : -1.0);
+        Quaternionf quarterTurn = new Quaternionf().fromAxisAngleRad(
+                (float) moveAxis.x,
+                (float) moveAxis.y,
+                (float) moveAxis.z,
+                (float) Math.toRadians(QUARTER_TURN_DEGREES));
+        moveTargetRotation = snapToCubeRotation(quarterTurn.mul(moveStartRotation, new Quaternionf()));
+        movedDegrees = 0.0f;
+        moving = true;
+        setRotationSpeed(moveAxis, ROTATE_SPEED);
+        syncRotationQuaternion(true);
+    }
+
+    private void finishMove() {
+        serverRotation = new Quaternionf(moveTargetRotation).normalize();
+        movedDegrees = QUARTER_TURN_DEGREES;
+        moving = false;
+        shouldStop = true;
+        setRotationSpeed(Vec3.ZERO, 0);
+        syncRotationQuaternion(true);
     }
 
     public void performStandardMove(String moveNotation) {
-        switch (moveNotation.toUpperCase()) {
+        String notation = moveNotation.trim().toUpperCase(java.util.Locale.ROOT);
+        if ("STOP".equals(notation)) {
+            if (moving) {
+                finishMove();
+            } else {
+                shouldStop = true;
+                setRotationSpeed(Vec3.ZERO, 0);
+            }
+            return;
+        }
+        if (moving) {
+            return;
+        }
+        switch (notation) {
             case "U": // 顶层顺时针
                 this.layer = RotationLayer.TOP_LAYER;
                 this.clockwise = true;
@@ -206,10 +279,70 @@ public class RubiksCubeContraptionEntity extends SimpleRotatingContraptionEntity
                 this.clockwise = false;
                 this.shouldStop = false;
                 break;
-            case "STOP":
-                this.shouldStop = true;
+            default:
+                return;
         }
-        notifyChange();
+        beginMove();
+    }
+
+    public boolean isMoving() {
+        return moving;
+    }
+
+    private static Quaternionf snapToCubeRotation(Quaternionf rotation) {
+        if (!isUsableRotation(rotation)) {
+            return new Quaternionf();
+        }
+        Quaternionf normalized = new Quaternionf(rotation).normalize();
+        Vector3f[] sourceAxes = {
+                normalized.transform(new Vector3f(1, 0, 0)),
+                normalized.transform(new Vector3f(0, 1, 0)),
+                normalized.transform(new Vector3f(0, 0, 1))
+        };
+        float bestScore = -Float.MAX_VALUE;
+        Matrix3f bestMatrix = null;
+
+        for (int[] permutation : AXIS_PERMUTATIONS) {
+            int parity = permutationParity(permutation);
+            for (int signX : new int[] { -1, 1 }) {
+                for (int signY : new int[] { -1, 1 }) {
+                    int signZ = parity * signX * signY;
+                    Vector3f[] columns = {
+                            axisVector(permutation[0], signX),
+                            axisVector(permutation[1], signY),
+                            axisVector(permutation[2], signZ)
+                    };
+                    float score = sourceAxes[0].dot(columns[0]) + sourceAxes[1].dot(columns[1]) +
+                            sourceAxes[2].dot(columns[2]);
+                    if (score > bestScore) {
+                        bestScore = score;
+                        bestMatrix = new Matrix3f().identity()
+                                .setColumn(0, columns[0])
+                                .setColumn(1, columns[1])
+                                .setColumn(2, columns[2]);
+                    }
+                }
+            }
+        }
+        return new Quaternionf().setFromNormalized(bestMatrix).normalize();
+    }
+
+    private static int permutationParity(int[] permutation) {
+        int inversions = 0;
+        for (int i = 0; i < permutation.length; i++) {
+            for (int j = i + 1; j < permutation.length; j++) {
+                if (permutation[i] > permutation[j]) inversions++;
+            }
+        }
+        return (inversions & 1) == 0 ? 1 : -1;
+    }
+
+    private static Vector3f axisVector(int axis, int sign) {
+        return switch (axis) {
+            case 0 -> new Vector3f(sign, 0, 0);
+            case 1 -> new Vector3f(0, sign, 0);
+            default -> new Vector3f(0, 0, sign);
+        };
     }
 
     @Override
@@ -222,6 +355,14 @@ public class RubiksCubeContraptionEntity extends SimpleRotatingContraptionEntity
         nbt.putBoolean("ShouldStop", shouldStop); // 保存停止标记
         nbt.putString("RotationLayer", layer.name()); // 保存旋转层
         nbt.putBoolean("Clockwise", clockwise); // 保存旋转方向
+
+        CompoundTag moveTag = new CompoundTag();
+        moveTag.putBoolean("Moving", moving);
+        moveTag.putFloat("MovedDegrees", movedDegrees);
+        moveTag.put("StartRotation", writeQuaternion(moveStartRotation));
+        moveTag.put("TargetRotation", writeQuaternion(moveTargetRotation));
+        moveTag.put("Axis", ExtendNbtUtils.writeVec3(moveAxis));
+        nbt.put("RubiksMoveData", moveTag);
     }
 
     // ========== 核心修复：重写 NBT 读取 ==========
@@ -244,18 +385,72 @@ public class RubiksCubeContraptionEntity extends SimpleRotatingContraptionEntity
         }
 
         this.clockwise = nbt.getBoolean("Clockwise");
+        this.serverRotation = snapToCubeRotation(this.serverRotation);
+        this.moving = false;
+        this.movedDegrees = 0.0f;
+        this.moveStartRotation = new Quaternionf(this.serverRotation);
+        this.moveTargetRotation = new Quaternionf(this.serverRotation);
+        this.moveAxis = Vec3.ZERO;
 
-        this.serverRotation = new Quaternionf();
-        if (!this.level().isClientSide) {
-            entityData.set(DATA_Q_W, this.serverRotation.w());
-            entityData.set(DATA_Q_X, this.serverRotation.x());
-            entityData.set(DATA_Q_Y, this.serverRotation.y());
-            entityData.set(DATA_Q_Z, this.serverRotation.z());
+        if (nbt.contains("RubiksMoveData", CompoundTag.TAG_COMPOUND)) {
+            CompoundTag moveTag = nbt.getCompound("RubiksMoveData");
+            Quaternionf savedStart = readQuaternion(moveTag, "StartRotation", this.serverRotation);
+            Quaternionf savedTarget = readQuaternion(moveTag, "TargetRotation", this.serverRotation);
+            Vec3 savedAxis = ExtendNbtUtils.readVec3(moveTag.getCompound("Axis"));
+            float savedProgress = moveTag.getFloat("MovedDegrees");
+
+            if (moveTag.getBoolean("Moving") && isUsableAxis(savedAxis) && Float.isFinite(savedProgress)) {
+                this.moveStartRotation = snapToCubeRotation(savedStart);
+                this.moveTargetRotation = snapToCubeRotation(savedTarget);
+                this.moveAxis = savedAxis.normalize();
+                this.movedDegrees = Math.max(0.0f,
+                        Math.min(QUARTER_TURN_DEGREES, savedProgress));
+                this.serverRotation = slerp(this.moveStartRotation, this.moveTargetRotation,
+                        this.movedDegrees / QUARTER_TURN_DEGREES).normalize();
+                this.moving = true;
+                this.shouldStop = false;
+            }
         }
-        if (this.level().isClientSide) {
+
+        if (!level().isClientSide) {
+            entityData.set(DATA_Q_W, serverRotation.w());
+            entityData.set(DATA_Q_X, serverRotation.x());
+            entityData.set(DATA_Q_Y, serverRotation.y());
+            entityData.set(DATA_Q_Z, serverRotation.z());
+            if (moving) {
+                setRotationSpeed(moveAxis, ROTATE_SPEED);
+            } else {
+                setRotationSpeed(Vec3.ZERO, 0);
+            }
+        } else {
             this.clientRotation = new Quaternionf(this.serverRotation);
             this.prevClientRotation = new Quaternionf(this.serverRotation);
-            this.clientRotationDiff = quaternionAngleDifference(this.clientRotation, this.serverRotation);
+            setRotationSpeed(moving ? moveAxis : Vec3.ZERO, moving ? ROTATE_SPEED : 0);
         }
+    }
+
+    private static CompoundTag writeQuaternion(Quaternionf rotation) {
+        return ExtendNbtUtils.writeQuaternionf(new Quaternionf(rotation).normalize());
+    }
+
+    private static Quaternionf readQuaternion(CompoundTag tag, String key, Quaternionf fallback) {
+        if (!tag.contains(key, CompoundTag.TAG_COMPOUND)) {
+            return new Quaternionf(fallback);
+        }
+        Quaternionf result = ExtendNbtUtils.readQuaternionf(tag.getCompound(key));
+        if (!isUsableRotation(result)) {
+            return new Quaternionf(fallback);
+        }
+        return result.normalize();
+    }
+
+    private static boolean isUsableRotation(Quaternionf rotation) {
+        return Float.isFinite(rotation.x()) && Float.isFinite(rotation.y()) && Float.isFinite(rotation.z()) &&
+                Float.isFinite(rotation.w()) && rotation.lengthSquared() > 1.0E-8f;
+    }
+
+    private static boolean isUsableAxis(Vec3 axis) {
+        return axis.lengthSqr() > 1.0E-8 && Double.isFinite(axis.x) && Double.isFinite(axis.y) &&
+                Double.isFinite(axis.z);
     }
 }

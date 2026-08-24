@@ -121,6 +121,7 @@ public class BreathingFanProcessingType implements FanProcessingType {
                     SoundSource.NEUTRAL, 1.25f, 0.65f);
 
             Endermite endermite = EntityType.ENDERMITE.create(level);
+            if (endermite == null) return;
             CompoundTag serializeNBT = silverfish.saveWithoutId(new CompoundTag());
             serializeNBT.remove("UUID");
 

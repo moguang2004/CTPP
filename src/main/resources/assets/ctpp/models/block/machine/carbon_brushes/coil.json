@@ -11,7 +11,7 @@
 			"name": "coil",
 			"from": [5, 8.5, 5],
 			"to": [11, 12.5, 7.5],
-			"rotation": {"angle": -45, "axis": "y", "origin": [8, 13, 8]},
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 13, 8]},
 			"faces": {
 				"north": {"uv": [0, 8, 2, 11], "rotation": 90, "texture": "#0"},
 				"east": {"uv": [0, 11, 2, 9.75], "rotation": 90, "texture": "#0"},
@@ -25,7 +25,7 @@
 			"name": "coil",
 			"from": [5, 8.5, 8.5],
 			"to": [11, 12.5, 11],
-			"rotation": {"angle": -45, "axis": "y", "origin": [8, 13, 8]},
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 13, 8]},
 			"faces": {
 				"north": {"uv": [2, 8, 4, 11], "rotation": 90, "texture": "#0"},
 				"east": {"uv": [0, 9.75, 2, 11], "rotation": 90, "texture": "#0"},
@@ -37,23 +37,23 @@
 		},
 		{
 			"name": "coil",
-			"from": [5, 3.5, 8.5],
+			"from": [8.5, 3.5, 5],
 			"to": [11, 7.5, 11],
-			"rotation": {"angle": 45, "axis": "y", "origin": [8, 8, 8]},
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 8, 8]},
 			"faces": {
-				"north": {"uv": [2, 8, 4, 11], "rotation": 90, "texture": "#0"},
-				"east": {"uv": [0, 9.75, 2, 11], "rotation": 90, "texture": "#0"},
-				"south": {"uv": [0, 8, 2, 11], "rotation": 90, "texture": "#0"},
-				"west": {"uv": [0, 11, 2, 9.75], "rotation": 90, "texture": "#0"},
-				"up": {"uv": [4, 11, 7, 9.75], "rotation": 180, "texture": "#0"},
-				"down": {"uv": [4, 9.25, 7, 8], "rotation": 180, "texture": "#0"}
+				"north": {"uv": [0, 9.75, 2, 11], "rotation": 90, "texture": "#0"},
+				"east": {"uv": [0, 8, 2, 11], "rotation": 90, "texture": "#0"},
+				"south": {"uv": [0, 11, 2, 9.75], "rotation": 90, "texture": "#0"},
+				"west": {"uv": [2, 8, 4, 11], "rotation": 90, "texture": "#0"},
+				"up": {"uv": [4, 11, 7, 9.75], "rotation": 90, "texture": "#0"},
+				"down": {"uv": [4, 9.25, 7, 8], "rotation": 270, "texture": "#0"}
 			}
 		},
 		{
 			"name": "coil",
 			"from": [5, 3.5, 5],
 			"to": [7.5, 7.5, 11],
-			"rotation": {"angle": -45, "axis": "y", "origin": [8, 8, 8]},
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 8, 8]},
 			"faces": {
 				"north": {"uv": [0, 11, 2, 9.75], "rotation": 90, "texture": "#0"},
 				"east": {"uv": [2, 8, 4, 11], "rotation": 90, "texture": "#0"},

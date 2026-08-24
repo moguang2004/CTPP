@@ -31,7 +31,7 @@ public abstract class TMRVSlotWidgetMixin extends SlotWidget implements ICustomS
         ctpp$hide = true;
     }
 
-    @Inject(method = "render", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "render", at = @At("HEAD"), cancellable = true, remap = true)
     void hide(GuiGraphics draw, int mouseX, int mouseY, float delta, CallbackInfo ci) {
         if (ctpp$hide) {
             drawOverlay(draw, mouseX, mouseY, delta);

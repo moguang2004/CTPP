@@ -8,15 +8,13 @@ import org.jetbrains.annotations.NotNull;
 public class CTPPRecipeHelper {
 
     public static float getInputStress(@NotNull GTRecipe recipe) {
-        return (float) recipe.getInputContents(StressRecipeCapability.CAP).stream()
-                .mapToDouble(Float::doubleValue)
-                .sum();
+        return recipe.getInputContents(StressRecipeCapability.CAP).stream()
+                .reduce(0f, Float::sum);
     }
 
     public static float getOutputStress(@NotNull GTRecipe recipe) {
-        return (float) recipe.getOutputContents(StressRecipeCapability.CAP).stream()
-                .mapToDouble(Float::doubleValue)
-                .sum();
+        return recipe.getOutputContents(StressRecipeCapability.CAP).stream()
+                .reduce(0f, Float::sum);
     }
 
     public static float getStressWithIO(@NotNull GTRecipe recipe) {

@@ -118,9 +118,8 @@ public class CTPPRecipeBuilder extends GTRecipeBuilder {
         return rpm(rpm, false);
     }
 
-    public CTPPRecipeBuilder tier(int tier) {
+    public CTPPRecipeBuilder mechanicalTier(int tier) {
         addCondition(new MechanicalTierCondition(tier));
-        // this.data.putInt("mechanical_tier", tier);
         return this;
     }
 }

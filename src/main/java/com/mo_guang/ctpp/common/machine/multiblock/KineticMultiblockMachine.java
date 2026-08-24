@@ -23,14 +23,18 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 
 import com.ctnhlang.CN;
 import com.ctnhlang.EN;
 import com.mo_guang.ctpp.api.StressRecipeCapability;
 import com.mo_guang.ctpp.common.blockentity.IKineticBlockEntityExtension;
+import com.mo_guang.ctpp.common.blockentity.KineticMachineBlockEntity;
 import com.mo_guang.ctpp.common.machine.NotifiableStressTrait;
 import com.mo_guang.ctpp.common.machine.multiblock.part.MechanicalUpgradePartMachine;
+import com.mo_guang.ctpp.dynamicPart.rotation.IContraptionMultiblock;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import com.simibubi.create.content.processing.burner.BlazeBurnerBlock;
 import com.simibubi.create.content.processing.burner.BlazeBurnerBlockEntity;
@@ -87,13 +91,33 @@ public abstract class KineticMultiblockMachine extends RecipeMultiblockMachine
     public void onStructureInvalid() {
         stopWorking();
         super.onStructureInvalid();
+        if (rotateBlocks == null || getLevel() == null) {
+            return;
+        }
         for (var pos : rotateBlocks) {
             var blockEntity = getLevel().getBlockEntity(BlockPos.of(pos));
             if (blockEntity instanceof KineticBlockEntity kineticBlockEntity) {
                 IKineticBlockEntityExtension mixin = ((IKineticBlockEntityExtension) kineticBlockEntity);
+                mixin.setCTNHVisualSpeed(0);
                 mixin.setCTNHInMultiblock(false);
             }
         }
+    }
+
+    @Override
+    public boolean shouldIgnoreChange(BlockPos pos, BlockState state) {
+        if (this instanceof IContraptionMultiblock<?> contraptionMultiblock &&
+                contraptionMultiblock.shouldIgnoreContraptionChange(pos, state)) {
+            return true;
+        }
+        if (!state.getBlock().equals(Blocks.AIR)) {
+            long posLong = pos.asLong();
+            if ((blazeBlocks != null && blazeBlocks.contains(posLong)) ||
+                    (rotateBlocks != null && rotateBlocks.contains(posLong))) {
+                return true;
+            }
+        }
+        return super.shouldIgnoreChange(pos, state);
     }
 
     public void onTierChanged() {}
@@ -125,6 +149,7 @@ public abstract class KineticMultiblockMachine extends RecipeMultiblockMachine
     }
 
     public void checkTier() {
+        tier = 0;
         for (IMultiPart multiPart : getParts()) {
             if (multiPart instanceof MechanicalUpgradePartMachine upgradePartMachine) {
                 tier = Math.max(upgradePartMachine.tier, tier);
@@ -143,17 +168,10 @@ public abstract class KineticMultiblockMachine extends RecipeMultiblockMachine
     }
 
     public void updateRotateBlock(boolean active, BlockEntity blockEntity) {
-        if (blockEntity instanceof KineticBlockEntity kineticBlockEntity) {
-            if (active) {
-                float currentSpeed = kineticBlockEntity.getSpeed();
-                kineticBlockEntity.setSpeed(speed);
-                kineticBlockEntity.onSpeedChanged(currentSpeed);
-                kineticBlockEntity.sendData();
-            } else {
-                kineticBlockEntity.setSpeed(0);
-                kineticBlockEntity.onSpeedChanged(kineticBlockEntity.getSpeed());
-                kineticBlockEntity.sendData();
-            }
+        if (blockEntity instanceof KineticBlockEntity kineticBlockEntity &&
+                kineticBlockEntity instanceof IKineticBlockEntityExtension extension &&
+                !(kineticBlockEntity instanceof KineticMachineBlockEntity)) {
+            extension.setCTNHVisualSpeed(active ? speed : 0);
         }
     }
 

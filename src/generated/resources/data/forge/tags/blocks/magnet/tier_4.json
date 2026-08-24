@@ -1,3 +1,8 @@
 {
-  "values": []
+  "values": [
+    {
+      "id": "gtceu:magnetic_neodymium_block",
+      "required": false
+    }
+  ]
 }

@@ -70,10 +70,10 @@ public class CTPPMultiblockMachines {
     static Lang[] kineticSteamTurbineTooltip;
 
     @CN({ "风力总控！越多越强！",
-            "-会检测多方块周围半径32格内的风车轴承\n-总输出的应力为：周围的风车轴承数x(周围风车总应力输出 + 512)\n-§4最多控制(6 + 6 * 机械等级)个风车！§r",
+            "-会检测多方块周围半径32格内的风车轴承\n-总输出的应力为：周围的风车轴承数x(周围风车总应力输出 + 512)\n-§4最多控制(4 + 4 * 机械等级)个风车！§r",
             "64格范围内存在其他风车控制中心会使得输出变为0" })
     @EN({ "Windmill Master Control! The more, the stronger!",
-            "-Detects windmill bearings within a radius of 32 blocks around the multiblock. \n-The total stress output is calculated as: Number of windmill bearings × (Total stress output of surrounding windmills + 512). \n-§4Can control up to (6 + 6 * tier) windmills!§r",
+            "-Detects windmill bearings within a radius of 32 blocks around the multiblock. \n-The total stress output is calculated as: Number of windmill bearings × (Total stress output of surrounding windmills + 512). \n-§4Can control up to (4 + 4 * tier) windmills!§r",
             "If there are other windmill controllers within 64 blocks, the output will decrease to 0." })
     static Lang[] windmillControlCenterTooltip;
 
@@ -197,6 +197,7 @@ public class CTPPMultiblockMachines {
                     .rotationState(RotationState.NON_Y_AXIS)
                     .partSorter(CTPPMultiblockMachines::kineticOutputPartSorter)
                     .recipeType(CTPPRecipeTypes.KINETIC_STEAM_TURBINE_RECIPES)
+                    .alwaysTryModifyRecipe(true)
                     .appearanceBlock(CASING_BRONZE_BRICKS)
                     .tooltips(kineticSteamTurbineTooltip[0].translate(),
                             kineticSteamTurbineTooltip[1].translate(),

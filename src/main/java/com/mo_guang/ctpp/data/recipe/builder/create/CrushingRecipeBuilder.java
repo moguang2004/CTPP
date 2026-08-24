@@ -40,11 +40,19 @@ public class CrushingRecipeBuilder {
     private final List<ResultEntry> results = new ArrayList<>();
 
     public CrushingRecipeBuilder(String name) {
-        this.id = CTPP.id(name);
+        this(CTPP.id(name));
+    }
+
+    public CrushingRecipeBuilder(ResourceLocation id) {
+        this.id = id;
     }
 
     public static CrushingRecipeBuilder builder(String name) {
         return new CrushingRecipeBuilder(name);
+    }
+
+    public static CrushingRecipeBuilder builder(ResourceLocation id) {
+        return new CrushingRecipeBuilder(id);
     }
 
     public CrushingRecipeBuilder input(ItemStack stack) {

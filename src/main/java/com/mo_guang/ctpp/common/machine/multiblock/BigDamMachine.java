@@ -3,6 +3,7 @@ package com.mo_guang.ctpp.common.machine.multiblock;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.phys.Vec3;
 
 import com.mo_guang.ctpp.dynamicPart.rotation.IContraptionMultiblock;
@@ -31,12 +32,8 @@ public class BigDamMachine extends KineticOutputMachine
     public void onStructureFormed() {
         super.onStructureFormed();
         // assemble rotating entities using interface helper
-        createAndAttachRotatingEntities(MachineUtils.getOffset(this, 0, 6, 9));
-        contraptionEntity.forEach(entity -> {
-            var facing = getFrontFacing().getNormal();
-            Vec3 newF = new Vec3(facing.getX(), facing.getY(), facing.getZ());
-            entity.setRotationSpeed(MathUtil.rotateByVec(newF, 90, new Vec3(0, -1, 0)), 2);
-        });
+        createAndAttachRotatingEntities(MachineUtils.getOffset(this, 0, 6, 9), getContraptionRotationAxis());
+        applyRotationSpeed();
     }
 
     @Override
@@ -54,17 +51,36 @@ public class BigDamMachine extends KineticOutputMachine
         // After reload, find existing entities and reapply rotation
         if (!getLevel().isClientSide) {
             findAndReattachEntities();
-            contraptionEntity.forEach(entity -> {
-                var facing = getFrontFacing().getNormal();
-                Vec3 newF = new Vec3(facing.getX(), facing.getY(), facing.getZ());
-                entity.setRotationSpeed(MathUtil.rotateByVec(newF, 90, new Vec3(0, -1, 0)), 2);
-            });
+            applyRotationSpeed();
         }
     }
 
     @Override
+    public void attach(SimpleRotatingContraptionEntity contraption) {
+        IContraptionMultiblock.super.attach(contraption);
+        contraption.setRunning(true);
+        applyRotationSpeed(contraption);
+    }
+
+    private void applyRotationSpeed() {
+        if (contraptionEntity != null) {
+            contraptionEntity.forEach(this::applyRotationSpeed);
+        }
+    }
+
+    private void applyRotationSpeed(SimpleRotatingContraptionEntity entity) {
+        var facing = getFrontFacing().getNormal();
+        Vec3 newF = new Vec3(facing.getX(), facing.getY(), facing.getZ());
+        entity.setRotationSpeed(MathUtil.rotateByVec(newF, 90, new Vec3(0, -1, 0)), 2);
+    }
+
+    @Override
     public Map<Integer, SimpleRotatingContraptionEntity> assemble(BlockPos pivot) {
-        return assembleFromPattern(pivot);
+        return assembleFromPattern(pivot, getContraptionRotationAxis());
+    }
+
+    private Direction.Axis getContraptionRotationAxis() {
+        return getFrontFacing().getAxis() == Direction.Axis.Z ? Direction.Axis.X : Direction.Axis.Z;
     }
 
     @Override
@@ -74,10 +90,6 @@ public class BigDamMachine extends KineticOutputMachine
 
     @Override
     public void onDebugAssembled() {
-        contraptionEntity.forEach(entity -> {
-            var facing = getFrontFacing().getNormal();
-            Vec3 newF = new Vec3(facing.getX(), facing.getY(), facing.getZ());
-            entity.setRotationSpeed(MathUtil.rotateByVec(newF, 90, new Vec3(0, -1, 0)), 2);
-        });
+        applyRotationSpeed();
     }
 }

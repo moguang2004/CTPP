@@ -36,6 +36,7 @@ public class MixingRecipeBuilder {
     private JsonObject fluidResult = null;
     private final List<JsonObject> fluidIngredients = new ArrayList<>();
     private HeatCondition heatRequirement = HeatCondition.NONE;
+    private Integer processingTime;
 
     public MixingRecipeBuilder(String name) {
         this(CTPP.id(name), false);
@@ -155,6 +156,11 @@ public class MixingRecipeBuilder {
         return heatRequirement(HeatCondition.deserialize(heatRequirement));
     }
 
+    public MixingRecipeBuilder processingTime(int processingTime) {
+        this.processingTime = processingTime;
+        return this;
+    }
+
     public void toJson(JsonObject json) {
         if ((ingredients.isEmpty() && fluidIngredients.isEmpty()) ||
                 (results.isEmpty() && resultObjects.isEmpty() && fluidResult == null)) {
@@ -187,6 +193,7 @@ public class MixingRecipeBuilder {
         if (fluidResult != null) resultsJson.add(fluidResult);
         json.add("results", resultsJson);
         if (heatRequirement != HeatCondition.NONE) json.addProperty("heatRequirement", heatRequirement.serialize());
+        if (processingTime != null) json.addProperty("processingTime", processingTime);
     }
 
     public FinishedRecipe build() {

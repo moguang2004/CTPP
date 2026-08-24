@@ -28,11 +28,19 @@ public class SplashingRecipeBuilder {
     private final List<JsonObject> results = new ArrayList<>();
 
     public SplashingRecipeBuilder(String name) {
-        this.id = CTPP.id(name);
+        this(CTPP.id(name));
+    }
+
+    public SplashingRecipeBuilder(ResourceLocation id) {
+        this.id = id;
     }
 
     public static SplashingRecipeBuilder builder(String name) {
         return new SplashingRecipeBuilder(name);
+    }
+
+    public static SplashingRecipeBuilder builder(ResourceLocation id) {
+        return new SplashingRecipeBuilder(id);
     }
 
     public SplashingRecipeBuilder input(ItemStack stack) {

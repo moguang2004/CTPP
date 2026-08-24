@@ -31,7 +31,7 @@ public class ComplexRotatingMachine extends WorkableElectricMultiblockMachine
     public List<RubiksCubeContraptionEntity> contraptionEntity = new ArrayList<>();
     public List<String> avalibleMoving = List.of("U", "U'", "D", "D'", "L", "L'", "R", "R'", "F", "F'", "B", "B'");
     protected TickableSubscription rotatingSubs;
-    public int count = 0;
+    private static final int MOVE_INTERVAL_TICKS = 40;
     public String rotation = "STOP";
 
     public ComplexRotatingMachine(IMachineBlockEntity holder, Object... args) {
@@ -83,32 +83,35 @@ public class ComplexRotatingMachine extends WorkableElectricMultiblockMachine
     }
 
     public void rotatingTick() {
-        // if (isFormed && rotatingEntity != null) {
-        // var halfTick = 90 / RubiksCubeContraptionEntity.ROTATE_SPEED;
-        // if (getOffsetTimer() % (2 * halfTick) == 0) {
-        // rotatingEntity.forEach(entity -> {
-        // if(!(entity instanceof RubiksCubeContraptionEntity)) return;
-        // entity.performStandardMove(rotation);
-        // });
-        // rotation = "STOP";
-        // }
-        // if (getOffsetTimer() % (2 * halfTick) == halfTick) {
-        // rotatingEntity.forEach(entity -> {
-        // if(!(entity instanceof RubiksCubeContraptionEntity)) return;
-        // entity.performStandardMove("STOP");
-        // });
-        // }
-        // }
-        if (isFormed && contraptionEntity != null) {
-            var halfTick = 90 / RubiksCubeContraptionEntity.ROTATE_SPEED;
-            if (getOffsetTimer() % (2 * halfTick) == 0) {
-                int index = RandomSource.create().nextInt(avalibleMoving.size());
-                contraptionEntity.forEach(entity -> entity.performStandardMove(avalibleMoving.get(index)));
-            }
-            if (getOffsetTimer() % (2 * halfTick) == halfTick) {
-                contraptionEntity.forEach(entity -> entity.performStandardMove("STOP"));
-            }
+        if (!isFormed || contraptionEntity == null || contraptionEntity.isEmpty()) {
+            return;
         }
+
+        // A command is sent to all eight pieces as one cube move. Never start
+        // another move while one piece is still interpolating to its target.
+        if (contraptionEntity.stream().anyMatch(RubiksCubeContraptionEntity::isMoving)) {
+            return;
+        }
+
+        String requestedMove = rotation;
+        if (!"STOP".equals(requestedMove)) {
+            rotation = "STOP";
+            performMove(requestedMove);
+            return;
+        }
+
+        if (getOffsetTimer() % MOVE_INTERVAL_TICKS == 0) {
+            int index = RandomSource.create().nextInt(avalibleMoving.size());
+            performMove(avalibleMoving.get(index));
+        }
+    }
+
+    private void performMove(String move) {
+        contraptionEntity.forEach(entity -> {
+            if (entity != null) {
+                entity.performStandardMove(move);
+            }
+        });
     }
 
     @Override

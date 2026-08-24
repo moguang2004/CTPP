@@ -28,11 +28,19 @@ public class CuttingRecipeBuilder {
     private final List<ItemStack> results = new ArrayList<>();
 
     public CuttingRecipeBuilder(String name) {
-        this.id = CTPP.id(name);
+        this(CTPP.id(name));
+    }
+
+    public CuttingRecipeBuilder(ResourceLocation id) {
+        this.id = id;
     }
 
     public static CuttingRecipeBuilder builder(String name) {
         return new CuttingRecipeBuilder(name);
+    }
+
+    public static CuttingRecipeBuilder builder(ResourceLocation id) {
+        return new CuttingRecipeBuilder(id);
     }
 
     public CuttingRecipeBuilder input(ItemStack stack) {

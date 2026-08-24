@@ -18,7 +18,6 @@ import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 
-import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 
@@ -157,8 +156,6 @@ public class StaticBlockPattern extends BlockPattern {
                             }
                             continue loop;
                         }
-                        matchContext.getOrCreate("ioMap", Long2ObjectOpenHashMap::new).put(worldState.getPos().asLong(),
-                                worldState.io);
                     }
                 }
                 findFirstAisle = true;

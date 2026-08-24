@@ -1,13 +1,14 @@
 package com.mo_guang.ctpp.client.ponder.electric;
 
-import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
 
 import net.createmod.ponder.api.scene.SceneBuilder;
 import net.createmod.ponder.api.scene.SceneBuildingUtil;
 import net.createmod.ponder.api.scene.Selection;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import com.mo_guang.ctpp.client.ponder.CTPPPonderSceneBuilder;
 
@@ -100,11 +101,11 @@ public class CarbonBrushes {
                 "同样，磁铁的等级也会增加应力消耗。")
                 .attachKeyFrame();
         scene.idle(20);
-        BlockState magneticIron = ForgeRegistries.BLOCKS.getValue(GTCEu.id("magnetic_iron_block"))
+        BlockState magneticIron = ChemicalHelper.getBlock(TagPrefix.block, GTMaterials.IronMagnetic)
                 .defaultBlockState();
         scene.world().replaceBlocks(allMagnets, magneticIron, true);
         scene.idle(20);
-        BlockState magneticSteel = ForgeRegistries.BLOCKS.getValue(GTCEu.id("magnetic_steel_block"))
+        BlockState magneticSteel = ChemicalHelper.getBlock(TagPrefix.block, GTMaterials.SteelMagnetic)
                 .defaultBlockState();
         scene.world().replaceBlocks(allMagnets, magneticSteel, true);
         scene.idle(20);

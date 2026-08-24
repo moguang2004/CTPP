@@ -6,7 +6,6 @@
   "mixins": [
     "BlockPatternMixin",
     "GTBucketItemMixin",
-    "MultiblockStateMixin",
     "RotationPropagatorMixin",
     "SmartBlockEntityMixin",
     "create.KineticBlockEntityMixin",
@@ -15,6 +14,7 @@
     "create.diesel.BasinFermentingCategoryMixin",
     "create.diesel.BasinRecipeMixin",
     "create.diesel.CDGJEIMixin",
+    "create.diesel.DistillationTankBlockEntityMixin",
     "create.fix.DeployerApplicationRecipeMixin$BasinBlockEntityMixin",
     "create.fix.DeployerApplicationRecipeMixin$BrassTunnelBlockEntityMixin",
     "create.fix.DeployerApplicationRecipeMixin$ChuteBlockEntityMixin",
@@ -25,10 +25,12 @@
     "create.jei.SequencedAssemblySubCategoryMixin",
     "create.jei.TMRVSlotWidgetMixin",
     "fix.IRotorHolderMachineMixin",
-    "fix.RotorHolderPartMachineMixin"
+    "fix.RotorHolderPartMachineMixin",
+    "gtm.GTToolTypeMixin"
   ],
   "client": [
     "create.AllCreatePonderScenesMixin",
+    "create.ToolboxHandlerClientMixin",
     "create.fix.DeployerApplicationRecipeMixin",
     "create.fix.DeployerApplicationRecipeMixin$StockTickerBlockEntityMixin",
     "create.fix.SequencedAssemblyCategoryMixin"
