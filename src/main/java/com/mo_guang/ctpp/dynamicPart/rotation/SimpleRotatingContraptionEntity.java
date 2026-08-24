@@ -286,12 +286,12 @@ public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity {
             return;
         }
         if (!isRunning || !controller.isAttachedTo(this)) {
+            setRunning(true);
             // Try to reattach: if already attached, tickContraption handles this too,
             // but we also try here to cover edge cases.
             if (!controller.isAttachedTo(this)) {
                 controller.attach(this);
             }
-            setRunning(true);
         }
         if (!level().isClientSide) {
             if (shouldAdvanceWithAngularVelocity() && hasAngularVelocity()) {
@@ -453,8 +453,8 @@ public class SimpleRotatingContraptionEntity extends AbstractContraptionEntity {
             return;
         }
         if (!controller.isAttachedTo(this)) {
-            controller.attach(this);
             setRunning(true);
+            controller.attach(this);
             if (level().isClientSide)
                 setPos(getX(), getY(), getZ());
         }
