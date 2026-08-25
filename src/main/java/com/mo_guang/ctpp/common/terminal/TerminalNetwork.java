@@ -4,25 +4,29 @@ import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.IEnergyTransferHandler;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.common.blockentity.CableBlockEntity;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.Containers;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+
 import com.ctnhlang.CN;
 import com.ctnhlang.EN;
 import com.ctnhlang.Key;
 import com.mo_guang.ctpp.api.terminal.TerminalProperties;
 import com.mo_guang.ctpp.common.blockentity.VoltageTerminalBlockEntity;
+import com.mo_guang.ctpp.common.item.GTWireCutterItem;
 import com.mo_guang.ctpp.config.MainConfig;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.Containers;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import tech.vixhentx.mcmod.ctnhlib.langprovider.Lang;
+import com.mo_guang.ctpp.network.packet.CTPPTerminalWireSelectionPacket;
 import org.jetbrains.annotations.Nullable;
+import tech.vixhentx.mcmod.ctnhlib.langprovider.Lang;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -73,15 +77,30 @@ public final class TerminalNetwork {
     @EN("The same fine wire type must be used")
     private static Lang differentWireMessage;
 
+    @Key("message.ctpp.terminal.cutter_selected")
+    @CN("已选中接线柱，请右键另一个接线柱断开连接")
+    @EN("Terminal selected. Right-click another terminal to disconnect")
+    private static Lang cutterSelectedMessage;
+
+    @Key("message.ctpp.terminal.cutter_cancelled")
+    @CN("已取消剪线钳选择")
+    @EN("Wire-cutter selection cancelled")
+    private static Lang cutterCancelledMessage;
+
+    @Key("message.ctpp.terminal.cutter_disconnected")
+    @CN("连接已断开，细线已放入物品栏")
+    @EN("Connection removed; fine wires returned to your inventory")
+    private static Lang cutterDisconnectedMessage;
+
+    @Key("message.ctpp.terminal.cutter_no_connection")
+    @CN("这两个接线柱之间没有连接")
+    @EN("These terminals are not connected")
+    private static Lang cutterNoConnectionMessage;
+
     @Key("message.ctpp.terminal.already_connected")
     @CN("该连接已存在，请先断开后再重新连接")
     @EN("That connection already exists; disconnect it before reconnecting")
     private static Lang alreadyConnectedMessage;
-
-    @Key("message.ctpp.terminal.no_connection")
-    @CN("两个接线柱之间没有连接")
-    @EN("These terminals are not connected")
-    private static Lang noConnectionMessage;
 
     @Key("message.ctpp.terminal.not_enough_wire")
     @CN("细线数量不足，需要 %s 根")
@@ -92,9 +111,11 @@ public final class TerminalNetwork {
                              TerminalProperties.FineWireSpec wire, ItemStack wireItem,
                              TerminalProperties.ConnectionType connectionType) {}
 
+    private record CutterSelection(ResourceKey<Level> dimension, BlockPos pos) {}
+
     private static final Map<UUID, Selection> selections = new HashMap<>();
-    private static final ThreadLocal<Set<BlockPos>> TRANSFER_CONTEXT =
-            ThreadLocal.withInitial(HashSet::new);
+    private static final Map<UUID, CutterSelection> cutterSelections = new HashMap<>();
+    private static final ThreadLocal<Set<BlockPos>> TRANSFER_CONTEXT = ThreadLocal.withInitial(HashSet::new);
 
     private TerminalNetwork() {}
 
@@ -106,40 +127,64 @@ public final class TerminalNetwork {
         if (!(level.getBlockEntity(pos) instanceof VoltageTerminalBlockEntity)) {
             return false;
         }
+        if (stack.getItem() instanceof GTWireCutterItem) {
+            if (level.isClientSide) return true;
+            ServerLevel server = (ServerLevel) level;
+            if (player.isShiftKeyDown()) {
+                cutterSelections.remove(player.getUUID());
+                disconnectAllToInventory(server, pos, player);
+                return true;
+            }
+            CutterSelection selected = cutterSelections.get(player.getUUID());
+            if (selected == null || !selected.dimension().equals(level.dimension())) {
+                cutterSelections.put(player.getUUID(), new CutterSelection(level.dimension(), pos.immutable()));
+                show(player, cutterSelectedMessage.translate());
+                return true;
+            }
+            if (selected.pos().equals(pos)) {
+                cutterSelections.remove(player.getUUID());
+                show(player, cutterCancelledMessage.translate());
+                return true;
+            }
+            if (server.getBlockEntity(selected.pos()) instanceof VoltageTerminalBlockEntity first &&
+                    first.getLink(pos) != null) {
+                disconnectAndStore(server, selected.pos(), pos, player);
+            } else {
+                show(player, cutterNoConnectionMessage.translate());
+            }
+            cutterSelections.remove(player.getUUID());
+            return true;
+        }
         TerminalProperties.FineWireSpec wire = TerminalProperties.FineWireSpec.from(stack);
         // The server owns selection, linking and item consumption. Returning
         // success on the client still produces the normal hand-swing/success
         // feedback while avoiding a client-side duplicate mutation.
-        if (level.isClientSide) return wire != null || player.isShiftKeyDown();
+        if (level.isClientSide) return wire != null;
         ServerLevel server = (ServerLevel) level;
         Selection selection = selections.get(player.getUUID());
 
         if (player.isShiftKeyDown()) {
             if (selection != null && selection.dimension().equals(level.dimension()) && selection.pos().equals(pos)) {
                 selections.remove(player.getUUID());
+                syncWireSelection(player, null);
                 show(player, bindingCancelledMessage.translate());
                 return true;
-            }
-            if (wire == null) {
-                BlockEntity target = server.getBlockEntity(pos);
-                if (target instanceof VoltageTerminalBlockEntity terminal) {
-                    if (terminal.getLinks().isEmpty()) show(player, noConnectionMessage.translate());
-                    else disconnectAll(server, pos, player);
-                    return true;
-                }
             }
             return false;
         }
 
         if (wire == null) return false;
         if (selection == null) {
-            selections.put(player.getUUID(), new Selection(level.dimension(), pos.immutable(), wire,
-                    stack.copyWithCount(1), TerminalProperties.ConnectionType.ONE));
+            Selection created = new Selection(level.dimension(), pos.immutable(), wire,
+                    stack.copyWithCount(1), TerminalProperties.ConnectionType.ONE);
+            selections.put(player.getUUID(), created);
+            syncWireSelection(player, created);
             show(player, boundMessage.translate());
             return true;
         }
         if (!selection.dimension().equals(level.dimension())) {
             selections.remove(player.getUUID());
+            syncWireSelection(player, null);
             show(player, bindingLostMessage.translate());
             return true;
         }
@@ -151,12 +196,14 @@ public final class TerminalNetwork {
             TerminalProperties.ConnectionType next = selection.connectionType().next();
             selections.put(player.getUUID(), new Selection(selection.dimension(), selection.pos(), selection.wire(),
                     selection.wireItem(), next));
+            syncWireSelection(player, selections.get(player.getUUID()));
             show(player, connectionTypeMessage.translate(next.display()));
             return true;
         }
         if (!(server.getBlockEntity(selection.pos()) instanceof VoltageTerminalBlockEntity first) ||
                 !(server.getBlockEntity(pos) instanceof VoltageTerminalBlockEntity second)) {
             selections.remove(player.getUUID());
+            syncWireSelection(player, null);
             show(player, bindingLostMessage.translate());
             return true;
         }
@@ -171,6 +218,7 @@ public final class TerminalNetwork {
         }
         if (first.getLinks().containsKey(pos) || second.getLinks().containsKey(selection.pos())) {
             selections.remove(player.getUUID());
+            syncWireSelection(player, null);
             show(player, alreadyConnectedMessage.translate());
             return true;
         }
@@ -180,13 +228,17 @@ public final class TerminalNetwork {
             return true;
         }
         boolean firstAdded = first.addLink(pos, selection.wire(), selection.wireItem(), selection.connectionType());
-        boolean secondAdded = firstAdded && second.addLink(selection.pos(), selection.wire(), selection.wireItem(), selection.connectionType());
+        boolean secondAdded = firstAdded &&
+                second.addLink(selection.pos(), selection.wire(), selection.wireItem(), selection.connectionType());
         if (!firstAdded || !secondAdded) {
             if (firstAdded) first.removeLink(pos);
+            selections.remove(player.getUUID());
+            syncWireSelection(player, null);
             show(player, bindingLostMessage.translate());
             return true;
         }
         selections.remove(player.getUUID());
+        syncWireSelection(player, null);
         if (!player.getAbilities().instabuild) stack.shrink(selection.connectionType().multiplier());
         show(player, connectedMessage.translate(selection.connectionType().display()));
         return true;
@@ -210,9 +262,19 @@ public final class TerminalNetwork {
         }
     }
 
-    public static void disconnectAndDrop(ServerLevel level, BlockPos firstPos, BlockPos secondPos, @Nullable Player player) {
-        VoltageTerminalBlockEntity first = level.getBlockEntity(firstPos) instanceof VoltageTerminalBlockEntity value ? value : null;
-        VoltageTerminalBlockEntity second = level.getBlockEntity(secondPos) instanceof VoltageTerminalBlockEntity value ? value : null;
+    private static void disconnectAllToInventory(ServerLevel level, BlockPos pos, Player player) {
+        if (!(level.getBlockEntity(pos) instanceof VoltageTerminalBlockEntity terminal)) return;
+        for (BlockPos other : terminal.getLinks().keySet().toArray(BlockPos[]::new)) {
+            disconnectAndStore(level, pos, other, player);
+        }
+    }
+
+    public static void disconnectAndDrop(ServerLevel level, BlockPos firstPos, BlockPos secondPos,
+                                         @Nullable Player player) {
+        VoltageTerminalBlockEntity first = level.getBlockEntity(firstPos) instanceof VoltageTerminalBlockEntity value ?
+                value : null;
+        VoltageTerminalBlockEntity second = level
+                .getBlockEntity(secondPos) instanceof VoltageTerminalBlockEntity value ? value : null;
         TerminalProperties.Link link = first == null ? null : first.getLink(secondPos);
         if (first != null) first.removeLink(secondPos);
         if (second != null) second.removeLink(firstPos);
@@ -224,29 +286,89 @@ public final class TerminalNetwork {
         }
     }
 
+    private static void disconnectAndStore(ServerLevel level, BlockPos firstPos, BlockPos secondPos, Player player) {
+        VoltageTerminalBlockEntity first = level.getBlockEntity(firstPos) instanceof VoltageTerminalBlockEntity value ?
+                value : null;
+        VoltageTerminalBlockEntity second = level
+                .getBlockEntity(secondPos) instanceof VoltageTerminalBlockEntity value ? value : null;
+        TerminalProperties.Link link = first == null ? null : first.getLink(secondPos);
+        if (first != null) first.removeLink(secondPos);
+        if (second != null) second.removeLink(firstPos);
+        if (link != null) {
+            if (!link.getDropStack().isEmpty()) player.getInventory().placeItemBackInInventory(link.getDropStack());
+            show(player, cutterDisconnectedMessage.translate());
+        }
+    }
+
     public static void tickPlayer(ServerPlayer player) {
         Selection selection = selections.get(player.getUUID());
-        if (selection == null) return;
-        if (player.level().dimension() != selection.dimension()) {
-            selections.remove(player.getUUID());
-            show(player, bindingLostMessage.translate());
-            return;
+        if (selection != null) {
+            ItemStack heldWire = heldFineWire(player);
+            if (player.level().dimension() != selection.dimension() || heldWire.isEmpty() ||
+                    !sameWire(selection.wireItem(), heldWire)) {
+                selections.remove(player.getUUID());
+                syncWireSelection(player, null);
+                show(player, bindingLostMessage.translate());
+            } else {
+                int range = MainConfig.INSTANCE.terminalConfig.terminalMaxConnectionRange;
+                if (player.blockPosition().distSqr(selection.pos()) > (double) range * range * 4.0 ||
+                        !(player.level().getBlockEntity(selection.pos()) instanceof VoltageTerminalBlockEntity)) {
+                    selections.remove(player.getUUID());
+                    syncWireSelection(player, null);
+                    show(player, bindingLostMessage.translate());
+                }
+            }
         }
-        int range = MainConfig.INSTANCE.terminalConfig.terminalMaxConnectionRange;
-        if (player.blockPosition().distSqr(selection.pos()) > (double) range * range * 4.0 ||
-                !(player.level().getBlockEntity(selection.pos()) instanceof VoltageTerminalBlockEntity)) {
-            selections.remove(player.getUUID());
-            show(player, bindingLostMessage.translate());
+        CutterSelection cutter = cutterSelections.get(player.getUUID());
+        if (cutter != null) {
+            boolean cutterHeld = player.getMainHandItem().getItem() instanceof GTWireCutterItem ||
+                    player.getOffhandItem().getItem() instanceof GTWireCutterItem;
+            boolean targetValid = player.level().dimension().equals(cutter.dimension()) &&
+                    player.level().getBlockEntity(cutter.pos()) instanceof VoltageTerminalBlockEntity &&
+                    player.blockPosition().distSqr(cutter.pos()) <= 64 * 64;
+            if (!cutterHeld || !targetValid) cutterSelections.remove(player.getUUID());
         }
     }
 
     public static void clearSelection(UUID playerId) {
         selections.remove(playerId);
+        cutterSelections.remove(playerId);
+    }
+
+    public static void cancelWireSelection(ServerPlayer player, BlockPos pos) {
+        Selection selection = selections.get(player.getUUID());
+        if (selection == null || !selection.dimension().equals(player.level().dimension()) ||
+                !selection.pos().equals(pos))
+            return;
+        selections.remove(player.getUUID());
+        syncWireSelection(player, null);
+        show(player, bindingCancelledMessage.translate());
+    }
+
+    private static void syncWireSelection(Player player, @Nullable Selection selection) {
+        if (!(player instanceof ServerPlayer serverPlayer)) return;
+        if (selection == null) {
+            com.gregtechceu.gtceu.common.network.GTNetwork.sendToPlayer(serverPlayer,
+                    CTPPTerminalWireSelectionPacket.cleared());
+        } else {
+            com.gregtechceu.gtceu.common.network.GTNetwork.sendToPlayer(serverPlayer,
+                    new CTPPTerminalWireSelectionPacket(selection.pos(), selection.wireItem()));
+        }
     }
 
     private static boolean sameWire(ItemStack first, ItemStack second) {
         return !first.isEmpty() && !second.isEmpty() &&
                 ItemStack.isSameItemSameTags(first, second);
+    }
+
+    private static ItemStack heldFineWire(Player player) {
+        if (TerminalProperties.FineWireSpec.from(player.getMainHandItem()) != null) {
+            return player.getMainHandItem();
+        }
+        if (TerminalProperties.FineWireSpec.from(player.getOffhandItem()) != null) {
+            return player.getOffhandItem();
+        }
+        return ItemStack.EMPTY;
     }
 
     private static void show(Player player, Component message) {
@@ -256,7 +378,8 @@ public final class TerminalNetwork {
     public static long forward(Level level, VoltageTerminalBlockEntity source, long voltage, long amperage,
                                Set<BlockPos> visited) {
         if (!(level instanceof ServerLevel server) || voltage <= 0 || amperage <= 0 ||
-                !visited.add(source.getBlockPos())) return 0;
+                !visited.add(source.getBlockPos()))
+            return 0;
         long remaining = amperage;
         for (Map.Entry<BlockPos, TerminalProperties.Link> entry : new HashMap<>(source.getLinks()).entrySet()) {
             if (remaining <= 0 || visited.contains(entry.getKey())) continue;
@@ -293,10 +416,10 @@ public final class TerminalNetwork {
 
     private static void applyLinkHeat(ServerLevel level, BlockPos firstPos, BlockPos secondPos,
                                       TerminalProperties.Link link, long amperage, long voltage) {
-        VoltageTerminalBlockEntity first = level.getBlockEntity(firstPos) instanceof VoltageTerminalBlockEntity value
-                ? value : null;
-        VoltageTerminalBlockEntity second = level.getBlockEntity(secondPos) instanceof VoltageTerminalBlockEntity value
-                ? value : null;
+        VoltageTerminalBlockEntity first = level.getBlockEntity(firstPos) instanceof VoltageTerminalBlockEntity value ?
+                value : null;
+        VoltageTerminalBlockEntity second = level
+                .getBlockEntity(secondPos) instanceof VoltageTerminalBlockEntity value ? value : null;
         if (first == null || second == null) return;
 
         int heat = 0;

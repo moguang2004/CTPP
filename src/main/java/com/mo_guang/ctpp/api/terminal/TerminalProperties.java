@@ -6,8 +6,10 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.WireProperties;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
+
 import org.jetbrains.annotations.Nullable;
 
 /** CTPP-owned terminal and fine-wire electrical properties. */
@@ -16,7 +18,12 @@ public final class TerminalProperties {
     private TerminalProperties() {}
 
     public enum ConnectionType {
-        ONE(1, "1x"), TWO(2, "2x"), FOUR(4, "4x"), EIGHT(8, "8x"), SIXTEEN(16, "16x");
+
+        ONE(1, "1x"),
+        TWO(2, "2x"),
+        FOUR(4, "4x"),
+        EIGHT(8, "8x"),
+        SIXTEEN(16, "16x");
 
         private final int multiplier;
         private final String display;
@@ -26,8 +33,13 @@ public final class TerminalProperties {
             this.display = display;
         }
 
-        public int multiplier() { return multiplier; }
-        public String display() { return display; }
+        public int multiplier() {
+            return multiplier;
+        }
+
+        public String display() {
+            return display;
+        }
 
         public ConnectionType next() {
             return values()[(ordinal() + 1) % values().length];
@@ -42,6 +54,7 @@ public final class TerminalProperties {
     }
 
     public record FineWireSpec(long voltage, long amperage, int lossPerBlock) {
+
         public int loss(BlockPos first, BlockPos second) {
             return Math.max(1, (int) Math.ceil(Math.sqrt(first.distSqr(second)) * lossPerBlock));
         }
@@ -61,6 +74,7 @@ public final class TerminalProperties {
     }
 
     public static final class Link {
+
         private static final int DEFAULT_TEMPERATURE = 293;
         private static final int MELT_TEMPERATURE = 3000;
 

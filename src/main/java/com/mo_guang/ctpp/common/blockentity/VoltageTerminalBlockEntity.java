@@ -2,16 +2,14 @@ package com.mo_guang.ctpp.common.blockentity;
 
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
-import com.mo_guang.ctpp.api.terminal.TerminalProperties;
-import com.mo_guang.ctpp.common.block.VoltageTerminalBlock;
-import com.mo_guang.ctpp.common.terminal.TerminalNetwork;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.Connection;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.Connection;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -20,6 +18,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
+
+import com.mo_guang.ctpp.api.terminal.TerminalProperties;
+import com.mo_guang.ctpp.common.block.VoltageTerminalBlock;
+import com.mo_guang.ctpp.common.terminal.TerminalNetwork;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -86,8 +88,8 @@ public class VoltageTerminalBlockEntity extends BlockEntity {
                 TerminalNetwork.disconnectLink(server, worldPosition, entry.getKey());
                 break;
             }
-            VoltageTerminalBlockEntity peer = server.getBlockEntity(entry.getKey()) instanceof VoltageTerminalBlockEntity value
-                    ? value : null;
+            VoltageTerminalBlockEntity peer = server
+                    .getBlockEntity(entry.getKey()) instanceof VoltageTerminalBlockEntity value ? value : null;
             if (peer != null) {
                 TerminalProperties.Link peerLink = peer.links.get(worldPosition);
                 if (peerLink != null) {
@@ -159,14 +161,15 @@ public class VoltageTerminalBlockEntity extends BlockEntity {
         for (int i = 0; i < savedLinks.size(); i++) {
             CompoundTag link = savedLinks.getCompound(i);
             BlockPos other = BlockPos.of(link.getLong("pos"));
-            net.minecraft.world.item.ItemStack wireItem = link.contains("wireItem", Tag.TAG_COMPOUND)
-                    ? net.minecraft.world.item.ItemStack.of(link.getCompound("wireItem"))
-                    : net.minecraft.world.item.ItemStack.EMPTY;
+            net.minecraft.world.item.ItemStack wireItem = link.contains("wireItem", Tag.TAG_COMPOUND) ?
+                    net.minecraft.world.item.ItemStack.of(link.getCompound("wireItem")) :
+                    net.minecraft.world.item.ItemStack.EMPTY;
             TerminalProperties.ConnectionType connectionType = TerminalProperties.ConnectionType
                     .fromMultiplier(link.getInt("multiplier"));
             links.put(other, new TerminalProperties.Link(other,
                     new TerminalProperties.FineWireSpec(link.getLong("voltage"), link.getLong("amperage"),
-                            link.getInt("loss")), wireItem, connectionType));
+                            link.getInt("loss")),
+                    wireItem, connectionType));
             links.get(other).loadHeat(link.getInt("temperature"), link.getInt("heatQueue"));
         }
     }
@@ -224,6 +227,7 @@ public class VoltageTerminalBlockEntity extends BlockEntity {
     }
 
     private final class TerminalEnergyContainer implements IEnergyContainer {
+
         @Override
         public long acceptEnergyFromNetwork(Direction side, long voltage, long amperage) {
             if (side != null && side != getElectricalSide()) return 0;
@@ -235,11 +239,34 @@ public class VoltageTerminalBlockEntity extends BlockEntity {
                     TerminalNetwork.currentVisited());
         }
 
-        @Override public boolean inputsEnergy(Direction side) { return side == getElectricalSide(); }
-        @Override public long changeEnergy(long amount) { return 0; }
-        @Override public long getEnergyStored() { return 0; }
-        @Override public long getEnergyCapacity() { return Long.MAX_VALUE; }
-        @Override public long getInputAmperage() { return Long.MAX_VALUE; }
-        @Override public long getInputVoltage() { return getVoltageLimit(); }
+        @Override
+        public boolean inputsEnergy(Direction side) {
+            return side == getElectricalSide();
+        }
+
+        @Override
+        public long changeEnergy(long amount) {
+            return 0;
+        }
+
+        @Override
+        public long getEnergyStored() {
+            return 0;
+        }
+
+        @Override
+        public long getEnergyCapacity() {
+            return Long.MAX_VALUE;
+        }
+
+        @Override
+        public long getInputAmperage() {
+            return Long.MAX_VALUE;
+        }
+
+        @Override
+        public long getInputVoltage() {
+            return getVoltageLimit();
+        }
     }
 }

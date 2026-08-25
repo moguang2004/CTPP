@@ -1,7 +1,5 @@
 package com.mo_guang.ctpp.registry;
 
-import com.gregtechceu.gtceu.data.recipe.CustomTags;
-
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 
@@ -91,7 +89,8 @@ public class CTPPBlocks {
             final int terminalTier = tier;
             String tierName = GTValues.VN[tier].toLowerCase();
             VOLTAGE_COILS[tier] = REGISTRATE
-                    .block(tierName + "_voltage_terminal", properties -> new VoltageTerminalBlock(properties, terminalTier))
+                    .block(tierName + "_voltage_terminal",
+                            properties -> new VoltageTerminalBlock(properties, terminalTier))
                     .cnlang(CTNHValues.VNC[tier] + "接线柱")
                     .lang(GTValues.VOLTAGE_NAMES[tier] + " Terminal")
                     .initialProperties(() -> Blocks.IRON_BLOCK)

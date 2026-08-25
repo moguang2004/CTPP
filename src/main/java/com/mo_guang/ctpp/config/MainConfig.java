@@ -292,6 +292,7 @@ public class MainConfig {
     public TerminalConfig terminalConfig = new TerminalConfig();
 
     public static class TerminalConfig {
+
         @Configurable
         @Configurable.Comment("Maximum distance between two voltage terminals (16..2147483647)")
         @Configurable.Range(min = 16, max = Integer.MAX_VALUE)

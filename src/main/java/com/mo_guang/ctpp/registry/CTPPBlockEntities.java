@@ -1,9 +1,9 @@
 package com.mo_guang.ctpp.registry;
 
+import com.mo_guang.ctpp.common.block.VoltageTerminalBlock;
 import com.mo_guang.ctpp.common.blockentity.CTPPToolboxBlockEntity;
 import com.mo_guang.ctpp.common.blockentity.GeneratorCoilBlockEntity;
 import com.mo_guang.ctpp.common.blockentity.VoltageTerminalBlockEntity;
-import com.mo_guang.ctpp.common.block.VoltageTerminalBlock;
 import com.tterrag.registrate.util.entry.BlockEntityEntry;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;

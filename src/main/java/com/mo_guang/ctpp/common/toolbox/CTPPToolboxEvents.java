@@ -14,7 +14,8 @@ public final class CTPPToolboxEvents {
 
     @SubscribeEvent
     public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
-        if (event.phase == TickEvent.Phase.END && event.player instanceof ServerPlayer player && player.tickCount % 5 == 0) {
+        if (event.phase == TickEvent.Phase.END && event.player instanceof ServerPlayer player &&
+                player.tickCount % 5 == 0) {
             TerminalNetwork.tickPlayer(player);
         }
         if (event.phase != TickEvent.Phase.END || event.player.level().isClientSide ||

@@ -2,10 +2,13 @@ package com.mo_guang.ctpp.api.terminal;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.WireProperties;
 import com.gregtechceu.gtceu.api.pipenet.IPipeType;
-import com.mo_guang.ctpp.CTPP;
+
 import net.minecraft.resources.ResourceLocation;
 
+import com.mo_guang.ctpp.CTPP;
+
 public enum VoltageTerminal implements IPipeType<WireProperties> {
+
     TERMINAL;
 
     @Override

@@ -1,21 +1,24 @@
 package com.mo_guang.ctpp.client.renderer;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
-import com.mo_guang.ctpp.api.terminal.TerminalProperties;
-import com.mo_guang.ctpp.common.blockentity.VoltageTerminalBlockEntity;
+
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.phys.Vec3;
 import net.minecraft.util.FastColor;
+import net.minecraft.world.phys.Vec3;
+
+import com.mo_guang.ctpp.api.terminal.TerminalProperties;
+import com.mo_guang.ctpp.common.blockentity.VoltageTerminalBlockEntity;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import org.joml.Vector3f;
 
 import java.util.Map;
 
 public class VoltageTerminalRenderer implements BlockEntityRenderer<VoltageTerminalBlockEntity> {
+
     public VoltageTerminalRenderer(BlockEntityRendererProvider.Context ignored) {}
 
     @Override
@@ -24,7 +27,8 @@ public class VoltageTerminalRenderer implements BlockEntityRenderer<VoltageTermi
         if (terminal.getLevel() == null) return;
         for (Map.Entry<BlockPos, TerminalProperties.Link> entry : terminal.getLinks().entrySet()) {
             if (terminal.getBlockPos().compareTo(entry.getKey()) >= 0) continue;
-            if (!(terminal.getLevel().getBlockEntity(entry.getKey()) instanceof VoltageTerminalBlockEntity other)) continue;
+            if (!(terminal.getLevel().getBlockEntity(entry.getKey()) instanceof VoltageTerminalBlockEntity other))
+                continue;
             renderWire(terminal, other, entry.getValue(), poseStack, buffers.getBuffer(CTPPWireRenderTypes.wire()));
         }
     }
@@ -53,9 +57,8 @@ public class VoltageTerminalRenderer implements BlockEntityRenderer<VoltageTermi
                     (float) (start.x + (end.x - start.x) * nextT),
                     (float) (start.y + (end.y - start.y) * nextT - sag * 4.0 * nextT * (1.0f - nextT)),
                     (float) (start.z + (end.z - start.z) * nextT));
-            Vector3f direction = (i == segments
-                    ? new Vector3f(center).sub(previousCenter)
-                    : new Vector3f(nextCenter).sub(i == 0 ? center : previousCenter)).normalize();
+            Vector3f direction = (i == segments ? new Vector3f(center).sub(previousCenter) :
+                    new Vector3f(nextCenter).sub(i == 0 ? center : previousCenter)).normalize();
             Vector3f basisA;
             if (previousBasisA == null) {
                 Vector3f up = Math.abs(direction.y) > 0.9f ? new Vector3f(1, 0, 0) : new Vector3f(0, 1, 0);
@@ -92,7 +95,7 @@ public class VoltageTerminalRenderer implements BlockEntityRenderer<VoltageTermi
     private static int[] linkColors(TerminalProperties.Link link) {
         int primary = 0xB8B8B8;
         int secondary = shade(primary, 0.65f);
-        if (link.wireItem().isEmpty()) return new int[]{primary, secondary};
+        if (link.wireItem().isEmpty()) return new int[] { primary, secondary };
         try {
             var material = ChemicalHelper.getMaterialStack(link.wireItem()).material();
             primary = material.getMaterialRGB();
@@ -106,7 +109,7 @@ public class VoltageTerminalRenderer implements BlockEntityRenderer<VoltageTermi
             // Keep the renderer usable for legacy links whose item snapshot
             // cannot be resolved on the client.
         }
-        return new int[]{primary, secondary};
+        return new int[] { primary, secondary };
     }
 
     private static int shade(int color, float factor) {
