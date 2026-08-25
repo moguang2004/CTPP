@@ -3,6 +3,7 @@ package com.mo_guang.ctpp.client.terminal;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
+import com.gregtechceu.gtceu.data.recipe.CustomTags;
 
 import net.createmod.catnip.outliner.Outliner;
 import net.minecraft.client.Minecraft;
@@ -18,7 +19,6 @@ import net.minecraftforge.fml.common.Mod;
 
 import com.mo_guang.ctpp.CTPP;
 import com.mo_guang.ctpp.common.blockentity.VoltageTerminalBlockEntity;
-import com.mo_guang.ctpp.common.item.GTWireCutterItem;
 import com.mo_guang.ctpp.network.packet.CTPPTerminalCancelWireSelectionPacket;
 
 @Mod.EventBusSubscriber(modid = CTPP.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
@@ -36,7 +36,7 @@ public final class TerminalClientSelectionEvents {
                 !(event.getLevel().getBlockEntity(event.getPos()) instanceof VoltageTerminalBlockEntity))
             return;
         ItemStack stack = event.getItemStack();
-        if (stack.getItem() instanceof GTWireCutterItem) {
+        if (stack.is(CustomTags.WIRE_CUTTERS)) {
             if (event.getEntity().isShiftKeyDown()) {
                 TerminalClientSelection.clear();
             } else if (TerminalClientSelection.cutterTarget() != null) {
@@ -154,7 +154,7 @@ public final class TerminalClientSelectionEvents {
     }
 
     private static boolean isCutter(ItemStack stack) {
-        return stack.getItem() instanceof GTWireCutterItem;
+        return stack.is(CustomTags.WIRE_CUTTERS);
     }
 
     private static boolean sameWire(ItemStack first, ItemStack second) {

@@ -29,18 +29,20 @@ public class VoltageTerminalRenderer implements BlockEntityRenderer<VoltageTermi
             if (terminal.getBlockPos().compareTo(entry.getKey()) >= 0) continue;
             if (!(terminal.getLevel().getBlockEntity(entry.getKey()) instanceof VoltageTerminalBlockEntity other))
                 continue;
-            renderWire(terminal, other, entry.getValue(), poseStack, buffers.getBuffer(CTPPWireRenderTypes.wire()));
+            renderWire(terminal, other, entry.getValue(), poseStack,
+                    buffers.getBuffer(CTPPWireRenderTypes.wire()), packedLight);
         }
     }
 
     private void renderWire(VoltageTerminalBlockEntity first, VoltageTerminalBlockEntity second,
-                            TerminalProperties.Link link, PoseStack poseStack, VertexConsumer consumer) {
+                            TerminalProperties.Link link, PoseStack poseStack,
+                            VertexConsumer consumer, int packedLight) {
         Vec3 start = connectionPoint(first).subtract(Vec3.atLowerCornerOf(first.getBlockPos()));
         Vec3 end = connectionPoint(second).subtract(Vec3.atLowerCornerOf(first.getBlockPos()));
         double length = start.distanceTo(end);
         int segments = Math.max(8, Math.min(64, (int) Math.ceil(length * 1.5)));
         float thickness = 0.035f * (float) Math.sqrt(link.connectionType().multiplier());
-        int[] colors = linkColors(link);
+        int color = linkColor(link);
         final int radialSides = 16;
         Vector3f[][] rings = new Vector3f[segments + 1][radialSides];
         Vector3f previousCenter = null;
@@ -85,38 +87,28 @@ public class VoltageTerminalRenderer implements BlockEntityRenderer<VoltageTermi
         for (int i = 0; i < segments; i++) {
             for (int side = 0; side < radialSides; side++) {
                 int nextSide = (side + 1) % radialSides;
-                int color = side < radialSides / 2 ? colors[0] : colors[1];
+                float u0 = side / (float) radialSides;
+                float u1 = (side + 1) / (float) radialSides;
+                float v0 = i * (float) length / segments;
+                float v1 = (i + 1) * (float) length / segments;
                 addTubeQuad(consumer, poseStack, rings[i][side], rings[i][nextSide],
-                        rings[i + 1][nextSide], rings[i + 1][side], color);
+                        rings[i + 1][nextSide], rings[i + 1][side], color,
+                        u0, u1, v0, v1, packedLight);
             }
         }
     }
 
-    private static int[] linkColors(TerminalProperties.Link link) {
+    private static int linkColor(TerminalProperties.Link link) {
         int primary = 0xB8B8B8;
-        int secondary = shade(primary, 0.65f);
-        if (link.wireItem().isEmpty()) return new int[] { primary, secondary };
+        if (link.wireItem().isEmpty()) return primary;
         try {
             var material = ChemicalHelper.getMaterialStack(link.wireItem()).material();
             primary = material.getMaterialRGB();
-            try {
-                secondary = material.getMaterialRGB(1);
-                if (secondary == 0 || secondary == primary) secondary = shade(primary, 0.65f);
-            } catch (RuntimeException ignored) {
-                secondary = shade(primary, 0.65f);
-            }
         } catch (RuntimeException ignored) {
             // Keep the renderer usable for legacy links whose item snapshot
             // cannot be resolved on the client.
         }
-        return new int[] { primary, secondary };
-    }
-
-    private static int shade(int color, float factor) {
-        int red = Math.min(255, Math.max(0, (int) (FastColor.ARGB32.red(color) * factor)));
-        int green = Math.min(255, Math.max(0, (int) (FastColor.ARGB32.green(color) * factor)));
-        int blue = Math.min(255, Math.max(0, (int) (FastColor.ARGB32.blue(color) * factor)));
-        return (red << 16) | (green << 8) | blue;
+        return primary;
     }
 
     private static Vec3 connectionPoint(VoltageTerminalBlockEntity terminal) {
@@ -132,18 +124,22 @@ public class VoltageTerminalRenderer implements BlockEntityRenderer<VoltageTermi
 
     private static void addTubeQuad(VertexConsumer consumer, PoseStack poseStack,
                                     Vector3f from0, Vector3f from1, Vector3f to1,
-                                    Vector3f to0, int color) {
-        vertex(consumer, poseStack, from0, color);
-        vertex(consumer, poseStack, from1, color);
-        vertex(consumer, poseStack, to1, color);
-        vertex(consumer, poseStack, to0, color);
+                                    Vector3f to0, int color, float u0, float u1,
+                                    float v0, float v1, int packedLight) {
+        vertex(consumer, poseStack, from0, color, u0, v0, packedLight);
+        vertex(consumer, poseStack, from1, color, u1, v0, packedLight);
+        vertex(consumer, poseStack, to1, color, u1, v1, packedLight);
+        vertex(consumer, poseStack, to0, color, u0, v1, packedLight);
     }
 
-    private static void vertex(VertexConsumer consumer, PoseStack poseStack, Vector3f pos, int color) {
+    private static void vertex(VertexConsumer consumer, PoseStack poseStack, Vector3f pos,
+                               int color, float u, float v, int packedLight) {
         consumer.vertex(poseStack.last().pose(), pos.x, pos.y, pos.z)
                 .color(FastColor.ARGB32.red(color) / 255.0f,
                         FastColor.ARGB32.green(color) / 255.0f,
                         FastColor.ARGB32.blue(color) / 255.0f, 1.0f)
+                .uv(u, v)
+                .uv2(packedLight)
                 .endVertex();
     }
 

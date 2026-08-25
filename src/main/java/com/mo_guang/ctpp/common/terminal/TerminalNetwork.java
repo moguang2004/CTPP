@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.IEnergyTransferHandler;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.common.blockentity.CableBlockEntity;
+import com.gregtechceu.gtceu.data.recipe.CustomTags;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -22,7 +23,6 @@ import com.ctnhlang.EN;
 import com.ctnhlang.Key;
 import com.mo_guang.ctpp.api.terminal.TerminalProperties;
 import com.mo_guang.ctpp.common.blockentity.VoltageTerminalBlockEntity;
-import com.mo_guang.ctpp.common.item.GTWireCutterItem;
 import com.mo_guang.ctpp.config.MainConfig;
 import com.mo_guang.ctpp.network.packet.CTPPTerminalWireSelectionPacket;
 import org.jetbrains.annotations.Nullable;
@@ -127,7 +127,7 @@ public final class TerminalNetwork {
         if (!(level.getBlockEntity(pos) instanceof VoltageTerminalBlockEntity)) {
             return false;
         }
-        if (stack.getItem() instanceof GTWireCutterItem) {
+        if (stack.is(CustomTags.WIRE_CUTTERS)) {
             if (level.isClientSide) return true;
             ServerLevel server = (ServerLevel) level;
             if (player.isShiftKeyDown()) {
@@ -321,8 +321,8 @@ public final class TerminalNetwork {
         }
         CutterSelection cutter = cutterSelections.get(player.getUUID());
         if (cutter != null) {
-            boolean cutterHeld = player.getMainHandItem().getItem() instanceof GTWireCutterItem ||
-                    player.getOffhandItem().getItem() instanceof GTWireCutterItem;
+            boolean cutterHeld = player.getMainHandItem().is(CustomTags.WIRE_CUTTERS) ||
+                    player.getOffhandItem().is(CustomTags.WIRE_CUTTERS);
             boolean targetValid = player.level().dimension().equals(cutter.dimension()) &&
                     player.level().getBlockEntity(cutter.pos()) instanceof VoltageTerminalBlockEntity &&
                     player.blockPosition().distSqr(cutter.pos()) <= 64 * 64;

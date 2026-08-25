@@ -1,6 +1,9 @@
 package com.mo_guang.ctpp.common.block;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.capability.ICoverable;
+import com.gregtechceu.gtceu.common.item.tool.rotation.ICustomRotationBehavior;
+import com.gregtechceu.gtceu.data.recipe.CustomTags;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -22,6 +25,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.EntityCollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
@@ -34,6 +38,26 @@ import org.jetbrains.annotations.Nullable;
 public class VoltageTerminalBlock extends Block implements EntityBlock {
 
     public static final DirectionProperty FACING = BlockStateProperties.FACING;
+    public static final ICustomRotationBehavior ROTATION_BEHAVIOR = new ICustomRotationBehavior() {
+
+        @Override
+        public boolean customRotate(BlockState state, Level level, BlockPos pos, BlockHitResult hitResult) {
+            Direction gridSide = ICoverable.determineGridSideHit(hitResult);
+            if (gridSide == null) return false;
+            // The grid side is the terminal's base/electrical side, while
+            // FACING points away from that side (the stem direction).
+            Direction targetFacing = gridSide.getOpposite();
+            if (targetFacing == state.getValue(FACING)) return false;
+            level.setBlockAndUpdate(pos, state.setValue(FACING, targetFacing));
+            return true;
+        }
+
+        @Override
+        public boolean showSideTip(BlockState state, Direction side) {
+            return state.getValue(FACING).getOpposite() != side;
+        }
+    };
+
     private static final VoxelShape SHAPE_UP = Shapes.or(Block.box(2, 0, 2, 14, 2, 14), Block.box(5, 2, 5, 11, 10, 11));
     private static final VoxelShape SHAPE_DOWN = Shapes.or(Block.box(2, 14, 2, 14, 16, 14),
             Block.box(5, 6, 5, 11, 14, 11));
@@ -69,6 +93,16 @@ public class VoltageTerminalBlock extends Block implements EntityBlock {
 
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        if (context instanceof EntityCollisionContext entityCtx && entityCtx.getEntity() instanceof Player player) {
+            var held = player.getMainHandItem();
+            if (held.is(CustomTags.WRENCH)) {
+                return Shapes.block();
+            }
+        }
+        return getCollisionShape(state, level, pos, context);
+    }
+
+    private static VoxelShape terminalShape(BlockState state) {
         return switch (state.getValue(FACING)) {
             case DOWN -> SHAPE_DOWN;
             case UP -> SHAPE_UP;
@@ -77,6 +111,14 @@ public class VoltageTerminalBlock extends Block implements EntityBlock {
             case WEST -> SHAPE_WEST;
             case EAST -> SHAPE_EAST;
         };
+    }
+
+    @Override
+    public VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos,
+                                        CollisionContext context) {
+        // GT pipes keep their physical collision shape independent from the
+        // wrench interaction hitbox. Do the same for terminals.
+        return terminalShape(state);
     }
 
     @Override
