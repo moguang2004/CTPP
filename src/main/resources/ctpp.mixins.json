@@ -24,8 +24,6 @@
     "create.jei.SequencedAssemblyCategoryMixin",
     "create.jei.SequencedAssemblySubCategoryMixin",
     "create.jei.TMRVSlotWidgetMixin",
-    "fix.IRotorHolderMachineMixin",
-    "fix.RotorHolderPartMachineMixin",
     "gtm.GTToolTypeMixin"
   ],
   "client": [
