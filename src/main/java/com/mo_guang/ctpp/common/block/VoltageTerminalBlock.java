@@ -95,4 +95,13 @@ public class VoltageTerminalBlock extends Block implements EntityBlock {
         return TerminalNetwork.handleUse(level, pos, player, stack)
                 ? InteractionResult.sidedSuccess(level.isClientSide) : InteractionResult.PASS;
     }
+
+    @Override
+    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
+        if (!state.is(newState.getBlock()) && level.getBlockEntity(pos) instanceof VoltageTerminalBlockEntity terminal &&
+                level instanceof net.minecraft.server.level.ServerLevel server) {
+            TerminalNetwork.disconnectAll(server, pos);
+        }
+        super.onRemove(state, level, pos, newState, movedByPiston);
+    }
 }

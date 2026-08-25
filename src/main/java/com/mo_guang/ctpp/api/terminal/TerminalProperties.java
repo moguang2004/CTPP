@@ -15,6 +15,32 @@ public final class TerminalProperties {
 
     private TerminalProperties() {}
 
+    public enum ConnectionType {
+        ONE(1, "1x"), TWO(2, "2x"), FOUR(4, "4x"), EIGHT(8, "8x"), SIXTEEN(16, "16x");
+
+        private final int multiplier;
+        private final String display;
+
+        ConnectionType(int multiplier, String display) {
+            this.multiplier = multiplier;
+            this.display = display;
+        }
+
+        public int multiplier() { return multiplier; }
+        public String display() { return display; }
+
+        public ConnectionType next() {
+            return values()[(ordinal() + 1) % values().length];
+        }
+
+        public static ConnectionType fromMultiplier(int multiplier) {
+            for (ConnectionType value : values()) {
+                if (value.multiplier == multiplier) return value;
+            }
+            return ONE;
+        }
+    }
+
     public record FineWireSpec(long voltage, long amperage, int lossPerBlock) {
         public int loss(BlockPos first, BlockPos second) {
             return Math.max(1, (int) Math.ceil(Math.sqrt(first.distSqr(second)) * lossPerBlock));
@@ -40,12 +66,20 @@ public final class TerminalProperties {
 
         private final BlockPos other;
         private final FineWireSpec wire;
+        private final ItemStack wireItem;
+        private ConnectionType connectionType;
         private int temperature = DEFAULT_TEMPERATURE;
         private int heatQueue;
 
         public Link(BlockPos other, FineWireSpec wire) {
+            this(other, wire, ItemStack.EMPTY, ConnectionType.ONE);
+        }
+
+        public Link(BlockPos other, FineWireSpec wire, ItemStack wireItem, ConnectionType connectionType) {
             this.other = other.immutable();
             this.wire = wire;
+            this.wireItem = wireItem.isEmpty() ? ItemStack.EMPTY : wireItem.copyWithCount(1);
+            this.connectionType = connectionType == null ? ConnectionType.ONE : connectionType;
         }
 
         public BlockPos other() {
@@ -54,6 +88,31 @@ public final class TerminalProperties {
 
         public FineWireSpec wire() {
             return wire;
+        }
+
+        public ItemStack wireItem() {
+            return wireItem.copy();
+        }
+
+        public ConnectionType connectionType() {
+            return connectionType;
+        }
+
+        public void setConnectionType(ConnectionType connectionType) {
+            this.connectionType = connectionType == null ? ConnectionType.ONE : connectionType;
+        }
+
+        public long amperageLimit() {
+            long base = Math.max(0L, wire.amperage());
+            long multiplier = connectionType.multiplier();
+            return base > Long.MAX_VALUE / multiplier ? Long.MAX_VALUE : base * multiplier;
+        }
+
+        public ItemStack getDropStack() {
+            if (wireItem.isEmpty()) return ItemStack.EMPTY;
+            ItemStack result = wireItem.copy();
+            result.setCount(connectionType.multiplier());
+            return result;
         }
 
         public int getTemperature() {

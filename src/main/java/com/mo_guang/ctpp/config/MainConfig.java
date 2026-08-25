@@ -163,6 +163,11 @@ public class MainConfig {
     @EN("Enable Toolbox Sounds")
     public static Lang configOptionToolboxSounds;
 
+    @Key("config.ctpp.option.terminalMaxConnectionRange")
+    @CN("接线柱最大连接范围")
+    @EN("Maximum terminal connection range")
+    public static Lang configOptionTerminalMaxConnectionRange;
+
     public static MainConfig INSTANCE;
     private static final Object LOCK = new Object();
 
@@ -280,5 +285,16 @@ public class MainConfig {
         @Configurable
         @Configurable.Comment("Whether toolbox opening and closing sounds are enabled")
         public boolean toolboxSounds = true;
+    }
+
+    @Configurable
+    @Configurable.Comment("Voltage terminal configuration")
+    public TerminalConfig terminalConfig = new TerminalConfig();
+
+    public static class TerminalConfig {
+        @Configurable
+        @Configurable.Comment("Maximum distance between two voltage terminals (16..2147483647)")
+        @Configurable.Range(min = 16, max = Integer.MAX_VALUE)
+        public int terminalMaxConnectionRange = 32;
     }
 }

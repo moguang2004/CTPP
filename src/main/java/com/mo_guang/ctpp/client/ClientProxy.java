@@ -17,6 +17,7 @@ import com.ctnhlang.Key;
 import com.mo_guang.ctpp.client.ponder.CTPPPonderPlugin;
 import com.mo_guang.ctpp.client.renderer.CTPPToolboxCurioRenderer;
 import com.mo_guang.ctpp.client.renderer.CTPPToolboxRenderer;
+import com.mo_guang.ctpp.client.renderer.VoltageTerminalRenderer;
 import com.mo_guang.ctpp.client.toolbox.CTPPToolboxOverlay;
 import com.mo_guang.ctpp.common.CommonProxy;
 import com.mo_guang.ctpp.registry.CTPPBlockEntities;
@@ -57,6 +58,7 @@ public class ClientProxy extends CommonProxy {
                     .apply();
             BlockEntityRenderers.register(CTPPBlockEntities.GENERATOR_COIL.get(), GeneratorCoilRenderer::new);
             BlockEntityRenderers.register(CTPPBlockEntities.TOOLBOX.get(), CTPPToolboxRenderer::new);
+            BlockEntityRenderers.register(CTPPBlockEntities.VOLTAGE_TERMINAL.get(), VoltageTerminalRenderer::new);
             for (int i = 0; i < CTPPBlocks.TOOLBOXES.length; i++) {
                 CuriosRendererRegistry.register(CTPPBlocks.TOOLBOXES[i].get().asItem(),
                         () -> CTPPToolboxCurioRenderer.INSTANCE);

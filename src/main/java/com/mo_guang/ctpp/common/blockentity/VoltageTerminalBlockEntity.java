@@ -7,6 +7,8 @@ import com.mo_guang.ctpp.common.block.VoltageTerminalBlock;
 import com.mo_guang.ctpp.common.terminal.TerminalNetwork;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.Connection;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -15,6 +17,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;
@@ -39,15 +42,30 @@ public class VoltageTerminalBlockEntity extends BlockEntity {
         return Collections.unmodifiableMap(links);
     }
 
+    public @Nullable TerminalProperties.Link getLink(BlockPos other) {
+        return links.get(other);
+    }
+
     public boolean addLink(BlockPos other, TerminalProperties.FineWireSpec wire) {
+        return addLink(other, wire, net.minecraft.world.item.ItemStack.EMPTY,
+                TerminalProperties.ConnectionType.ONE);
+    }
+
+    public boolean addLink(BlockPos other, TerminalProperties.FineWireSpec wire,
+                           net.minecraft.world.item.ItemStack wireItem,
+                           TerminalProperties.ConnectionType connectionType) {
         if (other.equals(worldPosition) || links.containsKey(other)) return false;
-        links.put(other.immutable(), new TerminalProperties.Link(other.immutable(), wire));
+        links.put(other.immutable(), new TerminalProperties.Link(other.immutable(), wire, wireItem, connectionType));
         setChanged();
+        syncClients();
         return true;
     }
 
     public void removeLink(BlockPos other) {
-        if (links.remove(other) != null) setChanged();
+        if (links.remove(other) != null) {
+            setChanged();
+            syncClients();
+        }
     }
 
     public void applyLinkHeat(BlockPos other, int amount) {
@@ -85,9 +103,16 @@ public class VoltageTerminalBlockEntity extends BlockEntity {
     }
 
     public Direction getElectricalSide() {
-        // FACING points away from the supporting block. The only electrical
-        // face is the opposite side, where a cable or machine is attached.
+        // FACING points away from the supporting block. The electrical face
+        // is the opposite side where a cable or machine is attached.
         return getBlockState().getValue(VoltageTerminalBlock.FACING).getOpposite();
+    }
+
+    @Override
+    public AABB getRenderBoundingBox() {
+        int range = com.mo_guang.ctpp.config.MainConfig.INSTANCE == null ? 32 :
+                com.mo_guang.ctpp.config.MainConfig.INSTANCE.terminalConfig.terminalMaxConnectionRange;
+        return new AABB(worldPosition).inflate(range);
     }
 
     public long forwardIntoAttached(net.minecraft.world.level.Level level, long voltage, long amperage,
@@ -109,13 +134,19 @@ public class VoltageTerminalBlockEntity extends BlockEntity {
 
     public void burn() {
         if (!(level instanceof ServerLevel server)) return;
-        TerminalNetwork.disconnectAll(server, worldPosition);
+        TerminalNetwork.disconnectAllNoDrop(server, worldPosition);
         server.setBlockAndUpdate(worldPosition, Blocks.FIRE.defaultBlockState());
+    }
+
+    private void syncClients() {
+        if (level instanceof ServerLevel server) {
+            server.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
+        }
     }
 
     @Override
     public void setRemoved() {
-        if (level instanceof ServerLevel server) TerminalNetwork.disconnectAll(server, worldPosition);
+        if (level instanceof ServerLevel server) TerminalNetwork.disconnectAllNoDrop(server, worldPosition);
         energyCapability.invalidate();
         super.setRemoved();
     }
@@ -128,11 +159,36 @@ public class VoltageTerminalBlockEntity extends BlockEntity {
         for (int i = 0; i < savedLinks.size(); i++) {
             CompoundTag link = savedLinks.getCompound(i);
             BlockPos other = BlockPos.of(link.getLong("pos"));
+            net.minecraft.world.item.ItemStack wireItem = link.contains("wireItem", Tag.TAG_COMPOUND)
+                    ? net.minecraft.world.item.ItemStack.of(link.getCompound("wireItem"))
+                    : net.minecraft.world.item.ItemStack.EMPTY;
+            TerminalProperties.ConnectionType connectionType = TerminalProperties.ConnectionType
+                    .fromMultiplier(link.getInt("multiplier"));
             links.put(other, new TerminalProperties.Link(other,
                     new TerminalProperties.FineWireSpec(link.getLong("voltage"), link.getLong("amperage"),
-                            link.getInt("loss"))));
+                            link.getInt("loss")), wireItem, connectionType));
             links.get(other).loadHeat(link.getInt("temperature"), link.getInt("heatQueue"));
         }
+    }
+
+    @Override
+    public CompoundTag getUpdateTag() {
+        return saveWithoutMetadata();
+    }
+
+    @Override
+    public void handleUpdateTag(CompoundTag tag) {
+        load(tag);
+    }
+
+    @Override
+    public ClientboundBlockEntityDataPacket getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
+    }
+
+    @Override
+    public void onDataPacket(Connection connection, ClientboundBlockEntityDataPacket packet) {
+        super.onDataPacket(connection, packet);
     }
 
     @Override
@@ -145,6 +201,12 @@ public class VoltageTerminalBlockEntity extends BlockEntity {
             link.putLong("voltage", value.wire().voltage());
             link.putLong("amperage", value.wire().amperage());
             link.putInt("loss", value.wire().lossPerBlock());
+            if (!value.wireItem().isEmpty()) {
+                CompoundTag wireItem = new CompoundTag();
+                value.wireItem().save(wireItem);
+                link.put("wireItem", wireItem);
+            }
+            link.putInt("multiplier", value.connectionType().multiplier());
             link.putInt("temperature", value.getTemperature());
             link.putInt("heatQueue", value.getHeatQueue());
             savedLinks.add(link);
