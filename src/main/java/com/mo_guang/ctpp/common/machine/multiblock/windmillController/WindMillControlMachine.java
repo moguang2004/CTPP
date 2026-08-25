@@ -68,8 +68,6 @@ public class WindMillControlMachine extends KineticOutputMachine
 
     public WindMillControlMachine(IMachineBlockEntity holder) {
         super(holder);
-        // 避免结构/配方恢复阶段先使用默认转速导致动态结构短暂快转
-        this.speed = 0;
     }
 
     //////////////////////////////////////

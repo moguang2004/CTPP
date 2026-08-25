@@ -160,7 +160,8 @@ public class CTPPMultiblockMachines {
                             kineticGeneratorTooltip[1].translate(),
                             kineticGeneratorTooltip[2].translate(),
                             kineticGeneratorTooltip[3].translate(),
-                            kineticGeneratorTooltip[4].translate())
+                            kineticGeneratorTooltip[4].translate(),
+                            CommonTooltips.INPUT_SPEED.translate())
                     .pattern(definition -> FactoryStaticBlockPattern.start()
                             .aisle("DDDDDDD", "##MMMG#", "##MMMG#", "##MMMG#", "#######")
                             .aisle("FFMMMGF", "ECTTTGK", "ECTTTGK", "ECTTTGK", "##MMMG#")

@@ -57,7 +57,7 @@ public abstract class KineticMultiblockMachine extends RecipeMultiblockMachine
     public LongSet blazeBlocks;
 
     @Getter
-    public float speed = 64;
+    public float speed = 0;
     @Getter
     public float previousSpeed = 0;
     public int tier = 0;
@@ -244,6 +244,7 @@ public abstract class KineticMultiblockMachine extends RecipeMultiblockMachine
                 .addWorkingStatusLine()
                 .addProgressLine(getRecipeLogic().getProgress(), getRecipeLogic().getMaxProgress(),
                         getRecipeLogic().getProgressPercent())
+                .addRecipeFailReasonLine(recipeLogic)
                 .addOutputLines(getRecipeLogic().getLastRecipe());
         getDefinition().getAdditionalDisplay().accept(this, textList);
         IDisplayUIMachine.super.addDisplayText(textList);
