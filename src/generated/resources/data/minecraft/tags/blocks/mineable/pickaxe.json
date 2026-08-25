@@ -3,15 +3,15 @@
     "ctpp:steel_casing",
     "ctpp:heavy_machinery_casing",
     "ctpp:generator_coil",
-    "ctpp:ulv_voltage_coil",
-    "ctpp:lv_voltage_coil",
-    "ctpp:mv_voltage_coil",
-    "ctpp:hv_voltage_coil",
-    "ctpp:ev_voltage_coil",
-    "ctpp:iv_voltage_coil",
-    "ctpp:luv_voltage_coil",
-    "ctpp:zpm_voltage_coil",
-    "ctpp:uv_voltage_coil",
-    "ctpp:uhv_voltage_coil"
+    "ctpp:ulv_voltage_terminal",
+    "ctpp:lv_voltage_terminal",
+    "ctpp:mv_voltage_terminal",
+    "ctpp:hv_voltage_terminal",
+    "ctpp:ev_voltage_terminal",
+    "ctpp:iv_voltage_terminal",
+    "ctpp:luv_voltage_terminal",
+    "ctpp:zpm_voltage_terminal",
+    "ctpp:uv_voltage_terminal",
+    "ctpp:uhv_voltage_terminal"
   ]
 }

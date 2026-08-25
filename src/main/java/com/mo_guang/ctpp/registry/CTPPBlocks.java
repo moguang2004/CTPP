@@ -88,9 +88,10 @@ public class CTPPBlocks {
 
     static {
         for (int tier : GTValues.tiersBetween(GTValues.ULV, GTValues.UHV)) {
+            final int terminalTier = tier;
             String tierName = GTValues.VN[tier].toLowerCase();
             VOLTAGE_COILS[tier] = REGISTRATE
-                    .block(tierName + "_voltage_terminal", VoltageTerminalBlock::new)
+                    .block(tierName + "_voltage_terminal", properties -> new VoltageTerminalBlock(properties, terminalTier))
                     .cnlang(CTNHValues.VNC[tier] + "接线柱")
                     .lang(GTValues.VOLTAGE_NAMES[tier] + " Terminal")
                     .initialProperties(() -> Blocks.IRON_BLOCK)

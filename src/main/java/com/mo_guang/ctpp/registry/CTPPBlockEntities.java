@@ -2,7 +2,10 @@ package com.mo_guang.ctpp.registry;
 
 import com.mo_guang.ctpp.common.blockentity.CTPPToolboxBlockEntity;
 import com.mo_guang.ctpp.common.blockentity.GeneratorCoilBlockEntity;
+import com.mo_guang.ctpp.common.blockentity.VoltageTerminalBlockEntity;
+import com.mo_guang.ctpp.common.block.VoltageTerminalBlock;
 import com.tterrag.registrate.util.entry.BlockEntityEntry;
+import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
 
 import static com.mo_guang.ctpp.CTPPRegistration.REGISTRATE;
@@ -18,6 +21,18 @@ public class CTPPBlockEntities {
             .blockEntity("toolbox", CTPPToolboxBlockEntity::new)
             .validBlocks(toolboxBlocks())
             .register();
+
+    public static final BlockEntityEntry<VoltageTerminalBlockEntity> VOLTAGE_TERMINAL = REGISTRATE
+            .blockEntity("voltage_terminal", VoltageTerminalBlockEntity::new)
+            .validBlocks(terminalBlocks())
+            .register();
+
+    @SuppressWarnings("unchecked")
+    private static BlockEntry<VoltageTerminalBlock>[] terminalBlocks() {
+        return java.util.Arrays.stream(CTPPBlocks.VOLTAGE_COILS)
+                .filter(java.util.Objects::nonNull)
+                .toArray(BlockEntry[]::new);
+    }
 
     @SuppressWarnings("unchecked")
     private static NonNullSupplier<? extends net.minecraft.world.level.block.Block>[] toolboxBlocks() {

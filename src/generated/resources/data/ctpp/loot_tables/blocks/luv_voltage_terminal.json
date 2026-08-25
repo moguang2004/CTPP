@@ -11,11 +11,11 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "ctpp:iv_voltage_coil"
+          "name": "ctpp:luv_voltage_terminal"
         }
       ],
       "rolls": 1.0
     }
   ],
-  "random_sequence": "ctpp:blocks/iv_voltage_coil"
+  "random_sequence": "ctpp:blocks/luv_voltage_terminal"
 }
