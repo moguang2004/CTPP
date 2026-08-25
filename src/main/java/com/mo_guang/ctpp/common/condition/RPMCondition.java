@@ -63,7 +63,7 @@ public class RPMCondition extends RecipeCondition<RPMCondition> {
             return true;
         }
         if (recipeLogic.machine instanceof KineticWorkableMultiblockMachine controller) {
-            return controller.speed >= rpm;
+            return Math.abs(controller.speed) >= rpm;
         }
         return false;
     }
