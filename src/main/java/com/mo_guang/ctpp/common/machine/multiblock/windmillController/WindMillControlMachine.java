@@ -86,7 +86,6 @@ public class WindMillControlMachine extends KineticOutputMachine
                 calculateWindmillAround();
                 float currentSpeed = getOutputSpeed();
                 if (this.speed != currentSpeed) {
-                    this.previousSpeed = this.speed;
                     this.speed = currentSpeed;
                 }
                 findAndReattachEntities();
@@ -110,7 +109,6 @@ public class WindMillControlMachine extends KineticOutputMachine
         // 结构刚恢复时尽快同步真实转速，避免沿用默认值 64
         float currentSpeed = getOutputSpeed();
         if (this.speed != currentSpeed) {
-            this.previousSpeed = this.speed;
             this.speed = currentSpeed;
         }
         if (!getLevel().isClientSide()) {
@@ -160,7 +158,7 @@ public class WindMillControlMachine extends KineticOutputMachine
     @Override
     public @Nullable Component beforeWorking(@NotNull GTRecipe recipe) {
         Component result = super.beforeWorking(recipe);
-        previousSpeed = speed;
+        var previousSpeed = speed;
         speed = getOutputSpeed();
         if (speed != previousSpeed) {
             updateRotateBlocks(result == null);

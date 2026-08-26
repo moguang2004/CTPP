@@ -58,8 +58,6 @@ public abstract class KineticMultiblockMachine extends RecipeMultiblockMachine
 
     @Getter
     public float speed = 0;
-    @Getter
-    public float previousSpeed = 0;
     public int tier = 0;
 
     @CN("暂停中：")
@@ -73,7 +71,6 @@ public abstract class KineticMultiblockMachine extends RecipeMultiblockMachine
     @Override
     public void onStructureFormed() {
         super.onStructureFormed();
-        previousSpeed = 0;
         checkTier();
         rotateBlocks = getMultiblockState().getMatchContext().getOrDefault("roBlocks", LongSets.emptySet());
         blazeBlocks = getMultiblockState().getMatchContext().getOrDefault("bbBlocks", LongSets.emptySet());

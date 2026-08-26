@@ -85,10 +85,6 @@ public class KineticWorkableMultiblockMachine extends KineticMultiblockMachine i
             return sameSpeedRequired.translate();
         }
         Component result = super.beforeWorking(recipe);
-        previousSpeed = speed;
-        if (speed != previousSpeed) {
-            updateRotateBlocks(result == null);
-        }
         return result;
     }
 
@@ -107,10 +103,14 @@ public class KineticWorkableMultiblockMachine extends KineticMultiblockMachine i
     }
 
     public void updateMachineSpeed() {
+        var previousSpeed = speed;
         speed = 0;
         for (IMultiPart part : getParts()) {
             if (part instanceof IKineticMachine kineticPart && kineticPart.getKineticHolder().getSpeed() != 0) {
                 speed = kineticPart.getKineticHolder().getSpeed();
+                if (speed != previousSpeed) {
+                    updateRotateBlocks(true);
+                }
                 return;
             }
         }
