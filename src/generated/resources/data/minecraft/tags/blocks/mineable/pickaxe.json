@@ -2,6 +2,16 @@
   "values": [
     "ctpp:steel_casing",
     "ctpp:heavy_machinery_casing",
-    "ctpp:generator_coil"
+    "ctpp:generator_coil",
+    "ctpp:ulv_voltage_terminal",
+    "ctpp:lv_voltage_terminal",
+    "ctpp:mv_voltage_terminal",
+    "ctpp:hv_voltage_terminal",
+    "ctpp:ev_voltage_terminal",
+    "ctpp:iv_voltage_terminal",
+    "ctpp:luv_voltage_terminal",
+    "ctpp:zpm_voltage_terminal",
+    "ctpp:uv_voltage_terminal",
+    "ctpp:uhv_voltage_terminal"
   ]
 }

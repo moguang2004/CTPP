@@ -1,0 +1,30 @@
+{
+  "variants": {
+    "facing=down": {
+      "model": "ctpp:block/iv_voltage_terminal",
+      "x": 180
+    },
+    "facing=east": {
+      "model": "ctpp:block/iv_voltage_terminal",
+      "x": 90,
+      "y": 90
+    },
+    "facing=north": {
+      "model": "ctpp:block/iv_voltage_terminal",
+      "x": 90
+    },
+    "facing=south": {
+      "model": "ctpp:block/iv_voltage_terminal",
+      "x": 90,
+      "y": 180
+    },
+    "facing=up": {
+      "model": "ctpp:block/iv_voltage_terminal"
+    },
+    "facing=west": {
+      "model": "ctpp:block/iv_voltage_terminal",
+      "x": 90,
+      "y": 270
+    }
+  }
+}

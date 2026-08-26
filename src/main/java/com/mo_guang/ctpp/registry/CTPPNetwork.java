@@ -4,6 +4,8 @@ import com.gregtechceu.gtceu.common.network.GTNetwork;
 
 import net.minecraftforge.network.NetworkDirection;
 
+import com.mo_guang.ctpp.network.packet.CTPPTerminalCancelWireSelectionPacket;
+import com.mo_guang.ctpp.network.packet.CTPPTerminalWireSelectionPacket;
 import com.mo_guang.ctpp.network.packet.CTPPToolboxActionPacket;
 import com.mo_guang.ctpp.network.packet.CTPPToolboxBindingsPacket;
 import com.mo_guang.ctpp.network.packet.CTPPToolboxMenuFiltersPacket;
@@ -28,5 +30,9 @@ public final class CTPPNetwork {
                 NetworkDirection.PLAY_TO_CLIENT);
         GTNetwork.register(CTPPToolboxMenuFiltersPacket.class, CTPPToolboxMenuFiltersPacket::new,
                 NetworkDirection.PLAY_TO_CLIENT);
+        GTNetwork.register(CTPPTerminalWireSelectionPacket.class, CTPPTerminalWireSelectionPacket::new,
+                NetworkDirection.PLAY_TO_CLIENT);
+        GTNetwork.register(CTPPTerminalCancelWireSelectionPacket.class,
+                CTPPTerminalCancelWireSelectionPacket::new, NetworkDirection.PLAY_TO_SERVER);
     }
 }

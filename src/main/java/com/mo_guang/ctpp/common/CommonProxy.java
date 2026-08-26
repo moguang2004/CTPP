@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.event.MaterialRegistryEv
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
+import com.gregtechceu.gtceu.common.item.tool.rotation.CustomBlockRotations;
 import com.gregtechceu.gtceu.common.unification.material.MaterialRegistryManager;
 
 import net.minecraft.core.Registry;
@@ -24,6 +25,7 @@ import com.mo_guang.ctpp.CTPP;
 import com.mo_guang.ctpp.CTPPRegistration;
 import com.mo_guang.ctpp.api.CTPPRecipeConditions;
 import com.mo_guang.ctpp.client.ponder.CTPPPonderPlugin;
+import com.mo_guang.ctpp.common.block.VoltageTerminalBlock;
 import com.mo_guang.ctpp.common.data.GTArmInteractionPointTypes;
 import com.mo_guang.ctpp.config.MainConfig;
 import com.mo_guang.ctpp.data.CTPPDatagen;
@@ -34,8 +36,11 @@ import com.mo_guang.ctpp.integration.jade.KineticOutputMachineProvider;
 import com.mo_guang.ctpp.registry.*;
 import com.mo_guang.ctpp.registry.CTPPNetwork;
 import com.simibubi.create.api.registry.CreateBuiltInRegistries;
+import com.tterrag.registrate.util.entry.BlockEntry;
 import tech.vixhentx.mcmod.ctnhlib.client.ponder.CTNHPonderLang;
 import tech.vixhentx.mcmod.ctnhlib.jade.JadePriorityManager;
+
+import static com.mo_guang.ctpp.registry.CTPPBlocks.VOLTAGE_TERMINALS;
 
 @SuppressWarnings("removal")
 public class CommonProxy {
@@ -74,6 +79,11 @@ public class CommonProxy {
                     CreateBuiltInRegistries.ARM_INTERACTION_POINT_TYPE,
                     new ResourceLocation("ctpp", "gt_machine"),
                     new GTArmInteractionPointTypes.GTMachineType());
+            for (BlockEntry<VoltageTerminalBlock> terminal : VOLTAGE_TERMINALS) {
+                if (terminal != null) {
+                    CustomBlockRotations.registerCustomRotation(terminal.get(), VoltageTerminalBlock.ROTATION_BEHAVIOR);
+                }
+            }
         });
     }
 

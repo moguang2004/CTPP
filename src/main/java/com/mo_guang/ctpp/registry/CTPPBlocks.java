@@ -1,5 +1,6 @@
 package com.mo_guang.ctpp.registry;
 
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 
 import net.minecraft.client.renderer.RenderType;
@@ -14,6 +15,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import com.mo_guang.ctpp.CTPP;
 import com.mo_guang.ctpp.common.block.CTPPToolboxBlock;
 import com.mo_guang.ctpp.common.block.GeneratorCoilBlock;
+import com.mo_guang.ctpp.common.block.VoltageTerminalBlock;
 import com.mo_guang.ctpp.common.item.CTPPToolboxItem;
 import com.simibubi.create.foundation.data.BlockStateGen;
 import com.simibubi.create.foundation.data.ModelGen;
@@ -78,6 +80,28 @@ public class CTPPBlocks {
 
     private static String capitalize(String value) {
         return Character.toUpperCase(value.charAt(0)) + value.substring(1);
+    }
+
+    public static BlockEntry<VoltageTerminalBlock>[] VOLTAGE_TERMINALS = new BlockEntry[10];
+
+    static {
+        for (int tier : GTValues.tiersBetween(GTValues.ULV, GTValues.UHV)) {
+            final int terminalTier = tier;
+            String tierName = GTValues.VN[tier].toLowerCase();
+            VOLTAGE_TERMINALS[tier] = REGISTRATE
+                    .block(tierName + "_voltage_terminal",
+                            properties -> new VoltageTerminalBlock(properties, terminalTier))
+                    .cnlang(CTNHValues.VNC[tier] + "接线柱")
+                    .lang(GTValues.VOLTAGE_NAMES[tier] + " Terminal")
+                    .initialProperties(() -> Blocks.IRON_BLOCK)
+                    .properties(p -> p.isValidSpawn((state, level, pos, ent) -> false).noOcclusion())
+                    .blockstate((ctx, prov) -> prov.directionalBlock(ctx.getEntry(),
+                            prov.models().withExistingParent(ctx.getName(), CTPP.id("block/voltage_coil"))
+                                    .texture("texture", CTPP.id("block/voltage_coil/" + tierName))))
+                    .tag(BlockTags.MINEABLE_WITH_PICKAXE, CustomTags.MINEABLE_WITH_WRENCH)
+                    .simpleItem()
+                    .register();
+        }
     }
 
     public static BlockEntry<Block> createCasingBlock(String name, String cnName, ResourceLocation texture) {

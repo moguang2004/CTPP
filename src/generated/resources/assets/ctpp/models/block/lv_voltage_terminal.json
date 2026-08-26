@@ -1,0 +1,6 @@
+{
+  "parent": "ctpp:block/voltage_coil",
+  "textures": {
+    "texture": "ctpp:block/voltage_coil/lv"
+  }
+}
