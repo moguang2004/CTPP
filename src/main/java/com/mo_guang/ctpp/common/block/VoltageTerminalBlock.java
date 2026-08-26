@@ -139,6 +139,7 @@ public class VoltageTerminalBlock extends Block implements EntityBlock {
         return (ignoredLevel, ignoredPos, ignoredState, blockEntity) -> {
             if (blockEntity instanceof VoltageTerminalBlockEntity terminal) {
                 terminal.serverTick();
+                terminal.defaultServerTick();
             }
         };
     }

@@ -2,15 +2,22 @@ package com.mo_guang.ctpp.common.blockentity;
 
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
+import com.gregtechceu.gtceu.utils.ManagedFieldHolderMap;
+
+import com.lowdragmc.lowdraglib.misc.SyncableMap;
+import com.lowdragmc.lowdraglib.syncdata.IEnhancedManaged;
+import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
+import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
+import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
+import com.lowdragmc.lowdraglib.syncdata.blockentity.IAutoPersistBlockEntity;
+import com.lowdragmc.lowdraglib.syncdata.blockentity.IAutoSyncBlockEntity;
+import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
+import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.network.Connection;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -19,6 +26,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
+import com.mo_guang.ctpp.api.terminal.TerminalLinkState;
 import com.mo_guang.ctpp.api.terminal.TerminalProperties;
 import com.mo_guang.ctpp.common.block.VoltageTerminalBlock;
 import com.mo_guang.ctpp.common.terminal.TerminalNetwork;
@@ -30,9 +38,18 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-public class VoltageTerminalBlockEntity extends BlockEntity {
+public class VoltageTerminalBlockEntity extends BlockEntity implements IEnhancedManaged,
+                                        IAutoSyncBlockEntity, IAutoPersistBlockEntity {
 
-    private final Map<BlockPos, TerminalProperties.Link> links = new HashMap<>();
+    static {
+        ManagedFieldHolderMap.createManagedFieldHolder(VoltageTerminalBlockEntity.class);
+    }
+
+    @DescSynced
+    @Persisted(key = "links")
+    @RequireRerender
+    private final SyncableMap<BlockPos, TerminalLinkState> links = new SyncableMap<>() {};
+    private final FieldManagedStorage syncStorage = new FieldManagedStorage(this);
     private final IEnergyContainer energyContainer = new TerminalEnergyContainer();
     private final LazyOptional<IEnergyContainer> energyCapability = LazyOptional.of(() -> energyContainer);
 
@@ -40,12 +57,45 @@ public class VoltageTerminalBlockEntity extends BlockEntity {
         super(type, pos, state);
     }
 
+    @Override
+    public ManagedFieldHolder getFieldHolder() {
+        return ManagedFieldHolderMap.getManagedFieldHolder(getClass());
+    }
+
+    @Override
+    public FieldManagedStorage getSyncStorage() {
+        return syncStorage;
+    }
+
+    @Override
+    public FieldManagedStorage getRootStorage() {
+        return syncStorage;
+    }
+
+    @Override
+    public void onChanged() {
+        if (level instanceof ServerLevel server) {
+            server.getServer().execute(this::setChanged);
+        }
+    }
+
+    @Override
+    public void scheduleRenderUpdate() {
+        if (level != null && level.isClientSide) {
+            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_IMMEDIATE);
+            requestModelDataUpdate();
+        }
+    }
+
     public Map<BlockPos, TerminalProperties.Link> getLinks() {
-        return Collections.unmodifiableMap(links);
+        Map<BlockPos, TerminalProperties.Link> result = new HashMap<>();
+        links.forEach((pos, state) -> result.put(pos, state.toLink()));
+        return Collections.unmodifiableMap(result);
     }
 
     public @Nullable TerminalProperties.Link getLink(BlockPos other) {
-        return links.get(other);
+        TerminalLinkState state = links.get(other);
+        return state == null ? null : state.toLink();
     }
 
     public boolean addLink(BlockPos other, TerminalProperties.FineWireSpec wire) {
@@ -57,44 +107,55 @@ public class VoltageTerminalBlockEntity extends BlockEntity {
                            net.minecraft.world.item.ItemStack wireItem,
                            TerminalProperties.ConnectionType connectionType) {
         if (other.equals(worldPosition) || links.containsKey(other)) return false;
-        links.put(other.immutable(), new TerminalProperties.Link(other.immutable(), wire, wireItem, connectionType));
+        links.put(other.immutable(), new TerminalLinkState(other, wire, wireItem, connectionType));
         setChanged();
-        syncClients();
         return true;
     }
 
     public void removeLink(BlockPos other) {
         if (links.remove(other) != null) {
             setChanged();
-            syncClients();
         }
     }
 
     public void applyLinkHeat(BlockPos other, int amount) {
-        TerminalProperties.Link link = links.get(other);
-        if (link != null) {
+        TerminalLinkState state = links.get(other);
+        if (state != null) {
+            TerminalProperties.Link link = state.toLink();
             link.applyHeat(amount);
+            links.put(other, state.withHeat(link.getTemperature(), link.getHeatQueue()));
+            setChanged();
+        }
+    }
+
+    public void setLinkHeat(BlockPos other, int temperature, int heatQueue) {
+        TerminalLinkState state = links.get(other);
+        if (state != null && (state.temperature() != temperature || state.heatQueue() != heatQueue)) {
+            links.put(other, state.withHeat(temperature, heatQueue));
             setChanged();
         }
     }
 
     public void serverTick() {
         if (!(level instanceof ServerLevel server)) return;
-        for (Map.Entry<BlockPos, TerminalProperties.Link> entry : new HashMap<>(links).entrySet()) {
+        for (Map.Entry<BlockPos, TerminalLinkState> entry : new HashMap<>(links).entrySet()) {
+            TerminalLinkState state = entry.getValue();
+            BlockPos other = entry.getKey();
             // Both endpoints mirror the same link state. Tick it once using
             // the canonical (lexicographically smaller) endpoint.
-            if (worldPosition.compareTo(entry.getKey()) >= 0) continue;
-            if (entry.getValue().tick()) {
-                TerminalNetwork.disconnectLink(server, worldPosition, entry.getKey());
+            if (worldPosition.compareTo(other) >= 0) continue;
+            TerminalProperties.Link link = state.toLink();
+            if (link.tick()) {
+                TerminalNetwork.disconnectLink(server, worldPosition, other);
                 break;
             }
-            VoltageTerminalBlockEntity peer = server
-                    .getBlockEntity(entry.getKey()) instanceof VoltageTerminalBlockEntity value ? value : null;
+            setLinkHeat(other, link.getTemperature(), link.getHeatQueue());
+            VoltageTerminalBlockEntity peer = server.getBlockEntity(other) instanceof VoltageTerminalBlockEntity value ?
+                    value : null;
             if (peer != null) {
-                TerminalProperties.Link peerLink = peer.links.get(worldPosition);
+                TerminalLinkState peerLink = peer.findManagedLink(worldPosition);
                 if (peerLink != null) {
-                    peerLink.loadHeat(entry.getValue().getTemperature(), entry.getValue().getHeatQueue());
-                    peer.setChanged();
+                    peer.setLinkHeat(worldPosition, link.getTemperature(), link.getHeatQueue());
                 }
             }
         }
@@ -140,10 +201,8 @@ public class VoltageTerminalBlockEntity extends BlockEntity {
         server.setBlockAndUpdate(worldPosition, Blocks.FIRE.defaultBlockState());
     }
 
-    private void syncClients() {
-        if (level instanceof ServerLevel server) {
-            server.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
-        }
+    private @Nullable TerminalLinkState findManagedLink(BlockPos other) {
+        return links.get(other);
     }
 
     @Override
@@ -151,70 +210,6 @@ public class VoltageTerminalBlockEntity extends BlockEntity {
         if (level instanceof ServerLevel server) TerminalNetwork.disconnectAllNoDrop(server, worldPosition);
         energyCapability.invalidate();
         super.setRemoved();
-    }
-
-    @Override
-    public void load(CompoundTag tag) {
-        super.load(tag);
-        links.clear();
-        ListTag savedLinks = tag.getList("Links", Tag.TAG_COMPOUND);
-        for (int i = 0; i < savedLinks.size(); i++) {
-            CompoundTag link = savedLinks.getCompound(i);
-            BlockPos other = BlockPos.of(link.getLong("pos"));
-            net.minecraft.world.item.ItemStack wireItem = link.contains("wireItem", Tag.TAG_COMPOUND) ?
-                    net.minecraft.world.item.ItemStack.of(link.getCompound("wireItem")) :
-                    net.minecraft.world.item.ItemStack.EMPTY;
-            TerminalProperties.ConnectionType connectionType = TerminalProperties.ConnectionType
-                    .fromMultiplier(link.getInt("multiplier"));
-            links.put(other, new TerminalProperties.Link(other,
-                    new TerminalProperties.FineWireSpec(link.getLong("voltage"), link.getLong("amperage"),
-                            link.getInt("loss")),
-                    wireItem, connectionType));
-            links.get(other).loadHeat(link.getInt("temperature"), link.getInt("heatQueue"));
-        }
-    }
-
-    @Override
-    public CompoundTag getUpdateTag() {
-        return saveWithoutMetadata();
-    }
-
-    @Override
-    public void handleUpdateTag(CompoundTag tag) {
-        load(tag);
-    }
-
-    @Override
-    public ClientboundBlockEntityDataPacket getUpdatePacket() {
-        return ClientboundBlockEntityDataPacket.create(this);
-    }
-
-    @Override
-    public void onDataPacket(Connection connection, ClientboundBlockEntityDataPacket packet) {
-        super.onDataPacket(connection, packet);
-    }
-
-    @Override
-    protected void saveAdditional(CompoundTag tag) {
-        super.saveAdditional(tag);
-        ListTag savedLinks = new ListTag();
-        for (TerminalProperties.Link value : links.values()) {
-            CompoundTag link = new CompoundTag();
-            link.putLong("pos", value.other().asLong());
-            link.putLong("voltage", value.wire().voltage());
-            link.putLong("amperage", value.wire().amperage());
-            link.putInt("loss", value.wire().lossPerBlock());
-            if (!value.wireItem().isEmpty()) {
-                CompoundTag wireItem = new CompoundTag();
-                value.wireItem().save(wireItem);
-                link.put("wireItem", wireItem);
-            }
-            link.putInt("multiplier", value.connectionType().multiplier());
-            link.putInt("temperature", value.getTemperature());
-            link.putInt("heatQueue", value.getHeatQueue());
-            savedLinks.add(link);
-        }
-        tag.put("Links", savedLinks);
     }
 
     @Override
