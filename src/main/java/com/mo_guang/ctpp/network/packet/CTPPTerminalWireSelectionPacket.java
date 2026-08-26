@@ -15,15 +15,18 @@ public final class CTPPTerminalWireSelectionPacket implements GTNetwork.INetPack
 
     private final @Nullable BlockPos pos;
     private final ItemStack wire;
+    private final int multiplier;
 
-    public CTPPTerminalWireSelectionPacket(BlockPos pos, ItemStack wire) {
+    public CTPPTerminalWireSelectionPacket(BlockPos pos, ItemStack wire, int multiplier) {
         this.pos = pos.immutable();
         this.wire = wire.copyWithCount(1);
+        this.multiplier = Math.max(1, multiplier);
     }
 
     private CTPPTerminalWireSelectionPacket(@Nullable BlockPos pos, boolean cleared) {
         this.pos = pos == null ? null : pos.immutable();
         this.wire = ItemStack.EMPTY;
+        this.multiplier = 1;
     }
 
     public static CTPPTerminalWireSelectionPacket cleared() {
@@ -33,6 +36,7 @@ public final class CTPPTerminalWireSelectionPacket implements GTNetwork.INetPack
     public CTPPTerminalWireSelectionPacket(FriendlyByteBuf buffer) {
         pos = buffer.readBoolean() ? buffer.readBlockPos() : null;
         wire = buffer.readItem();
+        multiplier = Math.max(1, buffer.readVarInt());
     }
 
     @Override
@@ -40,11 +44,12 @@ public final class CTPPTerminalWireSelectionPacket implements GTNetwork.INetPack
         buffer.writeBoolean(pos != null);
         if (pos != null) buffer.writeBlockPos(pos);
         buffer.writeItem(wire);
+        buffer.writeVarInt(multiplier);
     }
 
     @Override
     public void execute(net.minecraftforge.network.NetworkEvent.Context context) {
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT,
-                () -> () -> TerminalClientSelection.setWireTarget(pos, wire));
+                () -> () -> TerminalClientSelection.setWireTarget(pos, wire, multiplier));
     }
 }

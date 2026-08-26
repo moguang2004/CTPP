@@ -7,17 +7,21 @@ import com.gregtechceu.gtceu.data.recipe.CustomTags;
 
 import net.createmod.catnip.outliner.Outliner;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 import com.mo_guang.ctpp.CTPP;
+import com.mo_guang.ctpp.client.renderer.CTPPWireRenderTypes;
+import com.mo_guang.ctpp.client.renderer.VoltageTerminalRenderer;
 import com.mo_guang.ctpp.common.blockentity.VoltageTerminalBlockEntity;
 import com.mo_guang.ctpp.network.packet.CTPPTerminalCancelWireSelectionPacket;
 
@@ -26,7 +30,6 @@ public final class TerminalClientSelectionEvents {
 
     private static final Object WIRE_OUTLINE = "ctpp_terminal_wire_target";
     private static final Object CUTTER_OUTLINE = "ctpp_terminal_cutter_target";
-    private static final Object WIRE_LINE = "ctpp_terminal_wire_preview";
 
     private TerminalClientSelectionEvents() {}
 
@@ -58,10 +61,8 @@ public final class TerminalClientSelectionEvents {
             } else if (TerminalClientSelection.wireTarget() == null) {
                 TerminalClientSelection.selectWire(event.getPos(), stack);
             } else if (TerminalClientSelection.wireTarget().equals(event.getPos())) {
-                // Re-clicking the first terminal changes only the pending type.
-                if (sameWire(TerminalClientSelection.wireItem(), stack)) {
-                    TerminalClientSelection.selectWire(event.getPos(), stack);
-                }
+                // Keep the current multiplier until the authoritative server
+                // response arrives, avoiding a one-frame reset to 1x.
             } else {
                 // Keep the first endpoint until the server confirms completion
                 // or rejection through CTPPTerminalWireSelectionPacket.
@@ -78,7 +79,6 @@ public final class TerminalClientSelectionEvents {
             TerminalClientSelection.clear();
             outliner.remove(WIRE_OUTLINE);
             outliner.remove(CUTTER_OUTLINE);
-            outliner.remove(WIRE_LINE);
             return;
         }
         ItemStack held = isFineWire(mc.player.getMainHandItem()) ? mc.player.getMainHandItem() :
@@ -102,7 +102,7 @@ public final class TerminalClientSelectionEvents {
             outliner.remove(CUTTER_OUTLINE);
         } else {
             outliner.remove(WIRE_OUTLINE);
-            outliner.remove(WIRE_LINE);
+            outliner.remove(CUTTER_OUTLINE);
         }
         if (cutterTarget != null && cutterHeld) {
             outliner.remove(WIRE_OUTLINE);
@@ -114,14 +114,10 @@ public final class TerminalClientSelectionEvents {
     }
 
     @SubscribeEvent
-    public static void onRenderTick(TickEvent.RenderTickEvent event) {
-        // Refresh before the world render so Outliner consumes the same-frame
-        // interpolated player pose instead of a tick-bound position.
-        if (event.phase != TickEvent.Phase.START) return;
+    public static void onRenderLevel(RenderLevelStageEvent event) {
+        if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_BLOCK_ENTITIES) return;
         Minecraft mc = Minecraft.getInstance();
-        Outliner outliner = Outliner.getInstance();
         if (mc.level == null || mc.player == null || !mc.options.getCameraType().isFirstPerson()) {
-            outliner.remove(WIRE_LINE);
             return;
         }
         BlockPos target = TerminalClientSelection.wireTarget();
@@ -129,13 +125,20 @@ public final class TerminalClientSelectionEvents {
                 mc.player.getOffhandItem();
         if (target == null || !isFineWire(held) || !terminalExists(mc, target) ||
                 !sameWire(TerminalClientSelection.wireItem(), held)) {
-            outliner.remove(WIRE_LINE);
             return;
         }
-        float partialTick = mc.getFrameTime();
+        float partialTick = event.getPartialTick();
         Vec3 start = firstPersonHand(mc, partialTick);
         Vec3 end = Vec3.atLowerCornerOf(target).add(0.5, 0.5, 0.5);
-        outliner.showLine(WIRE_LINE, start, end).colored(wireColor(held)).lineWidth(1 / 32f);
+        var poseStack = event.getPoseStack();
+        var cameraPos = event.getCamera().getPosition();
+        poseStack.pushPose();
+        poseStack.translate(-cameraPos.x, -cameraPos.y, -cameraPos.z);
+        var buffers = mc.renderBuffers().bufferSource();
+        VoltageTerminalRenderer.renderPreview(poseStack, buffers, start, end,
+                held, TerminalClientSelection.wireMultiplier(), LevelRenderer.getLightColor(mc.level, target));
+        buffers.endBatch(CTPPWireRenderTypes.wire());
+        poseStack.popPose();
     }
 
     private static boolean terminalExists(Minecraft mc, BlockPos pos) {
@@ -161,19 +164,13 @@ public final class TerminalClientSelectionEvents {
         return !first.isEmpty() && !second.isEmpty() && ItemStack.isSameItemSameTags(first, second);
     }
 
-    private static int wireColor(ItemStack stack) {
-        try {
-            return ChemicalHelper.getMaterialStack(stack).material().getMaterialRGB();
-        } catch (RuntimeException ignored) {
-            return 0xD8D8D8;
-        }
-    }
-
     private static Vec3 firstPersonHand(Minecraft mc, float partialTick) {
         Vec3 eye = mc.player.getEyePosition(partialTick);
         Vec3 look = mc.player.getViewVector(partialTick).normalize();
         Vec3 up = new Vec3(0, 1, 0);
-        Vec3 right = look.cross(up).normalize();
+        Vec3 right = look.cross(up);
+        if (right.lengthSqr() < 1.0e-6) right = new Vec3(1, 0, 0);
+        else right = right.normalize();
         double handSide = mc.player.getMainArm() == net.minecraft.world.entity.HumanoidArm.LEFT ? -1 : 1;
         return eye.add(look.scale(0.35)).add(right.scale(0.2 * handSide)).add(up.scale(-0.18));
     }

@@ -23,7 +23,7 @@ public final class CTPPWireRenderTypes extends RenderType {
             RenderType.CompositeState.builder()
                     .setShaderState(POSITION_COLOR_TEX_LIGHTMAP_SHADER)
                     .setTextureState(new RenderStateShard.TextureStateShard(GT_WIRE_SIDE_TEXTURE, false, false))
-                    .setCullState(NO_CULL)
+                    .setCullState(CULL)
                     .setTransparencyState(NO_TRANSPARENCY)
                     .setDepthTestState(LEQUAL_DEPTH_TEST)
                     .setLightmapState(LIGHTMAP)

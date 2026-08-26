@@ -352,7 +352,8 @@ public final class TerminalNetwork {
                     CTPPTerminalWireSelectionPacket.cleared());
         } else {
             com.gregtechceu.gtceu.common.network.GTNetwork.sendToPlayer(serverPlayer,
-                    new CTPPTerminalWireSelectionPacket(selection.pos(), selection.wireItem()));
+                    new CTPPTerminalWireSelectionPacket(selection.pos(), selection.wireItem(),
+                            selection.connectionType().multiplier()));
         }
     }
 

@@ -7,6 +7,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.FastColor;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 
 import com.mo_guang.ctpp.api.terminal.TerminalProperties;
@@ -34,11 +35,28 @@ public class VoltageTerminalRenderer implements BlockEntityRenderer<VoltageTermi
         }
     }
 
-    private void renderWire(VoltageTerminalBlockEntity first, VoltageTerminalBlockEntity second,
-                            TerminalProperties.Link link, PoseStack poseStack,
-                            VertexConsumer consumer, int packedLight) {
+    /** Renders the uncommitted wire from the first-person hand to the selected terminal. */
+    public static void renderPreview(PoseStack poseStack, MultiBufferSource buffers, Vec3 start, Vec3 end,
+                                     ItemStack wireItem, int multiplier, int packedLight) {
+        TerminalProperties.FineWireSpec wire = TerminalProperties.FineWireSpec.from(wireItem);
+        if (wire == null) return;
+        TerminalProperties.Link link = new TerminalProperties.Link(BlockPos.ZERO, wire, wireItem,
+                TerminalProperties.ConnectionType.fromMultiplier(multiplier));
+        renderWirePoints(start, end, link, poseStack, buffers.getBuffer(CTPPWireRenderTypes.wire()), packedLight,
+                true);
+    }
+
+    private static void renderWire(VoltageTerminalBlockEntity first, VoltageTerminalBlockEntity second,
+                                   TerminalProperties.Link link, PoseStack poseStack,
+                                   VertexConsumer consumer, int packedLight) {
         Vec3 start = connectionPoint(first).subtract(Vec3.atLowerCornerOf(first.getBlockPos()));
         Vec3 end = connectionPoint(second).subtract(Vec3.atLowerCornerOf(first.getBlockPos()));
+        renderWirePoints(start, end, link, poseStack, consumer, packedLight, false);
+    }
+
+    private static void renderWirePoints(Vec3 start, Vec3 end, TerminalProperties.Link link,
+                                         PoseStack poseStack, VertexConsumer consumer, int packedLight,
+                                         boolean capStart) {
         double length = start.distanceTo(end);
         int segments = Math.max(8, Math.min(64, (int) Math.ceil(length * 1.5)));
         float thickness = 0.035f * (float) Math.sqrt(link.connectionType().multiplier());
@@ -94,6 +112,18 @@ public class VoltageTerminalRenderer implements BlockEntityRenderer<VoltageTermi
                 addTubeQuad(consumer, poseStack, rings[i][side], rings[i][nextSide],
                         rings[i + 1][nextSide], rings[i + 1][side], color,
                         u0, u1, v0, v1, packedLight);
+            }
+        }
+        if (capStart) {
+            // The preview begins at the player's hand. Close that end so the
+            // near camera cannot look into the enlarged multi-wire tube.
+            Vector3f center = new Vector3f((float) start.x, (float) start.y, (float) start.z);
+            for (int side = 0; side < radialSides; side++) {
+                int nextSide = (side + 1) % radialSides;
+                Vector3f p0 = rings[0][side];
+                Vector3f p1 = rings[0][nextSide];
+                addTubeQuad(consumer, poseStack, center, p1, p0, center, color,
+                        0.5f, 0.5f, 0.5f, 0.5f, packedLight);
             }
         }
     }
