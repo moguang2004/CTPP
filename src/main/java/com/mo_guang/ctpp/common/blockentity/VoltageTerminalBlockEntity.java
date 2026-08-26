@@ -206,10 +206,11 @@ public class VoltageTerminalBlockEntity extends BlockEntity implements IEnhanced
     }
 
     @Override
-    public void setRemoved() {
-        if (level instanceof ServerLevel server) TerminalNetwork.disconnectAllNoDrop(server, worldPosition);
-        energyCapability.invalidate();
-        super.setRemoved();
+    public void invalidateCaps() {
+        super.invalidateCaps();
+        if (energyCapability.isPresent()) {
+            energyCapability.invalidate();
+        }
     }
 
     @Override
