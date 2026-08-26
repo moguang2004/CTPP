@@ -82,13 +82,13 @@ public class CTPPBlocks {
         return Character.toUpperCase(value.charAt(0)) + value.substring(1);
     }
 
-    public static BlockEntry<VoltageTerminalBlock>[] VOLTAGE_COILS = new BlockEntry[10];
+    public static BlockEntry<VoltageTerminalBlock>[] VOLTAGE_TERMINALS = new BlockEntry[10];
 
     static {
         for (int tier : GTValues.tiersBetween(GTValues.ULV, GTValues.UHV)) {
             final int terminalTier = tier;
             String tierName = GTValues.VN[tier].toLowerCase();
-            VOLTAGE_COILS[tier] = REGISTRATE
+            VOLTAGE_TERMINALS[tier] = REGISTRATE
                     .block(tierName + "_voltage_terminal",
                             properties -> new VoltageTerminalBlock(properties, terminalTier))
                     .cnlang(CTNHValues.VNC[tier] + "接线柱")

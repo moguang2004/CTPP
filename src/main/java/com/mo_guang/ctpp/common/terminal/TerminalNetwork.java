@@ -93,6 +93,10 @@ public final class TerminalNetwork {
     @EN("Not enough fine wire; requires %s")
     private static Lang notEnoughWire;
 
+    @CN("该细线没有可用的线缆属性，不能用于接线")
+    @EN("This fine wire has no usable cable properties and cannot be connected")
+    private static Lang unusableWire;
+
     private record Selection(ResourceKey<Level> dimension, BlockPos pos,
                              TerminalProperties.FineWireSpec wire, ItemStack wireItem,
                              TerminalProperties.ConnectionType connectionType) {}
@@ -142,10 +146,11 @@ public final class TerminalNetwork {
             return true;
         }
         TerminalProperties.FineWireSpec wire = TerminalProperties.FineWireSpec.from(stack);
+        boolean fineWireItem = TerminalProperties.isFineWire(stack);
         // The server owns selection, linking and item consumption. Returning
         // success on the client still produces the normal hand-swing/success
         // feedback while avoiding a client-side duplicate mutation.
-        if (level.isClientSide) return wire != null;
+        if (level.isClientSide) return wire != null || fineWireItem;
         ServerLevel server = (ServerLevel) level;
         Selection selection = selections.get(player.getUUID());
 
@@ -159,7 +164,10 @@ public final class TerminalNetwork {
             return false;
         }
 
-        if (wire == null) return false;
+        if (wire == null) {
+            if (fineWireItem) show(player, unusableWire.translate());
+            return fineWireItem;
+        }
         if (selection == null) {
             Selection created = new Selection(level.dimension(), pos.immutable(), wire,
                     stack.copyWithCount(1), TerminalProperties.ConnectionType.ONE);
@@ -208,8 +216,9 @@ public final class TerminalNetwork {
             show(player, alreadyConnected.translate());
             return true;
         }
-        int requiredWire = selection.connectionType().multiplier();
-        if (!player.getAbilities().instabuild && stack.getCount() < requiredWire) {
+        long requiredWire = TerminalProperties.requiredWireCount(selection.pos(), pos, selection.connectionType());
+        if (!player.getAbilities().instabuild && (requiredWire > Integer.MAX_VALUE ||
+                stack.getCount() < requiredWire)) {
             show(player, notEnoughWire.translate(requiredWire));
             return true;
         }
@@ -225,7 +234,7 @@ public final class TerminalNetwork {
         }
         selections.remove(player.getUUID());
         syncWireSelection(player, null);
-        if (!player.getAbilities().instabuild) stack.shrink(selection.connectionType().multiplier());
+        if (!player.getAbilities().instabuild) stack.shrink((int) requiredWire);
         show(player, connected.translate(selection.connectionType().display()));
         return true;
     }
@@ -254,7 +263,7 @@ public final class TerminalNetwork {
     private static void disconnectAndDrop(ServerLevel level, BlockPos firstPos, BlockPos secondPos) {
         TerminalProperties.Link link = disconnectPair(level, firstPos, secondPos);
         if (link != null) {
-            ItemStack drop = link.getDropStack();
+            ItemStack drop = link.getDropStack(firstPos);
             if (!drop.isEmpty()) Containers.dropItemStack(level, firstPos.getX() + 0.5, firstPos.getY() + 0.5,
                     firstPos.getZ() + 0.5, drop);
         }
@@ -263,7 +272,8 @@ public final class TerminalNetwork {
     private static void disconnectAndStore(ServerLevel level, BlockPos firstPos, BlockPos secondPos, Player player) {
         TerminalProperties.Link link = disconnectPair(level, firstPos, secondPos);
         if (link != null) {
-            if (!link.getDropStack().isEmpty()) player.getInventory().placeItemBackInInventory(link.getDropStack());
+            ItemStack drop = link.getDropStack(firstPos);
+            if (!drop.isEmpty()) player.getInventory().placeItemBackInInventory(drop);
             show(player, cutterDisconnected.translate());
         }
     }

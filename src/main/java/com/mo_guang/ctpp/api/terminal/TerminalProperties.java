@@ -1,6 +1,5 @@
 package com.mo_guang.ctpp.api.terminal;
 
-import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
@@ -60,17 +59,38 @@ public final class TerminalProperties {
         }
 
         public static @Nullable FineWireSpec from(ItemStack stack) {
-            if (stack.isEmpty() || ChemicalHelper.getPrefix(stack.getItem()) != TagPrefix.wireFine) {
-                return null;
-            }
-            Material material = ChemicalHelper.getMaterialStack(stack).material();
-            WireProperties wire = material.getProperty(PropertyKey.WIRE);
+            WireProperties wire = wireProperties(stack);
             if (wire == null) {
-                return new FineWireSpec(GTValues.V[GTValues.LV], 1, 1);
+                return null;
             }
             return new FineWireSpec(wire.getVoltage(), Math.max(1, wire.getAmperage()),
                     Math.max(1, wire.getLossPerBlock()));
         }
+    }
+
+    public static boolean isFineWire(ItemStack stack) {
+        return !stack.isEmpty() && ChemicalHelper.getPrefix(stack.getItem()) == TagPrefix.wireFine;
+    }
+
+    /** Returns usable cable properties; superconductors are intentionally not valid terminal wires. */
+    public static @Nullable WireProperties wireProperties(ItemStack stack) {
+        if (!isFineWire(stack)) return null;
+        Material material = ChemicalHelper.getMaterialStack(stack).material();
+        if (material.isNull()) return null;
+        WireProperties wire = material.getProperty(PropertyKey.WIRE);
+        return wire == null || wire.isSuperconductor() ? null : wire;
+    }
+
+    public static long connectionLength(BlockPos first, BlockPos second) {
+        double distance = Math.sqrt(first.distSqr(second));
+        if (!Double.isFinite(distance)) return Long.MAX_VALUE;
+        return Math.max(1L, (long) Math.ceil(distance));
+    }
+
+    public static long requiredWireCount(BlockPos first, BlockPos second, ConnectionType connectionType) {
+        long length = connectionLength(first, second);
+        long multiplier = connectionType == null ? ConnectionType.ONE.multiplier() : connectionType.multiplier();
+        return length > Long.MAX_VALUE / multiplier ? Long.MAX_VALUE : length * multiplier;
     }
 
     public static final class Link {
@@ -118,10 +138,11 @@ public final class TerminalProperties {
             return base > Long.MAX_VALUE / multiplier ? Long.MAX_VALUE : base * multiplier;
         }
 
-        public ItemStack getDropStack() {
+        public ItemStack getDropStack(BlockPos source) {
             if (wireItem.isEmpty()) return ItemStack.EMPTY;
             ItemStack result = wireItem.copy();
-            result.setCount(connectionType.multiplier());
+            long count = requiredWireCount(source, other, connectionType);
+            result.setCount((int) Math.min(Integer.MAX_VALUE, count));
             return result;
         }
 

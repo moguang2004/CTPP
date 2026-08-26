@@ -29,7 +29,7 @@ public class CTPPBlockEntities {
 
     @SuppressWarnings("unchecked")
     private static BlockEntry<VoltageTerminalBlock>[] terminalBlocks() {
-        return java.util.Arrays.stream(CTPPBlocks.VOLTAGE_COILS)
+        return java.util.Arrays.stream(CTPPBlocks.VOLTAGE_TERMINALS)
                 .filter(java.util.Objects::nonNull)
                 .toArray(BlockEntry[]::new);
     }

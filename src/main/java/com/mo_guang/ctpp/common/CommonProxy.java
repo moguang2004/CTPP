@@ -40,7 +40,7 @@ import com.tterrag.registrate.util.entry.BlockEntry;
 import tech.vixhentx.mcmod.ctnhlib.client.ponder.CTNHPonderLang;
 import tech.vixhentx.mcmod.ctnhlib.jade.JadePriorityManager;
 
-import static com.mo_guang.ctpp.registry.CTPPBlocks.VOLTAGE_COILS;
+import static com.mo_guang.ctpp.registry.CTPPBlocks.VOLTAGE_TERMINALS;
 
 @SuppressWarnings("removal")
 public class CommonProxy {
@@ -79,7 +79,7 @@ public class CommonProxy {
                     CreateBuiltInRegistries.ARM_INTERACTION_POINT_TYPE,
                     new ResourceLocation("ctpp", "gt_machine"),
                     new GTArmInteractionPointTypes.GTMachineType());
-            for (BlockEntry<VoltageTerminalBlock> terminal : VOLTAGE_COILS) {
+            for (BlockEntry<VoltageTerminalBlock> terminal : VOLTAGE_TERMINALS) {
                 if (terminal != null) {
                     CustomBlockRotations.registerCustomRotation(terminal.get(), VoltageTerminalBlock.ROTATION_BEHAVIOR);
                 }

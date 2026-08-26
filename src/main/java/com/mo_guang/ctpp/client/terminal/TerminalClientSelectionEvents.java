@@ -1,7 +1,5 @@
 package com.mo_guang.ctpp.client.terminal;
 
-import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
-import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 
@@ -23,6 +21,7 @@ import com.mo_guang.ctpp.CTPP;
 import com.mo_guang.ctpp.client.renderer.CTPPWireRenderTypes;
 import com.mo_guang.ctpp.client.renderer.VoltageTerminalRenderer;
 import com.mo_guang.ctpp.common.blockentity.VoltageTerminalBlockEntity;
+import com.mo_guang.ctpp.api.terminal.TerminalProperties;
 import com.mo_guang.ctpp.network.packet.CTPPTerminalCancelWireSelectionPacket;
 
 @Mod.EventBusSubscriber(modid = CTPP.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
@@ -49,7 +48,7 @@ public final class TerminalClientSelectionEvents {
             } else {
                 TerminalClientSelection.selectCutter(event.getPos());
             }
-        } else if (ChemicalHelper.getPrefix(stack.getItem()) == TagPrefix.wireFine) {
+        } else if (TerminalProperties.isFineWire(stack)) {
             if (event.getEntity().isShiftKeyDown()) {
                 // Explicitly synchronize cancellation. The client may already
                 // have cleared its visual target, while the server still owns
@@ -60,6 +59,8 @@ public final class TerminalClientSelectionEvents {
                     TerminalClientSelection.clearWire();
                 }
                 event.setCanceled(true);
+            } else if (TerminalProperties.wireProperties(stack) == null) {
+                TerminalClientSelection.clearWire();
             } else if (TerminalClientSelection.wireTarget() == null) {
                 TerminalClientSelection.selectWire(event.getPos(), stack);
             } else if (TerminalClientSelection.wireTarget().equals(event.getPos())) {
@@ -155,7 +156,7 @@ public final class TerminalClientSelectionEvents {
     }
 
     private static boolean isFineWire(ItemStack stack) {
-        return !stack.isEmpty() && ChemicalHelper.getPrefix(stack.getItem()) == TagPrefix.wireFine;
+        return TerminalProperties.isFineWire(stack);
     }
 
     private static boolean isCutter(ItemStack stack) {
