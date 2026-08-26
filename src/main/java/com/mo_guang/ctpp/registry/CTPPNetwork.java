@@ -32,7 +32,7 @@ public final class CTPPNetwork {
                 NetworkDirection.PLAY_TO_CLIENT);
         GTNetwork.register(CTPPTerminalWireSelectionPacket.class, CTPPTerminalWireSelectionPacket::new,
                 NetworkDirection.PLAY_TO_CLIENT);
-        GTNetwork.register(CTPPTerminalCancelWireSelectionPacket.class, CTPPTerminalCancelWireSelectionPacket::new,
-                NetworkDirection.PLAY_TO_SERVER);
+        GTNetwork.register(CTPPTerminalCancelWireSelectionPacket.class,
+                CTPPTerminalCancelWireSelectionPacket::new, NetworkDirection.PLAY_TO_SERVER);
     }
 }

@@ -51,13 +51,15 @@ public final class TerminalClientSelectionEvents {
             }
         } else if (ChemicalHelper.getPrefix(stack.getItem()) == TagPrefix.wireFine) {
             if (event.getEntity().isShiftKeyDown()) {
-                // Server-side cancellation is limited to Shift-right-clicking
-                // the selected first terminal; preserve it for other targets.
+                // Explicitly synchronize cancellation. The client may already
+                // have cleared its visual target, while the server still owns
+                // the authoritative selection.
                 GTNetwork.sendToServer(new CTPPTerminalCancelWireSelectionPacket(event.getPos()));
                 if (TerminalClientSelection.wireTarget() != null &&
                         TerminalClientSelection.wireTarget().equals(event.getPos())) {
                     TerminalClientSelection.clearWire();
                 }
+                event.setCanceled(true);
             } else if (TerminalClientSelection.wireTarget() == null) {
                 TerminalClientSelection.selectWire(event.getPos(), stack);
             } else if (TerminalClientSelection.wireTarget().equals(event.getPos())) {

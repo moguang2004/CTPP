@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.data.recipe.CustomTags;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -155,8 +156,8 @@ public class VoltageTerminalBlock extends Block implements EntityBlock {
     @Override
     public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
         if (!state.is(newState.getBlock()) &&
-                level.getBlockEntity(pos) instanceof VoltageTerminalBlockEntity terminal &&
-                level instanceof net.minecraft.server.level.ServerLevel server) {
+                level.getBlockEntity(pos) instanceof VoltageTerminalBlockEntity &&
+                level instanceof ServerLevel server) {
             TerminalNetwork.disconnectAll(server, pos);
         }
         super.onRemove(state, level, pos, newState, movedByPiston);

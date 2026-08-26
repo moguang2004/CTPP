@@ -85,10 +85,6 @@ public final class TerminalProperties {
         private int temperature = DEFAULT_TEMPERATURE;
         private int heatQueue;
 
-        public Link(BlockPos other, FineWireSpec wire) {
-            this(other, wire, ItemStack.EMPTY, ConnectionType.ONE);
-        }
-
         public Link(BlockPos other, FineWireSpec wire, ItemStack wireItem, ConnectionType connectionType) {
             this.other = other.immutable();
             this.wire = wire;

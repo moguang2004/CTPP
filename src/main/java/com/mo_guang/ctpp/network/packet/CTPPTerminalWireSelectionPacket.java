@@ -23,14 +23,14 @@ public final class CTPPTerminalWireSelectionPacket implements GTNetwork.INetPack
         this.multiplier = Math.max(1, multiplier);
     }
 
-    private CTPPTerminalWireSelectionPacket(@Nullable BlockPos pos, boolean cleared) {
+    private CTPPTerminalWireSelectionPacket(@Nullable BlockPos pos) {
         this.pos = pos == null ? null : pos.immutable();
         this.wire = ItemStack.EMPTY;
         this.multiplier = 1;
     }
 
     public static CTPPTerminalWireSelectionPacket cleared() {
-        return new CTPPTerminalWireSelectionPacket(null, true);
+        return new CTPPTerminalWireSelectionPacket((BlockPos) null);
     }
 
     public CTPPTerminalWireSelectionPacket(FriendlyByteBuf buffer) {

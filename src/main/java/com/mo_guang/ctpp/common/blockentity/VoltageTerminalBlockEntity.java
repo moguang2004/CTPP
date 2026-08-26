@@ -17,6 +17,7 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -30,6 +31,7 @@ import com.mo_guang.ctpp.api.terminal.TerminalLinkState;
 import com.mo_guang.ctpp.api.terminal.TerminalProperties;
 import com.mo_guang.ctpp.common.block.VoltageTerminalBlock;
 import com.mo_guang.ctpp.common.terminal.TerminalNetwork;
+import com.mo_guang.ctpp.config.MainConfig;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -98,14 +100,8 @@ public class VoltageTerminalBlockEntity extends BlockEntity implements IEnhanced
         return state == null ? null : state.toLink();
     }
 
-    public boolean addLink(BlockPos other, TerminalProperties.FineWireSpec wire) {
-        return addLink(other, wire, net.minecraft.world.item.ItemStack.EMPTY,
-                TerminalProperties.ConnectionType.ONE);
-    }
-
     public boolean addLink(BlockPos other, TerminalProperties.FineWireSpec wire,
-                           net.minecraft.world.item.ItemStack wireItem,
-                           TerminalProperties.ConnectionType connectionType) {
+                           ItemStack wireItem, TerminalProperties.ConnectionType connectionType) {
         if (other.equals(worldPosition) || links.containsKey(other)) return false;
         links.put(other.immutable(), new TerminalLinkState(other, wire, wireItem, connectionType));
         setChanged();
@@ -153,8 +149,7 @@ public class VoltageTerminalBlockEntity extends BlockEntity implements IEnhanced
             VoltageTerminalBlockEntity peer = server.getBlockEntity(other) instanceof VoltageTerminalBlockEntity value ?
                     value : null;
             if (peer != null) {
-                TerminalLinkState peerLink = peer.findManagedLink(worldPosition);
-                if (peerLink != null) {
+                if (peer.getLink(worldPosition) != null) {
                     peer.setLinkHeat(worldPosition, link.getTemperature(), link.getHeatQueue());
                 }
             }
@@ -173,14 +168,9 @@ public class VoltageTerminalBlockEntity extends BlockEntity implements IEnhanced
 
     @Override
     public AABB getRenderBoundingBox() {
-        int range = com.mo_guang.ctpp.config.MainConfig.INSTANCE == null ? 32 :
-                com.mo_guang.ctpp.config.MainConfig.INSTANCE.terminalConfig.terminalMaxConnectionRange;
+        int range = MainConfig.INSTANCE == null ? 32 :
+                MainConfig.INSTANCE.terminalConfig.terminalMaxConnectionRange;
         return new AABB(worldPosition).inflate(range);
-    }
-
-    public long forwardIntoAttached(net.minecraft.world.level.Level level, long voltage, long amperage,
-                                    Set<BlockPos> visited) {
-        return TerminalNetwork.forwardToAttached(level, this, voltage, amperage, visited);
     }
 
     public long acceptLinkedEnergy(net.minecraft.world.level.Level level, long voltage, long amperage,
@@ -199,10 +189,6 @@ public class VoltageTerminalBlockEntity extends BlockEntity implements IEnhanced
         if (!(level instanceof ServerLevel server)) return;
         TerminalNetwork.disconnectAllNoDrop(server, worldPosition);
         server.setBlockAndUpdate(worldPosition, Blocks.FIRE.defaultBlockState());
-    }
-
-    private @Nullable TerminalLinkState findManagedLink(BlockPos other) {
-        return links.get(other);
     }
 
     @Override

@@ -21,10 +21,6 @@ public final class TerminalClientSelection {
         cutterTarget = null;
     }
 
-    public static void setWireTarget(@Nullable BlockPos pos, ItemStack stack) {
-        setWireTarget(pos, stack, 1);
-    }
-
     public static void setWireTarget(@Nullable BlockPos pos, ItemStack stack, int multiplier) {
         wireTarget = pos == null ? null : pos.immutable();
         wireItem = pos == null || stack.isEmpty() ? ItemStack.EMPTY : stack.copyWithCount(1);
