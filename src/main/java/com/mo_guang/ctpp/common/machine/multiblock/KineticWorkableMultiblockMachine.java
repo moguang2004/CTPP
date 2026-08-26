@@ -7,21 +7,17 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
-import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 
 import com.ctnhlang.CN;
 import com.ctnhlang.EN;
-import com.ctnhlang.Key;
 import com.mo_guang.ctpp.common.machine.IKineticMachine;
 import com.mo_guang.ctpp.common.machine.multiblock.part.KineticPartMachine;
-import com.simibubi.create.infrastructure.config.AllConfigs;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tech.vixhentx.mcmod.ctnhlib.langprovider.Lang;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class KineticWorkableMultiblockMachine extends KineticMultiblockMachine implements ITieredMachine {
@@ -34,30 +30,13 @@ public class KineticWorkableMultiblockMachine extends KineticMultiblockMachine i
     @EN("Parallelism: %d")
     static Lang parallel;
 
-    @Key("ctpp.multiblock.kinetic_workable_multiblock_machine.null")
-    @CN("状态：无")
-    @EN("Status: None")
-    static Lang statusNone;
-
-    @Key("ctpp.multiblock.kinetic_workable_multiblock_machine.reduction")
-    @CN("状态：配方耗时减免x0.8")
-    @EN("Status: Recipe time reduction x0.75")
-    static Lang statusReduction;
-
-    @Key("ctpp.multiblock.kinetic_workable_multiblock_machine.overclock")
-    @CN("状态：超频")
-    @EN("Status: Overclocked")
-    static Lang statusOverclock;
-
-    @Key("ctpp.multiblock.kinetic_workable_multiblock_machine.perfect_overclock")
-    @CN("状态：无损超频")
-    @EN("Status: Lossless overclocked")
-    static Lang statusPerfectOverclock;
+    @CN("必须输入相同转速")
+    @EN("All kinetic inputs must run at the same rotation speed")
+    static Lang sameSpeedRequired;
 
     @Getter
     public float maxTorque = 0;
-
-    public List<BlockPos> inputPartsMax = new ArrayList<>();
+    public boolean speedConsistent = false;
 
     public KineticWorkableMultiblockMachine(IMachineBlockEntity holder) {
         super(holder);
@@ -66,21 +45,6 @@ public class KineticWorkableMultiblockMachine extends KineticMultiblockMachine i
     @Override
     public void onStructureFormed() {
         super.onStructureFormed();
-        for (IMultiPart part : getParts()) {
-            if (part instanceof KineticPartMachine kineticPart) {
-                if (kineticPart.getIO() == IO.IN) {
-                    if (kineticPart.getKineticDefinition().torque > maxTorque) {
-                        maxTorque = kineticPart.getKineticDefinition().torque;
-                        inputPartsMax.clear();
-                        inputPartsMax.add(kineticPart.getKineticHolder().getBlockPos());
-                    } else if (kineticPart.getKineticDefinition().torque == maxTorque) {
-                        {
-                            inputPartsMax.add(kineticPart.getKineticHolder().getBlockPos());
-                        }
-                    }
-                }
-            }
-        }
     }
 
     @Override
@@ -99,28 +63,55 @@ public class KineticWorkableMultiblockMachine extends KineticMultiblockMachine i
         return input;
     }
 
+    public boolean checkInputSpeedConsistent() {
+        float firstSpeed = Float.NaN;
+        for (IMultiPart part : getParts()) {
+            if (part instanceof KineticPartMachine kineticPart && kineticPart.getIO() == IO.IN) {
+                float partSpeed = Math.abs(kineticPart.getKineticHolder().getSpeed());
+                if (partSpeed < 0.01F) continue;
+                if (Float.isNaN(firstSpeed)) {
+                    firstSpeed = partSpeed;
+                } else if (Math.abs(partSpeed - firstSpeed) > 0.01F) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     @Override
     public @Nullable Component beforeWorking(@NotNull GTRecipe recipe) {
-        Component result = super.beforeWorking(recipe);
-        previousSpeed = speed;
-        if (speed != previousSpeed) {
-            updateRotateBlocks(result == null);
+        if (!speedConsistent) {
+            return sameSpeedRequired.translate();
         }
+        Component result = super.beforeWorking(recipe);
         return result;
+    }
+
+    @Override
+    public boolean onWorking() {
+        return speedConsistent && super.onWorking();
     }
 
     @Override
     public void onChanged() {
         super.onChanged();
-        updateMachineSpeed();
+        speedConsistent = checkInputSpeedConsistent();
+        if (speedConsistent) {
+            updateMachineSpeed();
+        }
     }
 
     public void updateMachineSpeed() {
-        speed = AllConfigs.server().kinetics.maxRotationSpeed.get();
+        var previousSpeed = speed;
+        speed = 0;
         for (IMultiPart part : getParts()) {
-            if (part instanceof IKineticMachine kineticPart &&
-                    inputPartsMax.contains(kineticPart.getKineticHolder().getBlockPos())) {
-                speed = Math.min(speed, Math.abs(kineticPart.getKineticHolder().getSpeed()));
+            if (part instanceof IKineticMachine kineticPart && kineticPart.getKineticHolder().getSpeed() != 0) {
+                speed = kineticPart.getKineticHolder().getSpeed();
+                if (speed != previousSpeed) {
+                    updateRotateBlocks(true);
+                }
+                return;
             }
         }
     }

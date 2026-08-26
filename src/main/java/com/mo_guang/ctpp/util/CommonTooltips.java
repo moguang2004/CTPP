@@ -10,8 +10,8 @@ public class CommonTooltips {
     @EN("- Input (N squared) times stress required by the recipe to get N parallels")
     public static Lang KINETIC_OVERCLOCK;
 
-    @CN("*输入转速以等级最高的应力仓的转速为准")
-    @EN("*The input speed is based on the highest-speed stress chamber.")
+    @CN("*所有输入应力的应力输入箱必须输入相同转速")
+    @EN("*All the input speed should be the same.")
     public static Lang INPUT_SPEED;
 
     @CN("§n机械等级§r由§l机械升级仓§r中的物品决定：无(0)，§7基础构件(1)§r，§e精密构件(2)§r，\n§8钢铁构件/基础电子电路(3)§r，§b优质电子电路(4)§r，§6进阶集成电路(5)§r")

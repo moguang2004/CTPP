@@ -68,8 +68,6 @@ public class WindMillControlMachine extends KineticOutputMachine
 
     public WindMillControlMachine(IMachineBlockEntity holder) {
         super(holder);
-        // 避免结构/配方恢复阶段先使用默认转速导致动态结构短暂快转
-        this.speed = 0;
     }
 
     //////////////////////////////////////
@@ -88,7 +86,6 @@ public class WindMillControlMachine extends KineticOutputMachine
                 calculateWindmillAround();
                 float currentSpeed = getOutputSpeed();
                 if (this.speed != currentSpeed) {
-                    this.previousSpeed = this.speed;
                     this.speed = currentSpeed;
                 }
                 findAndReattachEntities();
@@ -112,7 +109,6 @@ public class WindMillControlMachine extends KineticOutputMachine
         // 结构刚恢复时尽快同步真实转速，避免沿用默认值 64
         float currentSpeed = getOutputSpeed();
         if (this.speed != currentSpeed) {
-            this.previousSpeed = this.speed;
             this.speed = currentSpeed;
         }
         if (!getLevel().isClientSide()) {
@@ -162,7 +158,7 @@ public class WindMillControlMachine extends KineticOutputMachine
     @Override
     public @Nullable Component beforeWorking(@NotNull GTRecipe recipe) {
         Component result = super.beforeWorking(recipe);
-        previousSpeed = speed;
+        var previousSpeed = speed;
         speed = getOutputSpeed();
         if (speed != previousSpeed) {
             updateRotateBlocks(result == null);
@@ -270,7 +266,7 @@ public class WindMillControlMachine extends KineticOutputMachine
                         this.getPos().getZ())) <= 32) {
                     var kineticBlockEntity = getLevel().getBlockEntity(windmill);
                     if (kineticBlockEntity instanceof WindmillBearingBlockEntity windmillBearingBlockEntity) {
-                        var speed = windmillBearingBlockEntity.getGeneratedSpeed();
+                        var speed = Math.abs(windmillBearingBlockEntity.getGeneratedSpeed());
                         if (speed != 0 && windmillAround.size() < getMaxControlledSize()) {
                             windmillAround.add(windmill);
                             TotalOutput += speed * 512;
