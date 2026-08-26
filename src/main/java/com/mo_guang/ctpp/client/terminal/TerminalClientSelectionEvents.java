@@ -18,10 +18,10 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 import com.mo_guang.ctpp.CTPP;
+import com.mo_guang.ctpp.api.terminal.TerminalProperties;
 import com.mo_guang.ctpp.client.renderer.CTPPWireRenderTypes;
 import com.mo_guang.ctpp.client.renderer.VoltageTerminalRenderer;
 import com.mo_guang.ctpp.common.blockentity.VoltageTerminalBlockEntity;
-import com.mo_guang.ctpp.api.terminal.TerminalProperties;
 import com.mo_guang.ctpp.network.packet.CTPPTerminalCancelWireSelectionPacket;
 
 @Mod.EventBusSubscriber(modid = CTPP.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
