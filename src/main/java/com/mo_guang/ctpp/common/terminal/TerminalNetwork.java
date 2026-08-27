@@ -41,10 +41,6 @@ public final class TerminalNetwork {
     @EN("Terminal selected. Right-click another terminal to connect")
     private static Lang bound;
 
-    @CN("再次右键可切换连接类型，Shift右键可取消选择")
-    @EN("Right-click again to change connection type. Right-click with Shift to cancel selection")
-    private static Lang instruction;
-
     @CN("已取消接线柱选择")
     @EN("Terminal selection cancelled")
     private static Lang selectionCancelled;
@@ -93,7 +89,7 @@ public final class TerminalNetwork {
     @EN("Not enough fine wire; requires %s")
     private static Lang notEnoughWire;
 
-    @CN("该细线没有可用的线缆属性，不能用于接线")
+    @CN("该细导线没有可用的线缆属性，不能用于接线")
     @EN("This fine wire has no usable cable properties and cannot be connected")
     private static Lang unusableWire;
 

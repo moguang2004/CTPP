@@ -9,8 +9,8 @@ import com.lowdragmc.lowdraglib.syncdata.IEnhancedManaged;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
+import com.lowdragmc.lowdraglib.syncdata.blockentity.IAsyncAutoSyncBlockEntity;
 import com.lowdragmc.lowdraglib.syncdata.blockentity.IAutoPersistBlockEntity;
-import com.lowdragmc.lowdraglib.syncdata.blockentity.IAutoSyncBlockEntity;
 import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
@@ -41,7 +41,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class VoltageTerminalBlockEntity extends BlockEntity implements IEnhancedManaged,
-                                        IAutoSyncBlockEntity, IAutoPersistBlockEntity {
+                                        IAsyncAutoSyncBlockEntity, IAutoPersistBlockEntity {
 
     static {
         ManagedFieldHolderMap.createManagedFieldHolder(VoltageTerminalBlockEntity.class);
