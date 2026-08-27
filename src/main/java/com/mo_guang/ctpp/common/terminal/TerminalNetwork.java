@@ -377,6 +377,8 @@ public final class TerminalNetwork {
             long accepted = peer.acceptLinkedEnergy(level, transferVoltage, linkAmperage,
                     new HashSet<>(visited));
             if (accepted > 0) {
+                TerminalWireHazardManager.get(server).recordTransfer(source.getBlockPos(), entry.getKey(), link,
+                        transferVoltage, accepted);
                 applyLinkHeat(server, source.getBlockPos(), entry.getKey(), link, accepted, linkVoltage);
             }
             remaining -= accepted;

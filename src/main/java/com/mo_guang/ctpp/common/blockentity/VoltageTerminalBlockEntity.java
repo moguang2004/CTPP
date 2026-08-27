@@ -31,6 +31,7 @@ import com.mo_guang.ctpp.api.terminal.TerminalLinkState;
 import com.mo_guang.ctpp.api.terminal.TerminalProperties;
 import com.mo_guang.ctpp.common.block.VoltageTerminalBlock;
 import com.mo_guang.ctpp.common.terminal.TerminalNetwork;
+import com.mo_guang.ctpp.common.terminal.TerminalWireHazardManager;
 import com.mo_guang.ctpp.config.MainConfig;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -54,6 +55,7 @@ public class VoltageTerminalBlockEntity extends BlockEntity implements IEnhanced
     private final FieldManagedStorage syncStorage = new FieldManagedStorage(this);
     private final IEnergyContainer energyContainer = new TerminalEnergyContainer();
     private final LazyOptional<IEnergyContainer> energyCapability = LazyOptional.of(() -> energyContainer);
+    private boolean terminalWiresRegistered;
 
     public VoltageTerminalBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
@@ -103,13 +105,20 @@ public class VoltageTerminalBlockEntity extends BlockEntity implements IEnhanced
     public boolean addLink(BlockPos other, TerminalProperties.FineWireSpec wire,
                            ItemStack wireItem, TerminalProperties.ConnectionType connectionType) {
         if (other.equals(worldPosition) || links.containsKey(other)) return false;
-        links.put(other.immutable(), new TerminalLinkState(other, wire, wireItem, connectionType));
+        TerminalLinkState state = new TerminalLinkState(other, wire, wireItem, connectionType);
+        links.put(other.immutable(), state);
+        if (level instanceof ServerLevel server) {
+            TerminalWireHazardManager.get(server).register(worldPosition, other, state.toLink());
+        }
         setChanged();
         return true;
     }
 
     public void removeLink(BlockPos other) {
         if (links.remove(other) != null) {
+            if (level instanceof ServerLevel server) {
+                TerminalWireHazardManager.get(server).remove(worldPosition, other);
+            }
             setChanged();
         }
     }
@@ -134,9 +143,16 @@ public class VoltageTerminalBlockEntity extends BlockEntity implements IEnhanced
 
     public void serverTick() {
         if (!(level instanceof ServerLevel server)) return;
+        if (!terminalWiresRegistered) {
+            links.forEach((other, state) -> TerminalWireHazardManager.get(server).register(worldPosition, other,
+                    state.toLink()));
+            terminalWiresRegistered = true;
+        }
         for (Map.Entry<BlockPos, TerminalLinkState> entry : new HashMap<>(links).entrySet()) {
             TerminalLinkState state = entry.getValue();
             BlockPos other = entry.getKey();
+            VoltageTerminalBlockEntity peer = server.getBlockEntity(other) instanceof VoltageTerminalBlockEntity value ?
+                    value : null;
             // Both endpoints mirror the same link state. Tick it once using
             // the canonical (lexicographically smaller) endpoint.
             if (worldPosition.compareTo(other) >= 0) continue;
@@ -146,8 +162,6 @@ public class VoltageTerminalBlockEntity extends BlockEntity implements IEnhanced
                 break;
             }
             setLinkHeat(other, link.getTemperature(), link.getHeatQueue());
-            VoltageTerminalBlockEntity peer = server.getBlockEntity(other) instanceof VoltageTerminalBlockEntity value ?
-                    value : null;
             if (peer != null) {
                 if (peer.getLink(worldPosition) != null) {
                     peer.setLinkHeat(worldPosition, link.getTemperature(), link.getHeatQueue());

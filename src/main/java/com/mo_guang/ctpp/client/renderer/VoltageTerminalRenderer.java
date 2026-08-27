@@ -11,11 +11,13 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 
 import com.mo_guang.ctpp.api.terminal.TerminalProperties;
+import com.mo_guang.ctpp.api.terminal.TerminalWireGeometry;
 import com.mo_guang.ctpp.common.blockentity.VoltageTerminalBlockEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import org.joml.Vector3f;
 
+import java.util.List;
 import java.util.Map;
 
 public class VoltageTerminalRenderer implements BlockEntityRenderer<VoltageTerminalBlockEntity> {
@@ -58,25 +60,19 @@ public class VoltageTerminalRenderer implements BlockEntityRenderer<VoltageTermi
                                          PoseStack poseStack, VertexConsumer consumer, int packedLight,
                                          boolean capStart) {
         double length = start.distanceTo(end);
-        int segments = Math.max(8, Math.min(64, (int) Math.ceil(length * 1.5)));
-        float thickness = 0.035f * (float) Math.sqrt(link.connectionType().multiplier());
+        List<Vec3> centers = TerminalWireGeometry.points(start, end);
+        int segments = centers.size() - 1;
+        float thickness = (float) TerminalWireGeometry.radius(link.connectionType());
         int color = linkColor(link);
         final int radialSides = 16;
         Vector3f[][] rings = new Vector3f[segments + 1][radialSides];
         Vector3f previousCenter = null;
         Vector3f previousBasisA = null;
         for (int i = 0; i <= segments; i++) {
-            float t = i / (float) segments;
-            float sag = (float) Math.min(2.5, length * 0.08);
-            Vector3f center = new Vector3f(
-                    (float) (start.x + (end.x - start.x) * t),
-                    (float) (start.y + (end.y - start.y) * t - sag * 4.0 * t * (1.0 - t)),
-                    (float) (start.z + (end.z - start.z) * t));
-            float nextT = Math.min(1.0f, t + 1.0f / segments);
-            Vector3f nextCenter = new Vector3f(
-                    (float) (start.x + (end.x - start.x) * nextT),
-                    (float) (start.y + (end.y - start.y) * nextT - sag * 4.0 * nextT * (1.0f - nextT)),
-                    (float) (start.z + (end.z - start.z) * nextT));
+            Vec3 centerPoint = centers.get(i);
+            Vec3 nextPoint = centers.get(Math.min(i + 1, segments));
+            Vector3f center = new Vector3f((float) centerPoint.x, (float) centerPoint.y, (float) centerPoint.z);
+            Vector3f nextCenter = new Vector3f((float) nextPoint.x, (float) nextPoint.y, (float) nextPoint.z);
             Vector3f direction = (i == segments ? new Vector3f(center).sub(previousCenter) :
                     new Vector3f(nextCenter).sub(i == 0 ? center : previousCenter)).normalize();
             Vector3f basisA;
@@ -144,7 +140,7 @@ public class VoltageTerminalRenderer implements BlockEntityRenderer<VoltageTermi
     private static Vec3 connectionPoint(VoltageTerminalBlockEntity terminal) {
         // Rendering deliberately uses the terminal body center. This is
         // independent from getElectricalSide(), which controls capabilities.
-        return Vec3.atLowerCornerOf(terminal.getBlockPos()).add(0.5, 0.5, 0.5);
+        return TerminalWireGeometry.connectionPoint(terminal.getBlockPos());
     }
 
     private static Vector3f radialOffset(Vector3f basisA, Vector3f basisB, double angle, float radius) {
