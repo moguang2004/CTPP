@@ -7,6 +7,10 @@ dependencies {
     modImplementation(ctnh.createvintage)
     
     modImplementation(ctnh.curios)
+    modImplementation(ctnh.guideme)
+    modImplementation(ctnh.ae2)
+    modImplementation(ctnh.clothconfig)
+    modImplementation(ctnh.ae2wt)
     modLocalRuntime(ctnh.constructionwand)
 
     modImplementation(ctnh.mantle)

@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -21,12 +22,14 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.network.NetworkHooks;
 
 import com.ctnhlang.CN;
 import com.ctnhlang.EN;
 import com.mo_guang.ctpp.common.block.CTPPToolboxBlock;
 import com.mo_guang.ctpp.common.menu.CTPPToolboxMenu;
+import com.mo_guang.ctpp.common.toolbox.CTPPToolboxItemCapability;
 import com.mo_guang.ctpp.common.toolbox.CTPPToolboxSavedData;
 import com.mo_guang.ctpp.common.toolbox.CTPPToolboxService;
 import com.mo_guang.ctpp.common.toolbox.CTPPToolboxSounds;
@@ -46,6 +49,11 @@ public class CTPPToolboxItem extends BlockItem implements ICustomToolIngredient,
 
     public CTPPToolboxItem(Block block, Properties properties) {
         super(block, properties.stacksTo(1));
+    }
+
+    @Override
+    public @Nullable ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
+        return new CTPPToolboxItemCapability(stack);
     }
 
     public static DyeColor getColor(ItemStack stack) {

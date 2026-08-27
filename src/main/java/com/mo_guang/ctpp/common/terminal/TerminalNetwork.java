@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.IEnergyTransferHandler;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.common.blockentity.CableBlockEntity;
+import com.gregtechceu.gtceu.common.network.GTNetwork;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 
 import net.minecraft.core.BlockPos;
@@ -213,8 +214,9 @@ public final class TerminalNetwork {
             return true;
         }
         long requiredWire = TerminalProperties.requiredWireCount(selection.pos(), pos, selection.connectionType());
-        if (!player.getAbilities().instabuild && (requiredWire > Integer.MAX_VALUE ||
-                stack.getCount() < requiredWire)) {
+        TerminalWirePayment.Plan payment = player.getAbilities().instabuild ? null :
+                TerminalWirePayment.prepare(player, selection.wireItem(), requiredWire);
+        if (!player.getAbilities().instabuild && payment == null) {
             show(player, notEnoughWire.translate(requiredWire));
             return true;
         }
@@ -228,9 +230,14 @@ public final class TerminalNetwork {
             show(player, bindingLost.translate());
             return true;
         }
+        if (payment != null && !payment.commit()) {
+            first.removeLink(pos);
+            second.removeLink(selection.pos());
+            show(player, notEnoughWire.translate(requiredWire));
+            return true;
+        }
         selections.remove(player.getUUID());
         syncWireSelection(player, null);
-        if (!player.getAbilities().instabuild) stack.shrink((int) requiredWire);
         show(player, connected.translate(selection.connectionType().display()));
         return true;
     }
@@ -323,10 +330,10 @@ public final class TerminalNetwork {
     private static void syncWireSelection(Player player, @Nullable Selection selection) {
         if (!(player instanceof ServerPlayer serverPlayer)) return;
         if (selection == null) {
-            com.gregtechceu.gtceu.common.network.GTNetwork.sendToPlayer(serverPlayer,
+            GTNetwork.sendToPlayer(serverPlayer,
                     CTPPTerminalWireSelectionPacket.cleared());
         } else {
-            com.gregtechceu.gtceu.common.network.GTNetwork.sendToPlayer(serverPlayer,
+            GTNetwork.sendToPlayer(serverPlayer,
                     new CTPPTerminalWireSelectionPacket(selection.pos(), selection.wireItem(),
                             selection.connectionType().multiplier()));
         }
