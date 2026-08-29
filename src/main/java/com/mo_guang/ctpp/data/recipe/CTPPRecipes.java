@@ -1,6 +1,5 @@
 package com.mo_guang.ctpp.data.recipe;
 
-import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.common.data.*;
@@ -38,6 +37,7 @@ public class CTPPRecipes {
         BoomOfCreateRecipes.init(provider);
 
         ToolRecipes.init(provider);
+        PlaceableEmitterRecipes.init(provider);
         // MetaTileEntityLoader.registerMachineRecipe(provider, false, CTPPMachines.KINETIC_MIXER, "GRG", "GEG", "CMC",
         // "M", HULL, "R",
         // ROTOR, "C", AllItems.PRECISION_MECHANISM, "G", GLASS, "E", AllBlocks.SHAFT);
@@ -58,14 +58,13 @@ public class CTPPRecipes {
         registerMachineRecipe(provider, false, "kinetic_output_box_to_input_", CTPPMachines.KINETIC_OUTPUT_BOX, "d",
                 "H", 'H', CTPPMachines.KINETIC_INPUT_BOX);
 
-        VanillaRecipeHelper.addShapedRecipe(provider, CTPP.id("mechanical_upgrade_bus"),
-                CTPPMachines.MECHANICAL_UPGRADE_BUS.asStack(),
+        registerMachineRecipe(provider, false, CTPPMachines.MECHANICAL_UPGRADE_BUS,
                 "ABA",
                 "DCD",
                 "ABA",
                 'A', GTMaterialItems.MATERIAL_ITEMS.get(TagPrefix.screw, GTMaterials.WroughtIron).asStack(),
-                'B', GTMaterialItems.MATERIAL_ITEMS.get(TagPrefix.plate, GTMaterials.Iron).asStack(),
-                'C', GTMachines.ITEM_IMPORT_BUS[GTValues.ULV].asStack(),
+                'B', PLATE,
+                'C', HULL,
                 'D', Items.GLASS_PANE.getDefaultInstance());
     }
 

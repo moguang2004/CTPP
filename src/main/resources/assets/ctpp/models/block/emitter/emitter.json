@@ -1,0 +1,5 @@
+{
+  "loader": "forge:obj",
+  "model": "ctpp:models/block/emitter/emitter.obj",
+  "flip_v": true
+}

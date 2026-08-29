@@ -1,7 +1,6 @@
 package com.mo_guang.ctpp.common.terminal;
 
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
-import com.gregtechceu.gtceu.api.capability.IEnergyTransferHandler;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.common.blockentity.CableBlockEntity;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
@@ -20,6 +19,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import com.ctnhlang.*;
+import com.mo_guang.ctpp.api.IEnergyTransferHandler;
 import com.mo_guang.ctpp.api.terminal.TerminalProperties;
 import com.mo_guang.ctpp.common.blockentity.VoltageTerminalBlockEntity;
 import com.mo_guang.ctpp.config.MainConfig;

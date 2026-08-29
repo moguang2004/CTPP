@@ -99,7 +99,7 @@ public class SmashingFactory {
                 .attachKeyFrame();
         scene.idle(100);
         scene.world().setBlocks(util.select().position(3, 3, 1),
-                CTPPMachines.MECHANICAL_UPGRADE_BUS.defaultBlockState(), true);
+                CTPPMachines.MECHANICAL_UPGRADE_BUS[GTValues.LV].defaultBlockState(), true);
         scene.showText(80,
                 "Some recipes also require upgrading using a mechanical upgrade bus before they can be executed",
                 "一些配方还需要使用机械升级仓进行升级后才能运行")

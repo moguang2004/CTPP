@@ -14,6 +14,7 @@ import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraftforge.client.model.generators.BlockModelBuilder;
 import net.minecraftforge.client.model.generators.ConfiguredModel;
@@ -56,7 +57,7 @@ public class CTPPMachines {
     static {
         REGISTRATE.creativeModeTab(() -> MACHINE);
     }
-    public static MachineDefinition MECHANICAL_UPGRADE_BUS;
+    public static final MachineDefinition[] MECHANICAL_UPGRADE_BUS = new MachineDefinition[GTValues.TIER_COUNT];
 
     public static KineticMachineDefinition[] ELECTRIC_GEAR_BOX_2A;
     public static KineticMachineDefinition[] ELECTRIC_GEAR_BOX_8A;
@@ -68,6 +69,7 @@ public class CTPPMachines {
     public static KineticMachineDefinition[] KINETIC_INPUT_BOX;
     public static KineticMachineDefinition[] KINETIC_OUTPUT_BOX;
     public static KineticMachineDefinition CARBON_BRUSHES;
+    public static MachineDefinition[] PLACEABLE_EMITTER;
 
     public static KineticMachineDefinition[] registerElectricGearBox(int maxAmps, int... tiers) {
         return CTPPRegistration.conditionalRegistration(gtmEnabled("GTMElectricGearBox"),
@@ -149,6 +151,30 @@ public class CTPPMachines {
     static Lang kineticOutputBoxTooltip;
 
     public static void init() {
+        PLACEABLE_EMITTER = new MachineDefinition[GTValues.TIER_COUNT];
+        for (int tier : new int[] { LV, MV, HV, EV, IV, LuV, ZPM, UV }) {
+            PLACEABLE_EMITTER[tier] = REGISTRATE
+                    .machine(GTValues.VN[tier].toLowerCase(Locale.ROOT) + "_placeable_emitter",
+                            holder -> new com.mo_guang.ctpp.common.machine.simple.PlaceableEmitterMachine(holder,
+                                    tier))
+                    .tier(tier)
+                    .langValue(VNF[tier] + " Placeable Emitter")
+                    .cnLangValue(VNF[tier] + " 可放置发射器")
+                    .rotationState(RotationState.ALL)
+                    // the OBJ model doesn't fill the block: a full-cube occluding block would cull
+                    // the neighbors' touching faces (making the block below look transparent)
+                    .shape(Block.box(3, 3, 2, 13, 14, 14))
+                    .blockProp(BlockBehaviour.Properties::noOcclusion)
+                    .tooltips(
+                            Component.translatable("gtceu.universal.tooltip.voltage_in",
+                                    FormattingUtil.formatNumbers(V[tier]), VNF[tier]),
+                            Component.translatable("gtceu.universal.tooltip.amperage_in", 1))
+                    .model((ctx, prov, modelBuilder) -> {
+                        var emitterModel = prov.models().getExistingFile(CTPP.id("block/emitter/emitter"));
+                        modelBuilder.forAllStatesModels(state -> emitterModel);
+                    })
+                    .register();
+        }
         KINETIC_INPUT_BOX = registerKineticTieredMachines(
                 "kinetic_input_box",
                 "应力输入箱",
@@ -234,15 +260,20 @@ public class CTPPMachines {
         ELECTRIC_GEAR_BOX_16A = registerElectricGearBox(16, LOW_TIERS);
         ELECTRIC_GEAR_BOX_32A = registerElectricGearBox(32, LOW_TIERS);
 
-        MECHANICAL_UPGRADE_BUS = REGISTRATE.machine("mechanical_upgrade_bus", MechanicalUpgradePartMachine::new)
-                .cnLangValue("机械升级仓")
-                .langValue("Mechanical Upgrade Bus")
-                .tooltips(CommonTooltips.MECHANICAL_TIER.translate())
-                .tier(LV)
-                .rotationState(RotationState.ALL)
-                .abilities(CTPPPartAbility.MECHANICAL_UPGRADE)
-                .modelProperty(GTMachineModelProperties.IS_FORMED, false)
-                .overlayTieredHullModel(GTCEu.id("block/machine/part/item_passthrough_hatch"))
-                .register();
+        for (int tier = LV; tier <= HV; tier++) {
+            final int machineTier = tier;
+            MECHANICAL_UPGRADE_BUS[tier] = REGISTRATE
+                    .machine(VN[tier].toLowerCase(Locale.ROOT) + "_mechanical_upgrade_bus",
+                            holder -> new MechanicalUpgradePartMachine(holder, machineTier))
+                    .cnLangValue(VNF[tier] + "机械升级仓")
+                    .langValue(VNF[tier] + " Mechanical Upgrade Bus")
+                    .tooltips(CommonTooltips.MECHANICAL_TIER.translate())
+                    .tier(tier)
+                    .rotationState(RotationState.ALL)
+                    .abilities(CTPPPartAbility.MECHANICAL_UPGRADE)
+                    .modelProperty(GTMachineModelProperties.IS_FORMED, false)
+                    .overlayTieredHullModel(GTCEu.id("block/machine/part/item_passthrough_hatch"))
+                    .register();
+        }
     }
 }

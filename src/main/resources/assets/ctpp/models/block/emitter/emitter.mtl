@@ -1,0 +1,5 @@
+# Made in Blockbench 5.1.6
+newmtl lv
+# Forge's OBJ loader resolves textures from the MTL's map_Kd, not the model
+# JSON "textures" map; a ResourceLocation here is a Forge extension (non-standard).
+map_Kd ctpp:block/emitter/lv

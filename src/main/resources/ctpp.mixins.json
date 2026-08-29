@@ -31,7 +31,8 @@
     "create.ToolboxHandlerClientMixin",
     "create.fix.DeployerApplicationRecipeMixin",
     "create.fix.DeployerApplicationRecipeMixin$StockTickerBlockEntityMixin",
-    "create.fix.SequencedAssemblyCategoryMixin"
+    "create.fix.SequencedAssemblyCategoryMixin",
+    "mc.MinecraftPickBlockMixin"
   ],
   "minVersion": "0.8"
 }
