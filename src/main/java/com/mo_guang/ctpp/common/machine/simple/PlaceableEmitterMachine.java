@@ -31,8 +31,10 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
@@ -40,11 +42,14 @@ import net.minecraft.world.phys.Vec3;
 import com.ctnhlang.CN;
 import com.ctnhlang.EN;
 import com.ctnhlang.Key;
+import com.mo_guang.ctpp.common.beam.BeamChunkIndex;
 import com.mo_guang.ctpp.common.beam.EmitterBeamTracker;
+import com.mo_guang.ctpp.common.beam.IBeamRedirector;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 import tech.vixhentx.mcmod.ctnhlib.langprovider.Lang;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -59,6 +64,12 @@ public class PlaceableEmitterMachine extends TieredEnergyMachine
     public static final int MAX_CONSUMPTION = 4;
     /** Beam damage per voltage tier. Placeholder; adjust freely. */
     public static final float DAMAGE_PER_TIER = 2.0f;
+    /** Max mirror bounces along one beam path. Placeholder; adjust freely. */
+    public static final int MAX_REFLECTIONS = 8;
+    /** Fraction of the remaining voltage kept after each mirror reflection. Placeholder; adjust freely. */
+    public static final double REFLECTION_VOLTAGE_KEEP = 0.95;
+    /** Entity scan granularity along the beam, in blocks (keeps entity AABB lookups tight). */
+    private static final double ENTITY_SCAN_SLICE = 16;
     private static final double MAX_BEND = Math.PI / 2;
 
     /** Angle from the default direction, in radians. Limited to 90 degrees. */
@@ -87,10 +98,9 @@ public class PlaceableEmitterMachine extends TieredEnergyMachine
     private int beamId = -1;
 
     // last state sent to the tracker, to avoid re-sending identical packets
-    private Vec3 sentDirection = Vec3.ZERO;
+    private List<Vec3> sentPoints = List.of();
     private long sentVoltage = -1;
     private long sentAmps = -1;
-    private double sentDistance = -1;
 
     @Nullable
     protected TickableSubscription beamSubs;
@@ -151,43 +161,102 @@ public class PlaceableEmitterMachine extends TieredEnergyMachine
             return;
         }
 
-        Vec3 direction = beamDirection();
-        Vec3 origin = getPos().getCenter().add(direction.scale(0.51));
-        Vec3 rayEnd = origin.add(direction.scale(128));
-        BlockHitResult hit = level.clip(new ClipContext(origin, rayEnd,
-                ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, null));
-        boolean hitBlock = hit.getType() == HitResult.Type.BLOCK;
-        double beamDistance = hitBlock ? Math.max(1, origin.distanceTo(hit.getLocation())) : 128;
-        Vec3 clipEnd = origin.add(direction.scale(beamDistance));
+        // ---- path tracing ----
+        // The beam flies until its decayed voltage reaches 1 (dissipationDistance), bouncing off
+        // mirrors up to MAX_REFLECTIONS times. Collisions are only computed inside loaded chunks
+        // (BeamChunkIndex): the beam passes unloaded space unimpeded and resumes colliding when it
+        // re-enters a loaded chunk.
+        int tier = getTier();
+        double maxRange = dissipationDistance(voltage, tier);
+        double bouncePenalty = bouncePenaltyBlocks(tier);
+        List<Vec3> points = new ArrayList<>(4);
+        Vec3 pos = getPos().getCenter().add(beamDirection().scale(0.51));
+        points.add(pos);
+        Vec3 dir = beamDirection();
+        double traveled = 0; // decay distance: geometric length + per-bounce penalties
+        LivingEntity hitEntity = null;
+        BlockHitResult targetHit = null;
 
-        // the beam also hits entities: nearest living entity along the ray gets damaged
-        net.minecraft.world.entity.LivingEntity hitEntity = null;
-        var searchBox = new net.minecraft.world.phys.AABB(origin, clipEnd).inflate(1.5);
-        for (var entity : level.getEntitiesOfClass(net.minecraft.world.entity.LivingEntity.class, searchBox)) {
-            var clip = entity.getBoundingBox().inflate(0.25).clip(origin, clipEnd);
-            if (clip.isPresent()) {
-                double d = origin.distanceTo(clip.get());
-                if (d < beamDistance) {
-                    beamDistance = d;
-                    hitEntity = entity;
+        for (int bounce = 0; bounce <= MAX_REFLECTIONS; bounce++) {
+            double budget = maxRange - traveled;
+            if (budget <= 0) break;
+
+            // nearest block collision within loaded chunks along this segment
+            BlockHitResult blockHit = null;
+            double blockT = budget;
+            for (double[] run : BeamChunkIndex.loadedRuns(level, pos, dir, budget)) {
+                if (run[0] >= blockT) break; // runs are distance-ordered; the hit is already found
+                Vec3 a = pos.add(dir.scale(run[0]));
+                Vec3 b = pos.add(dir.scale(Math.min(run[1], blockT)));
+                BlockHitResult hit = level.clip(new ClipContext(a, b,
+                        ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, null));
+                if (hit.getType() == HitResult.Type.BLOCK) {
+                    double t = run[0] + a.distanceTo(hit.getLocation());
+                    if (t < blockT) {
+                        blockT = t;
+                        blockHit = hit;
+                    }
                 }
             }
+
+            // nearest living entity along the segment, sliced so the lookup AABB stays tight
+            // (entity lookup uses the entity section storage and never touches unloaded chunks)
+            LivingEntity entityHit = null;
+            double entityT = blockT;
+            for (double s = 0; s < entityT; s += ENTITY_SCAN_SLICE) {
+                Vec3 a = pos.add(dir.scale(s));
+                Vec3 b = pos.add(dir.scale(Math.min(entityT, s + ENTITY_SCAN_SLICE)));
+                var box = new AABB(a, b).inflate(1.5);
+                for (var entity : level.getEntitiesOfClass(LivingEntity.class, box)) {
+                    var clip = entity.getBoundingBox().inflate(0.25).clip(a, b);
+                    if (clip.isPresent()) {
+                        double t = s + a.distanceTo(clip.get());
+                        if (t < entityT) {
+                            entityT = t;
+                            entityHit = entity;
+                        }
+                    }
+                }
+            }
+
+            double segLen = Math.min(entityT, blockT);
+            traveled += segLen;
+            pos = pos.add(dir.scale(segLen));
+            points.add(pos);
+
+            if (entityHit != null) {
+                hitEntity = entityHit;
+                break;
+            }
+            if (blockHit == null) break; // dissipated mid-air
+
+            // a block was hit: mirrors redirect the beam, anything else terminates the path
+            var state = level.getBlockState(blockHit.getBlockPos());
+            Vec3 reflected = state.getBlock() instanceof IBeamRedirector redirector && bounce < MAX_REFLECTIONS ?
+                    redirector.redirect(dir, state) : null;
+            if (reflected == null) {
+                targetHit = blockHit;
+                break;
+            }
+            dir = reflected.normalize();
+            traveled += bouncePenalty;
+            pos = pos.add(dir.scale(1.0E-3)); // step out of the mirror's own collision box
         }
 
         if (hitEntity != null) {
             // burn the emission current; damage scales with voltage tier
             energyContainer.removeEnergy(amps * voltage);
-            hitEntity.hurt(level.damageSources().magic(), DAMAGE_PER_TIER * getTier());
-            updateBeam(level, direction, voltage, amps, beamDistance);
+            hitEntity.hurt(level.damageSources().magic(), DAMAGE_PER_TIER * tier);
+            updateBeam(level, points, voltage, amps);
             return;
         }
 
-        if (hitBlock) {
-            BlockPos target = hit.getBlockPos();
+        if (targetHit != null) {
+            BlockPos target = targetHit.getBlockPos();
             if (!target.equals(getPos())) {
-                Direction side = hit.getDirection();
+                Direction side = targetHit.getDirection();
                 // the beam's voltage decays with travel distance; the target only receives what arrives
-                long effectiveVoltage = Math.max(1, Math.round(voltageAt(voltage, getTier(), beamDistance)));
+                long effectiveVoltage = Math.max(1, Math.round(voltageAt(voltage, tier, traveled)));
                 IEnergyContainer container = GTCapabilityHelper.getEnergyContainer(level, target, side);
                 if (container != null && container.inputsEnergy(side)) {
                     long accepted = container.acceptEnergyFromNetwork(side, effectiveVoltage, amps);
@@ -195,7 +264,7 @@ public class PlaceableEmitterMachine extends TieredEnergyMachine
                         // voltage decay is a real loss in transit: the emitter pays the full input
                         // voltage for every accepted ampere; amperage itself is never lost.
                         energyContainer.removeEnergy(accepted * voltage);
-                        updateBeam(level, direction, voltage, accepted, beamDistance);
+                        updateBeam(level, points, voltage, accepted);
                         return;
                     }
                 }
@@ -204,29 +273,34 @@ public class PlaceableEmitterMachine extends TieredEnergyMachine
 
         // no usable target: always burn the emission current anyway
         energyContainer.removeEnergy(amps * voltage);
-        updateBeam(level, direction, voltage, amps, beamDistance);
+        updateBeam(level, points, voltage, amps);
     }
 
-    private void updateBeam(ServerLevel level, Vec3 direction, long voltage, long amps, double distance) {
+    private void updateBeam(ServerLevel level, List<Vec3> points, long voltage, long amps) {
         if (beamId < 0) beamId = EmitterBeamTracker.newBeamId();
-        distance = Math.max(1, Math.round(distance * 2) / 2.0);
-        if (direction.equals(sentDirection) && voltage == sentVoltage && amps == sentAmps && distance == sentDistance)
-            return;
-        sentDirection = direction;
+        if (voltage == sentVoltage && amps == sentAmps && pointsEqual(sentPoints, points)) return;
+        sentPoints = points;
         sentVoltage = voltage;
         sentAmps = amps;
-        sentDistance = distance;
-        EmitterBeamTracker.setBeam(level, beamId, getPos(), direction, voltage, amps, getTier(), distance);
+        EmitterBeamTracker.setBeam(level, beamId, points, voltage, amps, getTier());
+    }
+
+    private static boolean pointsEqual(List<Vec3> a, List<Vec3> b) {
+        if (a.size() != b.size()) return false;
+        for (int i = 0; i < a.size(); i++) {
+            Vec3 pa = a.get(i), pb = b.get(i);
+            if (pa.x != pb.x || pa.y != pb.y || pa.z != pb.z) return false;
+        }
+        return true;
     }
 
     private void removeBeam(ServerLevel level) {
         if (beamId < 0) return;
         EmitterBeamTracker.removeBeam(level, beamId);
         beamId = -1;
-        sentDirection = Vec3.ZERO;
+        sentPoints = List.of();
         sentVoltage = -1;
         sentAmps = -1;
-        sentDistance = -1;
     }
 
     private void removeBeam() {
@@ -281,17 +355,30 @@ public class PlaceableEmitterMachine extends TieredEnergyMachine
     //////////////////////////////////////
     // ******** Beam appearance **********//
     //////////////////////////////////////
-    /**
-     * Percent voltage loss per block of beam travel. Lower tiers decay much faster (percent-wise)
-     * than higher tiers. Placeholder numbers; tweak freely.
-     */
+    /** Fraction of the remaining voltage lost per block of beam travel. */
     public static double lossPerBlock(int tier) {
-        return 0.5 / Math.pow(2, tier - 1); // LV: 2% / block, halving every tier
+        return 0.5 / Math.pow(2, tier - 1);
     }
 
     /** Effective beam voltage after traveling {@code distance} blocks from {@code baseVoltage}. */
     public static double voltageAt(long baseVoltage, int tier, double distance) {
         return baseVoltage * Math.pow(1 - lossPerBlock(tier), distance);
+    }
+
+    /**
+     * Distance over which the beam's voltage decays to 1 EU and the beam dissolves; there is no
+     * other range limit. Bounces shorten the reach via {@link #bouncePenaltyBlocks}.
+     */
+    public static double dissipationDistance(double baseVoltage, int tier) {
+        return Math.log(baseVoltage) / -Math.log(1 - lossPerBlock(tier));
+    }
+
+    /**
+     * Decay-distance equivalent of one mirror reflection. Because decay is exponential, a fixed
+     * voltage multiplier maps to a fixed extra distance: v * KEEP == decay(d + penalty).
+     */
+    public static double bouncePenaltyBlocks(int tier) {
+        return Math.log(REFLECTION_VOLTAGE_KEEP) / Math.log(1 - lossPerBlock(tier));
     }
 
     /** Continuous spectrum position across GT tier main colors (VCM) for an arbitrary voltage. */
@@ -316,25 +403,35 @@ public class PlaceableEmitterMachine extends TieredEnergyMachine
     //////////////////////////////////////
     /** The vanilla GT emitter item corresponding to a tier; placed emitters drop this, not the machine item. */
     public static ItemStack emitterItem(int tier) {
-        return switch (tier) {
-            case 1 -> GTItems.EMITTER_LV.asStack();
-            case 2 -> GTItems.EMITTER_MV.asStack();
-            case 3 -> GTItems.EMITTER_HV.asStack();
-            case 4 -> GTItems.EMITTER_EV.asStack();
-            case 5 -> GTItems.EMITTER_IV.asStack();
-            case 6 -> GTItems.EMITTER_LuV.asStack();
-            case 7 -> GTItems.EMITTER_ZPM.asStack();
-            case 8 -> GTItems.EMITTER_UV.asStack();
-            default -> ItemStack.EMPTY;
+        var entry = switch (tier) {
+            case 1 -> GTItems.EMITTER_LV;
+            case 2 -> GTItems.EMITTER_MV;
+            case 3 -> GTItems.EMITTER_HV;
+            case 4 -> GTItems.EMITTER_EV;
+            case 5 -> GTItems.EMITTER_IV;
+            case 6 -> GTItems.EMITTER_LuV;
+            case 7 -> GTItems.EMITTER_ZPM;
+            case 8 -> GTItems.EMITTER_UV;
+            // UHV+ component items are null when GTCEu's high-tier content is disabled
+            case 9 -> GTItems.EMITTER_UHV;
+            case 10 -> GTItems.EMITTER_UEV;
+            case 11 -> GTItems.EMITTER_UIV;
+            case 12 -> GTItems.EMITTER_UXV;
+            case 13 -> GTItems.EMITTER_OpV;
+            default -> null;
         };
+        return entry != null ? entry.asStack() : ItemStack.EMPTY;
     }
 
     @Override
     public void onDrops(List<ItemStack> drops) {
-        // breaking a placed emitter returns the vanilla GT emitter item used to place it
-        drops.clear();
+        // breaking a placed emitter returns the vanilla GT emitter item used to place it;
+        // without one (high-tier content disabled) keep the machine's own default drop
         var stack = emitterItem(getTier());
-        if (!stack.isEmpty()) drops.add(stack);
+        if (!stack.isEmpty()) {
+            drops.clear();
+            drops.add(stack);
+        }
     }
 
     //////////////////////////////////////

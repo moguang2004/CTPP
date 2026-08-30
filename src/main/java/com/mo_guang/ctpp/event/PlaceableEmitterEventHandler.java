@@ -7,6 +7,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -17,12 +18,26 @@ import com.mo_guang.ctpp.registry.CTPPMachines;
 @Mod.EventBusSubscriber(modid = CTPP.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class PlaceableEmitterEventHandler {
 
-    @SubscribeEvent
+    // LOW: let other mods' right-click handlers run (and possibly consume the click) first
+    @SubscribeEvent(priority = EventPriority.LOW)
     public static void onRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
         ItemStack stack = event.getItemStack();
         int tier = tierFor(stack.getItem());
-        if (tier < 0 || event.getFace() == null) return;
+        if (tier < 0 || event.getFace() == null || event.getEntity() == null) return;
         var level = event.getLevel();
+        var player = event.getEntity();
+        // vanilla placement semantics: the clicked block's own interaction (machine UIs, buttons,
+        // chests...) wins unless the player is sneaking; the emitter is only placed when the block
+        // didn't handle the click. The event is canceled either way, so vanilla never re-runs use().
+        if (!player.isShiftKeyDown()) {
+            var blockResult = level.getBlockState(event.getPos()).use(level, player, event.getHand(),
+                    event.getHitVec());
+            if (blockResult.consumesAction()) {
+                event.setCanceled(true);
+                event.setCancellationResult(blockResult);
+                return;
+            }
+        }
         var definition = CTPPMachines.PLACEABLE_EMITTER[tier];
         if (level.isClientSide()) {
             event.setCanceled(true);
@@ -32,9 +47,9 @@ public class PlaceableEmitterEventHandler {
         // delegate to the machine item's own placement logic so the machine is initialized correctly
         var machineStack = definition.asStack();
         var result = machineStack.getItem().useOn(
-                new UseOnContext(level, event.getEntity(), event.getHand(), machineStack, event.getHitVec()));
+                new UseOnContext(level, player, event.getHand(), machineStack, event.getHitVec()));
         if (!result.consumesAction()) return;
-        if (event.getEntity() == null || !event.getEntity().getAbilities().instabuild) stack.shrink(1);
+        if (!player.getAbilities().instabuild) stack.shrink(1);
         event.setCanceled(true);
         event.setCancellationResult(result);
     }
@@ -48,6 +63,12 @@ public class PlaceableEmitterEventHandler {
         if (item == GTItems.EMITTER_LuV.asItem()) return 6;
         if (item == GTItems.EMITTER_ZPM.asItem()) return 7;
         if (item == GTItems.EMITTER_UV.asItem()) return 8;
+        // UHV+ emitter items are null when GTCEu's high-tier content is disabled
+        if (GTItems.EMITTER_UHV != null && item == GTItems.EMITTER_UHV.asItem()) return 9;
+        if (GTItems.EMITTER_UEV != null && item == GTItems.EMITTER_UEV.asItem()) return 10;
+        if (GTItems.EMITTER_UIV != null && item == GTItems.EMITTER_UIV.asItem()) return 11;
+        if (GTItems.EMITTER_UXV != null && item == GTItems.EMITTER_UXV.asItem()) return 12;
+        if (GTItems.EMITTER_OpV != null && item == GTItems.EMITTER_OpV.asItem()) return 13;
         return -1;
     }
 }

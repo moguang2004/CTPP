@@ -7,11 +7,14 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 
 import com.mo_guang.ctpp.client.renderer.EmitterBeamRenderer;
 import com.mo_guang.ctpp.common.beam.EmitterBeam;
+
+import java.util.ArrayList;
 
 /** S2C: register or update a global emitter beam on the client. */
 public class SetEmitterBeamPacket implements GTNetwork.INetPacket {
@@ -30,23 +33,27 @@ public class SetEmitterBeamPacket implements GTNetwork.INetPacket {
         id = buffer.readVarInt();
         ResourceLocation dimLoc = buffer.readResourceLocation();
         dim = ResourceKey.create(Registries.DIMENSION, dimLoc);
-        beam = new EmitterBeam(id, buffer.readBlockPos(),
-                new net.minecraft.world.phys.Vec3(buffer.readDouble(), buffer.readDouble(), buffer.readDouble()),
-                buffer.readVarLong(), buffer.readVarLong(), buffer.readVarInt(), buffer.readDouble());
+        int count = buffer.readVarInt();
+        var points = new ArrayList<Vec3>(count);
+        for (int i = 0; i < count; i++) {
+            points.add(new Vec3(buffer.readDouble(), buffer.readDouble(), buffer.readDouble()));
+        }
+        beam = new EmitterBeam(id, points, buffer.readVarLong(), buffer.readVarLong(), buffer.readVarInt());
     }
 
     @Override
     public void encode(FriendlyByteBuf buffer) {
         buffer.writeVarInt(id);
         buffer.writeResourceLocation(dim.location());
-        buffer.writeBlockPos(beam.src());
-        buffer.writeDouble(beam.dir().x);
-        buffer.writeDouble(beam.dir().y);
-        buffer.writeDouble(beam.dir().z);
+        buffer.writeVarInt(beam.points().size());
+        for (Vec3 p : beam.points()) {
+            buffer.writeDouble(p.x);
+            buffer.writeDouble(p.y);
+            buffer.writeDouble(p.z);
+        }
         buffer.writeVarLong(beam.voltage());
         buffer.writeVarLong(beam.amps());
         buffer.writeVarInt(beam.tier());
-        buffer.writeDouble(beam.distance());
     }
 
     @Override

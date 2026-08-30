@@ -152,7 +152,10 @@ public class CTPPMachines {
 
     public static void init() {
         PLACEABLE_EMITTER = new MachineDefinition[GTValues.TIER_COUNT];
-        for (int tier : new int[] { LV, MV, HV, EV, IV, LuV, ZPM, UV }) {
+        // machine items are unobtainable intermediates: placement goes through the vanilla GT
+        // emitter items, so keep the machine items out of the creative tab (EMI: CTPPEmiPlugin)
+        REGISTRATE.creativeModeTab(() -> null);
+        for (int tier : new int[] { LV, MV, HV, EV, IV, LuV, ZPM, UV, UHV, UEV, UIV, UXV, OpV }) {
             PLACEABLE_EMITTER[tier] = REGISTRATE
                     .machine(GTValues.VN[tier].toLowerCase(Locale.ROOT) + "_placeable_emitter",
                             holder -> new com.mo_guang.ctpp.common.machine.simple.PlaceableEmitterMachine(holder,
@@ -175,6 +178,7 @@ public class CTPPMachines {
                     })
                     .register();
         }
+        REGISTRATE.creativeModeTab(() -> MACHINE);
         KINETIC_INPUT_BOX = registerKineticTieredMachines(
                 "kinetic_input_box",
                 "应力输入箱",

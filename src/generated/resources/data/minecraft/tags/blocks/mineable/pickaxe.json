@@ -2,6 +2,7 @@
   "values": [
     "ctpp:steel_casing",
     "ctpp:heavy_machinery_casing",
+    "ctpp:mirror",
     "ctpp:generator_coil",
     "ctpp:ulv_voltage_terminal",
     "ctpp:lv_voltage_terminal",

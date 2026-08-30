@@ -2,7 +2,6 @@ package com.mo_guang.ctpp.common.beam;
 
 import com.gregtechceu.gtceu.common.network.GTNetwork;
 
-import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -19,12 +18,15 @@ import com.mo_guang.ctpp.network.packet.SetEmitterBeamPacket;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 /**
  * Server-side global beam tracking: beams live independently from their emitter's visibility.
- * Players watching any chunk the beam passes through receive beam data; updates are re-sent on change.
+ * Players watching any loaded chunk the beam passes through receive beam data; updates are
+ * re-sent on change. Watcher matching is pure ray math ({@link BeamChunkIndex}), so arbitrarily
+ * long beams cost the same as short ones.
  */
 @Mod.EventBusSubscriber(modid = CTPP.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public final class EmitterBeamTracker {
@@ -40,13 +42,13 @@ public final class EmitterBeamTracker {
     }
 
     /** Insert or update a beam; viewers of covered chunks get the new state. */
-    public static void setBeam(ServerLevel level, int id, BlockPos src, Vec3 dir, long voltage, long amps, int tier,
-                               double distance) {
-        var beam = new EmitterBeam(id, src, dir, voltage, amps, tier, distance);
+    public static void setBeam(ServerLevel level, int id, List<Vec3> points, long voltage, long amps, int tier) {
+        var beam = new EmitterBeam(id, points, voltage, amps, tier);
         BEAMS.computeIfAbsent(level.dimension(), d -> new HashMap<>()).put(id, beam);
         var packet = new SetEmitterBeamPacket(id, level.dimension(), beam);
+        Set<ChunkPos> covered = BeamChunkIndex.coveredLoadedChunks(level, beam);
         for (var player : level.players()) {
-            if (watchesAny(player, beam)) {
+            if (watchesAnyOf(player, covered)) {
                 GTNetwork.sendToPlayer(player, packet);
             }
         }
@@ -58,33 +60,21 @@ public final class EmitterBeamTracker {
         var beam = beams.remove(id);
         if (beam == null) return;
         var packet = new DelEmitterBeamPacket(id, level.dimension());
+        Set<ChunkPos> covered = BeamChunkIndex.coveredLoadedChunks(level, beam);
         for (var player : level.players()) {
-            if (watchesAny(player, beam)) {
+            if (watchesAnyOf(player, covered)) {
                 GTNetwork.sendToPlayer(player, packet);
             }
         }
         if (beams.isEmpty()) BEAMS.remove(level.dimension());
     }
 
-    private static Set<ChunkPos> coveredChunks(EmitterBeam beam) {
-        Set<ChunkPos> chunks = new HashSet<>();
-        Vec3 from = beam.origin();
-        Vec3 to = beam.end();
-        double length = beam.distance();
-        int steps = Math.max(1, (int) Math.ceil(length / 8));
-        for (int i = 0; i <= steps; i++) {
-            Vec3 p = from.lerp(to, i / (double) steps);
-            chunks.add(new ChunkPos(BlockPos.containing(p)));
-        }
-        return chunks;
-    }
-
-    private static boolean watchesAny(ServerPlayer player, EmitterBeam beam) {
-        var chunks = WATCHERS.get(player.level().dimension());
-        if (chunks == null) return false;
-        var watched = chunks.get(player);
+    private static boolean watchesAnyOf(ServerPlayer player, Set<ChunkPos> covered) {
+        var dimWatchers = WATCHERS.get(player.level().dimension());
+        if (dimWatchers == null) return false;
+        var watched = dimWatchers.get(player);
         if (watched == null) return false;
-        for (ChunkPos pos : coveredChunks(beam)) {
+        for (ChunkPos pos : covered) {
             if (watched.contains(pos)) return true;
         }
         return false;
@@ -100,7 +90,7 @@ public final class EmitterBeamTracker {
         var beams = BEAMS.get(level.dimension());
         if (beams == null) return;
         for (var beam : beams.values()) {
-            if (coveredChunks(beam).contains(event.getPos())) {
+            if (BeamChunkIndex.chunkCovered(beam, event.getPos())) {
                 GTNetwork.sendToPlayer(player,
                         new SetEmitterBeamPacket(beam.id(), level.dimension(), beam));
             }
@@ -119,7 +109,8 @@ public final class EmitterBeamTracker {
         var beams = BEAMS.get(level.dimension());
         if (beams == null) return;
         for (var beam : beams.values()) {
-            if (coveredChunks(beam).contains(event.getPos()) && !watchesAny(player, beam)) {
+            if (BeamChunkIndex.chunkCovered(beam, event.getPos()) &&
+                    !watchesAnyOf(player, BeamChunkIndex.coveredLoadedChunks(level, beam))) {
                 GTNetwork.sendToPlayer(player,
                         new DelEmitterBeamPacket(beam.id(), level.dimension()));
             }

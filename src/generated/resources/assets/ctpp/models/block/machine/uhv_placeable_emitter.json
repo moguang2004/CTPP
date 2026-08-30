@@ -1,0 +1,10 @@
+{
+  "parent": "minecraft:block/block",
+  "loader": "gtceu:machine",
+  "machine": "ctpp:uhv_placeable_emitter",
+  "variants": {
+    "": {
+      "model": "ctpp:block/emitter/emitter"
+    }
+  }
+}

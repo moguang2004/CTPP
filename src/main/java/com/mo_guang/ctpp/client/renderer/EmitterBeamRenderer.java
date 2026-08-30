@@ -15,6 +15,7 @@ import com.mo_guang.ctpp.common.beam.EmitterBeam;
 import com.mo_guang.ctpp.common.machine.simple.PlaceableEmitterMachine;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -28,7 +29,6 @@ public final class EmitterBeamRenderer {
     private static final Map<Integer, ResourceKey<Level>> BEAM_DIMS = new HashMap<>();
     private static final int SIDES = 8;
     private static final double TAU = Math.PI * 2;
-    private static final double MAX_LENGTH = 128;
     /** Beam radius with no amps flowing and the extra radius added per amp. Placeholder; tweak freely. */
     private static final float BASE_RADIUS = 0.04f;
     private static final float RADIUS_PER_AMP = 0.03f;
@@ -66,7 +66,7 @@ public final class EmitterBeamRenderer {
         for (var entry : BEAMS.entrySet()) {
             EmitterBeam beam = entry.getValue();
             if (!mc.level.dimension().equals(BEAM_DIMS.get(entry.getKey()))) continue;
-            renderBeam(body, matrix, beam.origin().subtract(cam), beam.end().subtract(cam), beam, false);
+            renderBeam(body, matrix, cameraRelative(beam.points(), cam), beam, false);
         }
         buffers.endBatch(BEAM_BODY_TYPE);
 
@@ -75,61 +75,87 @@ public final class EmitterBeamRenderer {
         for (var entry : BEAMS.entrySet()) {
             EmitterBeam beam = entry.getValue();
             if (!mc.level.dimension().equals(BEAM_DIMS.get(entry.getKey()))) continue;
-            renderBeam(glow, matrix, beam.origin().subtract(cam), beam.end().subtract(cam), beam, true);
+            renderBeam(glow, matrix, cameraRelative(beam.points(), cam), beam, true);
         }
         buffers.endBatch(RenderType.lightning());
     }
 
-    private static void renderBeam(com.mojang.blaze3d.vertex.VertexConsumer consumer, org.joml.Matrix4f matrix,
-                                   Vec3 origin, Vec3 end, EmitterBeam beam, boolean glow) {
-        Vec3 delta = end.subtract(origin);
-        double length = delta.length();
-        if (length < 1.0E-8) return;
-        Vec3 dir = delta.normalize();
-        Vec3 side = dir.cross(new Vec3(0, 1, 0));
-        if (side.lengthSqr() < 1.0E-8) side = dir.cross(new Vec3(1, 0, 0));
-        side = side.normalize();
-        Vec3 up = side.cross(dir).normalize();
+    private static List<Vec3> cameraRelative(List<Vec3> points, Vec3 cam) {
+        return points.stream().map(p -> p.subtract(cam)).toList();
+    }
 
+    private static void renderBeam(com.mojang.blaze3d.vertex.VertexConsumer consumer, org.joml.Matrix4f matrix,
+                                   List<Vec3> points, EmitterBeam beam, boolean glow) {
         // thickness scales with the emission current (1..MAX_CONSUMPTION, set in the emitter UI)
         float radius = (BASE_RADIUS + RADIUS_PER_AMP *
                 Math.min(beam.amps(), PlaceableEmitterMachine.MAX_CONSUMPTION)) * (glow ? GLOW_RADIUS_SCALE : 1);
         float alphaScale = glow ? GLOW_ALPHA_SCALE : 1;
 
-        // Simulated-style tip treatment: the end flares outward slightly and its alpha fades
-        // with how much of the max range is used, so the beam dissolves instead of cutting off.
-        float lengthFrac = (float) Math.min(1, length / MAX_LENGTH);
-        float flare = 1f + lengthFrac / 10f;
-
-        // Band rendering: the remaining voltage is recomputed as the beam propagates;
-        // every time it crosses a tier boundary the beam switches to that tier's color,
-        // so one beam can show e.g. orange (HV) -> aqua (MV) -> gray (LV) simultaneously.
-        double loss = PlaceableEmitterMachine.lossPerBlock(beam.tier());
+        int tier = beam.tier();
+        double loss = PlaceableEmitterMachine.lossPerBlock(tier);
         double logDecay = Math.log(1 - loss);
         double v0 = beam.voltage();
-        double d0 = 0;
-        while (d0 < length - 1.0E-6) {
-            double v = v0 * Math.exp(logDecay * d0);
-            int bandColorStart = PlaceableEmitterMachine.colorForVoltage(v);
-            int tierIdx = tierIndexOf(v);
-            double d1 = length;
-            if (tierIdx > 0 && logDecay < 0) {
-                double threshold = com.gregtechceu.gtceu.api.GTValues.V[tierIdx - 1];
-                if (threshold < v) {
-                    // distance from origin where the voltage hits the next lower tier boundary
-                    d1 = Math.min(length, Math.log(threshold / v0) / logDecay);
-                }
+        double dMax = PlaceableEmitterMachine.dissipationDistance(v0, tier);
+        double bouncePenalty = PlaceableEmitterMachine.bouncePenaltyBlocks(tier);
+
+        // tip treatment: the end flares outward slightly and its alpha fades with how much of the
+        // dissipation range is used up, so the beam dissolves instead of cutting off. Every
+        // interior vertex is a mirror bounce, which costs decay budget just like on the server.
+        double totalDecay = 0;
+        for (int i = 0; i + 1 < points.size(); i++) {
+            totalDecay += points.get(i + 1).subtract(points.get(i)).length();
+        }
+        totalDecay += Math.max(0, points.size() - 2) * bouncePenalty;
+        float lengthFrac = (float) Math.min(1, totalDecay / dMax);
+        float flare = 1f + lengthFrac / 10f;
+
+        // Band rendering: the remaining voltage is recomputed as the beam propagates along the
+        // decay distance (geometric length + bounce penalties, accumulated across segments);
+        // every time it crosses a tier boundary the beam switches to that tier's color,
+        // so one beam can show e.g. orange (HV) -> aqua (MV) -> gray (LV) simultaneously.
+        double acc = 0; // decay distance at the start of the current segment
+        for (int s = 0; s + 1 < points.size(); s++) {
+            Vec3 origin = points.get(s);
+            Vec3 delta = points.get(s + 1).subtract(origin);
+            double length = delta.length();
+            if (length < 1.0E-8) {
+                acc += bouncePenalty;
+                continue;
             }
-            if (d1 <= d0 + 1.0E-6) d1 = d0 + 1; // keep making progress
-            // each band gradients from its own color into the next band's color
-            int bandColorEnd = PlaceableEmitterMachine.colorForVoltage(v0 * Math.exp(logDecay * d1));
-            boolean isTip = d1 >= length - 1.0E-6;
-            float bandFlare = isTip ? flare : 1f;
-            float bandAlphaStart = 0.8f;
-            float bandAlphaEnd = isTip ? 0.8f * (1 - lengthFrac) : 0.8f;
-            renderBand(consumer, matrix, origin, dir, side, up, radius, d0, d1, bandColorStart, bandColorEnd,
-                    bandAlphaStart * alphaScale, bandAlphaEnd * alphaScale, bandFlare, glow);
-            d0 = d1;
+            Vec3 dir = delta.normalize();
+            Vec3 side = dir.cross(new Vec3(0, 1, 0));
+            if (side.lengthSqr() < 1.0E-8) side = dir.cross(new Vec3(1, 0, 0));
+            side = side.normalize();
+            Vec3 up = side.cross(dir).normalize();
+            boolean isLastSegment = s + 2 == points.size();
+
+            double d0 = 0;
+            while (d0 < length - 1.0E-6) {
+                double v = v0 * Math.exp(logDecay * (acc + d0));
+                int bandColorStart = PlaceableEmitterMachine.colorForVoltage(v);
+                int tierIdx = tierIndexOf(v);
+                double d1 = length;
+                if (tierIdx > 0 && logDecay < 0) {
+                    double threshold = com.gregtechceu.gtceu.api.GTValues.V[tierIdx - 1];
+                    if (threshold < v) {
+                        // decay distance from the beam origin where the voltage crosses the next
+                        // lower tier boundary, relative to this segment's start
+                        d1 = Math.min(length, Math.log(threshold / v0) / logDecay - acc);
+                    }
+                }
+                if (d1 <= d0 + 1.0E-6) d1 = d0 + 1; // keep making progress
+                // each band gradients from its own color into the next band's color
+                int bandColorEnd = PlaceableEmitterMachine.colorForVoltage(v0 * Math.exp(logDecay * (acc + d1)));
+                boolean isTip = isLastSegment && d1 >= length - 1.0E-6;
+                float bandFlare = isTip ? flare : 1f;
+                float bandAlphaStart = 0.8f;
+                float bandAlphaEnd = isTip ? 0.8f * (1 - lengthFrac) : 0.8f;
+                renderBand(consumer, matrix, origin, dir, side, up, radius, d0, d1, bandColorStart,
+                        bandColorEnd, bandAlphaStart * alphaScale, bandAlphaEnd * alphaScale, bandFlare, glow);
+                d0 = d1;
+            }
+            acc += length;
+            if (!isLastSegment) acc += bouncePenalty;
         }
     }
 

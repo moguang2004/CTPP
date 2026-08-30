@@ -22,9 +22,14 @@ public final class PlaceableEmitterRecipes {
     public static void init(Consumer<FinishedRecipe> provider) {
         var emitters = new ItemEntry[] {
                 GTItems.EMITTER_LV, GTItems.EMITTER_MV, GTItems.EMITTER_HV, GTItems.EMITTER_EV,
-                GTItems.EMITTER_IV, GTItems.EMITTER_LuV, GTItems.EMITTER_ZPM, GTItems.EMITTER_UV };
-        String[] tiers = { "lv", "mv", "hv", "ev", "iv", "luv", "zpm", "uv" };
+                GTItems.EMITTER_IV, GTItems.EMITTER_LuV, GTItems.EMITTER_ZPM, GTItems.EMITTER_UV,
+                GTItems.EMITTER_UHV, GTItems.EMITTER_UEV, GTItems.EMITTER_UIV, GTItems.EMITTER_UXV,
+                GTItems.EMITTER_OpV };
+        String[] tiers = { "lv", "mv", "hv", "ev", "iv", "luv", "zpm", "uv",
+                "uhv", "uev", "uiv", "uxv", "opv" };
         for (int tier = 0; tier < tiers.length; tier++) {
+            // UHV+ component items are null when GTCEu's high-tier content is disabled
+            if (emitters[tier] == null) continue;
             VanillaRecipeHelper.addShapedRecipe(provider, CTPP.id("placeable_emitter_" + tiers[tier]),
                     CTPPMachines.PLACEABLE_EMITTER[tier + 1].asStack(),
                     " A ", "BCB", "D D", 'A', emitters[tier].asStack(), 'B',
