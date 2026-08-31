@@ -141,7 +141,7 @@ public class CTPPMultiblockMachines {
                             .where('D', CTPPMachines.KINETIC_INPUT_BOX[GTValues.LV], Direction.SOUTH)
                             .where('E', GTMachines.ITEM_IMPORT_BUS[GTValues.LV], Direction.NORTH)
                             .where('F', GTMachines.ITEM_EXPORT_BUS[GTValues.LV], Direction.NORTH)
-                            .where('G', CTPPMachines.MECHANICAL_UPGRADE_BUS, Direction.NORTH)
+                            .where('G', CTPPMachines.MECHANICAL_UPGRADE_BUS[GTValues.LV], Direction.NORTH)
                             .where('@', CTPPMultiblockMachines.SMASHING_FACTORY, Direction.NORTH)
                             .build())
                     .workableCasingModel(CTPP.id("block/create/andesite_casing"),

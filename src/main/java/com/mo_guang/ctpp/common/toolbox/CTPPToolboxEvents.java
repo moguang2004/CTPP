@@ -7,12 +7,17 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 import com.mo_guang.ctpp.CTPP;
+import com.mo_guang.ctpp.common.terminal.TerminalNetwork;
 
 @Mod.EventBusSubscriber(modid = CTPP.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public final class CTPPToolboxEvents {
 
     @SubscribeEvent
     public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
+        if (event.phase == TickEvent.Phase.END && event.player instanceof ServerPlayer player &&
+                player.tickCount % 5 == 0) {
+            TerminalNetwork.tickPlayer(player);
+        }
         if (event.phase != TickEvent.Phase.END || event.player.level().isClientSide ||
                 !(event.player instanceof ServerPlayer player) || player.tickCount % 5 != 0)
             return;
@@ -30,6 +35,11 @@ public final class CTPPToolboxEvents {
     @SubscribeEvent
     public static void onLogin(PlayerEvent.PlayerLoggedInEvent event) {
         if (event.getEntity() instanceof ServerPlayer player) CTPPToolboxBindings.sync(player);
+    }
+
+    @SubscribeEvent
+    public static void onLogout(PlayerEvent.PlayerLoggedOutEvent event) {
+        TerminalNetwork.clearSelection(event.getEntity().getUUID());
     }
 
     @SubscribeEvent

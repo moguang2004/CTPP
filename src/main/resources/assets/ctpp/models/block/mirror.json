@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "particle": "ctpp:block/mirror_side",
+    "down": "ctpp:block/mirror_side",
+    "up": "ctpp:block/mirror_side",
+    "north": "ctpp:block/mirror_front",
+    "south": "ctpp:block/mirror_side",
+    "east": "ctpp:block/mirror_side",
+    "west": "ctpp:block/mirror_side"
+  }
+}

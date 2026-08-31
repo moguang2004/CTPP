@@ -1,5 +1,6 @@
 package com.mo_guang.ctpp.common.condition;
 
+import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
@@ -13,6 +14,7 @@ import com.ctnhlang.Key;
 import com.ctnhlang.Prefix;
 import com.mo_guang.ctpp.api.CTPPRecipeConditions;
 import com.mo_guang.ctpp.common.machine.multiblock.KineticMultiblockMachine;
+import com.mo_guang.ctpp.common.machine.multiblock.part.MechanicalUpgradePartMachine;
 import com.mo_guang.ctpp.util.CTPPValues;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -61,7 +63,13 @@ public class MechanicalTierCondition extends RecipeCondition<MechanicalTierCondi
     @Override
     public boolean testCondition(@NotNull GTRecipe gtRecipe, @NotNull RecipeLogic recipeLogic) {
         if (recipeLogic.machine instanceof KineticMultiblockMachine kineticMultiblockMachine) {
-            return kineticMultiblockMachine.tier >= tier;
+            if (tier <= 0) return true;
+            for (IMultiPart part : kineticMultiblockMachine.getParts()) {
+                if (part instanceof MechanicalUpgradePartMachine upgradePartMachine &&
+                        upgradePartMachine.getMechanicalTier() >= tier) {
+                    return true;
+                }
+            }
         }
         return false;
     }

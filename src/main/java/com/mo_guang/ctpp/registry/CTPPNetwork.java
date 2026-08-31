@@ -4,12 +4,17 @@ import com.gregtechceu.gtceu.common.network.GTNetwork;
 
 import net.minecraftforge.network.NetworkDirection;
 
+import com.mo_guang.ctpp.network.packet.CTPPTerminalCancelWireSelectionPacket;
+import com.mo_guang.ctpp.network.packet.CTPPTerminalWireSelectionPacket;
 import com.mo_guang.ctpp.network.packet.CTPPToolboxActionPacket;
 import com.mo_guang.ctpp.network.packet.CTPPToolboxBindingsPacket;
 import com.mo_guang.ctpp.network.packet.CTPPToolboxMenuFiltersPacket;
 import com.mo_guang.ctpp.network.packet.CTPPToolboxOpenNearestPacket;
 import com.mo_guang.ctpp.network.packet.CTPPToolboxSnapshotPacket;
 import com.mo_guang.ctpp.network.packet.CTPPToolboxSnapshotRequestPacket;
+import com.mo_guang.ctpp.network.packet.DelEmitterBeamPacket;
+import com.mo_guang.ctpp.network.packet.PickEmitterPacket;
+import com.mo_guang.ctpp.network.packet.SetEmitterBeamPacket;
 
 public final class CTPPNetwork {
 
@@ -28,5 +33,14 @@ public final class CTPPNetwork {
                 NetworkDirection.PLAY_TO_CLIENT);
         GTNetwork.register(CTPPToolboxMenuFiltersPacket.class, CTPPToolboxMenuFiltersPacket::new,
                 NetworkDirection.PLAY_TO_CLIENT);
+        GTNetwork.register(CTPPTerminalWireSelectionPacket.class, CTPPTerminalWireSelectionPacket::new,
+                NetworkDirection.PLAY_TO_CLIENT);
+        GTNetwork.register(CTPPTerminalCancelWireSelectionPacket.class,
+                CTPPTerminalCancelWireSelectionPacket::new, NetworkDirection.PLAY_TO_SERVER);
+        GTNetwork.register(SetEmitterBeamPacket.class, SetEmitterBeamPacket::new,
+                NetworkDirection.PLAY_TO_CLIENT);
+        GTNetwork.register(DelEmitterBeamPacket.class, DelEmitterBeamPacket::new,
+                NetworkDirection.PLAY_TO_CLIENT);
+        GTNetwork.register(PickEmitterPacket.class, PickEmitterPacket::new, NetworkDirection.PLAY_TO_SERVER);
     }
 }

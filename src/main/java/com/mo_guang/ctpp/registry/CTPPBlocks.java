@@ -1,5 +1,6 @@
 package com.mo_guang.ctpp.registry;
 
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 
 import net.minecraft.client.renderer.RenderType;
@@ -10,10 +11,13 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraftforge.client.model.generators.ConfiguredModel;
 
 import com.mo_guang.ctpp.CTPP;
 import com.mo_guang.ctpp.common.block.CTPPToolboxBlock;
 import com.mo_guang.ctpp.common.block.GeneratorCoilBlock;
+import com.mo_guang.ctpp.common.block.MirrorBlock;
+import com.mo_guang.ctpp.common.block.VoltageTerminalBlock;
 import com.mo_guang.ctpp.common.item.CTPPToolboxItem;
 import com.simibubi.create.foundation.data.BlockStateGen;
 import com.simibubi.create.foundation.data.ModelGen;
@@ -38,6 +42,35 @@ public class CTPPBlocks {
             CTPP.id("block/casings/steel_casing"));
     public static BlockEntry<Block> HEAVY_MACHINERY_CASING = createCasingBlock("heavy_machinery_casing",
             "重型钢机壳", CTPP.id("block/casings/heavy_machinery_casing"));
+
+    public static final BlockEntry<MirrorBlock> MIRROR = REGISTRATE
+            .block("mirror", MirrorBlock::new)
+            .cnlang("反射镜")
+            .lang("Mirror")
+            .initialProperties(() -> Blocks.IRON_BLOCK)
+            .properties(p -> p.isValidSpawn((state, level, pos, ent) -> false))
+            .blockstate((ctx, prov) -> {
+                var model = prov.models().getExistingFile(CTPP.id("block/mirror"));
+                prov.getVariantBuilder(ctx.getEntry()).forAllStates(state -> {
+                    // the model's mirror face is the north face; rotate it to the state facing
+                    int xRot = switch (state.getValue(MirrorBlock.FACING)) {
+                        case DOWN -> 90;
+                        case UP -> 270;
+                        default -> 0;
+                    };
+                    int yRot = switch (state.getValue(MirrorBlock.FACING)) {
+                        case EAST -> 90;
+                        case SOUTH -> 180;
+                        case WEST -> 270;
+                        default -> 0;
+                    };
+                    return ConfiguredModel.builder().modelFile(model)
+                            .rotationX(xRot).rotationY(yRot).build();
+                });
+            })
+            .tag(BlockTags.MINEABLE_WITH_PICKAXE, CustomTags.MINEABLE_WITH_WRENCH)
+            .simpleItem()
+            .register();
 
     public static BlockEntry<GeneratorCoilBlock> GENERATOR_COIL = REGISTRATE
             .block("generator_coil", GeneratorCoilBlock::new)
@@ -78,6 +111,28 @@ public class CTPPBlocks {
 
     private static String capitalize(String value) {
         return Character.toUpperCase(value.charAt(0)) + value.substring(1);
+    }
+
+    public static BlockEntry<VoltageTerminalBlock>[] VOLTAGE_TERMINALS = new BlockEntry[10];
+
+    static {
+        for (int tier : GTValues.tiersBetween(GTValues.ULV, GTValues.UHV)) {
+            final int terminalTier = tier;
+            String tierName = GTValues.VN[tier].toLowerCase();
+            VOLTAGE_TERMINALS[tier] = REGISTRATE
+                    .block(tierName + "_voltage_terminal",
+                            properties -> new VoltageTerminalBlock(properties, terminalTier))
+                    .cnlang(CTNHValues.VNC[tier] + "接线柱")
+                    .lang(GTValues.VOLTAGE_NAMES[tier] + " Terminal")
+                    .initialProperties(() -> Blocks.IRON_BLOCK)
+                    .properties(p -> p.isValidSpawn((state, level, pos, ent) -> false).noOcclusion())
+                    .blockstate((ctx, prov) -> prov.directionalBlock(ctx.getEntry(),
+                            prov.models().withExistingParent(ctx.getName(), CTPP.id("block/voltage_coil"))
+                                    .texture("texture", CTPP.id("block/voltage_coil/" + tierName))))
+                    .tag(BlockTags.MINEABLE_WITH_PICKAXE, CustomTags.MINEABLE_WITH_WRENCH)
+                    .simpleItem()
+                    .register();
+        }
     }
 
     public static BlockEntry<Block> createCasingBlock(String name, String cnName, ResourceLocation texture) {

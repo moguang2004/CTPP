@@ -1,7 +1,7 @@
 {
   "parent": "minecraft:block/block",
   "loader": "gtceu:machine",
-  "machine": "ctpp:mechanical_upgrade_bus",
+  "machine": "ctpp:hv_mechanical_upgrade_bus",
   "replaceable_textures": [
     "bottom",
     "top",
@@ -12,9 +12,9 @@
       "model": {
         "parent": "gtceu:block/machine/part/item_passthrough_hatch",
         "textures": {
-          "bottom": "gtceu:block/casings/voltage/lv/bottom",
-          "side": "gtceu:block/casings/voltage/lv/side",
-          "top": "gtceu:block/casings/voltage/lv/top"
+          "bottom": "gtceu:block/casings/voltage/hv/bottom",
+          "side": "gtceu:block/casings/voltage/hv/side",
+          "top": "gtceu:block/casings/voltage/hv/top"
         }
       }
     },
@@ -22,9 +22,9 @@
       "model": {
         "parent": "gtceu:block/machine/part/item_passthrough_hatch",
         "textures": {
-          "bottom": "gtceu:block/casings/voltage/lv/bottom",
-          "side": "gtceu:block/casings/voltage/lv/side",
-          "top": "gtceu:block/casings/voltage/lv/top"
+          "bottom": "gtceu:block/casings/voltage/hv/bottom",
+          "side": "gtceu:block/casings/voltage/hv/side",
+          "top": "gtceu:block/casings/voltage/hv/top"
         }
       }
     }
