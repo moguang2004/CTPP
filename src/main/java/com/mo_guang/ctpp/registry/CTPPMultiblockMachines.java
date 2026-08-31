@@ -52,12 +52,14 @@ public class CTPPMultiblockMachines {
 
     @CN({ "能量守恒", "应力转化EU的基础效率为128：1", "需要至少512su以启动机器",
             "线圈等级每升高一级，总效率提高§a10%§r（初始为90%）", "同时更高级的磁铁意味着更高的能量转化效率",
-            "发电上限受到机械等级的影响，机械等级每升高一级，发电上限提高§a4倍§r" })
+            "发电上限受到机械等级的影响，机械等级每升高一级，发电上限提高§a4倍§r",
+            "§c动力仓等级达到HV及以上时，最高等级的动力仓每高于MV一级，总效率减少10个百分点（最低10%）§r" })
     @EN({ "Energy Conversation", "The base conversion efficiency from stress to EU is 128:1",
             "Requires at least 512 SU to activate the machine",
             "Each level of coil tier improves total efficiency by §a10%§r (initial value: 90%)",
             "At the same time, higher-tier magnets mean higher energy conversion efficiency",
-            "The generation limit is affected by the mechanical tier, and each level of mechanical tier increases the generation limit by §a4 times§r" })
+            "The generation limit is affected by the mechanical tier, and each level of mechanical tier increases the generation limit by §a4 times§r",
+            "§cIf any kinetic input hatch is HV or above, the highest-tier hatch subtracts 10 percentage points of total efficiency for each tier above MV (minimum 10%)§r" })
     static Lang[] kineticGeneratorTooltip;
 
     @CN({ "一个输出应力的机器", "转子支架每升高一级,涡轮效率增加§610%§r",
@@ -161,6 +163,7 @@ public class CTPPMultiblockMachines {
                             kineticGeneratorTooltip[2].translate(),
                             kineticGeneratorTooltip[3].translate(),
                             kineticGeneratorTooltip[4].translate(),
+                            kineticGeneratorTooltip[6].translate(),
                             CommonTooltips.INPUT_SPEED.translate())
                     .pattern(definition -> FactoryStaticBlockPattern.start()
                             .aisle("DDDDDDD", "##MMMG#", "##MMMG#", "##MMMG#", "#######")

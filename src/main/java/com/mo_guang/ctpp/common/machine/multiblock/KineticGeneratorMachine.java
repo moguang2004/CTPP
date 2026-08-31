@@ -3,8 +3,10 @@ package com.mo_guang.ctpp.common.machine.multiblock;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.ICoilType;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
+import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
@@ -22,6 +24,7 @@ import net.minecraft.world.phys.Vec3;
 
 import com.ctnhlang.CN;
 import com.ctnhlang.EN;
+import com.mo_guang.ctpp.common.machine.multiblock.part.KineticPartMachine;
 import com.mo_guang.ctpp.dynamicPart.rotation.IContraptionMultiblock;
 import com.mo_guang.ctpp.dynamicPart.rotation.SimpleRotatingContraptionEntity;
 import com.mo_guang.ctpp.util.MathUtil;
@@ -46,6 +49,8 @@ public class KineticGeneratorMachine extends KineticWorkableMultiblockMachine
     private ICoilType coilType = CoilBlock.CoilType.CUPRONICKEL;
     @Persisted
     public int magnetStrength;
+    @Persisted
+    public int maxKineticInputTier;
     public double efficiency;
     public double outputEnergy = 0;
 
@@ -55,8 +60,20 @@ public class KineticGeneratorMachine extends KineticWorkableMultiblockMachine
         efficiency = getEfficiency();
     }
 
+    /**
+     * 最高等级动力仓达到 HV 时，每高于 MV 一级直接扣去 10 个百分点的效率。
+     */
+    public double getTierPenalty() {
+        if (maxKineticInputTier < GTValues.HV) {
+            return 0;
+        }
+        return (maxKineticInputTier - GTValues.MV) * 0.1;
+    }
+
     public double getEfficiency() {
-        return (getCoilTier() * 0.1 + 0.9) * ((double) magnetStrength / (magnetStrength + 36));
+        double base = (getCoilTier() * 0.1 + 0.9) * ((double) magnetStrength / (magnetStrength + 36));
+        // 扣除后效率不低于 10%；磁场未成型时基础效率本就低于 10%，不因下限被抬高
+        return Math.max(Math.min(base, 0.1), base - getTierPenalty());
     }
 
     @Override
@@ -69,6 +86,12 @@ public class KineticGeneratorMachine extends KineticWorkableMultiblockMachine
         if (getMultiblockState().getMatchContext().get("MagnetStrength") != null) {
             this.magnetStrength = getMultiblockState().getMatchContext().get("MagnetStrength");
         }
+        maxKineticInputTier = 0;
+        for (IMultiPart part : getParts()) {
+            if (part instanceof KineticPartMachine kineticPart && kineticPart.getIO() == IO.IN) {
+                maxKineticInputTier = Math.max(maxKineticInputTier, kineticPart.getTier());
+            }
+        }
         efficiency = getEfficiency();
         // assemble rotating entities using interface helper
         createAndAttachRotatingEntities(MachineUtils.getOffset(this, 2, 0, 1), getContraptionRotationAxis());
@@ -80,6 +103,7 @@ public class KineticGeneratorMachine extends KineticWorkableMultiblockMachine
         if (getLevel() != null && !getLevel().isClientSide) {
             clearAndDisassembleRotatingEntities();
             magnetStrength = 0;
+            maxKineticInputTier = 0;
         }
     }
 
@@ -124,19 +148,27 @@ public class KineticGeneratorMachine extends KineticWorkableMultiblockMachine
     @EN("Total Efficiency：%d%%")
     static Lang info3;
 
+    @CN("动力仓等级惩罚：-%d%% (最高 %s)")
+    @EN("Kinetic Hatch Tier Penalty：-%d%% (Highest %s)")
+    static Lang info4;
+
     @Override
     public void addDisplayText(List<Component> textList) {
         super.addDisplayText(textList);
         if (isFormed()) {
             var voltageName = GTValues.VNF[GTUtil.getTierByVoltage((long) outputEnergy)];
             textList.add(textList.size(), info0.translate(FormattingUtil.formatNumbers(outputEnergy), voltageName,
-                    (int) (Math.pow(4, tier) * 512)));
+                    this.tier > 2 ? (this.tier - 2) * 4 * GTValues.V[this.tier - 2] : 32));
             textList.add(textList.size(), info1.translate(String.format("%.1f", (getCoilTier() * 0.1 + 1) * 100))
                     .withStyle(ChatFormatting.YELLOW));
             textList.add(textList.size(),
                     info2.translate(FormattingUtil.formatNumbers(magnetStrength),
                             String.format("%.1f", ((float) magnetStrength) * 100 / (magnetStrength + 36)))
                             .withStyle(ChatFormatting.AQUA));
+            if (maxKineticInputTier >= GTValues.HV) {
+                textList.add(textList.size(), info4.translate(String.format("%.1f", getTierPenalty() * 100),
+                        GTValues.VNF[maxKineticInputTier]).withStyle(ChatFormatting.RED));
+            }
             textList.add(textList.size(), info3.translate(String.format("%.1f", getEfficiency() * 100)));
         }
     }
@@ -144,7 +176,7 @@ public class KineticGeneratorMachine extends KineticWorkableMultiblockMachine
     public static @Nullable Component recipeModifier(MetaMachine machine, RecipeHandlerGroup group,
                                                      GTRecipe recipe) {
         if (machine instanceof KineticGeneratorMachine kmachine) {
-            int limit = (int) (Math.pow(4, kmachine.tier) * 512);
+            long limit = kmachine.tier > 2 ? (kmachine.tier - 2) * 4 * GTValues.V[kmachine.tier - 2] : 32;
             kmachine.outputEnergy = Math
                     .min(kmachine.getTotalInputStress() * kmachine.efficiency * GENERATING_BOOST / 128, limit);
             EURecipeCapability.putEUContent(recipe.tickOutputs, (long) kmachine.outputEnergy);
