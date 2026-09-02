@@ -324,28 +324,26 @@ public class PlaceableEmitterMachine extends TieredEnergyMachine
                 .normalize();
     }
 
+    // zenith / azimuth / transferDisabled / consumptionAmps are managed fields: LDLib's ref update pass
+    // detects the value change and drives both the sync packet and onChanged() -> markDirty() by itself.
     public void adjustAngle(double zenithDelta, double azimuthDelta) {
         zenith = Mth.clamp(zenith + zenithDelta, -MAX_BEND, MAX_BEND);
         azimuth = (azimuth + azimuthDelta) % (Math.PI * 2);
         if (azimuth < 0) azimuth += Math.PI * 2;
-        markDirty();
     }
 
     public void setAngles(double zenith, double azimuth) {
         this.zenith = Mth.clamp(zenith, -MAX_BEND, MAX_BEND);
         azimuth %= Math.PI * 2;
         this.azimuth = azimuth < 0 ? azimuth + Math.PI * 2 : azimuth;
-        markDirty();
     }
 
     public void setTransferDisabled(boolean disabled) {
         transferDisabled = disabled;
-        markDirty();
     }
 
     public void adjustConsumption(int delta) {
         consumptionAmps = Mth.clamp(consumptionAmps + delta, 1, MAX_CONSUMPTION);
-        markDirty();
     }
 
     public boolean isBeamActive() {
