@@ -140,8 +140,8 @@
   "ctpp.carbonbrushesgeneratormachine.goggle_info3": "    %s EU/t",
   "ctpp.commontooltips.input_speed": "*All the input speed should be the same.",
   "ctpp.commontooltips.kinetic_overclock": "- Input (N squared) times stress required by the recipe to get N parallels",
-  "ctpp.commontooltips.mechanical_tier": "§nMechanical Tier§r is determined by the tier of the §lMechanical Upgrade Bus§r in the multiblock: None (0), LV Mechanical Upgrade Bus (2), MV Mechanical Upgrade Bus (4), HV Mechanical Upgrade Bus (5)§r",
-  "ctpp.commontooltips.mechanical_tier_machine": "§nMechanical Tier§r is determined by the tier of the §lMechanical Upgrade Bus§r installed in the multiblock",
+  "ctpp.commontooltips.mechanical_tier": "§nMechanical Tier§r is determined by the tier of the §lMechanical Upgrade Bus§r in the multiblock: None (0), LV Mechanical Upgrade Bus (1), MV Mechanical Upgrade Bus (2), HV Mechanical Upgrade Bus (3)§r",
+  "ctpp.commontooltips.mechanical_tier_machine": "§nMechanical Tier§r is determined by the tier of the §lMechanical Upgrade Bus§r installed in the multiblock: None (0), LV Mechanical Upgrade Bus (1), MV Mechanical Upgrade Bus (2), HV Mechanical Upgrade Bus (3)§r",
   "ctpp.copyright.info": "This machine is added by §6CT++§r",
   "ctpp.ctppcreativemodetabs.machinetitle": "CTPP Machines",
   "ctpp.ctppmultiblockmachines.boomofcreatetooltip.0": "Art is an explosion!",
@@ -154,6 +154,7 @@
   "ctpp.ctppmultiblockmachines.kineticgeneratortooltip.3": "Each level of coil tier improves total efficiency by §a10%§r (initial value: 90%)",
   "ctpp.ctppmultiblockmachines.kineticgeneratortooltip.4": "At the same time, higher-tier magnets mean higher energy conversion efficiency",
   "ctpp.ctppmultiblockmachines.kineticgeneratortooltip.5": "The generation limit is affected by the mechanical tier, and each level of mechanical tier increases the generation limit by §a4 times§r",
+  "ctpp.ctppmultiblockmachines.kineticgeneratortooltip.6": "§cIf any kinetic input hatch is HV or above, the highest-tier hatch subtracts 10 percentage points of total efficiency for each tier above MV (minimum 10%)§r",
   "ctpp.ctppmultiblockmachines.kineticsteamturbinetooltip.0": "A machine that can output kinetic",
   "ctpp.ctppmultiblockmachines.kineticsteamturbinetooltip.1": "Each level of the rotor holder upgrade increases turbine efficiency by §610%§r",
   "ctpp.ctppmultiblockmachines.kineticsteamturbinetooltip.2": "Steam-type machines lose 10% efficiency for each voltage tier above §6HV§r",
@@ -175,6 +176,7 @@
   "ctpp.kineticgeneratormachine.info1": "Coil Efficiency：%d%%",
   "ctpp.kineticgeneratormachine.info2": "Magnet Strength：%d(%d%% Energy Conversion Rate)",
   "ctpp.kineticgeneratormachine.info3": "Total Efficiency：%d%%",
+  "ctpp.kineticgeneratormachine.info4": "Kinetic Hatch Tier Penalty：-%d%% (Highest %s)",
   "ctpp.kineticmultiblockmachine.waiting": "Waiting：",
   "ctpp.kineticoutputmachine.maxkineticoutput.tooltip": "Max stress output: %s",
   "ctpp.kineticoutputmachine.recipekineticoutput.tooltip": "Recipe stress output: %s",
@@ -322,6 +324,5 @@
   "message.ctpp.terminal.toofar": "Terminals are beyond the maximum range of %s blocks",
   "message.ctpp.terminal.unusablewire": "This fine wire has no usable cable properties and cannot be connected",
   "recipe.capability.su.name": "Create Stress",
-  "recipe.condition.ctpp.mechanicaltiercondition.mechanical_tier": "Mechanical Tier：%d(%s)",
-  "recipe.condition.mechanical_tier.tooltip": "Mechanical Tier: %s"
+  "recipe.condition.ctpp.mechanicaltiercondition.mechanical_tier": "Mechanical Tier：%d(%s)"
 }

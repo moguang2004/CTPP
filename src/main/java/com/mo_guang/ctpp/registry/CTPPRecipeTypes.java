@@ -122,7 +122,7 @@ public class CTPPRecipeTypes {
                 new CTPPRecipeBuilder(newRecipe.toRuntime(), SMASHING_FACTORY_RECIPES)
                         .rpm(MainConfig.INSTANCE.ctnhConfig.smashingFactoryRPMRequirement)
                         .noEUt()
-                        .mechanicalTier(Math.min(GTUtil.getTierByVoltage(eut) * 2, 5))
+                        .mechanicalTier(Math.min(GTUtil.getTierByVoltage(eut), 5))
                         .inputStress(eut *
                                 MainConfig.INSTANCE.ctnhConfig.smashingFactoryStressRequirement)
                         .save(provider);

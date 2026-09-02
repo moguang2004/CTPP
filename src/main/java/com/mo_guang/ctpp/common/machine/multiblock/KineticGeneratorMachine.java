@@ -158,7 +158,7 @@ public class KineticGeneratorMachine extends KineticWorkableMultiblockMachine
         if (isFormed()) {
             var voltageName = GTValues.VNF[GTUtil.getTierByVoltage((long) outputEnergy)];
             textList.add(textList.size(), info0.translate(FormattingUtil.formatNumbers(outputEnergy), voltageName,
-                    this.tier > 2 ? (this.tier - 2) * 4 * GTValues.V[this.tier - 2] : 32));
+                    this.tier > 0 ? this.tier * 4 * GTValues.V[this.tier] : 32));
             textList.add(textList.size(), info1.translate(String.format("%.1f", (getCoilTier() * 0.1 + 1) * 100))
                     .withStyle(ChatFormatting.YELLOW));
             textList.add(textList.size(),
@@ -176,7 +176,7 @@ public class KineticGeneratorMachine extends KineticWorkableMultiblockMachine
     public static @Nullable Component recipeModifier(MetaMachine machine, RecipeHandlerGroup group,
                                                      GTRecipe recipe) {
         if (machine instanceof KineticGeneratorMachine kmachine) {
-            long limit = kmachine.tier > 2 ? (kmachine.tier - 2) * 4 * GTValues.V[kmachine.tier - 2] : 32;
+            long limit = kmachine.tier > 0 ? kmachine.tier * 4 * GTValues.V[kmachine.tier] : 32;
             kmachine.outputEnergy = Math
                     .min(kmachine.getTotalInputStress() * kmachine.efficiency * GENERATING_BOOST / 128, limit);
             EURecipeCapability.putEUContent(recipe.tickOutputs, (long) kmachine.outputEnergy);

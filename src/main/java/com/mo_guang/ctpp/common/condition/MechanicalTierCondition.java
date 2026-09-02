@@ -1,5 +1,6 @@
 package com.mo_guang.ctpp.common.condition;
 
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
@@ -10,12 +11,10 @@ import net.minecraft.network.chat.Component;
 
 import com.ctnhlang.CN;
 import com.ctnhlang.EN;
-import com.ctnhlang.Key;
 import com.ctnhlang.Prefix;
 import com.mo_guang.ctpp.api.CTPPRecipeConditions;
 import com.mo_guang.ctpp.common.machine.multiblock.KineticMultiblockMachine;
 import com.mo_guang.ctpp.common.machine.multiblock.part.MechanicalUpgradePartMachine;
-import com.mo_guang.ctpp.util.CTPPValues;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.NoArgsConstructor;
@@ -51,13 +50,9 @@ public class MechanicalTierCondition extends RecipeCondition<MechanicalTierCondi
     @EN("Mechanical Tier：%d(%s)")
     static Lang mechanical_tier;
 
-    @Key("recipe.condition.mechanical_tier.tooltip")
-    @EN("Mechanical Tier: %s")
-    static Lang mechanical_tier_tooltip;
-
     @Override
     public Component getTooltips() {
-        return mechanical_tier.translate(tier, CTPPValues.MT[tier].translate());
+        return mechanical_tier.translate(tier, GTValues.VNF[tier]);
     }
 
     @Override

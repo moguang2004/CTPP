@@ -34,7 +34,6 @@ import com.mo_guang.ctpp.common.machine.multiblock.part.MechanicalUpgradePartMac
 import com.mo_guang.ctpp.common.machine.simple.CarbonBrushesGeneratorMachine;
 import com.mo_guang.ctpp.common.machine.simple.ElectricGearBoxMachine;
 import com.mo_guang.ctpp.config.MainConfig;
-import com.mo_guang.ctpp.util.CommonTooltips;
 import com.mo_guang.ctpp.util.ItemAxisBuilder;
 import tech.vixhentx.mcmod.ctnhlib.langprovider.Lang;
 import tech.vixhentx.mcmod.ctnhlib.registrate.builders.CTNHMachineBuilder;
@@ -271,7 +270,6 @@ public class CTPPMachines {
                             holder -> new MechanicalUpgradePartMachine(holder, machineTier))
                     .cnLangValue(VNF[tier] + "机械升级仓")
                     .langValue(VNF[tier] + " Mechanical Upgrade Bus")
-                    .tooltips(CommonTooltips.MECHANICAL_TIER.translate())
                     .tier(tier)
                     .rotationState(RotationState.ALL)
                     .abilities(CTPPPartAbility.MECHANICAL_UPGRADE)

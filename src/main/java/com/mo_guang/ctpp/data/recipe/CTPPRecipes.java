@@ -1,6 +1,5 @@
 package com.mo_guang.ctpp.data.recipe;
 
-import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.data.recipe.CraftingComponent;
@@ -61,11 +60,12 @@ public class CTPPRecipes {
         registerMachineRecipe(provider, false, CTPPMachines.MECHANICAL_UPGRADE_BUS,
                 "ABA",
                 "DCD",
-                "ABA",
-                'A', GTMaterialItems.MATERIAL_ITEMS.get(TagPrefix.screw, GTMaterials.WroughtIron).asStack(),
-                'B', PLATE,
+                "AEA",
+                'A', PLATE,
+                'B', EMITTER,
                 'C', HULL,
-                'D', Items.GLASS_PANE.getDefaultInstance());
+                'D', Items.GLASS_PANE.getDefaultInstance(),
+                'E', SENSOR);
     }
 
     public static void registerMachineRecipe(Consumer<FinishedRecipe> provider, boolean setMaterialInfoData,

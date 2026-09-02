@@ -14,11 +14,7 @@ public class CommonTooltips {
     @EN("*All the input speed should be the same.")
     public static Lang INPUT_SPEED;
 
-    @CN("§n机械等级§r由多方块内§l机械升级仓§r的等级决定：无(0)，LV机械升级仓(2)，MV机械升级仓(4)，HV机械升级仓(5)§r")
-    @EN("§nMechanical Tier§r is determined by the tier of the §lMechanical Upgrade Bus§r in the multiblock: None (0), LV Mechanical Upgrade Bus (2), MV Mechanical Upgrade Bus (4), HV Mechanical Upgrade Bus (5)§r")
-    public static Lang MECHANICAL_TIER;
-
-    @CN("§n机械等级§r由多方块内安装的§l机械升级仓§r等级决定")
-    @EN("§nMechanical Tier§r is determined by the tier of the §lMechanical Upgrade Bus§r installed in the multiblock")
+    @CN("§n机械等级§r由多方块内安装的§l机械升级仓§r等级决定：无(0)，LV机械升级仓(1)，MV机械升级仓(2)，HV机械升级仓(3)§r")
+    @EN("§nMechanical Tier§r is determined by the tier of the §lMechanical Upgrade Bus§r installed in the multiblock: None (0), LV Mechanical Upgrade Bus (1), MV Mechanical Upgrade Bus (2), HV Mechanical Upgrade Bus (3)§r")
     public static Lang MECHANICAL_TIER_MACHINE;
 }
