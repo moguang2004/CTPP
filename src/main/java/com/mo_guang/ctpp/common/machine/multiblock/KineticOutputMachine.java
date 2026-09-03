@@ -6,6 +6,8 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
+import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 
@@ -25,6 +27,7 @@ import java.util.List;
 public class KineticOutputMachine extends KineticMultiblockMachine {
 
     @Getter
+    @DescSynced
     public float maxOutputStress = 0;
 
     public KineticOutputMachine(IMachineBlockEntity holder) {

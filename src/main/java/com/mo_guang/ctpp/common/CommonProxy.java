@@ -13,8 +13,6 @@ import net.minecraft.core.Registry;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -32,13 +30,11 @@ import com.mo_guang.ctpp.data.CTPPDatagen;
 import com.mo_guang.ctpp.data.recipe.builder.CTPPRecipeProvider;
 import com.mo_guang.ctpp.data.recipe.fanprocessing.CTPPFanProcessingTypes;
 import com.mo_guang.ctpp.data.recipe.fanprocessing.CTPPRecipeTypeInfo;
-import com.mo_guang.ctpp.integration.jade.KineticOutputMachineProvider;
 import com.mo_guang.ctpp.registry.*;
 import com.mo_guang.ctpp.registry.CTPPNetwork;
 import com.simibubi.create.api.registry.CreateBuiltInRegistries;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import tech.vixhentx.mcmod.ctnhlib.client.ponder.CTNHPonderLang;
-import tech.vixhentx.mcmod.ctnhlib.jade.JadePriorityManager;
 
 import static com.mo_guang.ctpp.registry.CTPPBlocks.VOLTAGE_TERMINALS;
 
@@ -65,11 +61,6 @@ public class CommonProxy {
         modEventBus.addGenericListener(MachineDefinition.class, this::registerMachines);
         modEventBus.addGenericListener(RecipeConditionType.class, this::registerRecipeConditions);
         modEventBus.addGenericListener(GTRecipeType.class, this::registerRecipeTypes);
-
-        JadePriorityManager.registerBlockData(new KineticOutputMachineProvider(), BlockEntity.class, 950,
-                "kinetic_output_machine_stress");
-        JadePriorityManager.registerBlockComponent(new KineticOutputMachineProvider(), Block.class, 950,
-                "kinetic_output_machine_stress");
     }
 
     @SubscribeEvent

@@ -7,8 +7,6 @@ import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
@@ -29,7 +27,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class KineticPartMachine extends TieredIOPartMachine implements IKineticMachine {
 
     @Getter
-    @Persisted
     protected final NotifiableStressTrait stressTrait;
 
     @Nullable
@@ -41,7 +38,7 @@ public class KineticPartMachine extends TieredIOPartMachine implements IKineticM
 
     public KineticPartMachine(IMachineBlockEntity holder, int tier, IO io, Object... args) {
         super(holder, tier, io);
-        this.stressTrait = createStressTrait(args);
+        this.stressTrait = attachTrait(createStressTrait(args));
     }
 
     public IO getIO() {

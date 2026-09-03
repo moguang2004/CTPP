@@ -1,11 +1,9 @@
 package com.mo_guang.ctpp.common.blockentity;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.common.registry.GTRegistration;
 import com.gregtechceu.gtceu.utils.ManagedFieldHolderMap;
 
@@ -14,7 +12,6 @@ import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.syncdata.IManaged;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.syncdata.managed.MultiManagedStorage;
@@ -71,11 +68,7 @@ public class KineticMachineBlockEntity extends KineticBlockEntity implements IMa
 
     @Getter
     public final MetaMachine metaMachine;
-    @Getter
-    @Persisted
-    @DescSynced
-    @RequireRerender
-    private MachineRenderState renderState;
+
     private final long offset = GTValues.RNG.nextInt(20);
     @Persisted
     @DescSynced
@@ -93,7 +86,6 @@ public class KineticMachineBlockEntity extends KineticBlockEntity implements IMa
     protected KineticMachineBlockEntity(BlockEntityType<?> typeIn, BlockPos pos, BlockState state) {
         super(typeIn, pos, state);
         this.metaMachine = getDefinition().createMetaMachine(this);
-        this.renderState = getDefinition().defaultRenderState();
 
         this.getRootStorage().attach(getSyncStorage());
     }
@@ -104,8 +96,8 @@ public class KineticMachineBlockEntity extends KineticBlockEntity implements IMa
 
     @Override
     public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-        var result = MetaMachineBlockEntity.getCapability(getMetaMachine(), cap, side);
-        return result == null ? super.getCapability(cap, side) : result;
+        var result = getMetaMachine().getCapability(cap, side);
+        return result.isPresent() ? result : super.getCapability(cap, side);
     }
 
     public static void onBlockEntityRegister(BlockEntityType<?> blockEntityType) {
@@ -151,12 +143,6 @@ public class KineticMachineBlockEntity extends KineticBlockEntity implements IMa
     @Override
     public KineticMachineDefinition getDefinition() {
         return (KineticMachineDefinition) IMachineBlockEntity.super.getDefinition();
-    }
-
-    @Override
-    public void setRenderState(MachineRenderState state) {
-        this.renderState = state;
-        scheduleRenderUpdate();
     }
 
     @Override

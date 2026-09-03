@@ -5,8 +5,6 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-
 import net.minecraft.core.Direction;
 
 import com.mojang.blaze3d.MethodsReturnNonnullByDefault;
@@ -20,13 +18,12 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class SimpleKineticElectricWorkableMachine extends SimpleTieredMachine implements IKineticMachine {
 
     @Getter
-    @Persisted
     protected final NotifiableStressTrait stressTrait;
 
     public SimpleKineticElectricWorkableMachine(IMachineBlockEntity holder, int tier,
                                                 Int2IntFunction tankScalingFunction, Object... args) {
         super(holder, tier, tankScalingFunction, args);
-        this.stressTrait = createStressTrait(args);
+        this.stressTrait = attachTrait(createStressTrait(args));
     }
 
     //////////////////////////////////////
